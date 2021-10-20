@@ -1,0 +1,71 @@
+# Асинхронное программирование
+
+# asyncio-------------------------------------------------------------------+
+# is a library to write concurrent code using the async/await syntax.
+# Сокеты, потоки, субпроцессы, все смотреть на оф докум  
+
+# Coroutines(сопрограммы) - функции использующие async/await
+async coro():
+    await asyncio.sleep(1)
+
+# Tasks(задачи) - используются для одновременного выполнения сопрограмм.
+# creating tasks - создание задач
+task1 = asyncio.create_task(coro(), name='my_task_1') # task1 creating
+task2 = asyncio.create_task(coro(), name='my_task_2') # task2 creating
+# смотреть задачи
+asyncio.all_tasks()    # все задачи
+asyncio.current_task() # текущая задача
+
+# event loop - цикл событий
+loop = asyncio.get_running_loop() # текущий цикл событий
+asyncio.set_event_loop()          # установить текущий цикл событий
+asyncio.new_event_loop()          # новый цикл событий
+loop.run_until_complete()         # запуск цикла пока не завершатся задачи
+loop.run_forever()                # вечный цикл
+loop.time()                       # счетчик в цикле - реальное время
+
+# запуск задач:
+await task1
+await task2
+# запуск с пом функции gather() - если передать сопр-му - преобр-ся в задачу
+asyncio.gather(task1, task2) # возвр список всех return из задач по порядку
+# запуск с помощью текущего цикла
+loop.create_task(coro(), name='my_new_task')
+
+# running an asyncio program - запуск асинхронных программ
+async.run(coro()) # запуск сопрограммы
+async.run(main()) # запуск сопрограммы внутри которой задачи
+
+# Sleeping
+await asyncio.sleep(1) # приостановка задачи (другие выполняются)----------+
+
+
+# aiohttp -----------------------------------------------------------------+
+# asynchronous HTTP Client/Server for asyncio and Python.
+# асинхронная закачка - быстрее чем requests
+# pip install aiohttp[speedups] - установка всех модулей
+
+import aiohttp
+import asyncio
+
+async def main():
+    async with aiohttp.ClientSession() as session:                # сессия
+        async with session.get('http://httpbin.org/get') as resp: # ответ
+            resp.status       # статус
+            await resp.text() # текст
+            await resp.read() # бинарный content
+            resp.ok           # статус True < 400      
+            # можно тут в цикле распараллелить много запросов
+            # либо все это дело завернуть в сопрограмму и создать задачи
+
+# остальные запросы тоже работают
+session.post('http://httpbin.org/post', data=b'data')   
+session.put('http://httpbin.org/put', data=b'data')
+session.delete('http://httpbin.org/delete')
+session.head('http://httpbin.org/get')
+session.options('http://httpbin.org/get')
+session.patch('http://httpbin.org/patch', data=b'data')   
+
+# запуск
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())

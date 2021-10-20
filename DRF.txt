@@ -1,0 +1,36 @@
+Django REST Framework
+
+settings:   pip install djangorestframework
+
+# app/models.py
+from django.db import models
+class Book(models.Model):
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=7, decimal_places=2)
+
+# app/serialiser.py
+from rest_framework.serializers import ModelSerializer
+from store.models import Book
+class BooksSerializer(ModelSerializer):
+    class Meta:
+        model = Book
+        fields = '__all__'
+
+# app/views.py
+from rest_framework.viewsets import ModelViewSet
+from store.models import Book
+from store.serializers import BooksSerializer
+class BookViewSet(ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BooksSerializer
+
+# urls.py
+from rest_framework.routers import SimpleRouter
+from store.views import BookViewSet
+router = SimpleRouter()
+router.register(r'book', BookViewSet)
+urlpatterns = [
+    path('admin/', admin.site.urls),
+]
+urlpatterns += router.urls
+

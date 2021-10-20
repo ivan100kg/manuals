@@ -1,0 +1,598 @@
+Django 3.2
+
+
+# Project/Проект----------------------------------------------------------------
+# проект - совокупность всего программного кода, сост разрабатываемый сайт
+django-admin startproject mysite # создать проект - директория проекта 'mysite'
+mysite/              # root directory is a container for your project.
+    manage.py        # файл/утилита - выполняет различные дейтвия над проектом
+    mysite/          # пакет конф-ии, содержит модули проекта, задающ его конфиг
+        __init__.py  # для распознования директории 'mysite' как пакета
+        settings.py  # настройки проекта, пути ключевых директорий, БД, без-ть. 
+        urls.py      # маршруты уровня проекта
+        wsgi.py      # модуль, связ проект с веб-сервером посредством WSGI
+        asgi.py      # модуль, связ проект с веб-сервером через интерфейс ASGI
+
+
+# start the local server-----------------------------------------
+cd mysite
+python manage.py runserver 127.0.0.1:8000 # отладочный веб-сервер
+CTRL+C # остановка сервера
+
+
+# Applications/Приложения----------------------------------------------------
+# приложение - отдельный фрагмент функциональности разрабатываемого сайта,
+  более или менее независимый от других таких же фрагментов и входящий в
+  состав проекта
+python3 manage.py startapp bboard # создание приложения - директория 'bboard'
+bboard/             # пакет приложения
+    __init__.py     # для распознования дир как пакета
+    admin.py        # модуль административных настроек и классов-редакторов
+    apps.py         # модуль с настройками приложения
+    migrations/     # пакет миграций
+        __init__.py # для распознования дир как пакета
+    models.py       # модуль с моделями
+    tests.py        # модуль с тестирующими процедурами
+    views.py        # модуль с контроллерами(вьюшки)
+    # создаваемые файлы/каталоги
+    urls.py         # маршруты приложения
+    templates/      # директория для шаблонов
+        bboard/     # директория для шаблонов(.html) приложения
+    static/         # статика приложения(статич файы сервера)
+        bboard/     # директория для статик файлов
+    forms.py        # формы для ввода данных от пользователей
+        
+# регистрация приложения
+settings.py --> INSTALLED_APPS --> 'bboard.apps.PollsConfig' # доб в список
+                                                               путь к классу,
+                                                               с конф приложения
+
+# Модель MVC и MTV----------------------------------------------------------
+Схема разделения данных приложения и управляющей логики
+Model-View-Controller    Model-Template-View(Django)
+        Model         ==         Model
+        View          ==         Template
+        Controller    ==         View   
+Model - данные и методы работы с ними: запросы в DB, проверка на корректность.
+    Модель не зависит от представления (не знает как данные визуализировать)
+    и контроллера (не имеет точек взаимодействия с пользователем),
+    просто предоставляя доступ к данным и управлению ими,  может иметь
+    несколько различных представлений.
+View(Template) - отвечает за получение необходимых данных из модели и
+    отправляет их пользователю. Представление не обрабатывает введённые
+    данные пользователя
+Controller(View) - обеспечивает «связь» между пользователем и системой.
+    Контролирует и направляет данные от пользователя к системе и наоборот.
+    Использует модель и представление для реализации необходимого действия.
+
+    client  |   server
+    --------+-------------------------------
+     u   -----> route
+     s            |
+     e            v
+     r   <----- view <----> model <-----> DB
+                  ^
+                  |
+                  v
+                template
+
+# Models/Модели-------------------------------------------------------------------------
+# модель - это класс, описывающий опред таблицу в DB, набор полей
+# экземпляр класса модели - отдельная запись таблицы, получ или заносит данные 
+bboard/models.py
+    from django.db import models
+    class Bb(models.Model): # модель объявления с внеш ключ на др мод - Рубрика
+        title     = models.CharField(max_length=50, verbose_name='Товар')
+        content   = models.TextField(null=True, blank=True)
+        price     = models.FloatField(null=True, blank=True)
+        published = models.DateTimeField(auto_now_add=True, db_index=True,
+                                         verbose_name='Опубликовано')
+        rubric    = models.ForeignKey('Rubric', null=True, 
+                                      on_delete=models.PROTECT,
+                                      verbose_name='Рубрика')
+
+        def get_absolute_url(self):             # исп-ся для кастомиз админки,
+            return reverse('index', kwargs=..)    редиректа с формы
+
+        def __str__(self):   # для отображения в консоли и админке
+            return self.title
+
+        class Meta:  # для замены отображения имени модели в админке
+            verbose_name_plural = 'Объявления(Meta models.py)'  # ед число
+            verbose_name = 'Объявление(Meta models.py)'         # множ число
+            ordering = ['-published']                           # сорт-ка полей
+
+    # поле с первичным ключем создается автоматически
+        CharField     - строковое поле фиксированной длины, max_length=50
+        TextField     - текстовое поле неогр длины, null=True - мб NULL
+        FloatField    - вещественные числа
+        DateTimeField - дата-время
+    # внешние связи
+        ForeignKey      - O2M внешний ключ на родителя(в БД поле наз-ся по
+                          другому напр 'field' будет 'field_id')
+        ManyToManyField - M2M указать в 1 модели ссылку на другую, в базе
+                          будет создана доп таблица
+        OneToOneField   - O2O тут как в 1 случ
+    # params
+    # null=True     - может быть NULL
+    # blank=True    - поле можно не запонять
+    # verbose_name= - как колонка выглядит в админке
+    # on_delete=    - что делать с записью при удал ключа(CAscade, protect)
+    # db_index=True - индексация колонки для быстрого поиска
+    # auto_now_add= - (дата)автозаполнение при создании
+    # auto_now=     - (дата)при изменении данных дата обновляется
+
+
+Templates/Шаблоны----------------------------------------------------------
+# Шаблон это образец для генерир веб-страницы, отправ клиенту в составе ответа
+# Шаблонизатор - подсистема Django генерирующ страницы на основе шаблонов
+# Шаблон Django - файл.html, содержит особ ком-ды шаблонизатора:
+    директивы - помес в задан место HTML-кода свое значение {{ my }}
+    теги      - управляют генерированием содержимого {% for item in items %}
+    фильтры   - фильтр перед выводом {{ bb.published|date:"d.m.Y H:i:s" }}
+# создать дир-ии templates/приложение в каждом приложениии - Django ищет в них
+# templates/base.html - базовый шаблон для всех остальных(меньше кода)
+    {% load static %} # load загружает модуль(в нашем случе static)
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" 
+        href="{% static 'bboard/style.css' %}">                # ссылка на css
+        <title>{% block title %}{% endblock %}</title>         # блок title
+    </head>
+    <body>
+        <img src="{% static 'images/logo.jpg' %}" alt="Logo" height="100">
+        {% block content %}{% endblock %}                      # блок content
+    </body>
+    </html>
+# bboard/templates/bboard/index.html # пример main страницы приложения bboard
+    {% extends "bboard/base.html" %}                           # подкл base
+    {% block title %}Главная :: Доска объявлений{% endblock %} # блок title
+    {% block content %}                                        # блок content
+        <h1>Объявления {{ hui }}</h1>                          # ключи context 
+        <div>                                                    из views
+            <a href="{% url 'bboard:index' %}">Главная</a>     # namespace:марш 
+            {% for rubric in rubrics %}                        # for по словарю
+            <a href="{% url 'by_rubric' rubric.pk %}">{{ rubric.name }}</a> 
+            {% endfor %}}                                      # конец for
+        </div>
+        {% for bb in bbs %}
+        <div>
+            <h2>{{ bb.title }}</h2>
+            <p>{{ bb.content }}</p>
+            <p><a href="{% url 'by_rubric' bb.rubric.pk %}">{{ bb.rubric.name..
+            <p>{{ bb.published|date:"d.m.Y H:i:s" }}</p>        # фильтр даты |
+        </div>
+        {% endfor %}
+    {% endblock %}                                              # конец content
+# bboard/templates/bboard/create.html - шаблон для добавления данных с формой
+    {% extends "bboard/base.html" %}
+
+    {% block title %}Добавление объявления :: Доска объявлений{% endblock %}
+
+    {% block content %}
+        <div>
+            <a href="{% url 'index' %}">Главная</a>
+            {% for rubric in rubrics %}
+            <a href="{% url 'by_rubric' rubric.pk %}">{{ rubric.name }}</a>
+            {% endfor %}
+        </div>
+        <form method="post"> # данные отправятся тому же контоллеру, он сохр
+            {% csrf_token %} # токен Джанго(то что инфа с этого сайта)безоп-ть
+            {{ form.as_p }}  # то как отображ форма(ее отдельные поля)
+            <input type="submit" value="Добавить"> # кнопка
+        </form>
+    {% include 'somecode.html' %} # так включается любой код из люб док-та
+    {% endblock %}
+
+# Forms/Формы------------------------------------------------------------------
+# Используются для ввода данных. Формы выводят на странице веб-формы с 
+    необходимыми эл упр, проверяют данные на корректность. Формы связанные
+    с моделью могут заносить данные в БД. Контроллер связанный с url, связ
+    с формой, связ с моделью -> заносит данные сразу в БД, далее после успеш
+    добавления данных перенаправляет вас на указ адрес.
+# Форма не связ с моделью
+# bboard/forms.py
+    from django.forms import Form
+    class BbForm(Form):
+        title = forms.CharField(max_lenth=100,
+                                label='title',  # лэйбл для формы в .html
+        # стилизация(css атр)   widget=forms.TextInput(attrs={'class':'hu'}))
+        # кастомный валидатор (после стандартных валидаторов)
+        def clean_title(self):
+            title = self.cleaned_data['title']  # отвалидированые данные
+            if title in ['hui']:    # различ свои проверки
+                raise ValidationError('text')
+            return title
+# .html
+    {% csrf_token %}
+    # второй вариант стилизации прямо в шаблоне(завернуть все в divы)
+    {{ form.not_field.errors }}                         # ошибки вне полей
+    <label for="{{ title.id_for_label }}">title</label> # label
+    {{ form.title }}                                    # поле ввода
+    {{ form.title.errors }}                             # ошибки валидации поля                               
+
+# Форма связанная с моделью
+# bboard/forms.py
+    from django.forms import ModelForm
+    from .models import Bb
+    class BbForm(ModelForm):
+        class Meta:
+            model = Bb # связана форма с этой моделью
+            fields = ('title','content','price','rubric') # поля кот дб в форме
+            widgets = {'title':forms.TextInput(attrs={'class':'hu'}),
+                       'content': ...}  # css стилизация
+# .html
+<form action="{% url 'polls:vote' question.id %}" method="post">
+{% for choice in question.choice_set.all %} # цикл по записям
+<input  type="radio"                        # тип input
+        name="choice"                       # аргум для отправки с post
+        id="choice{{ forloop.counter }}"    # id исп для лэйбла(тут со счетч-м)
+        value="{{ choice.id }}">            # значение аргумента "choice"
+# лэйбл для радиокнопок
+<label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+{% endfor %}
+<input type="submit" value="Vote">          # кнопка для отправки POST
+</form>
+# при отправке формы POST-данные choice=# где # - id выбранного варианта
+# action - URL для отправки формы
+# method - метод GET или POST
+
+
+# Views/Контроллеры----------------------------------------------------------
+# контроллеры - (вид, представление)это код, запускаемый при обращении по
+    интернет-адрес определенного формата и в ответ выводящий на экран
+    определенную веб-страницу контроллер берет данные из БД с пом модели и
+    отображает страницу с пом шаблон это может быть как функция так и класс.
+# bboard/views.py    
+    from django.shortcuts import render  # вып и загр, и рендеринг шаблона
+    from .models import Bb, Rubric       # импорт моделей
+    from django.views.generic.edit import CreateView # для котроллера-класса
+    from .forms import BbForm            # наша форма
+    from django.urls import reverse_lazy # для перенаправления на др адрес
+    
+    def index(request):                  # контроллер связанный с гл страницей
+        bbs = Bb.objects.all()           # все записи модели из БД
+        rubrics = Rubric.objects.all()   # все записи модели из БД
+        context = {'bbs': bbs, 'rubrics': rubrics} # словарь для исп в шаблонах
+        return render(request, 'bboard/index.html', context) # отрисовка index.
+                                                               html, передача
+                                                               словаря для исп-я
+    def by_rubric(request, rubric_id):   # пар из urls.py(а в него из адр-й стр)
+        bbs = Bb.objects.filter(rubric=rubric_id)          # фильтруем об-я 
+        rubrics = Rubric.objects.all()                     # все рубрики
+        current_rubric = Rubric.objects.get(pk=rubric_id)  # выбранная рубрика
+        context = {'bbs': bbs,                             # the same as above
+                   'rubrics': rubrics,
+                   'current_rubric': current_rubric}
+        return render(request, 'bboard/by_rubric.html', context)
+
+from django.shortcuts.get_object_or_404  # возвращает Http404 если нет объекта
+                      get_list_or_404()  # Http404 если пустой список
+    # ручная обработка форм
+    def add_news(request):
+        if request.method == 'POST':
+            form = BbForm(request.POST)
+            if form.is_valid(): # если валидация успешна
+                Bb.objects.create(**form.cleaned_data)  # валид данные
+                # form.save()   # в случае со связ формой
+                return redirect('home') # редирект
+        else:
+            form = BbForm()
+        return render(request, 'bboard/create.html', {'form': form})
+
+# базовые контроллеры
+# обработка форм 
+    class BbCreateView(CreateView): # наследуем от базового класса соз-ия форм
+        template_name = 'bboard/create.html'  # путь к шаблону
+        form_class = BbForm                   # ссылка на класс формы
+        success_url = reverse_lazy('index')   # адр перенап после успеш сохр д-х
+
+        def get_context_data(self, **kwargs): # переопределение метода
+            context = super().get_context_data(**kwargs)
+            context['rubrics'] = Rubric.objects.all()
+            return context
+  
+# базовый контроллер для обработки списка записей
+from django.views import generic
+class IndexView(generic.ListView): # от ListView
+    model = Question
+    # переопределение атрибутов                  | по умолчанию
+    template_name = 'polls/index.html'           # polls/question_list.html
+    context_object_name = 'latest_question_list' # question_list 
+    def get_queryset(self):                      # Question.objects.all()
+        """переопределение метода к БД objects.all()"""
+        return Question.objects.order_by('-pub_date')[:5]
+
+# базовый контр для обработки 1 pk полученного из URL  - polls/3
+class DetailView(generic.DetailView):
+    model = Question
+    # переопределение атрибутов                  | по умолчанию
+    template_name = 'polls/detail.html'          # polls/question_detail.html
+    context_object_name = 'question'             # object
+    # при отправке в шаблон запись question=Question.objects.all.get(pk=pk)
+      передается автоматически
+
+# URL patterns/Маршруты--------------------------------------------------------
+# маршрут - связь пути с определенным контроллером
+# путь - часть интернет адреса
+    address/адрес # http://localhost:8000/bboard/
+    route/путь    # bboard/
+# функции django.urls
+# path()    - связывает путь(1-й пар) со (2-м пар)конт-р либо др спис маршрутов
+# include() - возвр спис марш, приним строку с путем к модулю со списком марш
+# bboard/urls.py - создать этот файл
+    from django.urls import path
+    from . import views
+    app_name = 'bboard' # простр имен для ссылок типа bboard:index в шаб-х
+    urlpatterns = [                              # список марш прил bboard/
+        path('', views.index, name='index'),     # связь: путь ''-->конт 'index'
+        path('<int:rubric_id>/', by_rubric,      # <> - параметр из ад стр
+             name='rubric_id'),                  .../bboard/2 - (2-парам)
+        path('add/',views.BbCreateView.as_view(),# вызов контр-класса
+              name='add'),]                      # rubric_id - парам 2, перед
+                                                   в контр-р by_rubric
+                                                 # name - именов марш для исп в
+                                                   шаблонах bboard:index
+# mysite/urls.py                                   
+    from django.contrib import admin
+    from django.urls import include, path
+    urlpatterns = [                              # список маршрутов - шабл URL
+        path('bboard/', include('bboard.urls')), # связь с др сп марш, перед '' 
+        path('admin/', admin.site.urls),         # админка  
+    ]
+
+
+Migrations/Миграции---------------------------------------------------------
+# Миграция — это программа, сгенерированная на основе заданной модели и
+    создающая в базе данных все описанные этой моделью структуры: таблицу,
+    поля, индексы, правила и связи.
+python3 manage.py makemigrations bboard  # генерирует миграции для все моделей
+                                           в указанном приложении ('bboard')
+# OOO1_initial.py   - модуль сгенерир миграции, создается при предыдущей команде
+# bboard/migrations - пакет где сохраняются модули миграций
+python3 manage.py sqlmigrate bboard 0001 # посмотреть SQL код
+python3 manage.py migrate # выполнить миграции
+
+
+База данных------------------------------------------
+# mysql
+sudo apt-get install python3.8-dev libmysqlclient-dev
+pip install mysqlclient
+# settings.py
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mysqlsite',
+        'USER': 'ivar',
+        'PASSWORD': '399',
+        'HOST': '192.168.0.100',
+    }
+
+
+ORM/Object–relational mapping(управ БД через консоль)------------------------
+# Фреймворк включает в свой состав собственную редакцию консоли Python Shell,
+    называемую консолью Django. Та же колсоль Python но с добавление пути к
+    текущ проекту.
+python3 manage.py shell # запуск консоли
+# CREATE
+>>> from bboard.models import Bb, Rubric # импортируем модели
+>>> b = Bb(title='Дача',  # запись модели(запись в таблице)
+            content='Общество "Двухэтажники". Два этажа, кирпич,...',
+            price=500000)
+>>> b.save() # сохранить в БД
+>>> Bb.objects.create(title='Дом', content='Техэтажный, кирпич',
+                      price=50000000)) # сразу создать и сохранить
+# READ
+>>> Bb.objects.all() # SELECT *
+>>> b = Bb.objects.get(pk=2) # 1 запись с pk=2
+>>> b.pk     # значение primary key тек записи 
+>>> b.title  # обращение к любым аттрибутам
+>>> r.bb_set.all()  # у первич модели - список связ записей из др таблицы
+# ORDER BY
+>>> for b in Bb.objects.order_by('title'):    # сортировка по полю 'title'
+        print(b.pk, ': ', b.title)            # '-title' - обратная сорт DESC
+# WHERE
+>>> Bb.objects.filter(title='Дом'):  # фильтрация по заголовку 'Дом'
+                     (pk__gt=2):     # pk > 2
+                     (pk__gte=2)     # pk >= 2
+                     (pk__lt=2)      # pk < 2
+                     (pk__lte=2)     # pk <= 2
+                     (pk__in=[2,4])  # pk IN (2,4)
+                     (title__contains='hui')    # LIKE '%hui%'
+                     (title__icontains='hui')   # без учета регистра
+                     (pk=2, title__in=['kdnz']) # AND
+                     (rubric__title='cars')     # фильтр по связ табл
+>>> Bb.objects.first()  # первая запись
+              .last()   # последняя
+              .earlest()# ранняя (по полям Date/DateTime)
+              .latest() # поздняя
+              .count()  # кол-во записей
+              .exist()  # существуют записи?
+              .distinct # уник значения
+>>> b.get_previous_by_created() # предыд запись (по полям Date/DateTime)
+>>> b.get_туче_by_created()     # след запись (по полям Date/DateTime)
+# AND OR NOT (& | ~) from django.db import Q
+>>> Bb.objects.filter(Q(pk__in=[1,3]) | Q(title='hui')) # OR
+# LIMIT
+>>> Bb.objects.all()[2:6]   # срезы
+# Aggregation functions
+>>> Bb.objects.aggregate(min_views=Min(pk))     # min_views - псевдоним AS
+                        (Max())
+                        (Sum())
+                        (Avg())
+                        (Count())
+# GROUP BY/HEAVING
+>>> cats = Category.objects.annotate(cnt=Count('news'))
+>>> for i in cats: print(i.title, i.cnt)    # название и кол-во связ об
+# UPDATE
+>>> Ь.content = '"Жигули", 1980 года, ржавая, некрашеная, сильно битая'
+>>> b.save()
+# DELETE
+>>> b.delete() # удалить запись
+# SQL
+>>> Rubric.objects.raw("SELEST * FROM ...") # raw SQL query
+>>> exit()         # выход из консоли
+
+
+Admin/Админка------------------------------------------------------------------
+python3 manage.py createsuperuser # создать суперпользователя
+LANGUAGE_CODE = 'ru'              # русскоязычная админка в settings.py
+http://127.0.0.1:8000/admin/      # вход в админку
+# Users, Groups - встроенные модели django
+# bboard/apps.py
+    ...
+    verbose_name = 'Обьявления(apps.py)' # добавить для отображ в админке
+# bboard/admin.py
+    from django.contrib import admin
+    from .models import Bb
+    class BbAdmin(admin.ModelAdmin): # класс-редактор для удоб отобр в админке
+        list_display = ('title', 'content', ...)    # видимые поля
+        list_display_links = ('title', 'content')   # поля-ссылки
+        search_fields = ('title', 'content')        # поиск по пол
+        list_editable = ('published')               # редактировать на месте
+        list_filter = (...)                         # фильтрация по полям       
+    admin.site.register(Bb, BbAdmin) # регистрация модели
+
+
+Static/Статические файлы-------------------------------------------------------
+# Файлы которые не обрабатываются програмно(фото, табл стилей..)
+# храняться в дир приложение/static/приложение (типа templates)
+{% load static %}
+<img scr="{% static 'app/myfile.css' %}">   # добавить статик файл
+# собрать всю статику проекта
+# settings.py
+    MEDIA_ROOT = Path(BASE_DIR, 'media')             # медиа
+    MEDIA_URL = Path(BASE_DIR, '/media/')            # 
+    STATIC_ROOT = Path(BASE_DIR, 'static')           # статика
+    STATICFILES_DIRS = (BASE_DIR, 'mysite/static')   # 
+    TEMPLATES -> 'DIRS' -> 'templates'              # добавить папки с шаблон
+./manage.py collectstatic   # собрать статику в указ папки со всего проекта
+
+
+CRUD (Create Read Update Delete)-----------------------------------------------
+def home(request):
+    orders = Order.objects.all()
+    customers = Customer.objects.all()
+    total_customers = customers.count()
+    total_orders = orders.count()
+    delivered = orders.filter(status='Delivered').count()
+    pending = orders.filter(status='Pending').count()
+    context = {'orders': orders, 'customers': customers,
+               'total_orders': total_orders, 'delivered': delivered,
+               'pending': pending}
+    return render(request, 'accounts/dashboard.html', context)
+    
+def createOrder(request):
+    form = OrderForm()
+    if request.method == 'POST':
+        # print('Printing POST:', request.POST)
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    context = {'form': form}
+    return render(request, 'accounts/order_form.html', context)
+
+def updateOrder(request, pk):
+    order = Order.objects.get(id=pk)
+    form = OrderForm(instance=order)
+    if request.method == 'POST':
+        form = OrderForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+    context = {'form': form}
+    return render(request, 'accounts/order_form.html', context)
+
+def deleteOrder(request, pk):
+    order = Order.objects.get(id=pk)
+    if request.method == "POST":
+        order.delete()
+        return redirect('/')
+    context = {'item': order}
+    return render(request, 'accounts/delete.html', context)
+
+django-filter (фильтр по полям)-----------------------------------------------
+pip install django-filter           # установить
+INSTALLED_APPS => 'django_filters'  # добавить
+create app/filters.py               # создать
+# app/filters.py
+    import django_filters
+    from django_filters import DateFilter, CharFilter   # спец фильтры
+    from .models import *
+    class CelebFilter(django_filters.FilterSet):
+    # поля для фильтра даты (label - название для поля)
+    start_date = DateFilter(field_name='birthday',lookup_expr='gte',label='')
+    end_date = DateFilter(field_name='birthday', lookup_expr='lte')
+    # фильтр для тектовых полей типа LIKE '%...%'
+    name_icontains = CharFilter(field_name='name', lookup_expr='icontains')
+        class Meta:
+            model = Celeb           # модель для фильтра
+            fields = '__all__'      # поля для фильтра
+            exclude = ['birthday',  # исключить(она есть в диапазонах)
+                      'name']
+# app/view.py
+    def index(request):
+        celebs = Celeb.objects.all()
+        myFilter = CelebFilter(request.GET, queryset=celebs)    # применяем
+        celebs = myFilter.qs                                    # нов список
+        context = {'celebs': celebs, 'myFilter': myFilter}
+        return render(request, 'celebrities/index.html', context)
+# app/.html
+    <form method="GET">
+        {{myFilter.form}}                       # фильтры 
+        <button type="submit">Search</button>   # кнопка поиска
+    </form>
+
+django-debug-toolbar (удобная debug панель)----------------------------------
+pip install django-debug-toolbar
+# settings.py
+INSTALLED_APPS += 'debug_toolbar'
+MIDDLEWARE += 'debug_toolbar.middleware.DebugToolbarMiddleware'
+INTERNAL_IPS = ['127.0.0.1']
+# urls.py 
+    from django.conf import settings
+    if settings.DEBUG:
+        import debug_toolbar
+        urlpatterns += path('__debug__/', include(debug_toolbar.urls))
+
+pagination (пагинация - постраничный вывод)-----------------------------------
+from django.core.paginator import Paginator
+https://docs.djangoproject.com/en/3.2/topics/pagination/
+Настраиваем либо для ListView либо для функции
+Выводим в шаблон - пример в ссылке - все просто!
+
+django-filters + paginations-------------------------------------------------
+# app/templatetags/my_tags.py
+    from django import template
+    register = template.Library()
+    @register.simple_tag
+    def my_url(page_number, field_name, urlencode=None):
+        url = '?{}={}'.format(field_name, page_number)
+        if urlencode:
+            querystring = urlencode.split('&')
+            filtered_querystring = filter(lambda p: p.split('=')[0] != field_name, querystring)
+            encoded_querystring = '&'.join(filtered_querystring)
+            url = '{}&{}'.format(url, encoded_querystring)
+        return url
+# index.html
+     <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="{% my_url 1 'page' request.GET.urlencode %}">&laquo; first</a>
+                <a href="{% my_url page_obj.previous_page_number 'page' request.GET.urlencode %}">previous</a>
+            {% endif %}
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% if page_obj.has_next %}
+                <a href="{% my_url page_obj.next_page_number 'page' request.GET.urlencode %}">next</a>
+                <a href="{% my_url page_obj.paginator.num_pages 'page' request.GET.urlencode %}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+
+

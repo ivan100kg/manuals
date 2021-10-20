@@ -1,0 +1,86 @@
+﻿# Регулянрные выражения Python
+
+match = re.findall(r"pid", text)        # just literal may be pid or scupidirdyai...
+match = re.findall(r"\bpid\b", text)    # only word - pid
+match = re.findall(r"[Pp]id", text)     # Pid or pid or Pidar or upidrilo
+match = re.findall(r"[0-9]", text)      # from 0 to 9 == [0123456789]
+match = re.findall(r"[^0-9]", text)     # all , but not digits 0-9
+match = re.findall(r"[a-zA-Z]", text)   # all ASCII letters
+
+# символы
+text  # this text
+[tu2] # any 1 symbol in brakets
+[1-5] # symbol from 1 to 5
+[b-f] # symbol from b to f
+.     # any symbol except \n, in [.] it's just a point
+\d    # [0-9] all digits
+\D    # [^0-9] all except digits
+\w    # [a-zA-Z0-9А-Яа-яЁё_]  
+\W    # [^a-zA-Z0-9А-Яа-яЁё_]
+\s    # [\n\t\r\v\f]
+\S    # [^\n\t\r\v\f]
+
+# мажор / минор
+# например: text = <p><strong>lang</strong></p>
+	# мажор re.findall(r"<.+>", text)  - вернет <p><strong>lang</strong></p>
+	# минор re.findall(r"<.+?>", text) - вернет все теги в списке
+match = re.findall(r"0{2,3}", text)      # находит 0 от 2х до 3х повторений, мажорный режим, захватывает максимально возможное повторение 0 - '000'
+match = re.findall(r"0{2,3}?", text)     # находит 0 от 2х до 3х повторений, минорный режим, захватывает минимально возможное повторение 0 - '00'
+
+# повторения
+x{m,n} # повторенре символа x от min до max раз
+{m}    # {m,m} ровно м раз, мажорный или минорный не имеет смысла
+{m,}   # повтор от m и более раз - минорный {m,}?
+{,n}   # повторение не более n раз, минорныц - {,n}?
+?      # {0,1} или 0 или 1, минор ??
+*      # {0,} от 0 и более раз, минор *?
++      # {1,} один или более раз, минор +?
+
+match = re.findall(r"pid|tags", text)    # или|или
+match = re.findall(r"\W*(?:pid|tags)\W*", text)    # (?:или|или).* не сохраняющие скобки
+match = re.findall(r"\W*(pid)\W*", text)    # сохраняющие скобки, выведет то что в скобках
+match = re.findall(r"(\W?(pid)\W*(\d{3,}))", text)  # список кортежей(то что в скобках), формируется список кортежей по уровням скобок
+match = re.findall(r"(['\"])(pid)\1\W*", text)  # \1 - то же значение что и в первой скобке, если в первой скобке выбор[1234] то в \1 будет тот символ которыц нацдется в скобке
+match = re.findall(r"(?P<A>['\"])(pid)(?P=A)\W*", text)  # именованные скобки
+
+# groups
+a|b         # a or b
+(?:a|b)\d+  # а с цифрами или b с цифрами
+(lvl1(lvl2)(lvl2(lvl3)))   # уровни вложенности - формируется ответ в виде списка кортежей
+                               начиная (1,2,3..) уровней
+(45) ... \1"  \1,\2,\3... \<g>10... # номера скобок - то же значкние что и в скобках
+(?P<val>45) ...(?P=val)"   # именованные скобки
+
+match = re.findall(r"\bpid\b", text)    # граница слова
+#text = "English is the best language in the world!\nI'm serious"
+match = re.findall(r"^.", text, flags=re.MULTILINE)
+match = re.findall(r"is.*(?=best)", text, flags=re.MULTILINE)
+match = re.findall(r"is.*(?<=best)", text, flags=re.MULTILINE)
+
+# границы
+\b  # граница слова
+\B  # не граница слова
+^   # начало текста, если с флагом MULTILINE - начало каждой строки в тексте
+$   # конец текста, если с флагом MULTILINE - конец каждой строки в тексте
+\A  # начало текста
+\Z  # конец текста
+
+# flags
+re.ASCII   # только аски символы
+IGNORECASE # игнорировать регистр
+MULTILINE  # влияет на ^ $
+DOTALL     # точка включаеи и \n тоже
+VERBOSE    # добавляет режим комментариев
+DEBUG      # режим отладки
+
+# functions
+search   # находит первое вхождение, объект Match
+finditer # все вхождения в итераторе, objects Match
+findall  # все вхождения в списке, strings
+match    # ищет совпадение с самого начала строки
+split    # разбиение текста по шаблону
+sub      # замена текста по шаблону
+compile  # компилирут заранее шаблон. пгтгм можно использовать для более быстрого исп.
+
+match = re.split(r"\"", text)
+match = re.sub(r"(pid)\W*\d+","ОТСОСИ У \1 ", text)

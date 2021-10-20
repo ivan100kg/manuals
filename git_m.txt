@@ -1,0 +1,46 @@
+# памятка по git
+
+# показывает кто и когда вносит изменения
+git config --global user.name "my Name"       # имя
+git config --global user.email myemail@ex.hu  # email
+
+git init                        # создание нового репозитория
+git status                      # статус
+git add filename or -A          # добавить файл или все в репозиторий
+git reset                       # отменить add
+git commit -m "Initial commit." # коммит, фиксация изменений, -m - коммент
+
+# связать реп с созданным на github назовем origin(мб много в проекте)
+git remote add origin https://github.com/ivan100kg/remember.git
+
+# пересылаем на сервер origin - имя master - ветка по умолчанию
+git push origin master
+
+# клонировать себе уже готовый реп с github и получить копию локально
+git clone https://github.com/ivan100kg/remember.git
+
+# скачать изменения/обновления репозитория
+git pull origin master
+
+# Ветки ***
+git branch new_branch    # новая ветка точная копия master
+git branch               # показывает ветки и на какой находимся мы
+git checkout new_branch  # переключение на ветку по имени
+git merge new_branch     # слияние веток
+git branch -d new_branch # удаление ветки new_branch
+
+# Коммиты
+git log                     # Список всех коммитов и их идентификаторов
+git log hg6d4j              # пишем первую часть идентификатора - подробная инфа
+git diff hdf56d..6uii8j     # разница между коммитами
+git difftool hdf56d..6uii8j # разница между коммитами графич редактор
+git checkout hdf56d         # возвращение файла к выбранному коммиту
+git revert hdf56d           # исправление коммита
+
+
+# игнорируемые файлы
+# создаем файл .gitignore добавляем в него все что хотим игнорировать
+*.log или *.png # шаблон для добавления в игнор сразу много файлов
+photos/         # папка
+.idea/          # скрытая папка
+her.txt         # отдельный файл

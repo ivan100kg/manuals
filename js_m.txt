@@ -1,0 +1,158 @@
+JavaScript
+
+"use strict"    # вставляем в нач каждого документа (строгий режим)
+
+// comment
+/*
+    long
+    comment
+*/
+
+Литералы:
+    10          # целое 
+    3.14        # дробное
+    'dom'       # строки
+    "dom"       # строки
+    [1,2]       # массив
+    {name:'X',  # объект
+     age:2}     #
+    (ab|bc)     # рег выражение
+
+Константы и переменные:
+    const MAX_VALUE = 200;      # константа
+    var section = 'JS';         # переменная не строгое поведение
+    let arr = ['HTML','CSS']    # переменная строгое поведение
+
+Операторы:
+    + - * / % ** ++ --          # arithmetic
+    = += -= *= /= %= **=        # assignment
+    == === != !== > < >= <= ?   # compare === тип и значение
+    && || !                     # logical
+    & | ~ ^ << >> >>>           # bit
+    typeof()                    # type
+    instanceof()                # instance of Array
+    in                          # вхождение
+    arr['HTML']                 # по ключу
+    arr.HTML                    # через точку
+
+Типы:
+    Number      # 0, -2, 3.14, 123e5, 12e-2
+    String      # 'hello' "world" `fuck`
+    Object      # {firstName:"John", lastName:"Doe"}, [1,2,3,4]
+    bollean     # true, false
+    undefined   # let car; не определенная переменная
+
+Функции:
+    function foo(par1, par2) {
+        console.log('learn');
+        console.log('JS');
+        return par1 * par2;
+    }
+    foo();  # вызов
+
+Objects:
+    const person = {
+        firstName: "John",
+        lastName: "Doe",
+        id: 5566,
+        fullName: function () {     # this - то есть эти имена этого объекта
+            return this.firstName + " " + this.lastName;
+        }
+    };
+
+Web:
+    External:
+    <script src="myScript1.js"></script>    # ссылки на скрипты в коце <body>
+    Если скрипт не может загрузится работает <noscript>:
+    <noscript>Sorry, your browser does not support JavaScript!</noscript>
+Output:
+    innerHTML           # вывод на странице: 
+                          document.getElementById("demo").innerHTML = 5 + 6;
+                          этот метод подходит как для кнопок так и на загрузке
+    document.write()    # document.write(5 + 6); вывод на странице(на загрузке)
+    window.alert()      # всплывающее сообщение браузера
+    console.log()       # консоль
+    window.print()      # распечатать
+
+Events:
+    <element event="some JavaScript">   # 
+    Event 	        Description
+    onchange 	    # An HTML element has been changed
+    onclick 	    # The user clicks an HTML element
+    onmouseover     # The user moves the mouse over an HTML element
+    onmouseout 	    # The user moves the mouse away from an HTML element
+    onkeydown 	    # The user pushes a keyboard key
+    onload 	        # The browser has finished loading the page
+
+Strings
+escape sequences:
+    \n \t \v \b \f \r
+methods:
+    lenth           # lenth
+    slice(7, 13)    # slice
+    substring()     # slice - cannot accept negative indexes
+    substr(7,6)     # 2 par - specifies the length of the extracted part
+    replace()       # replase
+    toUpperCase()   # to Upper
+    toLowerCase()   # to Lower
+    trim()          # removes whitespace from both sides of a string
+    text.split(",") # Split on commas
+format:
+    'Welcome $(firstname)'
+    `Total: ${(price * (1 + VAT)).toFixed(2)}`
+    `<h2>${header}</h2><ul>` += `<li>${x}</li>`
+search:    
+    String.indexOf()        # position of the first occurrence
+    String.lastIndexOf()    # last occurrence of a specified text
+    String.search()         # eturns the position of the match
+    String.match(regexp)    # returns the matches by regular expression
+    String.includes()       # returns true if a string contains a value
+    String.startsWith()     # true if a string begins with a value
+    String.endsWith()       # true if a string ends with a specified value
+
+Numbers
+    let x = 3.14;       // A number with decimals
+    let y = 3;          // A number without decimals 
+    let x = 123e5;      // 12300000
+    let y = 123e-5;     // 0.00123 
+    let x = 10/"App";   // x will be NaN (Not a Number)
+    isNaN(x);           // checking for NaN
+    let x =  2 / 0;     // x will be Infinity
+    let x = 0xFF;       // x will be 255
+    x.toString();       // to string
+    let x = 9.656;
+    x.toFixed(2);       // returns a string, with the number(2) '9.66'
+
+Arrays
+    const cars = ["Saab", "Volvo", "BMW"];
+    const fruits = ["Banana", "Orange", "Apple", "Mango"];
+    const points = [40, 100, 1, 5, 25, 10];
+    cars[0] = "Opel";
+    points[points.length-1] // 10 
+    cars.toString();    // return string "Saab,Volvo,BMW"
+    cars.join(" * ");   // return string "Saab * Volvo * BMW"
+    fruits.pop();       // removes the last element from an array
+    fruits.push("Kiwi");// adds a new element to an array (at the end)
+    fruits.shift();     // removes the first array el and "shifts" all
+    fruits.unshift("L");// dds a new element to an array (at the beginning)
+    fruits.sort();      // Sorts the elements of fruits 
+    fruits.reverse();   // reverse the order of the elements
+    points.sort(function(a, b){return a - b}); // сортировка числовая
+    points.sort(function(a, b){return 0.5 - Math.random()});    // random sort
+    function myArrayMax(arr){return Math.max.apply(null, arr);} // max
+    Math.max(1, 2, 3)   // the same as above
+    const cars = [
+        {type:"Volvo", year:2016},
+        {type:"Saab", year:2001},
+        {type:"BMW", year:2010}];
+    cars.sort(function(a, b){return a.year - b.year});  // sort object
+    # 
+    let txt = "";
+    numbers.forEach(myFunction);
+    function myFunction(value, index, array) {
+        txt += value + "<br>";
+    }
+
+
+    
+

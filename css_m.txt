@@ -1,0 +1,174 @@
+CSS - Cascading Style Sheets (каскадные таблицы стилей) 
+    Формальный язык описания внешнего вида документа (веб-страницы),
+    написанного с использованием языка разметки (чаще всего HTML или XHTML).
+    Также может применяться к любым XML-документам, например, к SVG или XUL.
+
+External CSS
+    Храните ваши стили в отдельном файле file.css(хотя можно и в html все влож)
+    В <head> HTML документа написать
+    <link rel="stylesheet" href="mystyle.css">
+
+Syntax
+    /* comments */      # комментарий(многострочный тоже)
+    h1 {                # селектор   - указывает какой эл стилизуется
+        color:"blue";   # декларация - свойство:значение
+        font-size:12px; # через ; перечисляем декларации
+        }
+
+Селекторы:
+    h1                  # элемент(ы) h1
+    #para1              # элемент с id="para1"
+    .center             # элемент(ы) с class="center"
+    p.center            # элемент(ы) <p class="center">
+    *                   # все элементы на странице
+    h1, h2, p           # группировка элементов
+    div.her>div.hui     # вложенные элем
+
+Цвета:
+    rgb(0,0,255,0)      # RGB+Alpha blue фон "background-color:rgb(0,0,0,1);"
+    #0000ff             # Hex values "background-color:#0000ff;"
+    #00f                # shorthand for #0000ff
+    hsl(0,100%,50%)     # "background-color:hsl(0, 100%, 50%);"
+    hsla(0,10%,50%,0.2) # with alpha
+
+Свойства:
+Задний фон/Background:
+    background-color    # цвет фона элемента
+    opacity             # 0.0-1.0 непрозрачность
+    background-image    # url("paper.gif"); фоновое изображение
+    background-repeat   # no-repeat repeat-x repeat-y повторение изображ
+    background-position # right top позиция изображ
+    backgr..-attachment # fixed scroll - скроллится или нет
+    background          # #ffffff url("img_tree.png") no-repeat right top; шорт
+Границы/Border:
+    border-style        # dotted - Defines a dotted border
+                          dashed - Defines a dashed border
+                          solid  - Defines a solid border
+                          double - Defines a double border
+                          groove - Defines a 3D grooved border.
+                          ridge  - Defines a 3D ridged border.
+                          inset  - Defines a 3D inset border.
+                          outset - Defines a 3D outset border.
+                          none   - Defines no border
+                          hidden - Defines a hidden border
+                          mixed  - dotted dashed solid double;
+    border-top-style:   # стили для всех сторон 
+    border-right-style: 
+    border-bottom-style:
+    border-left-style: 
+    border-width        # ширина границ ед.изм.(px, pt, cm, em..)
+                          3 предуст константы: thin medium thick
+                          20px 5px; -если указ 2(верх-низ, право-лево)
+                          25px,10px,5px,30px (top right bottom left)
+    border-color        # цвет гранницы
+    border              # short 5px solid red;
+    border-radius       # 5px; скругление углов
+Отступы - Margin/Padding:
+    margin              # отступ элемента со всех сторон до разных др элем
+    margin-top          # по сторонам
+    margin-right
+    margin-bottom
+    margin-left
+    margin:             # short 25px 50px 75px 100px;
+                          auto; автоцентр
+    padding             # пространство вокруг контента элемента
+    padding-top         # по сторонам
+    padding-right
+    padding-bottom
+    padding-left
+    Высота/Ширина:
+    height              # used to set the height of an element
+    width               # used to set the width of an element
+                          200px - размер эл 200 пикселей
+                          50%   - размер эл 50% от начального
+    max-width           # 500px - макс ширина
+Outline линия снаружи границы:
+    outline-style       # dotted,dashed,solid,double,groove,ridge,
+                          inset,outset,none,hidden - стиль линии
+    outline-color       # color
+    outline-width       # 12px
+    outline-offset      # 13px
+    outline             # complex
+
+
+The CSS Box Model
+    +---------------------------+
+    |          margin           |
+    |   =======outline=======   |
+    |   =##### border ######=   |
+    |   =#                 #=   |
+    |   =#     padding     #=   |
+    |   =#   +---------+   #=   |
+    |   =#   | content |   #=   |
+    |   =#   +---------+   #=   |
+    |   =#                 #=   |
+    |   =###################=   |
+    |   =====================   |
+    +---------------------------+
+
+Text formatting
+    color:              - text color
+        a color name    - like "red"
+        a HEX value     - like "#ff0000"
+        an RGB value    - like "rgb(255,0,0)"
+    background-color:   - background color ...the same as above
+    text-align:         - horizontal alignment of a text
+        center;
+        left;
+        right;
+        justify;        - every line has equal width
+    vertical-align:     - vertical align
+    text-decoration:    - decorations
+    text-transform:     - uppercase and lowercase letters
+    text-indent:        - indentation of the first line
+    letter-spacing:     - space between the characters in a text
+    line-height:        - the space between lines
+    word-spacing:       - space between the words
+    white-space:        - white-space inside an element is handled
+    text-shadow:        - shadow to text
+
+Fonts
+    Serif fonts have a small stroke at the edges of each letter.
+    Sans-serif fonts have clean lines. 
+    Monospace fonts - here all the letters have the same fixed width.
+    Cursive fonts imitate human handwriting.
+    Fantasy fonts are decorative/playful fonts.
+    font-family:
+        "Times New Roman", Times, serif;    # если 1-го нет ищется след и так д
+        Arial, Helvetica, sans-serif;
+        "Lucida Console", "Courier New", monospace;
+    best web safe fonts for HTML and CSS:
+        Arial (sans-serif)
+        Verdana (sans-serif)
+        Helvetica (sans-serif)
+        Tahoma (sans-serif)
+        Trebuchet MS (sans-serif)
+        Times New Roman (serif)
+        Georgia (serif)
+        Garamond (serif)
+        Courier New (monospace)
+        Brush Script MT (cursive)
+    font-style:         - mostly used to specify italic text
+    font-weight:        - property specifies the weight of a font
+    font-size:          - size of the text
+        40px;
+        2.5em;          - 1em = 16px
+        100%;
+
+Links    
+    a:link          - a normal, unvisited link
+    a:visited       - a link the user has visited
+    a:hover         - a link when the user mouses over it
+    a:active        - a link the moment it is clicked
+    text-decoration - property used to remove underlines from links
+
+Lists
+    
+
+    
+
+        
+
+
+
+    

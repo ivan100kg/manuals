@@ -1,0 +1,220 @@
+    SQL  - structured query language - язык структуированных запросов
+    СУБД - сист упр БД (MySQL, PostgreSQL, Microsoft Access...)
+    Реляционная база данных — бд, основанная на реляционной модели данных.
+    Понятие «реляционный» relation («отношение, зависимость, связь»
+    Схема   - инфо о БД, о структуре и сво-х ее таблиц
+    БД      - набор данных хранящихся упорядоченным способом (таблицы)
+    Таблица - срук-ый файл с данными определенного типа
+    Столбцы - одиночное поле таблицы с опред. типом данных
+    Строка  - данные(запись) в таблице счет от НУЛЯ
+    Первичные ключи - уникально иден-ют каждую строку
+
+-- комментарий
+#  comment to
+/* comment
+   to
+*/
+
+-- инструкции нечувствительны к регистру USE == Use == use
+-- пробелы пожно заменять переносом строк
+
+-- экранирование
+`` -такими ковычками можно заэкранировать спец слова и символы
+\  -стандартный символ экранирования
+
+-- Операции с БД
+CREATE DATABASE my_base; # создать БД my_base
+SHOW DATABASES;          # показать все БД
+DROP DATABASE my_base;   # удалить БД
+USE my_base              # использовать БД
+
+-- Создание таблицы в базе
+# создать если не существует
+CREATE TABLE 
+IF NOT EXISTS 
+`models`(
+         `id` INT AUTO_INCREMENT,            # тип инт, гене-я номера
+         `name` VARCHAR(32) NOT NULL,        # строка макс 32 симв
+         `size` FLOAT,                       # число с точкой
+         `country` VARCHAR(32),              
+         `birthday` DATE NULL DEFAULT NULL,  # дата
+         `pictures` INT,
+         `last_pic` INT,
+         PRIMARY KEY (`id`, `name`));        # прайм поля
+		
+SHOW TABLES;          -показать все таблицы в базе
+EXPLAIN my_table;     -показать структуру таблицы
+DROP TABLE my_table;  -удалить таблицу
+
+-- изменить таблицу
+ALTER TABLE my_table  
+        ADD my_new_field VARCHAR(100)         -доб нов столб после указ-го
+        CHANGE old_field new_field VARCHAR(2) -изменяет наз-е и тип колонки
+        AFTER id;
+        DROP my_new_field;                    -удаление колонки
+
+
+-- SELECT # извлечение столбцов---------------------------------------------------------
+# SELECT synopsis
+SELECT column1, column2…                  # извлечь одно, неск или * - все поля
+FROM table                                # имя таблицы
+WHERE condition1 AND condition2…          # где 1 или несколько условий
+ORDER BY column1 (ASC | DESC), column2…   # сортировка по кол (прям или обр)
+LIMIT n                                   # лимит вывода
+OFFSET m;                                 # отступ
+
+SELECT * FROM table;                      # извлеч всех столб
+SELECT DISTINCT column1                   # уникальные записи в столбце(ах)
+SELECT COUNT (*) FROM `mytable`;          # показать количество записей
+SELECT column1 AS col FROM table;         # псевдоним
+
+-- WHERE
+-- фильтрация указывается в SELECT для вывода опред-ых знач
+-- опрераторы в WHERE:  
+    =  >  <  >=  <=  !=(<>)  BETWEEN AND IS NULL(пуст поле)
+    WHERE price BETWEEN 5 AND 10; # 5 < price < 10
+-- операторы OR AND NOT IN
+WHERE prod_price <= 10 AND prod_name != 'HER'; составная фильтрация
+WHERE (prod_name = 'Milk' OR prod_name = 'Vodka') AND prod_price <= 10; 
+WHERE prod_name IN(NOT IN) ('milk', 'vodka'); вхождение(не вхождение)
+
+-- LIKE -опрератор для исп-я метасимволов для поиска текста в текстовых полях
+-- Wildcards запросы
+-- %(*) -все вхождения любого символа либо отсутствие в скобках в Access
+-- _(?) -любой 1 символ обязательный ___ - 3 любых символа...
+-- [AB] - либо - либо 1 симв
+-- [^(!)CD]- не тот - не тот 1 симв
+SELECT prod_name, prod_price, prod_id
+FROM Products
+WHERE prod_name LIKE 'Fish%'; вывод продуктов с fish (%fish% - где-то)
+
+-- GROUP BY - группирует по значениям в колонке(ах) и применяет ф-ию
+SELECT  size, COUNT(*)
+FROM table
+WHERE country = 'Russia'
+GROUP BY size
+HAVING COUNT(*) > 10;    # доп фильтрация после группировки
+ORDER BY COUNT(*) DESC
+LIMIT 5
+
+
+-- INSERT INTO # Добавление инфо в таблицу----
+# INSERT synopsis
+INSERT INTO table
+    (column1, column2…)
+VALUES
+    (val1, val2…),
+    (val3, val4...),
+    …
+    (valn, valm…);
+
+
+-- UPDATE # внести изменения в информацию в таблице----
+# UPDATE synopsis
+UPDATE table
+SET column1 = 'my var',
+    column2 = 1080...
+WHERE column_name = 'vasya' AND col_surname = 'pupkin';
+
+
+-- DELETE # удаление инфы из табл---------------------------------------------
+DELETE FROM my_table WHERE field1 = 'hui';  # удаляет данные где верно условие
+DELETE FROM my_table;                       # удалить все из таблицы
+TRUNCATE TABLE my_table;                    # удаляет все и сбрасывает счетчик
+
+
+-- JOIN # получение данных из двух таблиц------------------------
+# JOIN synopsis
+SELECT column1, column2…
+FROM table1 AS a            # псевдоним
+_____ JOIN table2 AS b      # пробел - (INNER, LEFT, RIGHT, FULL)
+ON a.column_x == b.column_x # по этой колонке ищем совпадение
+WHERE conditions
+ORDER BY column1;
+# INNER - только строки где есть совпадение по колонке Х
+# LEFT  - все строки с левой таблицы и те что совпали с правой
+# RIGHT - все строки с правой и те что совпали в левой
+# FULL  - все строки с совпадением и без
+
+
+-- Подзапросы --------------------------------------------------------------
+SELECT id, name, price  # SELECT UPDATE DELETE INSERT
+FROM products
+WHERE price = (SELECT MAX(price) FROM products) # подзапрос возвр рез-т 1-ым
+      id IN (SELECT product_id FROM sales)
+
+
+-- Транзакции - последов-сть ком-д кот должны быть выполнены все или не одной
+START TRANSACTION;
+UPDATE.. # послед-сть команд
+UPDATE..
+...
+COMMIT; - принять или ROLLBACK; - откатить
+
+
+-- Индексы - структура данных в базе для быстрого поиска
+-- СУБД автоматически решает использовать их или нет
+CREATE INDEX superheroes_name_ind   # create index
+ON superheroes(name);               # table(field)
+
+
+-- VIEW - представления-------------------------------------------------
+-- можно создавать из смешанных таблиц(для удобства)
+-- ограничивать данные(некоторые столбцы не показывать)
+-- сокрытие реализации
+CREATE VIEW customers_v id, name    # представление
+AS SELECT id, name FROM customers;  # нужные столбцы из таблицы для view
+
+
+-- Вычисляемые поля -некие операции(арифметич или конкатенация или исп функ-й)
+-- конкатенация
+SELECT CONCAT(field1, ' ', 'sometext'), field2.. FROM mytable;
+-- арифметич операции + - * /
+SELECT field1 * 2 FROM...
+
+-- функции
+NOW(); CURDATE(); DATE(); DATETIME(); TIME(); -тек дата
+RTRIM()  -удаление пробелов в конце значения столбца
+LTRIM()  -из левой части
+UPPER()  -в верх рг-р
+LOWER()  -в ниж
+LEN()    -длина строки
+
+-- преобразования
+to_char()
+to_number()
+to_date()
+
+-- матем-е
+ABS()
+COS()
+EXP()
+PI()
+SIN()
+SQRT()
+TAN()
+
+--агрегатные ф-ии
+AVG()   -среднее знач
+COUNT() -число строк в столбце COUNT(*) -NULL не игнор, COUNT(столб)-игнорир
+MAX()   -макс
+MIN()   -мин
+SUM()   -сумма
+
+
+-- настройка удаленного использования БД
+sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf  --конф файл
+-- меняем bind-address на 0.0.0.0
+sudo systemctl restart mysql
+-- далее в mysql прописываем
+GRANT ALL ON forex.* TO root@'85.113.51.68' IDENTIFIED BY '399';
+
+-- подключение к базе с удаленного узла
+    mysql -u root -h 85.113.51.68 -p
+	
+-- настройка локального использования БД
+USE mysql
+GRANT ALL PRIVILEGES ON *.* TO 'ivar'@'localhost';
+FLUSH PRIVILEGES;
+exit;
+sudo systemctl restart mysql

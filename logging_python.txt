@@ -1,0 +1,63 @@
+# python
+
+# logging
+# levels:
+NOTSET - 0
+DEBUG - 10
+INFO - 20
+WARNING - 30
+ERROR - 40
+CRITICAL - 50
+
+import logging
+# create and configure logger
+# информация о различных форматах смотри на оф питон
+LOG_FORMAT = "%(LeveLname)s %(asctime)s - %(message)s"
+logging.basicConfig(filename="/home/Ivar/file.log",
+                             level=logging.DEBUG, # логир-е уровней
+                             format=LOG_FORMAT, # формат сообщений
+                             filemode='w') # добавить в файл, 'w' - нов
+
+# вместо basic configuration можно добавить все вручную
+# настройка своего логгера
+logger = logging.getLogger() # создаёт новый root
+logger = logging.getLogger(__name__) # новый свое имя
+logger = logging.getLogger('requests') # имя сущест-го работает с ним 
+
+logger.setLevel(logging.INFO) # установить общий уровень 
+
+formatter = logging.Formater("%(levelname)s"...) # свой форматтер
+
+file_handler = logging.FileHandler("file.log") # свой файловый обработчик
+file_handler.setFormarrer(formatter) # добавить свой форматтер в обработчик
+file_handler.setLevel(logging.ERROR) # обрабатывать и записывать не ниже уровня error
+
+
+streamHandler = logging.StreamHandler() # выводящий в консоль
+streamHandler.setFormarrer(formatter) # добавить свой форматтер в обработчик
+streamHandler.setLevel(logging.DEBUG) # в консоль выводить все
+
+
+logger.addHandler(file_handler) # добавить в свой  логгер обработчик
+logger.addHandler(streamHandler) # также можно добавить
+
+
+# test logger
+logger.level    # current logger level
+logger.handlers # current logger handlers
+logging.Logger.manager.loggerDict # все существующие обработчики в проекте
+
+
+logger.debug("debug - all msg")
+logger.info("info msg")
+logger.warning("warning msg")
+logger.error("some error msg")
+logger.critical("critical errors")
+
+logger.exception('divide by zero') # помещается в инструкцию try except в except записывает сообщение + стек ошибок
+
+# можно создать много логгеров со своими несколькими  обработчиками а также форматтерами.
+
+
+
+

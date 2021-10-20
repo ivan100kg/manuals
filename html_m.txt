@@ -1,0 +1,227 @@
+HTML (от англ. HyperText Markup Language — «язык гипертекстовой разметки»)
+    стандартизированный язык разметки документов для просмотра веб-страниц 
+    в браузере. Веб-браузеры получают HTML документ от сервера по протоколам
+    HTTP/HTTPS или открывают с локального диска, далее интерпретируют код в
+    интерфейс, который будет отображаться на экране монитора.
+
+Элементы HTML - строительные блоки HTML страниц. 
+    Элементы HTML выделяются тегами, записанными с исп угловых скобок.
+    <p>Text</p>  # элемент HTML с открывающим и закрывающим тэгом
+    <br>         # одиночный тэг - пустой элемент "перенос строки"
+    <a href="#"> # аттрибут href=значение
+
+Структура документа.html
+    <!DOCTYPE html>                 # тип документа
+    <html>                          # начало документа
+    <head>                          # мета информация о документе
+        <title>назв вкладки</title> 
+    </head>
+    <body>                          # тело документа - контент
+        видимая часть документа
+    </body>
+    </html>
+
+Тэги
+Комментарии:
+    <!-- Write your comments here -->
+заголовки:
+    <h1>Big</h1>        # от h1(самый большой) до h6
+    <h6>Small</h6>      # h6(самый малый)
+текст:
+    <p>текст</p>        # параграф - блок текста
+    <pre>code</pre>     # неформатиров блок текста(как в документе)
+строчные эл текста:
+    <br>                # перенос текста break
+    <hr>                # горизонтальная линия
+    <b>text<b>          # bold текст
+    <strong>tex<strong> # Important text
+    <i>text<i>          # Italic text
+    <em>text<em>        # Emphasized text
+    <mark>text<mark>    # Marked text
+    <small>text<small>  # Smaller text
+    <del>text<del>      # Deleted text
+    <ins>text<ins>      # Inserted text
+    <sub>text<sub>      # Subscript text
+    <sup>text<sup>      # Superscript text
+цитаты и др эл текста:
+    <blockquote>...     # блок текста харак-ан отступом атр cite="http..."
+    <q>text</q>         # строчная цитата в кавычках
+    <abbr>WHO</abbr>    # аббривиатура title="World Health Organization"
+    <address></address> # блок типа визитной карточки(автор, тел, адрес)
+    <cite>title</cite>  # типа названия произведения, фильма в тексте
+    <bdo></bdo>         # текст наоборот dir="rtl"
+Ссылки:
+    <a href="url"       # url который откроется при клике(глоб или лок файл)
+     target="_self"     # где откроется _blank-нов стр, _self-эта стр
+     title="title"      # всплыв подсказка на ссылке
+     >ссылка</a>        # имя ссылки(можно исп изображение <img>)
+    href="mailto:s@.."  # ссылка на почту
+    href="#C4"          # ссылка на элемент с id="C4" (#-просто верх страницы)
+Изображения:
+    <img src="url"      # глоб адрес картинки или адрес лок файла
+     alt="mypic"        # альтернативный текст если картинка не загрузилась
+    <map> 	            # карта на изображении с кликабельными зонами-ссылками
+    <area> 	            # кликабельные зоны-ссылки
+    <picture> 	        # display different pictures for different devices
+Таблицы:
+    <table></table>     # таблица
+    <tr>table-row</tr>  # строки
+    <th>table-head</th> # заголовки -выделенные ячейки(1-я строка)
+    <td>table-data</td> # ячейки
+    rowspan="2"         # объединение строк
+    colspan="2"         # объединение столбцов
+    <caption>Monthly savings</caption>  # заголовок таблицы(в теле <table>)
+Списки:
+    <ul></ul>           # ненумерованный список
+    <ol></ol>           # нумерованный список
+    <li></li>           # элементы списка
+    <dl> 	            # Defines a description list
+    <dt> 	            # Defines a term in a description list
+    <dd> 	            # Describes the term in a description list
+Блочные элементы:
+    нов строка, занимает всю ширину, имеет отступы(вертик)
+    <div></div>         # контейнер для люб эл, исп атр id class for CSS
+    <address> <article> <aside> <blockquote> <canvas> <dd> <div> <dl> <dt>
+    <fieldset> <figcaption> <figure> <footer> <form> <h1>-<h6> <header> <hr>
+    <li> <main> <nav> <noscript> <ol> <p> <pre> <section> <table> <tfoot>
+    <ul> <video>
+Строчные элементы:
+    исп внутри блочн эл, не нач с нов строки
+    <span></span>       # арт-ты id class для стилизации части текста 
+    <a> <abbr> <acronym> <b> <bdo> <big> <br> <button> <cite> <code> <dfn>
+    <em> <i> <img> <input> <kbd> <label> <map> <object> <output> <q> <samp>
+    <script> <select> <small> <span> <strong> <sub> <sup> <textarea> <time>
+    <tt> <var>
+Атрибуты:
+    class="main city.." # один или несколько классов
+    id="myhead"         # уникальный id для элемента
+                          <a href="html_demo.html#C4"> прыжок с др страницы к
+                          элементу
+
+IFrame
+    web страница внутри web страницы
+    Syntax:
+        <iframe src="url" title="description"></iframe>
+    Использование ссылки для изменения Iframe
+        <p><a href="https://www.w3.com" target="iframe_a">W3.com</a></p>
+
+<head>
+    включает:
+    <title>     # title of document - важное заглавие- учавствует в поиске
+    <style>     # встроенные стили
+    <meta>      # haracter set, page description, keywords, author of the
+                  document, and viewport settings
+                  Define the character set used:
+                    <meta charset="UTF-8">
+                  Define keywords for search engines:
+                    <meta name="keywords" content="HTML, CSS, JavaScript">
+                  Define a description of your web page:
+                    <meta name="description" content="Free Web tutorials">
+                  Define the author of a page:
+                    <meta name="author" content="John Doe">
+                  Refresh document every 30 seconds:
+                    <meta http-equiv="refresh" content="30">
+                  Setting the viewport to make your site look good on 
+                  all devices:
+                    <meta name="viewport" content="width=device-width, 
+                     initial-scale=1.0">
+    <link>      # внешние стили файл
+    <script>    # JavaScript code
+    <base>      # base URL and/or target for all relative URLs in a page
+
+Слои
+    +------------------+
+    | <header>         |    # Defines a header for a document or a section
+    +------------------+
+    | <nav>            |    # Defines a set of navigation links
+    +----------+-------+
+    |<section> |       |    # section and content aside(like a sidebar)
+    +----------+<aside>|
+    |<article> |       |    # Defines an independent, self-contained content
+    +----------+-------+
+    | <footer>         |    # Defines a footer for a document or a section
+    +------------------+
+    <details> - Def additional details that the user can open and close on
+     demand
+    <summary> - Defines a heading for the <details> element
+
+Forms:
+    # Формы нужны для отправки данных на сервер (POST) параметр=значение&..
+    <form> </form>          # форма ввода для юзера        
+    <input type="text">     # Displays a single-line text input field       
+    <input type="radio">    # radio button, name - одинаковый у всех 
+    <input type="checkbox"> # checkbox, name - разные
+    <input type="submit">   # Displays a submit button
+    <input type="button">   # Displays a clickable button
+    <label for="html">      # лэйбл для <input id='html'...
+    # примеры
+    <input type="text" id="fname" name="fname">     # name - имя параметра
+                                                      введенный текст-знач
+    <input type="radio" id="h" name="f" value="H">  # name=value(прам=знач)
+                                                      значение из value
+    <form action="/action_page.php" method="post">  # отправка на этот URL
+                                                      с пом POST(или GET)
+    <input type="submit" value="Submit">            # кнопка для отправки
+                                                      value-название кнопки
+    # выпадающий список - select
+    <select id="cars" name="cars">
+      <option value="volvo">Volvo</option>
+      <option value="saab">Saab</option>
+      <option value="fiat">Fiat</option>
+      <option value="audi">Audi</option>
+    </select>
+    # мультисписок с ограничением вывода(потом скроллинг)
+    <select id="cars" name="cars" size="4" multiple>
+    # зона для ввода текста
+    <textarea name="message" rows="10" cols="30">   # ограничена рамкой
+    # кнопка вызова JavaScript
+    <button type="button" onclick="alert('Hello World!')">Click!</button> 
+    # поле(рамка вокруг формы)
+    <fieldset>
+        <legend>Personalia:</legend>    # название рамки(поля)
+        <input...>
+        ...
+    </fieldset>
+    # Datalist (типа select)
+    <input list="browsers">
+    <datalist id="browsers">
+        <option value="Internet Explorer">
+        <option value="Chrome">
+    </datalist>
+    # Input types
+    <input type="button">           # button
+    <input type="checkbox">         # checkbox
+    <input type="color">            # is used for input fields with color
+    <input type="date">             # date
+    <input type="datetime-local">   # datetime
+    <input type="email">            # email
+    <input type="file">             # choose file
+    <input type="hidden">           # hidden
+    <input type="image">            # image
+    <input type="month">            # to select a month and year
+    <input type="number">           # numeric input field
+    <input type="password">         # defines a password field
+    <input type="radio">            # radio button
+    <input type="range">            # defines a control for entering a number
+    <input type="reset">            # reset button that will reset all form val
+    <input type="search">           # search fields
+    <input type="submit">           # button for submitting form data to handler
+    <input type="tel">              # telephone number
+    <input type="text">             # single-line text input field default//////
+    <input type="time">             # to select a time
+    <input type="url">              # URL address
+    <input type="week">             # week
+    # Input attr
+    checked 	Specifies that an input field should be pre-selected when the
+                page loads (for type="checkbox" or type="radio")
+    disabled 	Specifies that an input field should be disabled
+    max 	    Specifies the maximum value for an input field
+    maxlength 	Specifies the maximum number of character for an input field
+    min 	    Specifies the minimum value for an input field
+    pattern 	Specifies a regular expression to check the input value against
+    readonly 	Specifies that an input field is read only (cannot be changed)
+    required 	Specifies that an input field is required (must be filled out)
+    size 	    Specifies the width (in characters) of an input field
+    step 	    Specifies the legal number intervals for an input field
+    value 	    Specifies the default value for an input field
+
