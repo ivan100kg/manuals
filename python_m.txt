@@ -901,7 +901,27 @@ map(foo, obj)   # применяет функцию foo к членам итер
 filter(lambda x: x > 0, range(-5, 5)) # возвращ итер-р с членами для которых
                                         x == True
 аналог  - (x for x in range(-5, 5) if x > 0)
- 
+
+
+Decorators/Декораторы----------------
+def timer(foo):
+'''function-decorator'''
+    def wrapper(*args, **kwargs):
+    '''function-wrapper'''
+        start = datetime.now()
+        result = foo(*args, **kwargs)
+        print(datetime.now() - start)
+        return result
+    return wrapper
+
+@timer
+def my_foo(count):
+'''decorated function'''
+    return [x for x in range(count)]
+
+# my_foo(10) == timer(my_foo)(10)
+-------------------------------------
+
 
 ООП------------------------------------------------------------------------------+
 
