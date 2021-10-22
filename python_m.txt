@@ -926,9 +926,7 @@ f.__closure__[0].cell_contents  # => 'myvar'; the same id
 pip-----------------------------------------------------------------------
 # get the copy of all installed packages in the current venv
 pip freeze > requirements.txt   # write output to file
-pip install -r requirements.txt # install the same dependecies to new venv 
-
-
+pip install -r requirements.txt # install the same dependencies to new venv
 
 
 ООП------------------------------------------------------------------------------+
