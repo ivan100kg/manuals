@@ -907,7 +907,13 @@ def my_foo(count):
     return [x for x in range(count)]
 
 # my_foo(10) == timer(my_foo)(10)
--------------------------------------
+
+pip-----------------------------------------------------------------------
+# get the copy of all installed packages in the current venv
+pip freeze > requirements.txt   # write output to file
+pip install -r requirements.txt # install the same dependecies to new venv 
+
+
 
 
 ООП------------------------------------------------------------------------------+
