@@ -908,6 +908,21 @@ def my_foo(count):
 
 # my_foo(10) == timer(my_foo)(10)
 
+Closures/замыкания-----------------------------------------------------------------
+# замыкание - функция со связанными данными
+  функция - имеющ ссылки на перем объяв во внеш зоне видимости(охват-щая) - 'inner'
+  данные - переменные также не явл пар-ми ф-ии - 'x'
+def one():
+    x = 'myvar'
+    def inner():
+        print(x)
+        print('id:', id(x))
+    return inner
+f = one()   # => inner
+f()         # output1: myvar; output2: id: 16346367478
+f.__closure__[0].cell_contents  # => 'myvar'; the same id
+
+
 pip-----------------------------------------------------------------------
 # get the copy of all installed packages in the current venv
 pip freeze > requirements.txt   # write output to file
