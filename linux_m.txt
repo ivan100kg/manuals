@@ -449,7 +449,8 @@ tload    # тоже самое но без граф инт ---------------------
   apt remove "pak"
   yum erase "pak"
 # обновление пакетов из реп-ия
-  apt update; apt upgrade
+  sudo apt update; apt upgrade
+  sudo pacman -Syu # Arch
   yum update
 # обновление пакетов из файла
   dpkg --install "pak"
