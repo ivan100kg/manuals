@@ -1,17 +1,25 @@
 # Различные аббривиатуры, связанные с компьютером
 
 # микросхемы и типы памяти на мат плате где хранится BIOS/UEFI
-CMOS # Complementary Metal-Oxide-Semiconductor — комплементарная структура металл-оксид-полупроводник.
-EEPROM # Electrically Erasable Programmable Read-Only Memory - энергонезависимая, имеет ограничение циклов записи
-NVRAM # Non Volatile Random Access Memory. Энергонезависимая неогранич перезапись.
+CMOS    # Complementary Metal-Oxide-Semiconductor — комплементарная структура
+        металл-оксид-полупроводник.
+EEPROM  # Electrically Erasable Programmable Read-Only Memory - 
+        энергонезависимая, имеет ограничение циклов записи
+NVRAM   # Non Volatile Random Access Memory. Энергонезависимая неогранич
+        перезапись.
 
 # BIOS/UEFI
-BIOS # basic input/output system — базовая система ввода-вывода. Работает с дисками до 2.2Tb, макс  4 раздела
-EFI  # Extensible Firmware Interface - интерфейс между операционной системой и микропрограммами
-UEFI # Unified Extensible Firmware interface - пришел на смену BIOS и EFI, имеет графический интерфейс
+BIOS    # basic input/output system — базовая система ввода-вывода. 
+        Работает с дисками до 2.2Tb, макс  4 раздела
+EFI     # Extensible Firmware Interface - интерфейс между операционной системой
+        и микропрограммами
+UEFI    # Unified Extensible Firmware interface - пришел на смену BIOS и EFI,
+        имеет графический интерфейс
 
 # способы хранения информации о разделах жесткого диска
-MBR # Master Boot Record. Главная загрузочная запись. MBR содержит первичный загрузчик и простую таблицу разделов диска.
-GPT # GUID Partition Table. это стандарт формата размещения таблиц разделов на физическом жестком диске. 
+MBR     # Master Boot Record. Главная загрузочная запись. MBR содержит первичный
+        загрузчик и простую таблицу разделов диска.
+GPT     # GUID Partition Table. это стандарт формата размещения таблиц разделов 
+        на физическом жестком диске. 
 
 
