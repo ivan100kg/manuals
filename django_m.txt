@@ -98,8 +98,8 @@ bboard/models.py
             return self.title
 
         class Meta:  # для замены отображения имени модели в админке
-            verbose_name_plural = 'Объявления(Meta models.py)'  # ед число
-            verbose_name = 'Объявление(Meta models.py)'         # множ число
+            verbose_name = 'Объявления(Meta models.py)'         # ед число
+            verbose_name_plural = 'Объявление(Meta models.py)'  # множ число
             ordering = ['-published']                           # сорт-ка полей
 
     # поле с первичным ключем создается автоматически
