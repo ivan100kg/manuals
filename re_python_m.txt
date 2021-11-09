@@ -1,5 +1,6 @@
 ﻿# Регулянрные выражения Python
 
+# Examples
 match = re.findall(r"pid", text)        # just literal may be pid or scupidirdyai...
 match = re.findall(r"\bpid\b", text)    # only word - pid
 match = re.findall(r"[Pp]id", text)     # Pid or pid or Pidar or upidrilo
@@ -7,12 +8,23 @@ match = re.findall(r"[0-9]", text)      # from 0 to 9 == [0123456789]
 match = re.findall(r"[^0-9]", text)     # all , but not digits 0-9
 match = re.findall(r"[a-zA-Z]", text)   # all ASCII letters
 
-# символы
+# Special characters
+.   # any symbol except '\n'(with MULTILINE include '\n')
+?   # {0,1} или 0 или 1, минор ??
+*   # {0,} от 0 и более раз, минор *?
++   # {1,} один или более раз, минор +?
+# границы
+\b  # граница слова
+\B  # не граница слова
+^   # начало текста, если с флагом MULTILINE - начало каждой строки в тексте
+$   # конец текста, если с флагом MULTILINE - конец каждой строки в тексте
+\A  # начало текста
+\Z  # конец текста
+
 text  # this text
 [tu2] # any 1 symbol in brakets
 [1-5] # symbol from 1 to 5
 [b-f] # symbol from b to f
-.     # any symbol except \n, in [.] it's just a point
 \d    # [0-9] all digits
 \D    # [^0-9] all except digits
 \w    # [a-zA-Z0-9А-Яа-яЁё_]  
@@ -32,9 +44,6 @@ x{m,n} # повторенре символа x от min до max раз
 {m}    # {m,m} ровно м раз, мажорный или минорный не имеет смысла
 {m,}   # повтор от m и более раз - минорный {m,}?
 {,n}   # повторение не более n раз, минорныц - {,n}?
-?      # {0,1} или 0 или 1, минор ??
-*      # {0,} от 0 и более раз, минор *?
-+      # {1,} один или более раз, минор +?
 
 match = re.findall(r"pid|tags", text)    # или|или
 match = re.findall(r"\W*(?:pid|tags)\W*", text)    # (?:или|или).* не сохраняющие скобки
@@ -57,13 +66,6 @@ match = re.findall(r"^.", text, flags=re.MULTILINE)
 match = re.findall(r"is.*(?=best)", text, flags=re.MULTILINE)
 match = re.findall(r"is.*(?<=best)", text, flags=re.MULTILINE)
 
-# границы
-\b  # граница слова
-\B  # не граница слова
-^   # начало текста, если с флагом MULTILINE - начало каждой строки в тексте
-$   # конец текста, если с флагом MULTILINE - конец каждой строки в тексте
-\A  # начало текста
-\Z  # конец текста
 
 # flags
 re.ASCII   # только аски символы
