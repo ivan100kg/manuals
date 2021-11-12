@@ -9,6 +9,77 @@
     Строка  - данные(запись) в таблице счет от НУЛЯ
     Первичные ключи - уникально иден-ют каждую строку
 
+
+=== MySQL ======================================================================
+-- Операции с БД
+CREATE DATABASE my_base; # создать БД my_base
+SHOW DATABASES;          # показать все БД
+DROP DATABASE my_base;   # удалить БД
+USE my_base              # использовать БД
+
+-- Создание таблицы в базе
+CREATE TABLE 
+IF NOT EXISTS 
+`models`(
+         `id` INT AUTO_INCREMENT,            # тип инт, гене-я номера
+         `name` VARCHAR(32) NOT NULL,        # строка макс 32 симв
+         `size` FLOAT,                       # число с точкой
+         `country` VARCHAR(32),              
+         `birthday` DATE NULL DEFAULT NULL,  # дата
+         `pictures` INT,
+         `last_pic` INT,
+         PRIMARY KEY (`id`, `name`));        # прайм поля
+
+-- изменить таблицу
+ALTER TABLE my_table  
+        ADD my_new_field VARCHAR(100)         -доб нов столб после указ-го
+        CHANGE old_field new_field VARCHAR(2) -изменяет наз-е и тип колонки
+        AFTER id;
+        DROP my_new_field;                    -удаление колонки
+
+		
+SHOW TABLES;          -показать все таблицы в базе
+EXPLAIN my_table;     -показать структуру таблицы
+DROP TABLE my_table;  -удалить таблицу
+================================================================================
+
+=== PostgreSQL =================================================================
+sudo -u postgres psql   # start psql as user 'postgres'
+psql --help \? \h       # help for everything
+\q          # exit from psql
+\l          # show databases
+\c dbname   # connect(use) database
+\dt         # show all tables in db
+\d table_n  # show table 'table_name'
+
+
+CREATE TABLE aircrafts      -- создать таблицу 'aircrafts'
+( aircraft_code char( 3 ) NOT NULL,
+  model text NOT NULL,
+  range integer NOT NULL,
+  CHECK ( range > 0 ),
+  PRIMARY KEY ( aircraft_code )
+);
+
+DROP TABLE aircrafts;       -- удалить таблицу
+
+INSERT INTO aircrafts       -- внести данные
+  ( aircraft_code, model, range )
+  VALUES ( 'SU9', 'Sukhoi SuperJet-100', 3000 );
+
+SELECT * FROM aircrafts;    -- выборка данных
+
+UPDATE aircrafts            -- обновить данные
+  SET range = 3500
+  WHERE aircraft_code = 'SU9';
+
+DELETE FROM aircrafts       -- удалить данные
+  WHERE aircraft_code = 'CN1';
+
+
+================================================================================
+
+--- SQL ------------------------------------------------------------------------
 -- комментарий
 #  comment to
 /* comment
@@ -21,37 +92,6 @@
 -- экранирование
 `` -такими ковычками можно заэкранировать спец слова и символы
 \  -стандартный символ экранирования
-
--- Операции с БД
-CREATE DATABASE my_base; # создать БД my_base
-SHOW DATABASES;          # показать все БД
-DROP DATABASE my_base;   # удалить БД
-USE my_base              # использовать БД
-
--- Создание таблицы в базе
-# создать если не существует
-CREATE TABLE 
-IF NOT EXISTS 
-`models`(
-         `id` INT AUTO_INCREMENT,            # тип инт, гене-я номера
-         `name` VARCHAR(32) NOT NULL,        # строка макс 32 симв
-         `size` FLOAT,                       # число с точкой
-         `country` VARCHAR(32),              
-         `birthday` DATE NULL DEFAULT NULL,  # дата
-         `pictures` INT,
-         `last_pic` INT,
-         PRIMARY KEY (`id`, `name`));        # прайм поля
-		
-SHOW TABLES;          -показать все таблицы в базе
-EXPLAIN my_table;     -показать структуру таблицы
-DROP TABLE my_table;  -удалить таблицу
-
--- изменить таблицу
-ALTER TABLE my_table  
-        ADD my_new_field VARCHAR(100)         -доб нов столб после указ-го
-        CHANGE old_field new_field VARCHAR(2) -изменяет наз-е и тип колонки
-        AFTER id;
-        DROP my_new_field;                    -удаление колонки
 
 
 -- SELECT # извлечение столбцов---------------------------------------------------------
@@ -97,7 +137,6 @@ HAVING COUNT(*) > 10;    # доп фильтрация после группир
 ORDER BY COUNT(*) DESC
 LIMIT 5
 
-
 -- INSERT INTO # Добавление инфо в таблицу----
 # INSERT synopsis
 INSERT INTO table
@@ -108,7 +147,6 @@ VALUES
     …
     (valn, valm…);
 
-
 -- UPDATE # внести изменения в информацию в таблице----
 # UPDATE synopsis
 UPDATE table
@@ -116,12 +154,10 @@ SET column1 = 'my var',
     column2 = 1080...
 WHERE column_name = 'vasya' AND col_surname = 'pupkin';
 
-
 -- DELETE # удаление инфы из табл---------------------------------------------
 DELETE FROM my_table WHERE field1 = 'hui';  # удаляет данные где верно условие
 DELETE FROM my_table;                       # удалить все из таблицы
 TRUNCATE TABLE my_table;                    # удаляет все и сбрасывает счетчик
-
 
 -- JOIN # получение данных из двух таблиц------------------------
 # JOIN synopsis
@@ -136,13 +172,11 @@ ORDER BY column1;
 # RIGHT - все строки с правой и те что совпали в левой
 # FULL  - все строки с совпадением и без
 
-
 -- Подзапросы --------------------------------------------------------------
 SELECT id, name, price  # SELECT UPDATE DELETE INSERT
 FROM products
 WHERE price = (SELECT MAX(price) FROM products) # подзапрос возвр рез-т 1-ым
       id IN (SELECT product_id FROM sales)
-
 
 -- Транзакции - последов-сть ком-д кот должны быть выполнены все или не одной
 START TRANSACTION;
@@ -151,12 +185,10 @@ UPDATE..
 ...
 COMMIT; - принять или ROLLBACK; - откатить
 
-
 -- Индексы - структура данных в базе для быстрого поиска
 -- СУБД автоматически решает использовать их или нет
 CREATE INDEX superheroes_name_ind   # create index
 ON superheroes(name);               # table(field)
-
 
 -- VIEW - представления-------------------------------------------------
 -- можно создавать из смешанных таблиц(для удобства)
@@ -164,7 +196,6 @@ ON superheroes(name);               # table(field)
 -- сокрытие реализации
 CREATE VIEW customers_v id, name    # представление
 AS SELECT id, name FROM customers;  # нужные столбцы из таблицы для view
-
 
 -- Вычисляемые поля -некие операции(арифметич или конкатенация или исп функ-й)
 -- конкатенация
@@ -200,6 +231,8 @@ COUNT() -число строк в столбце COUNT(*) -NULL не игнор,
 MAX()   -макс
 MIN()   -мин
 SUM()   -сумма
+--------------------------------------------------------------------------------
+
 
 
 -- настройка удаленного использования БД
