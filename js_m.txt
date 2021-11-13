@@ -73,6 +73,8 @@ Output:
     window.alert()      # всплывающее сообщение браузера
     console.log()       # консоль
     window.print()      # распечатать
+Input:
+    var inpt = prompt ("enter the name") # типа alert() сохр строку в перем.
 
 Events:
     <element event="some JavaScript">   # 
