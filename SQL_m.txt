@@ -48,9 +48,49 @@ sudo -u postgres psql   # start psql as user 'postgres'
 psql --help \? \h       # help for everything
 \q          # exit from psql
 \l          # show databases
+\l dbname   # show db 'dbname'
 \c dbname   # connect(use) database
 \dt         # show all tables in db
 \d table_n  # show table 'table_name'
+
+-- Типы данных -----------------------------------------------------------------
+-- Целые числа
+smallint        int2    # целое 2 байта
+integer         int4    # 
+bigint          int8    #
+
+-- Числа фиксированной точности
+numeric/decimal         # точность(precision) - общее кол-во цифр
+                          масштаб(scale) - кол-во цифр после десятичной точки
+                          numeric(5,2) - (точность, масштаб)
+
+-- Числа с плавающей точкой
+real                    # 1e-37 - 1e+37
+double precision        # 1e-307 - 1e+307
+
+-- Строковые типы
+character varying(n)    varchar(n)  # n - max n символов
+character(n)            char(n)     # дополняет знач n пробелами - мало исп
+text                                # неогран число символов
+Синтаксис: 'Some String'
+Экранирование: 
+    'I''m backslash \\' # ковычки и бэкслэши удваивать
+    $$I'm backslash \$$ # с пом знаков доллара
+    E'I\'m backsl.. \\' # C-стиль \n \t ... все работает
+
+-- Дата/время
+используется формат 'yyyy-mm-dd' 1983-01-23
+можно вводить 'Jan 23, 1983' - преобразуется авто
+-- Приведение типа ::
+SELECT '2016-09-12'::date;      # 2016-09-12
+SELECT 'Sep 12, 2016'::date;    # 2016-09-12
+-- Другой формат даты
+SELECT to_char( current_date, 'dd-mm-yyyy' );   # 21-09-2016
+-- время
+SELECT '21:15'::time;       # 21:15:00
+SELECT '21:15:26'::time;    # 21:15:26
+SELECT '10:15:16 am'::time; # 21:15:26
+SELECT current_time;        # 23:51:57.293522+03 (+03 часовой пояс)
 
 
 CREATE TABLE aircrafts      -- создать таблицу 'aircrafts'
