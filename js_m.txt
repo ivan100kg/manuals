@@ -60,8 +60,8 @@ Objects:
         }
     };
 
-Web:
-    External:
+Inserting to .html:
+    External: (лучшее местo длы вставки в конце body, чтобы страница прогруз)
     <script src="myScript1.js"></script>    # ссылки на скрипты в коце <body>
     Если скрипт не может загрузится работает <noscript>:
     <noscript>Sorry, your browser does not support JavaScript!</noscript>
@@ -153,6 +153,21 @@ Arrays
         txt += value + "<br>";
     }
 
+// loops
+while (true) {
+    break;
+}
 
-    
+for (var i=0; i<10; i++) {
+    continue;
+}
+
+// if-else
+if (true) {
+    var x = true;
+} else if (false) {
+    var x = 2;
+} else {
+ var x = 'hui';
+}
 
