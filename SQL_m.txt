@@ -59,6 +59,8 @@ psql --help \? \h       # help for everything
 smallint        int2    # целое 2 байта
 integer         int4    # 
 bigint          int8    #
+serial                  # объект типа serial автоматом создает колонку id
+                          с номерами по порядку
 
 -- Числа фиксированной точности
 numeric/decimal         # точность(precision) - общее кол-во цифр
