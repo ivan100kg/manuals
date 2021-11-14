@@ -54,6 +54,7 @@ psql --help \? \h       # help for everything
 \d table_n  # show table 'table_name'
 
 -- Типы данных -----------------------------------------------------------------
+
 -- Целые числа
 smallint        int2    # целое 2 байта
 integer         int4    # 
@@ -81,16 +82,69 @@ text                                # неогран число символов
 -- Дата/время
 используется формат 'yyyy-mm-dd' 1983-01-23
 можно вводить 'Jan 23, 1983' - преобразуется авто
--- Приведение типа ::
+-- дата
 SELECT '2016-09-12'::date;      # 2016-09-12
 SELECT 'Sep 12, 2016'::date;    # 2016-09-12
+SELECT current_date;            # дата сейчас
 -- Другой формат даты
 SELECT to_char( current_date, 'dd-mm-yyyy' );   # 21-09-2016
 -- время
 SELECT '21:15'::time;       # 21:15:00
 SELECT '21:15:26'::time;    # 21:15:26
 SELECT '10:15:16 am'::time; # 21:15:26
-SELECT current_time;        # 23:51:57.293522+03 (+03 часовой пояс)
+SELECT current_time;        # сейчас 23:51:57.293522+03 (+03 часовой пояс)
+-- временная отметка (дата+время+[ч пояс])
+SELECT timestamptz '2016-09-21 22:25:35';   # 2016-09-21 22:25:35+03
+SELECT timestamp '2016-09-21 22:25:35';     # 2016-09-21 22:25:35
+SELECT current_timestamp;                   # дата+время+ч.пояс сейчас
+-- интервал времени
+SELECT '1 year 2 months'::interval; # 1 years 2 mons, считает кол-во
+                                      если указать ago - '-1 years -2 mons'
+                                      можно исп: microsecond, millisecond,
+                                      second, minute, hour, day, week,
+                                      month, year, decade, century, millennium
+SELECT 'P0001-02-03T04:05:06'::interval;    # альтернативный формат 
+                                              1 year 2 mons 3 days 04:05:06
+SELECT ('2016-09-16'::timestamp - '2016-09-01'::timestamp)::interval;
+-- усечение даты
+SELECT (date_trunc('hour', current_timestamp)); # до часа 2016-09-27 22:00:00+03
+-- извлечение отдельных полей времени
+SELECT extract( 'mon' FROM timestamp '1999-11-27 12:34:56.123459' );    # 11
+
+-- Логический тип Boolean
+TRUE    't' 'true'  'yes'   'on'    '1' # истина
+FALSE   'f' 'false' 'no'    'off'   '0' # ложь
+
+-- Массивы
+my_arr integer[]                            # поле в таблице для массива
+'{1,2,3,4}'::integer[] == ARRAY[1,2,3,4]    # записи аналогичные
+INSERT: '{1,2,3,4}'::integer[]              # добавить данные в т
+UPDATE: my_arr = my_arr || 5;               # добавить в массив 5
+        my_arr = array_append(my_arr, 5);   # аналогично 5 в конец
+        my_arr = array_append(0, my_arr);   # добавить 0 в начало
+        my_arr = array_remove(my_arr, 2);   # удалить эл со знач 2
+        my_arr[0] = 2, my_arr[3] = 57;      # изменить по индексу
+        my_arr[0:2] = ARRAY[9,9];           # изменить по срезу
+SELECT: WHERE array_position(my_arr, 3) IS NOT NULL;    # возвращ индекс позиции
+                                                          значения иначе null
+        WHERE my_arr @> '{4,8}'::integer[]; # возвращ true если в левом массиве
+                                              есть все эл-ты с правого массива
+        WHERE my_arr && ARRAY[2,4];         # пересечение множеств есть ли
+                                              одинак значения, можно исп NOT
+        unnest(my_arr) FROM my_table        # развернуть массив в солбец
+
+-- JSON (JavaScript Object Notation)
+hobbies jsonb                               # хранение в таблице объекта json
+INSERT: '{ "sports": ["football", "golf"],  # вставка объекта
+           "home_lib": true,
+           "trips": 3}'::jsonb
+SELECT: WHERE hobbies @> '{"sports": ["футбол"]}'::jsonb;   # есть такой аттрб?
+        WHERE hobbies->'sports' @> '["футбол"]'::jsonb;     # аналог как выше
+        name, hobbies->'sports' AS sports.. # вывести конкрет ключу объекта
+        сount(*) FROM tbl WHERE hobbies ? 'sports'; # кол-во записей с ключом
+UPDATE: hobbies || '{"sports": ["хоккей"]}' # добавить знач 'хок' в ключ 'spo'
+        hobbies = jsonb_set(hobbies, '{sports, 1}', '"футбол"') # добавить знач,
+                                                                  ключ, №-позиц
 
 
 CREATE TABLE aircrafts      -- создать таблицу 'aircrafts'
