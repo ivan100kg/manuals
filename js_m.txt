@@ -14,8 +14,7 @@ JavaScript
     'dom'       # строки
     "dom"       # строки
     [1,2]       # массив
-    {name:'X',  # объект
-     age:2}     #
+    {name:'X'}  # объект
     (ab|bc)     # рег выражение
 
 Константы и переменные:
@@ -77,14 +76,15 @@ Input:
     var inpt = prompt ("enter the name") # типа alert() сохр строку в перем.
 
 Events:
-    <element event="some JavaScript">   # 
-    Event 	        Description
-    onchange 	    # An HTML element has been changed
-    onclick 	    # The user clicks an HTML element
-    onmouseover     # The user moves the mouse over an HTML element
-    onmouseout 	    # The user moves the mouse away from an HTML element
-    onkeydown 	    # The user pushes a keyboard key
-    onload 	        # The browser has finished loading the page
+    <element event="some JavaScript">    
+    Event 	       |  Description
+    ---------------+----------------------------------------------------
+    onchange 	   | An HTML element has been changed
+    onclick 	   | The user clicks an HTML element
+    onmouseover    | The user moves the mouse over an HTML element
+    onmouseout 	   | The user moves the mouse away from an HTML element
+    onkeydown 	   | The user pushes a keyboard key
+    onload 	       | The browser has finished loading the page
 
 Strings
 escape sequences:
@@ -148,7 +148,6 @@ Arrays
         {type:"Saab", year:2001},
         {type:"BMW", year:2010}];
     cars.sort(function(a, b){return a.year - b.year});  // sort object
-    # 
     let txt = "";
     numbers.forEach(myFunction);
     function myFunction(value, index, array) {
@@ -173,3 +172,6 @@ if (true) {
  var x = 'hui';
 }
 
+// Math.
+random()    // 0 - 0.9999999...
+floor()     // усечение дробной части
