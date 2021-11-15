@@ -1,6 +1,6 @@
-JavaScript
+// JavaScript
 
-"use strict"    # вставляем в нач каждого документа (строгий режим)
+"use strict"    // строгий режим
 
 // comment
 /*
@@ -9,71 +9,84 @@ JavaScript
 */
 
 Литералы:
-    10          # целое 
-    3.14        # дробное
-    'dom'       # строки
-    "dom"       # строки
-    [1,2]       # массив
-    {name:'X'}  # объект
-    (ab|bc)     # рег выражение
+    10          // целое 
+    3.14        // дробное
+    'dom'       // строки
+    "dom"       // строки
+    [1,2]       // массив
+    {name:'X'}  // объект
+    (ab|bc)     // рег выражение
 
 Константы и переменные:
-    const MAX_VALUE = 200;      # константа
-    var section = 'JS';         # переменная не строгое поведение
-    let arr = ['HTML','CSS']    # переменная строгое поведение
+    const MAX_VALUE = 200;      // константа
+    let arr = [HTML','CSS'];    // переменная, обычное поведение(C++, Python)
+    var section;                // переменная, видна в глоб видимости
 
 Операторы:
-    + - * / % ** ++ --          # arithmetic
-    = += -= *= /= %= **=        # assignment
-    == === != !== > < >= <= ?   # compare === тип и значение
-    && || !                     # logical
-    & | ~ ^ << >> >>>           # bit
-    typeof()                    # type
-    instanceof()                # instance of Array
-    in                          # вхождение
-    arr['HTML']                 # по ключу
-    arr.HTML                    # через точку
+    + - * / % ** ++ --          // arithmetic
+    = += -= *= /= %= **=        // assignment
+    == === != !== > < >= <= ?   // compare === тип и значение
+    && || !                     // logical
+    & | ~ ^ << >> >>>           // bit
+    typeof()                    // type
+    instanceof()                // instance of Array
+    in                          // вхождение
+    arr['HTML']                 // по ключу
+    arr.HTML                    // через точку
 
 Типы:
-    Number      # 0, -2, 3.14, 123e5, 12e-2
-    String      # 'hello' "world" `fuck`
-    Object      # {firstName:"John", lastName:"Doe"}, [1,2,3,4]
-    bollean     # true, false
-    undefined   # let car; не определенная переменная
+    Number      // 0, -2, 3.14, 123e5, 12e-2
+    String      // 'hello' "world" `fuck`
+    Object      // {firstName:"John", lastName:"Doe"}, [1,2,3,4]
+    bollean     // true, false
+    undefined   // let car; не определенная переменная
+    typeof()    // look a type of variable
+    null        // nothing
+    NaN         // вычислительная ошибка
+    Infinity    // +- infinity
+    Symbol      // symbol
+    function    // function
+
+Приведение типов:
+    String(78)  // '58'
+    Number('9') // 9
+    Number('J') // NaN
+    Boolean(9)  // true
+
 
 Функции:
-    function foo(par1, par2) {
+    function fooBar(par1, par2) {   // camel case
         console.log('learn');
         console.log('JS');
         return par1 * par2;
     }
-    foo();  # вызов
+    foo();  // вызов
 
 Objects:
     const person = {
         firstName: "John",
         lastName: "Doe",
         id: 5566,
-        fullName: function () {     # this - то есть эти имена этого объекта
+        fullName: function () {     // this - то есть эти имена этого объекта
             return this.firstName + " " + this.lastName;
         }
     };
 
 Inserting to .html:
     External: (лучшее местo длы вставки в конце body, чтобы страница прогруз)
-    <script src="myScript1.js"></script>    # ссылки на скрипты в коце <body>
+    <script src="myScript1.js"></script>    // ссылки на скрипты в коце <body>
     Если скрипт не может загрузится работает <noscript>:
     <noscript>Sorry, your browser does not support JavaScript!</noscript>
 Output:
-    innerHTML           # вывод на странице: 
+    innerHTML           // вывод на странице: 
                           document.getElementById("demo").innerHTML = 5 + 6;
                           этот метод подходит как для кнопок так и на загрузке
-    document.write()    # document.write(5 + 6); вывод на странице(на загрузке)
-    window.alert()      # всплывающее сообщение браузера
-    console.log()       # консоль
-    window.print()      # распечатать
+    document.write()    // document.write(5 + 6); вывод на странице(на загрузке)
+    window.alert()      // всплывающее сообщение браузера
+    console.log()       // консоль
+    window.print()      // распечатать
 Input:
-    var inpt = prompt ("enter the name") # типа alert() сохр строку в перем.
+    var inpt = prompt ("enter the name") // типа alert() сохр строку в перем.
 
 Events:
     <element event="some JavaScript">    
@@ -90,27 +103,27 @@ Strings
 escape sequences:
     \n \t \v \b \f \r
 methods:
-    lenth           # lenth
-    slice(7, 13)    # slice
-    substring()     # slice - cannot accept negative indexes
-    substr(7,6)     # 2 par - specifies the length of the extracted part
-    replace()       # replase
-    toUpperCase()   # to Upper
-    toLowerCase()   # to Lower
-    trim()          # removes whitespace from both sides of a string
-    text.split(",") # Split on commas
+    lenth           // lenth
+    slice(7, 13)    // slice
+    substring()     // slice - cannot accept negative indexes
+    substr(7,6)     // 2 par - specifies the length of the extracted part
+    replace()       // replase
+    toUpperCase()   // to Upper
+    toLowerCase()   // to Lower
+    trim()          // removes whitespace from both sides of a string
+    text.split(",") // Split on commas
 format:
     'Welcome $(firstname)'
     `Total: ${(price * (1 + VAT)).toFixed(2)}`
     `<h2>${header}</h2><ul>` += `<li>${x}</li>`
 search:    
-    String.indexOf()        # position of the first occurrence
-    String.lastIndexOf()    # last occurrence of a specified text
-    String.search()         # eturns the position of the match
-    String.match(regexp)    # returns the matches by regular expression
-    String.includes()       # returns true if a string contains a value
-    String.startsWith()     # true if a string begins with a value
-    String.endsWith()       # true if a string ends with a specified value
+    String.indexOf()        // position of the first occurrence
+    String.lastIndexOf()    // last occurrence of a specified text
+    String.search()         // eturns the position of the match
+    String.match(regexp)    // returns the matches by regular expression
+    String.includes()       // returns true if a string contains a value
+    String.startsWith()     // true if a string begins with a value
+    String.endsWith()       // true if a string ends with a specified value
 
 Numbers
     let x = 3.14;       // A number with decimals
@@ -175,3 +188,6 @@ if (true) {
 // Math.
 random()    // 0 - 0.9999999...
 floor()     // усечение дробной части
+
+// DOM - Document Object Model
+
