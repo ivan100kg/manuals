@@ -15,6 +15,7 @@ EFI     # Extensible Firmware Interface - интерфейс между опер
         и микропрограммами
 UEFI    # Unified Extensible Firmware interface - пришел на смену BIOS и EFI,
         имеет графический интерфейс
+ESP     # EFI System Partition - определение системного раздела
 
 # способы хранения информации о разделах жесткого диска
 MBR     # Master Boot Record. Главная загрузочная запись. MBR содержит первичный
