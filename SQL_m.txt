@@ -52,6 +52,7 @@ psql --help \? \h       # help for everything
 \c dbname   # connect(use) database
 \dt         # show all tables in db
 \d table_n  # show table 'table_name'
+\i sqr.sql  # чтение команд из файла
 
 -- Создать бд
 createdb mydb   # создать бд из консоли linux
