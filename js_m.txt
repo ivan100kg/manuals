@@ -81,7 +81,7 @@ Objects:
         }
     };
 
-Inserting to .html:
+Insert to .html:
     External: (лучшее местo длы вставки в конце body, чтобы страница прогруз)
     <script src="myScript1.js"></script>    // ссылки на скрипты в коце <body>
     Если скрипт не может загрузится работает <noscript>:
@@ -177,22 +177,32 @@ Arrays
     }
 
 // loops
-while (true) {
-    break;
-}
+    while (true) {              // while
+        break;
+    }
 
-for (var i=0; i<10; i++) {
-    continue;
-}
+    for (var i=0; i<10; i++) {  // for
+        continue;
+    }
 
-// if-else
-if (true) {
-    var x = true;
-} else if (false) {
-    var x = 2;
-} else {
- var x = 'hui';
-}
+    do {                        // do while
+        continue;
+    } while (!false);
+
+// Условные операторы
+    if (true) {                 // if
+        var x = true;
+    } else if (false) {         // else if (elif)
+        var x = 2;
+    } else {                    // else
+        var x = 'hui';          
+    }
+
+    switch (num) {              // switch
+        case 1: console.log("item = 1");break;
+        case 2: console.log("item = 2");break;
+        default: console.log("her");
+    }
 
 // Math.
 random()    // 0 - 0.9999999...
