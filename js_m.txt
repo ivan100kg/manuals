@@ -64,12 +64,20 @@
     8/"2"*2    // 2 во всех других арифм операциях приводится к Number
 
 Функции:
-    function fooBar(par1, par2) {   // camel case
-        console.log('learn');
-        console.log('JS');
-        return par1 * par2;
+    function foo() {        // объявление функции (видна во всем файле)    
+        return true;        // обычная функция
     }
-    foo();  // вызов
+
+    let foo = function() {  // функциональное выражение (видна посе объявления)
+        return true;        // можно исп неименованную (типа lambda Python)
+    };                      // в конце выражения ;
+    
+    let foo = () => true;   // стрелочная функция, аналог тех что выше
+    let foo = (a,b) => a+b; // пример с аргументами
+
+    foo();                  // вызов
+
+
 
 Objects:
     const person = {
@@ -176,7 +184,7 @@ Arrays
         txt += value + "<br>";
     }
 
-// loops
+// Циклы(loops)
     while (true) {              // while
         break;
     }
