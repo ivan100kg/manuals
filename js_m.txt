@@ -1,12 +1,15 @@
 // JavaScript
+// Стандарты
+    В новый стандартах добавляются полезные фишки
+    ECMAScript 2009 - ES5
+    ECMAScript 2015 - ES6
+    "use strict";   // использовать в нач документа - означает соотв-е ES6+
 
-"use strict"    // строгий режим
-
-// comment
-/*
-    long
-    comment
-*/
+// Комментарии
+    // comment
+    /*
+        multiline comment
+    */
 
 Литералы:
     10          // целое 
@@ -20,7 +23,7 @@
 Константы и переменные:
     const MAX_VALUE = 200;      // константа
     let arr = [HTML','CSS'];    // переменная, обычное поведение(C++, Python)
-    var section;                // переменная, видна в глоб видимости
+    var section;                // переменная, по старым стандартам
 
 Операторы:
     + - * / % ** ++ --          // arithmetic
@@ -35,24 +38,30 @@
     arr.HTML                    // через точку
 
 Типы:
+    typeof()    // look a type of variable
     Number      // 0, -2, 3.14, 123e5, 12e-2
     String      // 'hello' "world" `fuck`
     Object      // {firstName:"John", lastName:"Doe"}, [1,2,3,4]
     bollean     // true, false
     undefined   // let car; не определенная переменная
-    typeof()    // look a type of variable
     null        // nothing
     NaN         // вычислительная ошибка
-    Infinity    // +- infinity
+    Infinity    // +infinity
+    -Infinity   // -infinity
     Symbol      // symbol
     function    // function
 
 Приведение типов:
     String(78)  // '58'
     Number('9') // 9
+    +"10"       // 10
     Number('J') // NaN
     Boolean(9)  // true
 
+Автоприведение типов
+    "7" + 8     // "78" если в сложении учавствует хоть 1 строка - рез-т строка
+    8 + "7"     // "87"
+    8/"2"*2    // 2 во всех других арифм операциях приводится к Number
 
 Функции:
     function fooBar(par1, par2) {   // camel case
