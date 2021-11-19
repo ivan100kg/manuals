@@ -205,6 +205,7 @@ DROP TABLE aircrafts;       -- удалить таблицу
 INSERT INTO aircrafts       -- внести данные
   ( aircraft_code, model, range )
   VALUES ( 'SU9', 'Sukhoi SuperJet-100', 3000 );
+  COPY aircrafts FROM '/home/user/air.txt'; # внести из текстового файла
 
 SELECT * FROM aircrafts;    -- выборка данных
 
