@@ -107,6 +107,9 @@ bboard/models.py
         TextField     - текстовое поле неогр длины, null=True - мб NULL
         FloatField    - вещественные числа
         DateTimeField - дата-время
+        ImageField    - картинки upload_to="photos/%Y/%m/%d/" - авто директории
+                        требует настройки MEDIA_ROOT, путь относительно нее
+                        требует pip install pillow
     # внешние связи
         ForeignKey      - O2M внешний ключ на родителя(в БД поле наз-ся по
                           другому напр 'field' будет 'field_id')
@@ -268,8 +271,18 @@ Templates/Шаблоны--------------------------------------------------------
                    'current_rubric': current_rubric}
         return render(request, 'bboard/by_rubric.html', context)
 
-from django.shortcuts.get_object_or_404  # возвращает Http404 если нет объекта
-                      get_list_or_404()  # Http404 если пустой список
+# Обработка параметров из GET POST запросов
+    request.GET     # словарь параметров, если они есть при get-запросах
+    request.POST    # словарь параметров, если они есть при post-запросах
+
+# Редиректы
+    return redirect('index', permanent=False)   # временный редирект код 302
+    return redirect('index', permanent=True)    # постоянный редирект код 301
+
+# Обработка 404
+    get_object_or_404   # возвращает Http404 если нет объекта
+    get_list_or_404()   # Http404 если пустой список
+
     # ручная обработка форм
     def add_news(request):
         if request.method == 'POST':
@@ -336,8 +349,11 @@ class DetailView(generic.DetailView):
                                                    в контр-р by_rubric
                                                  # name - именов марш для исп в
                                                    шаблонах bboard:index
-        re_path(r'^data/(?P<year>[12][0-9]{3})/' # свое рег выражение
-# mysite/urls.py                                   
+        re_path(r'^data/(?P<year>[12][0-9]{3})/' # свое рег выражение, параметр
+                                                   year будет передан в контрол
+    handler404 = foo    # свой обработчик(контроллер) 404(Раб с DEBUG=False)
+
+# mysite/urls.py                        
     from django.contrib import admin
     from django.urls import include, path
     urlpatterns = [                              # список маршрутов - шабл URL
@@ -466,9 +482,9 @@ Static/Статические файлы----------------------------------------
 # собрать всю статику проекта
 # settings.py
     MEDIA_ROOT = Path(BASE_DIR, 'media')             # медиа
-    MEDIA_URL = Path(BASE_DIR, '/media/')            # 
+    MEDIA_URL = '/media/' 
     STATIC_ROOT = Path(BASE_DIR, 'static')           # статика
-    STATICFILES_DIRS = (BASE_DIR, 'mysite/static')   # 
+    STATICFILES_DIRS = (BASE_DIR, 'mysite/static') 
     TEMPLATES -> 'DIRS' -> 'templates'              # добавить папки с шаблон
 ./manage.py collectstatic   # собрать статику в указ папки со всего проекта
 
@@ -493,7 +509,7 @@ def createOrder(request):
         form = OrderForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/')
+            return redirect('/')    # редирект на гл стр(лучше именов марш)
     context = {'form': form}
     return render(request, 'accounts/order_form.html', context)
 
