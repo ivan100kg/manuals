@@ -6,7 +6,7 @@ Django 3.2
 django-admin startproject mysite # создать проект - директория проекта 'mysite'
 mysite/              # root directory is a container for your project.
     manage.py        # файл/утилита - выполняет различные дейтвия над проектом
-    mysite/          # пакет конф-ии, содержит модули проекта, задающ его конфиг
+    mysite/          # пакет конфиг, содержит модули проекта, задающ его конфиг
         __init__.py  # для распознования директории 'mysite' как пакета
         settings.py  # настройки проекта, пути ключевых директорий, БД, без-ть. 
         urls.py      # маршруты уровня проекта
@@ -329,12 +329,14 @@ class DetailView(generic.DetailView):
     urlpatterns = [                              # список марш прил bboard/
         path('', views.index, name='index'),     # связь: путь ''-->конт 'index'
         path('<int:rubric_id>/', by_rubric,      # <> - параметр из ад стр
-             name='rubric_id'),                  .../bboard/2 - (2-парам)
+             name='rubric_id'),                  .../bboard/2 - (2-парам)(int)
+        path('<slug:her>/'), foo                 # как выше + буквы и -_
         path('add/',views.BbCreateView.as_view(),# вызов контр-класса
               name='add'),]                      # rubric_id - парам 2, перед
                                                    в контр-р by_rubric
                                                  # name - именов марш для исп в
                                                    шаблонах bboard:index
+        re_path(r'^data/(?P<year>[12][0-9]{3})/' # свое рег выражение
 # mysite/urls.py                                   
     from django.contrib import admin
     from django.urls import include, path
