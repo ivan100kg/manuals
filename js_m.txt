@@ -88,6 +88,22 @@
     let com = [...item,...arr]; // соединить массивы, можно комбинировать с 
                                    отдельными знач, в любом порявке
     let letters = [..."Hello"]; // распаковка строки на символы
+
+Замыкания:
+    function createCounter() {      // внеш ф-я
+        let count = 0;
+ 
+        return function() {         // внутр ф-я
+            return count++;
+        };
+    }
+ 
+    let counter = createCounter();  // тут ссылка на анонимную ф-ию, которая
+    console.log( counter() );          ссылается на переменную в внеш области
+                                       видимости 'count' - это замыкание.
+                                       пока существует ссылка counter, область
+                                       вид-сти createCounter будет жить.
+
     
 
 
