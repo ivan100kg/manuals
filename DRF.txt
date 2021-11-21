@@ -1,28 +1,55 @@
 Django REST Framework
 
-settings:   pip install djangorestframework
+pip install djangorestframework # install
 
+Models/Модели
+# модели ничем не отличаются от Django
 # app/models.py
-from django.db import models
+from django.db import Model
 class Book(models.Model):
     name = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=7, decimal_places=2)
+    price = models.IntegerField()
 
-# app/serialiser.py
-from rest_framework.serializers import ModelSerializer
+Serializers/Сериализаторы
+# сериализация моделей в JSON и десериализация из JSON в БД(при POST запросах)
+# чем-то схожи с Forms, имеют похожие флаги и параметры
+# поля с пом флагов могут быть настроены для отображ в html каким-либо образом
+# создать файл в приложении serialiser.py
+# app/serializer.py
+from rest_framework import serializers  # классы сериализаторов/
+Serializer                      # базовый класс, настраивается подробно
+ModelSerializer                 # наследник, облегченное создание, id авто 
+HyperlinkedModelSerializer      # наследник, вместо id - url
 from store.models import Book
-class BooksSerializer(ModelSerializer):
+class BooksSerializer(Serializer):
+    # сериализуемые/десериализуемые поля
+    id = serializers.IntegerField(read_only=True)   # добавим поле id
+    name = serializers.CharField(max_length=255)
+    price = serializers.IntegerField()
+    
+    # методы для создания и изменения при вызове serializer.save()
+    def create(self, validated_data):   # возвращ новую запись из валид данных
+        return Book.objects.create(**validated_data)
+                
+    def update(self, instance, validated_data): # обновляет и возвр сущ запись
+        instance.name = validated_data.get('name', instance.name)
+        instance.price = validated_data.get('price', instance.price)
+        instance.save()
+        return instance
+    
+class BooksSerializer(ModelSerializer): # типа ModelForm, аналог того что вверху
     class Meta:
         model = Book
-        fields = '__all__'
+        fields = ['id', 'name', 'name_ru']
 
 # app/views.py
 from rest_framework.viewsets import ModelViewSet
 from store.models import Book
 from store.serializers import BooksSerializer
 class BookViewSet(ModelViewSet):
-    queryset = Book.objects.all()
-    serializer_class = BooksSerializer
+    queryset = Book.objects.all()                       # список
+    serializer_class = BooksSerializer                  # сериализатор
+    permission_classes = [permissions.IsAuthenticated]  # разрешение/доступ
 
 # urls.py
 from rest_framework.routers import SimpleRouter
