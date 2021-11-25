@@ -55,8 +55,8 @@ psql --help \? \h       # help for everything
 \i sqr.sql  # чтение команд из файла
 
 -- Создать бд
-createdb mydb   # создать бд из консоли linux
-dropdb mydb     # удалить бд 'mydb'
+sudo -u postgres createdb mydb   # создать бд из консоли linux
+sudo -u postgres dropdb mydb     # удалить бд 'mydb'
 
 -- Типы данных -----------------------------------------------------------------
 
@@ -191,7 +191,7 @@ CREATE TABLE progress
                                   CASCADE чтобы все ссылки обновить
 );
 
--- Создание/удаление таблиц
+-- Создать таблицу
 CREATE TABLE aircrafts      -- создать таблицу 'aircrafts'
 ( aircraft_code char( 3 ) NOT NULL,
   model text NOT NULL,
@@ -200,22 +200,38 @@ CREATE TABLE aircrafts      -- создать таблицу 'aircrafts'
   PRIMARY KEY ( aircraft_code )
 );
 
-DROP TABLE aircrafts;       -- удалить таблицу
+-- удалить таблицу
+DROP TABLE aircrafts;       
 
-INSERT INTO aircrafts       -- внести данные
+-- Работа с данными ----------------------------------------------------
+-- внести данные
+INSERT INTO aircrafts       
   ( aircraft_code, model, range )
   VALUES ( 'SU9', 'Sukhoi SuperJet-100', 3000 );
   COPY aircrafts FROM '/home/user/air.txt'; # внести из текстового файла
 
-SELECT * FROM aircrafts;    -- выборка данных
+-- выборка данных
+SELECT * FROM aircrafts;    
 
-UPDATE aircrafts            -- обновить данные
+-- обновить/изменить данные
+UPDATE aircrafts            
   SET range = 3500
   WHERE aircraft_code = 'SU9';
 
-DELETE FROM aircrafts       -- удалить данные
+-- удалить данные
+DELETE FROM aircrafts       
   WHERE aircraft_code = 'CN1';
 
+-- Соединения таблиц
+-- по полям, если есть совпадение в обоих таблицах
+SELECT * FROM weather w JOIN cities c ON w.city = c.name;   # псевдонимы  
+        ...LEFT OUTER JOIN  # табл в лев части - все строки, справа - совпавш
+        также есть правые внешние, полные
+
+-- Агрегатные ф-ии
+SELECT max(temp_lo) FROM weather;                       # max
+SELECT city, max(temp_lo) FROM weather GROUP BY city;   # группировка
+HAVING max(temp_lo) < 40;   # сортировка после группировки работает
 
 ================================================================================
 
