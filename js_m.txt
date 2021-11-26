@@ -1,17 +1,17 @@
 // JavaScript
-// Стандарты
+--- Стандарты ---
     В новый стандартах добавляются полезные фишки
     ECMAScript 2009 - ES5
     ECMAScript 2015 - ES6
     "use strict";   // использовать в нач документа - означает соотв-е ES6+
 
-// Комментарии
+--- Комментарии ---
     // comment
     /*
         multiline comment
     */
 
-Литералы:
+--- Литералы ---
     10          // целое 
     3.14        // дробное
     'dom'       // строки
@@ -20,12 +20,12 @@
     {name:'X'}  // объект
     (ab|bc)     // рег выражение
 
-Константы и переменные:
+--- Константы и переменные ---
     const MAX_VALUE = 200;      // константа
     let arr = [HTML','CSS'];    // переменная, обычное поведение(C++, Python)
     var section;                // переменная, по старым стандартам
 
-Операторы:
+--- Операторы ---
     + - * / % ** ++ --          // arithmetic
     = += -= *= /= %= **=        // assignment
     == === != !== > < >= <= ?   // compare === тип и значение
@@ -37,7 +37,7 @@
     arr['HTML']                 // по ключу
     arr.HTML                    // через точку
 
-Типы:
+--- Типы ------------------------------------------------------------------
     typeof()    // look a type of variable
     Number      // 0, -2, 3.14, 123e5, 12e-2
     String      // 'hello' "world" `fuck`
@@ -63,7 +63,8 @@
     8 + "7"     // "87"
     8/"2"*2     // 2 во всех других арифм операциях приводится к Number
 
-Функции:
+
+--- Функции ---------------------------------------------------------------
     function foo() {        // объявление функции (видна во всем файле)    
         return true;        // обычная функция
     }
@@ -75,26 +76,20 @@
     let foo = () => true;   // стрелочная функция, аналог тех что выше
     let foo = (a,b) => a+b; // пример вычисления суммы, для многострочных при-
                                меняются {}, но возврат через return
+    let foo = new Function('a', 'b', 'return a+b;');    // функция "на лету"
+                                                           не раб в замыканиях
+    foo();                  // вызов функции(указателя/ссылки)
 
-    foo();                  // вызов
-
-Параметры ф-ии/запаковка в массив:
+Параметры ф-ии:
     function sum(a, b, ...args) // a, b - позиц аргум. ...args - массив осталь-
                                    ных арг-ов, может быть пустым
-
-Распаковка массива:
-    let items = [1,2,3];        // массив
-    let max = max(...items);    // передать в функцию распакованным
-    let com = [...item,...arr]; // соединить массивы, можно комбинировать с 
-                                   отдельными знач, в любом порявке
-    let letters = [..."Hello"]; // распаковка строки на символы
 
 Замыкания:
     function createCounter() {      // внеш ф-я
         let count = 0;
  
         return function() {         // внутр ф-я
-            return count++;
+            return count++;         // ссылка на перем во внеш зоне вид-ти
         };
     }
  
@@ -104,10 +99,21 @@
                                        пока существует ссылка counter, область
                                        вид-сти createCounter будет жить.
 
-    
+Функция setTimeout:
+    отложенный вызов - вызывается параллельно, не зависит от расположения
+                             ф-ия|выр   задерж мс  аргументы ф-ии
+    let timerId = setTimeout(func|code, [delay], [arg1], [arg2], ...)
+    clearTimeout(timerId)   // остановка вызова setTimeout
+    setTimeout("alert('Привет')", 1000);        // можно исп строки с выраж-м
+    setTimeout(() => alert('Привет'), 1000);    // или стрелочные
+
+Функция setInterval:
+    let idClock = setInterval(foo, 1000);   // вызыв-ся циклич-ки через 1с
+    clearInterval(idClock)                  // остановка
 
 
-Objects:
+
+--- Objects ---
     const person = {
         firstName: "John",
         lastName: "Doe",
@@ -117,12 +123,13 @@ Objects:
         }
     };
 
-Insert to .html:
+--- Insert to .html ---
     External: (лучшее местo длы вставки в конце body, чтобы страница прогруз)
     <script src="myScript1.js"></script>    // ссылки на скрипты в коце <body>
     Если скрипт не может загрузится работает <noscript>:
     <noscript>Sorry, your browser does not support JavaScript!</noscript>
-Output:
+
+--- Output ---
     innerHTML           // вывод на странице: 
                           document.getElementById("demo").innerHTML = 5 + 6;
                           этот метод подходит как для кнопок так и на загрузке
@@ -130,10 +137,10 @@ Output:
     window.alert()      // всплывающее сообщение браузера
     console.log()       // консоль
     window.print()      // распечатать
-Input:
+--- Input ---
     var inpt = prompt ("enter the name") // типа alert() сохр строку в перем.
 
-Events:
+--- Events ---
     <element event="some JavaScript">    
     Event 	       |  Description
     ---------------+----------------------------------------------------
@@ -144,7 +151,7 @@ Events:
     onkeydown 	   | The user pushes a keyboard key
     onload 	       | The browser has finished loading the page
 
-Strings
+--- Strings ---------------------------------------------------------------
 escape sequences:
     \n \t \v \b \f \r
 methods:
@@ -170,7 +177,7 @@ search:
     String.startsWith()     // true if a string begins with a value
     String.endsWith()       // true if a string ends with a specified value
 
-Numbers
+--- Numbers --------------------------------------------------------
     let x = 3.14;       // A number with decimals
     let y = 3;          // A number without decimals 
     let x = 123e5;      // 12300000
@@ -183,7 +190,7 @@ Numbers
     let x = 9.656;
     x.toFixed(2);       // returns a string, with the number(2) '9.66'
 
-Arrays
+--- Arrays ----------------------------------------------------------------
     const cars = ["Saab", "Volvo", "BMW"];
     const fruits = ["Banana", "Orange", "Apple", "Mango"];
     const points = [40, 100, 1, 5, 25, 10];
@@ -211,8 +218,14 @@ Arrays
     function myFunction(value, index, array) {
         txt += value + "<br>";
     }
+Распаковка массива:
+    let items = [1,2,3];        // массив
+    let max = max(...items);    // передать в функцию распакованным
+    let com = [...item,...arr]; // соединить массивы, можно комбинировать с 
+                                   отдельными знач, в любом порявке
+    let letters = [..."Hello"]; // распаковка строки на символы
 
-// Циклы(loops)
+--- Циклы(loops) ---------------------------
     while (true) {              // while
         break;
     }
@@ -225,7 +238,7 @@ Arrays
         continue;
     } while (!false);
 
-// Условные операторы
+--- Условные операторы ---------------------------
     if (true) {                 // if
         var x = true;
     } else if (false) {         // else if (elif)
@@ -240,7 +253,7 @@ Arrays
         default: console.log("her");
     }
 
-// Math.
+--- Math ---
 random()    // 0 - 0.9999999...
 floor()     // усечение дробной части
 
