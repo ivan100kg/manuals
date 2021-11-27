@@ -481,10 +481,10 @@ Static/Статические файлы----------------------------------------
 <img scr="{% static 'app/myfile.css' %}">   # добавить статик файл
 # собрать всю статику проекта
 # settings.py
-    MEDIA_ROOT = Path(BASE_DIR, 'media')             # медиа
+    MEDIA_ROOT = Path(BASE_DIR, 'media')            # медиа
     MEDIA_URL = '/media/' 
-    STATIC_ROOT = Path(BASE_DIR, 'static')           # статика
-    STATICFILES_DIRS = (BASE_DIR, 'mysite/static') 
+    STATIC_ROOT = Path(BASE_DIR, 'static')          # статика
+    STATICFILES_DIRS = (BASE_DIR, 'mysite/static')  # не стандарт пути
     TEMPLATES -> 'DIRS' -> 'templates'              # добавить папки с шаблон
 ./manage.py collectstatic   # собрать статику в указ папки со всего проекта
 
