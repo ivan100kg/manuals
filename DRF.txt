@@ -2,7 +2,7 @@ Django REST Framework
 
 pip install djangorestframework # install
 
-Models/Модели
+Models/Модели ----------------------------------------------------------------
 # модели ничем не отличаются от Django
 # app/models.py
 from django.db import Model
@@ -10,7 +10,7 @@ class Book(models.Model):
     name = models.CharField(max_length=255)
     price = models.IntegerField()
 
-Serializers/Сериализаторы
+Serializers/Сериализаторы ----------------------------------------------------
 # сериализация моделей в JSON и десериализация из JSON в БД(при POST запросах)
 # чем-то схожи с Forms, имеют похожие флаги и параметры
 # поля с пом флагов могут быть настроены для отображ в html каким-либо образом
@@ -42,7 +42,7 @@ class BooksSerializer(ModelSerializer): # типа ModelForm, аналог то�
         model = Book
         fields = ['id', 'name', 'name_ru']
 
-# app/views.py
+Views/представления -----------------------------------------------------------
 from rest_framework.viewsets import ModelViewSet
 from store.models import Book
 from store.serializers import BooksSerializer
