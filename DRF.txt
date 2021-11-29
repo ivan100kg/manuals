@@ -46,7 +46,7 @@ Views/представления -----------------------------------------------
 from store.models import Book                           # модель
 from store.serializers import BooksSerializer           # сериалайзер
 from django.http import HttpResponse, JsonResponse      # ответ(html, json)
-from django.views.decorators.csrf import csrf_exempt    # декоратор
+from django.views.decorators.csrf import csrf_exempt    # исп токен в POST
 from rest_framework.parsers import JSONParser           # json парсер
 
 from rest_framework.viewsets import ModelViewSet
