@@ -49,7 +49,11 @@ from django.http import HttpResponse, JsonResponse      # ответ(html, json)
 from django.views.decorators.csrf import csrf_exempt    # исп токен в POST
 from rest_framework.parsers import JSONParser           # json парсер
 
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet        # 
+from rest_framework.generics import ListCreateAPIView   # можно добавлять в спис
+from rest_framework.generics import ListAPIView         # только чтение списка
+from rest_framework.generics import RetrieveAPIView     # чтение экземпляра
+from ... generics import RetrieveUpdateDestroyAPIView   # все действия с экз-ом
 class BookViewSet(ModelViewSet):
     queryset = Book.objects.all()                       # список
     serializer_class = BooksSerializer                  # сериализатор
