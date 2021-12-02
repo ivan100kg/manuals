@@ -233,6 +233,20 @@ SELECT max(temp_lo) FROM weather;                       # max
 SELECT city, max(temp_lo) FROM weather GROUP BY city;   # группировка
 HAVING max(temp_lo) < 40;   # сортировка после группировки работает
 
+-- Представления
+CREATE VIEW myview AS   # создать 
+    SELECT name, temp_lo, temp_hi, prcp, date, location
+        FROM weather, cities
+        WHERE city = name;
+SELECT * FROM myview;   # использование
+
+-- Транзакции
+BEGIN;
+UPDATE accounts SET balance = balance - 100.00
+    WHERE name = 'Alice';
+-- ...
+COMMIT;
+
 ================================================================================
 
 --- SQL ------------------------------------------------------------------------
