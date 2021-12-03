@@ -886,6 +886,10 @@ map(foo, obj)   # применяет фун foo к членам итерируе
 filter(lambda x: x > 0, range(-5, 5))   # возвр итер с членами для кот x==True
 (x for x in range(-5, 5) if x > 0)      # аналог
 
+any(iterable)   # возвращ True если хотя бы 1 True
+
+zip([1,2],[a,b])# возвращает итератор кортежей (1,'a') (2,'b') (пары a[i],b[i])
+
 
 Decorators/Декораторы----------------
 def timer(foo):
