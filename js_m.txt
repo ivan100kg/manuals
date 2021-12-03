@@ -111,7 +111,14 @@
     let idClock = setInterval(foo, 1000);   // вызыв-ся циклич-ки через 1с
     clearInterval(idClock)                  // остановка
 
-
+Встроенные атрибуты ф-ий:
+    function foo(msg) {
+        console.log(msg);
+    }
+    foo.name    # имя ф-ии
+    foo.bar = 0 # добавить свой аттр
+    foo.call    # позвол вызв ф-ии с указ их контекста (context,arg1,arg2,...)
+    foo.apply   # позвол вызв ф-ии с указ их контекста (context, args) массив
 
 --- Objects ---
     const person = {
