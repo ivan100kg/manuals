@@ -1,4 +1,6 @@
 Django REST Framework
+
+--- Description --------------------------------------------------------------+
 REST - Representational State Transfer, это архитектурный подход, 
     определяющий, как API должны выглядеть.
 API  - application programming interface. Интерфейс управления. Описание
@@ -6,9 +8,20 @@ API  - application programming interface. Интерфейс управлени�
     одна компьютерная программа может взаимодействовать с другой программой.
 API endpoints - url, по которому получают/отправляют данные в опр формате
 
-pip install djangorestframework # install
+--- install -----------------------------------+
+pip install django              # django
+pip install djangorestframework # DRF
+pip install Pillow              # nesessary lib
 
-Models/Модели ----------------------------------------------------------------
+--- settings ------------------------------------+
+django-admin startproject proj  # create project
+INSTALLED_APPS 'rest_framework' # add to settings
+DATABASES                       # set your db
+./manage.py migrate             # migrations
+./manage.py createsuperuser     # super user
+M
+
+-- Models/Модели -------------------------+
 # модели ничем не отличаются от Django
 # app/models.py
 from django.db import Model
@@ -34,29 +47,17 @@ class BooksSerializer(ModelSerializer):
         fields = ['id', 'name', 'name_ru', 'owner']             # поля
 
 Views/представления -----------------------------------------------------------
-from store.models import Book                           # модель
-from store.serializers import BooksSerializer           # сериалайзер
-from django.http import HttpResponse, JsonResponse      # ответ(html, json)
-from django.views.decorators.csrf import csrf_exempt    # исп токен в POST
-from rest_framework.parsers import JSONParser           # json парсер
-
-from rest_framework.viewsets import ModelViewSet        # 
-from rest_framework.generics import ListCreateAPIView   # можно добавлять в спис
-from rest_framework.generics import ListAPIView         # только чтение списка
-from rest_framework.generics import RetrieveAPIView     # чтение экземпляра
-from ... generics import RetrieveUpdateDestroyAPIView   # все действия с экз-ом
 class BookViewSet(ModelViewSet):
     queryset = Book.objects.all()                       # список
     serializer_class = BooksSerializer                  # сериализатор
     permission_classes = [permissions.IsAuthenticated]  # разрешение/доступ
 
-# urls.py
-from rest_framework.routers import SimpleRouter
-from store.views import BookViewSet
-router = SimpleRouter()
-router.register(r'book', BookViewSet)
+# urls.py ---------------------------------------------------------------
+router = SimpleRouter()                                 # endpoints 
+router.register(r'api/v1/books', BookViewSet)           # style api/v1/..
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),                    # admin pannel
+    path('api/auth/', include('rest_framework.urls)),   # registration
 ]
-urlpatterns += router.urls
+urlpatterns += router.urls                              # add our endpoints
 
