@@ -1,4 +1,10 @@
 Django REST Framework
+REST - Representational State Transfer, это архитектурный подход, 
+    определяющий, как API должны выглядеть.
+API  - application programming interface. Интерфейс управления. Описание
+    способов (набор классов, процедур, функций, структур или констант), которыми
+    одна компьютерная программа может взаимодействовать с другой программой.
+API endpoints - url, по которому получают/отправляют данные в опр формате
 
 pip install djangorestframework # install
 
@@ -14,33 +20,18 @@ Serializers/Сериализаторы -----------------------------------------
 # сериализация моделей в JSON и десериализация из JSON в БД(при POST запросах)
 # чем-то схожи с Forms, имеют похожие флаги и параметры
 # поля с пом флагов могут быть настроены для отображ в html каким-либо образом
-# создать файл в приложении serialiser.py
-# app/serializer.py
+# создать файл в приложении serializers.py
+# app/serializers.py
 from rest_framework import serializers  # классы сериализаторов/
 Serializer                      # базовый класс, настраивается подробно
 ModelSerializer                 # наследник, облегченное создание, id авто 
 HyperlinkedModelSerializer      # наследник, вместо id - url
 from store.models import Book
-class BooksSerializer(Serializer):
-    # сериализуемые/десериализуемые поля
-    id = serializers.IntegerField(read_only=True)   # добавим поле id
-    name = serializers.CharField(max_length=255)
-    price = serializers.IntegerField()
-    
-    # методы для создания и изменения при вызове serializer.save()
-    def create(self, validated_data):   # возвращ новую запись из валид данных
-        return Book.objects.create(**validated_data)
-                
-    def update(self, instance, validated_data): # обновляет и возвр сущ запись
-        instance.name = validated_data.get('name', instance.name)
-        instance.price = validated_data.get('price', instance.price)
-        instance.save()
-        return instance
-    
-class BooksSerializer(ModelSerializer): # типа ModelForm, аналог того что вверху
-    class Meta:                           create, update уже переопределены
-        model = Book
-        fields = ['id', 'name', 'name_ru']
+class BooksSerializer(ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')  # доб поле
+    class Meta:                           
+        model = Book                                            # модель
+        fields = ['id', 'name', 'name_ru', 'owner']             # поля
 
 Views/представления -----------------------------------------------------------
 from store.models import Book                           # модель
