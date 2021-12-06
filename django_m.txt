@@ -479,13 +479,20 @@ Static/Статические файлы----------------------------------------
 # храняться в дир приложение/static/приложение (типа templates)
 {% load static %}
 <img scr="{% static 'app/myfile.css' %}">   # добавить статик файл
-# собрать всю статику проекта
 # settings.py
-    MEDIA_ROOT = Path(BASE_DIR, 'media')            # медиа
-    MEDIA_URL = '/media/' 
-    STATIC_ROOT = Path(BASE_DIR, 'static')          # статика
-    STATICFILES_DIRS = (BASE_DIR, 'mysite/static')  # не стандарт пути
+    STATIC_URL = '/static/'                         # связывает тег static с
+                                                      STATICFILES_STORAGE(дир-ии
+                                                      my_app/static/)
+    STATIC_ROOT = "/var/www/example.com/static/"    # сюда потом собир статика
+    STATICFILES_DIRS = [BASE_DIR / 'mysite/static', # добавить свои пути
+                        '/var/www/static/',]
     TEMPLATES -> 'DIRS' -> 'templates'              # добавить папки с шаблон
+# Медиа используется только в Дебаг режиме!
+    MEDIA_ROOT = Path(BASE_DIR, 'media')            # дир-я хранения медиа
+    MEDIA_URL = '/media/'                           # связь в тегах
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 ./manage.py collectstatic   # собрать статику в указ папки со всего проекта
 
 
