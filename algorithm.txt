@@ -31,8 +31,9 @@ def binary_search(items_list, item):
 +-------+-------+------+
 |операц |массивы|списки|  O(n) - линейное время
 +-------+-------+------+  O(1) - постоянное время
-|чтение | O(1)  |O(n)  |
+|чтение | O(1)  |O(n)  |  вставка/удаление - первый|последний элем
 |вставка| O(n)  |O(1)  |
+|удален | O(n)  |O(1)  |
 +-------+-------+------+
 
 Массивы идеальны для чтения
@@ -69,5 +70,5 @@ def quicksort(arr):
         pivot = arr[0]
         less  = [i for i in arr[1:] if i ≤ pivot]
         greater = [i for i in arr[1:] if i > pivot]
-        return quicksort(less) + [pivot] + quicksort (greater)
+        return quicksort(less) + [pivot] + quicksort(greater)
 
