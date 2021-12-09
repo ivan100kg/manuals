@@ -87,20 +87,20 @@ df.sort_index(ascending=False)                 # сортировка по ин�
 
 
 # SQL - pandas
-# SELECT---------------------+--------------------------------------------------   
+# SELECT---------------------+------------------------------------------------
 SELECT name, size            | df[['name','size']].head(5)
 FROM models                  |
 LIMIT 5;                     |
-# AS-------------------------+--------------------------------------------------       
+# AS-------------------------+------------------------------------------------
 SELECT *, size+29 as size_ru | df.assign(size_ru=df["size"]+29).head(5)
 from models                  |
 LIMIT 5;                     |
-# WHERE----------------------+--------------------------------------------------
+# WHERE----------------------+------------------------------------------------
 SELECT *                     | df[(df['birthd'] == '2000-01-01') &
 FROM models                  |    (df['size'] < 6)]
 WHERE 'birthd' = '2000-01-01'| (AND = &) (OR = |) (IS NULL = .isna()) 
 AND 'size' < 6;              | (IS NOT NULL = .not.na())
-# ORDER BY-------------------+--------------------------------------------------
+# ORDER BY-------------------+------------------------------------------------
 SELECT name, size            | df[(df['size'] < 6) & (df['country']=='Russia')]
 FROM models                  | [['name','size']].sort_values(by=['size','name'],
 WHERE size < 6               | ascending=False)
