@@ -121,6 +121,7 @@
     foo.apply   # позвол вызв ф-ии с указ их контекста (context, args) массив
 
 --- Objects ---
+    {ключ: значение} // ключи - это строки, значения - любые объекты
     const person = {
         firstName: "John",
         lastName: "Doe",
