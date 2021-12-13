@@ -121,15 +121,40 @@
     foo.apply   # позвол вызв ф-ии с указ их контекста (context, args) массив
 
 --- Objects ---
-    {ключ: значение} // ключи - это строки, значения - любые объекты
+    {ключ: значение} // ключи - это строки, значения - любые объекты 
+    newKey = 'gender';
     const person = {
         firstName: "John",
         lastName: "Doe",
         id: 5566,
+        [newKey]: male, // с пом переменной
         fullName: function () {     // this - то есть эти имена этого объекта
             return this.firstName + " " + this.lastName;
         }
     };
+    person.firstNsme  // обращение к полю. 
+    person['firstName'] // аналогично
+    person.salary = 100 // изменение значения аттр, либо создание аттр, если такого нет.
+    delete person.salary // удалить атрибут 
+    "salary" in person // проверка на вхождение ключа 
+    person.salary === undefined // та же проверка на вхождение 
+    
+    let car = createCar("toyota", "black");
+
+
+
+function createCar(model, color) {
+
+    return {
+
+       model: model,
+
+       color: color
+
+    };
+
+}
+    
 
 --- Insert to .html ---
     External: (лучшее местo длы вставки в конце body, чтобы страница прогруз)
@@ -245,6 +270,12 @@ search:
     do {                        // do while
         continue;
     } while (!false);
+    
+    for(let key in book) {      // foreach для объектов
+
+    console.log(key+": "+book[key]);
+
+}
 
 --- Условные операторы ---------------------------
     if (true) {                 // if
