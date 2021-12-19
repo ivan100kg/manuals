@@ -128,32 +128,36 @@
         lastName: "Doe",
         id: 5566,
         [newKey]: male, // с пом переменной
-        fullName: function () {     // this - то есть эти имена этого объекта
+        fullName: function () {     // this - то есть поля этого объекта
             return this.firstName + " " + this.lastName;
         }
+        getId() { return this.id; }     // ES6
     };
-    person.firstNsme  // обращение к полю. 
+    person.firstNsme    // обращение к полю. 
     person['firstName'] // аналогично
-    person.salary = 100 // изменение значения аттр, либо создание аттр, если такого нет.
+    person.salary = 100 // изм знач атр, либо создание атр, если такого нет.
     delete person.salary // удалить атрибут 
-    "salary" in person // проверка на вхождение ключа 
+    "salary" in person  // проверка на вхождение ключа 
     person.salary === undefined // та же проверка на вхождение 
     
     let car = createCar("toyota", "black");
 
-
-
 function createCar(model, color) {
-
     return {
-
        model: model,
-
        color: color
-
     };
-
 }
+
+function Book(title, author) {      // ф-ция конструктор
+    // this = {};  (неявно)
+    this.title = title;
+    this.author = author;
+    this.price = 10;
+    // return this;  (неявно)
+}
+let book = new Book("Муму", "Тургенев");
+
     
 
 --- Insert to .html ---
