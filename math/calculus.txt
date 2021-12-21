@@ -245,6 +245,10 @@ Example:
        lim(xn+yn) = limxn + limyn     
     3) if xn→a, yn→b => xn*yn→a*b   # предел произвед посл = произв пределов
        lim(xn*yn) = limxn * limyn   
+    4) lim(c*xn) = c*limxn          # следствие из 3 и 1 св-ва
+    5) if xn→a, yn→b => xn/yn → a/b # при b = limyn != 0
+       lim(xn/yn) = limxn/limyn
+
 
 Oтличия предела последовательности от предела функции
     В пределе последовательности «динамическая» переменная «эн» может
