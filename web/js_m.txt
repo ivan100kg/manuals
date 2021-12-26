@@ -120,7 +120,8 @@
     foo.call    # позвол вызв ф-ии с указ их контекста (context,arg1,arg2,...)
     foo.apply   # позвол вызв ф-ии с указ их контекста (context, args) массив
 
---- Objects ---
+
+--- Objects ----------------------------------------------------------------
     {ключ: значение} // ключи - это строки, значения - любые объекты 
     newKey = 'gender';
     const person = {
@@ -300,5 +301,9 @@ search:
 random()    // 0 - 0.9999999...
 floor()     // усечение дробной части
 
-// DOM - Document Object Model
+--- DOM - Document Object Model --------------------------------------------
+      window
+    /    |   \
+DOM     BOM   JavaScript
+document navigator  Object
 
