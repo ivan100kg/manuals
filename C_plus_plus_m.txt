@@ -63,8 +63,11 @@
 	x = y ? cout << "yes" : cout << "no"; 
 
 циклы:
-	while(true){...}
-	for(int i = 0; i<10;i++){...}
+	while(true){...}		# while
+	do{...}while(true);		# do while
+	for(int i = 0; i<10;i++){...}	# for
+	break;				# прервыть цикл, выход из цикла
+	continue;			# прервать цикл, начать с новой итерации
 	
 встроенные ф-ии:
 	sizeof(int); - размер в байтах чего либо
