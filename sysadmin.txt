@@ -1,0 +1,94 @@
+Devops
+    Network TCP/IP, CIDR
+    Linux, Bash, WebServers
+    Ansible
+    Git
+    Github/BitBucket/Gitlab
+    Jenkins
+    Docker, DockerHub
+    
+    Clouds:
+    Amazon Web Services
+    Google Cloud
+    Azure(Windows)
+
+    Infrastructure as code:
+    Terraform
+    CloudFormation(AWS)
+
+    Software configuration management:
+    Ansible
+    Puppet
+
+    CI/CD:
+    Jenkens
+    Gitlab CI
+
+    Containers:
+    Docker
+    Kubernetis
+
+    Monitoring:
+    Zabbix
+    Phrometheus
+    Grafana
+    Elastic
+
+Sysadmin
+    Areas:
+    аппаратная часть
+    клиентские ОС
+    клиентское ПО
+    базовые серверные технологии
+    сетевые технологии
+    специализированное ПО
+
+    Hardware:
+    сборка ПК
+    выбор переферии
+    управление BIOS/UEFI
+    работа с RAID
+    работа с драйверами
+    расчет электропитания
+    протяжка сети
+    сборка серверов
+    поддержка переферии
+    настройка образов системы
+    организация серверного помещения
+    расчет ЛВС
+    нюансы работы комплектующих
+    аппаратные средсва мониторинга
+    аппаратные средства автоматизации
+    управление СХД
+    конфигурация блейд-систем
+    организация кластерных конфигураций
+    знакомство с брендовыми решениями
+
+    Operating Systems:
+    Windows
+    Linux
+    MacOS
+    Android
+    IOS
+    ОС различных переф устройств
+    Серверные ОС
+    Гипервизоры
+    Облака
+    Виртуальные системы
+    Cisco
+
+    OS functions:
+    загрузчик ОС
+    управление носителями информации
+    файловая система
+    уравление пользователями
+    настройка служб/демонов(Linux)
+    чтение логов
+    управление устройствами
+    настройка сетевых параметров
+    управление межсетевым экраном
+    службы каталогов
+    dns dhcp
+    ...часть 3 https://www.youtube.com/watch?v=hBqAxGdRMnk&t=27s 12:08
+
+
