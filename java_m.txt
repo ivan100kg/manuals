@@ -1,0 +1,47 @@
+// Java 
+
+--- Java editions---
+    Java Standart Edition(SE)   // стандартная редакция, для станд прил-ий
+    Java Enterprise Edition(EE) // редакция для прил масштаба предприятия
+    Java Micro Edition(ME)      // редакция для прил микрокомп-в (напр смартфон)
+
+--- Java versions (LTS) ---
+    version     release     support until 
+    --------------------------------
+    Java SE 8   Mar 2014    Dec 2030
+    Java SE 11 	Sep 2018    Sep 2026
+    Java SE 17  Sep 2021    Sep 2029
+    Java SE 21  Sep 2023    Sep 2031
+
+--- How it works ---
+    "Write Once, Run Anywhere"
+    human.java  // сохраненный файл с исх кодом с расширением .java
+      |
+    javac       // компилятор javaс
+      |
+    human.class // на выходе byte code в файле .class
+      |
+    JVM         // виртуальная машина Java(интерпретатор) - вып машинный код
+    Запускается независимо от ОС.
+
+--- Comments ---
+    // comment
+    /*
+        multiline comment
+    */
+    /**
+       JavaDoc comments
+    */
+
+--- Literals ---
+    10
+    100L
+    3.14f
+    2.72
+    'a'
+    "hi"
+
+
+
+
+        
