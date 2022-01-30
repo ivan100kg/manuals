@@ -34,14 +34,100 @@
     */
 
 --- Literals ---
-    10
-    100L
-    3.14f
-    2.72
-    'a'
-    "hi"
+    10      // int
+    100L    // long
+    3.14f   // float
+    2.72    // double
+    'a'     // char
+    "hi"    // String
 
+--- Primitive data types ---
+    types       size        range
+    ------------------------------------------------------------------
+    byte        8 bit       [-128;127] 
+    short       16 bit      [-32768;32767]
+    int         32 bit      [-2147483648;2147483647]
+    long        64 bit      [-9223372036854775808;9223372036854775807]
+    float       32 bit      [3.4e-38;3.4e+38]
+    double      64 bit      [1.7e-308;1.7e+308]
+    char        16 bit      [0;65535]
+    bool        strictly    {true, false}
+                undefined
 
+--- Reference data types ---
+    String s = "haha";      // строки
+    String s = new String()    2 способа создания только для String
+    Test tObj = new Test(); // объект класса, остальные создаются с new
 
+--- Default values ---
+    byte/short/int/long     // 0
+    float/double            // 0.0
+    char                    // 0 or '\u0000'
+    boolean                 // false
+    reference               // null
 
+--- Variables ---
+    long l1 = 10000000000L; // на конце ставим L/l для long, иначе получ-cя int
+    float f1 = 47.23F;      // для float на конце ставим F/f, иначе double.
+    char c3 = 300;          // помимо символов - номер символа Юникода
+    char c4 = '\u0500';     // 16-рич система
+    int a7 = 1_000_000;     // использование для удобства _
+
+--- Системы исчисления ---
+    int a = 0b1000;         // двоичная система - число 8
+    int a = 074;            // восьмеричная си
+    int a = 0x3C;           // 16-ричная
+
+--- Operators ---
+    + - * / % ++ --         // arithmetic
+    = += -= *= /= %=        // assignment
+    > < >= <= == !=         // relational(compare)
+    && || ! & |             // locical
+                               & и | - проверяет все части условия
+                               && || - не проверяют вторую чатсть когда и так ясно
+    & | ^                   // bit ^ - true, если одна пременная true, остальные false
+
+--- Приоритеты операций ---
+    1   ++ -- !
+    2   * / %
+    3   + - 
+    4   < <= > >=
+    5   == !=
+    6   && ||
+    7   = += -= *= /= %=
+
+--- Structure of files .java ---
+    package mypackage;      // пакет
+    import java.util.*;     // импорт
+    public class Lesson3 {} // наш класс(fields, methods, constructors)
+                               public название_класса == название файла
+                               только 1 public class может быть в файле или
+                               не быть вообще, тогда имя файла должно == хоть
+                               какому-ниб классу в файле
+    class Test {            // еще 1 класс в файле
+        int id=0;           // аттрибуты класса, изменить знач по умолчанию
+        String name;        // объекты этого класса можно создавать в других
+        double balance;        классах, в функции main
+    {
+
+    public static void main(String[] args)  // точка входа в программу
+                                               должна присутствовать для запуска
+                                               программы. Может находится в люб
+                                               классе.
         
+--- Methods ---
+    public static void main(String[] args) {// code;}
+    public  // access modifier
+    static  // non-access modifier(s)
+    void    // retun type
+    main    // name
+    ()      // params
+    {}      // body
+
+--- Constructor ---
+    Car car1 = new Car();   // Car() - constructor, as name of class
+                               car1 - Car object
+    Car(){}                 // default constructor
+    Car(vars){code;}        // custom constructor
+                            // конструктор ничего не возвращает
+
