@@ -368,6 +368,7 @@ CREATE VIEW customers_v id, name    # представление
 AS SELECT id, name FROM customers;  # нужные столбцы из таблицы для view
 
 -- Вычисляемые поля -некие операции(арифметич или конкатенация или исп функ-й)
+-- вычисляютя для каждой строки
 -- конкатенация
 SELECT CONCAT(field1, ' ', 'sometext'), field2.. FROM mytable;
 -- арифметич операции + - * /
