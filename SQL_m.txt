@@ -282,7 +282,7 @@ SELECT column1 AS col FROM table;         # псевдоним
 -- фильтрация указывается в SELECT для вывода опред-ых знач
 -- опрераторы в WHERE:  
     =  >  <  >=  <=  !=(<>)  BETWEEN AND IS NULL(пуст поле)
-    WHERE price BETWEEN 5 AND 10; # 5 < price < 10
+    WHERE price BETWEEN 5 AND 10; # 5 <= price <= 10
 -- операторы OR AND NOT IN
 WHERE prod_price <= 10 AND prod_name != 'HER'; составная фильтрация
 WHERE (prod_name = 'Milk' OR prod_name = 'Vodka') AND prod_price <= 10; 
@@ -393,6 +393,7 @@ DEGREES(x)	-- конвертирует значение x из радиан в �
 RADIANS(x)	-- конвертирует значение x из градусов в рад RADIANS(180)=3.14...
 ABS(x)	    -- модуль числа x ABS(-1) = 1 ABS(1) = 1
 PI()        -- pi = 3.1415926...
+
 
 -- функции
 NOW(); CURDATE(); DATE(); DATETIME(); TIME(); -тек дата
