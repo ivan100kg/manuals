@@ -90,7 +90,7 @@ Network
     2 ур ## + #      # убирает заголовки и оббъединяет сообщение
     3 ур ###         # фпередает приложению
     
-Модель OSI - эталонная
+Модель OSI (Open Systems Interconnection model) - эталонная	
         HOST1   protocols    HOST2
     Application-----------Application  # прикладной уровень - приложения
          |-interface           |         сообщение
