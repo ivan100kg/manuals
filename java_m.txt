@@ -55,10 +55,9 @@
                 undefined
 
 --- Reference data types ---
-    String s = "haha";      // строки
-    String s = new String()    2 способа создания только для String
-    Test tObj = new Test(); // объект класса, остальные создаются с new
-
+    Ссылочных типов данных бесконечное множество.
+    Test tObj = new Test(); // объект класса, создаются с new
+    
 --- Default values ---
     byte/short/int/long     // 0
     float/double            // 0.0
@@ -128,6 +127,500 @@
     Car car1 = new Car();   // Car() - constructor, as name of class
                                car1 - Car object
     Car(){}                 // default constructor
-    Car(vars){code;}        // custom constructor
+    Car(vars){code;}        // custom constructor(перегруженный)
                             // конструктор ничего не возвращает
+
+--- Overloading ---
+    Методы с одинак названиями, но разные параметры(типы/количество/порядок)
+    return type может быть одинаковым или различным
+    access modifier может быть одинаковым или различным(public/private/prot.)
+    void show(int i1){
+        System.out.println(i1);
+    }
+    void show(boolean b1){
+        System.out.println(b1);
+    }
+
+--- Constructor overloading ---
+    // все то же самое что и для методов
+    Employee(String surname, int age){
+        this(surname);  // делегирование -+ чтобы не писать больше кода
+        this.age = age; //                | всегда на первой строке
+    }                   //                |
+                        //                |
+    Employee(String surname){   // <------+
+        this.surname = surname;
+    }
+    // более лучший способ, все конструкторы вызывают главный конструктор
+    Employee(String surname, int age){  // главный конструктор с большим кол
+        this.age = age;                    параметров, в этом конструкторе
+        this.surname = surname;            объявляем все поля
+    }              
+    Employee(String surname){
+        this(surname, 0);   // вызов главного конструктора, передаем на неиз-
+    }                          вестные переменные дефолтные значения
+
+--- Package/Пакет ---
+    Пакет/Папка/Директория - место где хранятся классы .java(файлы)
+
+    Основные цели пакета
+    Защита доступа:
+    В пакетах можно ограничить/открыть доступ к своим элементам из других
+    пакетов с пом модификаторов доступа.
+
+    Управление набором возможных имен(namespace management):
+    Разделение пакетов по пространству имен. Допустим классы с одинаковыми
+    названиями не могут быть в одном пакете, зато в разных пакетах это норм.
+    Пакеты могут вкладываться в др пакеты.
+
+    pack1       pack2
+    class A     class C
+    class B
+    К классам в др пакетах обращаться так: пакет.класс, доступ должен быть
+    открыт(public).
+    К вложенным пакетам pack1.pack2.pack3...packn.MyClacc
+    Всегда пишем полный путь, относительный не катит!
+    
+    pakage pack1; 
+    public class A {
+    public static void main(String[] args) {
+        B obj1 = new B();    // обращение к классу который в том же пакете
+        pack2.C obj2 = new pack2.C();   // в другом пакете
+    
+    Хранение связанных классов в одном месте:
+    для удобства раскидываем связ классы по пакетам
+
+--- Access modifier/Контроллер доступа ---
+    Модификаторы:
+                класс файл пакет др.пакет наследники
+    public      +     +    +     +        +
+    private     +     -    -     -        -
+    default     +     +    +     -        -
+    protected   +     +    +     -        +
+    
+    protected видна также в классах-наследниках в любых пакетах.
+
+    Для каких структур какие есть модификаторы:
+                public private default protected
+    class       +      -       +       -
+    constructor +      +       +       +
+    field       +      +       +       +
+    method      +      +       +       +
+
+--- Non-access modifiers ---
+    final   // может относится к переменной/методу/классу
+               vars:
+               readonly(const) не изменяется, должна быть объявлена сразу
+               или в каждом конструкторе.
+               reference vars:
+               final Car car = new Car(); - адрес не может быть изменен
+    static  // может относится к переменной/методу
+               принадл классу, можно вызвать через класс Class.var или
+               через объект obj.var. В статик методах нельзя использовать
+               не статические переменные. Но в не статик методах - можно 
+               использовать статик переменные. Если final static - 
+               определяется только сразу.
+    abstract// 
+
+--- Scope of variables ---
+    local       // локальные, видны только в одном блоке, после объявления
+    param       // параметр функции виден во всем теле ф-ии
+    instance    // переменная объекта, видна в классе и его не статик методах
+    static      // видна везде в классе + в статик методах.
+
+--- this ---
+    указывает на текущий экземпляр(объект) класса, используется в классе
+    в non-static методах/конструкторах для обращения к переменным и методам.
+
+--- Идентификаторы ---
+    Начинается с буквы _ $
+    int __$__;
+    int $kjbcks;
+    int _ljncds;
+
+--- Зарезервированные слова ---
+    abstract assert boolean break byte case catch class const continue
+    default do double else enum extends false final float for goto if
+    implements import instanceof int interface long native new null package
+    private protected public return short static strictfp super switch 
+    synchronized this throw throws transient true try void volatile while
+
+--- Соглашения ---
+    классы      - с большой буквы, сущ, Car
+    переменные  - с маленькой буквы, сущ, color
+    методы      - camel case глагол, что делать, goAhead
+    final       - константы, все большие буквы, WHEIGHT
+
+--- Время существования ---
+    объекты существуют в памяти пока на них есть ссылки
+    obj = null; // оборвать связь вручную
+    После того как память осталась без ссылки ее убирает Garbage Collector
+    Управление GC находится под управлением JVM.
+
+--- import ---
+    импорт по полн имени        с исп import    comment
+    ----------------------------------------------------------------------
+    pack p1;                    pack p2;        current package
+                                import p1.A;    import
+    class A{                    class B{        class definition
+    p2.B b = new p2.B();        A a = new A();  создание экз из друг пак
+    }                           } 
+
+    import examples:
+    import Lessons.Lesson1.Car; // импорт класса кар из пакета Lesson1,
+                                   вложенного в пакет Lessons
+    import Lessons.Lesson1.*;   // импорт всех public классов из пакета
+                                   при конфликтах имен - нужно указать 
+                                   полный путь к классу пакет.класс.
+                                   Не импортирует классы из влож пакетов.
+    import java.lang.*;         // дефолтный пакет, импортируемый по умолч.
+                                   включает имена System, String...
+    import static pak.Klas.var; // импорт статик переменной/метода отдельно
+    import static pak.Klas.*;   // all статик перем/методы отдельно
+
+    Example
+        // 3 способа задать String
+        java.lang.String s1 = new java.lang.String("a");    
+        String s2 = new String("b");
+        String s3 = "c";
+
+--- Arguments/аргументы методов ---
+    Примитивные типы данных - передаются по значению(копируются).
+    Ссылочные типы данных - передаются копии ссылок на объекты.
+
+--- if-else ---
+    // внутри if (boolean)
+    if (true && !false){
+        code;
+    }
+    else if(!false || true){
+        code;
+    }
+    else {
+        code;
+    }
+
+--- Copmarsion/Сравнения ---
+    int a = 5;
+    double b = 5.0;
+    a == b          // true, у примитивных сравнивается значение
+    obj1 == obj2    // false у ссылочных сравниваются адреса(String - искючение)
+
+--- equals ---
+    все классы по умолч имеют метод equals()
+    переопределяется самостоятельно в классах для сравнения объектов
+    String s1 = "Hello";
+    String s2 = "Hello";
+    s1 == s2;       // так не стоит, перегруж опрератор для String
+    s1.equals(s2);  // правильное сравнение объектов
+
+Ternary operator
+    (boolean expression) ? (if true) : (if false);
+    
+--- switch ---
+    switch (expression) {   // типы используемые в выражении
+        case val1:             int byte short char String
+            code; 
+            break;
+        case val2: 
+            code;   
+            break;
+        case val2: 
+            code; 
+            break;
+        case default:   // выполняется в посл очередь, может быть вставлен выше
+            code; 
+    }
+
+--- loops ---
+    Unreachable statement
+    действует на циклы
+    недостижимое состояние - условие всегда должно быть достижимым по 
+    правилам Java
+    while (false)   // недостижимое состояние - компилятор не пропустит
+
+    Loop statements
+    break;      // выход из цикла/тела/блока
+    continue;   // след итерация
+
+--- for ---
+    for(initialization;condition;update){   // (;;) могут не заполняться
+        code;
+        break;      // выход из цикла
+        continue;   // след итерация
+    }
+    initialization  // (int i = 10, j = 20, ... , n = 100;) либо пустое
+    condition       // (;i<0 && j>8 || !false;) либо пустое
+    update          // (;j++, i++, square(i,j),...) либо пустое
+
+    Nested loops:
+    for (int hour=0; hour<24;hour++){
+         for(int min=0; min<60;min++){
+              for(int sec=0;sec<60;sec++){
+                 System.out.println(hour+":"+min+":"+sec);
+              }
+         }
+    }
+
+    Labels of loops:
+    Циклы можно именовать, чтобы управлять внешними из внутренних циклов
+    OUTER: for(int min=0; min<60;min++){
+        INNER: for(int sec=0;sec<60;sec++){
+            System.out.println(hour+":"+min+":"+sec);
+            if (sec == 20) {
+                break OUTER;    // выход из цикла по имени
+            }
+        }
+    }
+
+--- while/do while ---
+    while (condition){  // condition - boolean
+        code;
+    }
+    
+    do while заходит в цикл минимум 1 раз
+    do{
+        code;
+    } while(condition);
+
+    Labels for loops
+    the same as "for" loop
+    OUTER:while(true){}
+
+--- String ---
+    Package:
+    java.lang.*
+
+    Creation:
+    String s1 = new String("Hi");   // всегда нов объект с unique address
+    String s2 = "Hi";               // помещ в String pool(если его еще не было)
+    System.out.print("Hi");         // также берется или помещается в StringPool
+                                       если уже есть такой объект - то получим
+                                       еще 1 ссылку на него.
+
+    String pool:
+    Место в памяти в котором содерж разные объекты класса String.
+    Новый объект класса String создается в String Pool только,
+    если там еще нет подобного объекта.
+
+    Difference:
+    Объекты созданные с пом new всегда будут с разными адресами
+    Объекты созданные по другому - могут ссылаться на один и тот же адрес.
+
+    Comparsion:
+    == !=   // сравнивает адреса у объектов
+    equals  // перезапис метод, у строк сравнивает именно содержимое строки
+
+    Char massive:
+    private final char {'h','e','l','l','o'};   // так String хранит значение
+
+    String is immutable:
+    String хранит свое значение в private final char массиве, с фиксированной 
+    длиной. Ни один из методов класса String не изменяет индивидуальные
+    элем массива char.
+
+    String methods:
+    lenght()        // -> int, symbols' count
+    charAt(i)       // -> char, what char at index 'i'
+    indexOf(c)      // -> int, position of char 'c'
+    indexOf(s)      // -> int, position of String 's'
+    indexOf(c,i)    // -> int, position of char 'c' after index 'i'
+    indexOf(s,i)    // -> int, position of String 's' after index 'i'
+                       -> -1, if not match
+    startsWith(s)   // -> boolean, start with String 's' or no
+    startsWith(s,i) // -> boolean, start with String 's' from ind 'i' or no
+    endWith(s)      // -> boolean, end with String 's' or no
+    subString(i)    // -> String, what string from index 'i' to end
+    subString(i,j)  // -> String, slice i:j from i(included) to j(not included)
+    trim()          // -> String, delete all whitespaces from end and beginning
+                          result - new String.
+    replace(c1,c2)  // -> char, replace old char 'c1' to new 'c2'
+    replace(s1,s2)  // -> String, replace old String 's1' to new 's2'
+    concat(s)       // -> String, concatenation, the same as  s1 + s2
+    toLowerCase()   // -> String, all letters convert to lower case
+    toUpperCase()   // -> String, all letters convert to Upper case
+    contains(s)     // -> boolean, does our String contains 's'?
+    equalsIgnoreCase// -> boolean?, comparsion with ignore case
+
+    Конкатенация, неявное приведение типов
+    i1, i2  - int
+    s       - String
+    String + int = String
+    System.out.println(i1 + i2 + s);        // 11ok
+    System.out.println("" + i1 + i2 + s);   // 56ok
+    Если первым операндом стоит стринг, то все типы дальнейшие типы приводятся
+    к стрингу.
+    даже так:
+        System.out.println("" + null + false);  // nullfalse
+        String s1 = null;
+        System.out.println(s1 += "ok");         // nullok
+
+    Chaining methods:
+    много методов идут один за одним, выполняются слева направо
+    s1.concat(s2).trim().replace("Yah", "Wow").substring(6, 10);
+
+--- StringBuilder ---
+    В отличие от String может менять свое значение, нет необходимости создавать
+    много объектов, меньше работы для garbage collector.
+
+    package:
+    java.lang
+
+    Creation:
+    capacity - вместилище для символов объекта StringBuilder всегда может
+    увеличиваться, по дефолту 16 символов. 
+    Конструкторы:
+    StringBuilder sb1 = new StringBuilder();            // пустой(16 симв по ум)
+    StringBuilder sb2 = new StringBuilder("Good day");  // кол-во символов: 8(
+                                                           Good day) + 16 = 24
+    StringBuilder sb3 = new StringBuilder(50);          // вместимость 50 симв
+    StringBuilder sb4 = new StringBuilder(sb2);         // из другого объекта
+                                                           копия, др адрес
+    StringBuilder sb5 = sb2;                            // тот же obj
+    String s = new String(sb1);                         // String можно делать
+                                                           из StringBuilder
+    String s = new String(new char[]{'h','i'})          // из массива char
+
+    Methods:
+    length()        // -> int, длина(кол-во) симв
+    charAt(i)       // -> char, char at index 'i'
+    indexOf(s)      // -> int, index of String 's', -1 if not match
+    indexOf(s,i)    // -> int, index of String 's', from index 'i', -1 if not m
+    substring(i)    // -> String, from index 'i' to end
+    substring(i1,i2)// -> String, from index 'i1' to 'i2'
+
+    subsequence(i,j)// -> CharSequence, from 'i' to 'j', the same as above
+    append(type)    // -> StringBuilder, добавляет в конец люб тип данных,
+                          меняет сам объект, также при вызове еще и возвращ себя
+    insert(i,type)  // -> StringBuilder, также как выше, но в любую позицию
+    delete(i,j)     // -> StringBuilder, удаляет символы от [i до j)
+    deleteCharAt(i) // -> StringBuilder, удаляет символ в индексе 'i'
+    reverse()       // -> StringBuilder, переворачивает текст
+    replace(i,j,s)  // -> StringBuilder, вместо строки от i до j встав строку s
+    capcity()       // -> int, количество места в массиве
+
+    Comparsion:
+    StringBuilder sb3 = new StringBuilder("123");
+    StringBuilder sb4 = new StringBuilder("123");
+    System.out.println(sb3==sb4);           // false
+    System.out.println(sb3.equals(sb4));    // false, метод сравнивает адреса,
+                                               не перезаписан как в String
+
+    StringBuffer:
+    очень поохож но используется в многопоточных программах
+    String s = new String(sb1); // String можно делать из StringBuffer
+
+--- Array/Массив ---
+    Массив - ссылочный тип данных, которых хранит коллекции элементов одинакового
+    типа, которые пронумерованы от 0.
+
+    Creation:
+    // declaration
+    int[] arr;                          // declaration/объявление, этот массив
+    int arr[];                             ссылается на null.
+
+    // declaration(допустимые)
+    int[] arr[];                        // 2-ый массив - скобки можно ставить
+                                           где угодно
+    int[] arr, arr2;                    // 2 одномерных массива
+    int arr[], var;                     // arr - массив, var - переменная int
+    int[] arr, arr2[]                   // arr - 1-мер, arr2 - 2-мерный
+
+    // allocation
+    arr = new int[5];                   // allocation/выделение, выделить память
+                                           для 5-ти объектов типа int. Массив
+                                           уже должен быть объявлен! Элементы
+                                           массива заполн знач-ми типа по умолч
+
+    // initialization(static, dynamic)
+    // static
+    arr[0] = 1;
+    arr[1] = 5;
+    arr[2] = -80;
+    // dynamic
+    for (int i = 0; i < arr1.length; i++) { // дин иниц 2-мерного массива
+        for (int j = 0; j < arr1[i].length; j++) {
+            arr1[i][j] = i + j;
+        }
+    }
+
+    // declaration+allocation
+    double[][] arr = new double[10][12];// 10 массивов, в кот массивы из 12 элем
+    double[][] arr = new double[3][];   // 3 мaссива в которых содерж массивы
+                                           разн длины, должны быть позже alloc
+                                           arr[0] = new double[5];
+                                           arr[1] = new double[2];
+                                           arr[2] = new double[7];
+
+    // allocation+initialization
+    arr = new int[]{1,2,3};             // если int[] arr; был уже объявлен.
+
+    // declaration+allocation+initialization
+    // длина массива вычисляется автоматически
+    int[] arr0 = new int[]{5,0};        // new int[] - не обязательно.
+    int[] arr1 = {1,5,0,-3,5};          // массив из 5 элементов типа int
+    String[] arr2 = {"hi","1","\n"};    // массив ссылок на адр String объектов
+    int[][] arr3 = {{0,1,2},{3,4,5}};   // двумерный int массив
+    char[][]...[] = {{{{{...}}}}};      // n-мерный массив
+
+    Indices/индексы:
+    arr1[0]         // 1-ый эл
+    arr3[1][0]      // 1-ый эл, второго массива
+    arr[1+1] = 2    // в [] можно производить арифм опреации
+    a[a.length-1]   // the last element
+
+    Methods:
+    arr.toString()  // выводит в консоль инфо(можно переопределить)
+
+    Attributes:
+    arr.length;     // это аттр класса - длина(кол-во эл) массива
+
+    Виды массивов:
+    с примитивными типами данных    // хранит собственно данные
+    с ссылочными типами данных      // хранит ссылки на адреса объектов
+
+    Comparsion:
+    ==, equals()    // сравнивают адреса массивов
+
+    class java.utils.Arrays
+    sort(arr)               // -> sorted arr, сортирует массив
+    binarySearch(arr,val)   // -> int, приним сорт массив и нужное значение,
+                               возвращ индекс найденного эл, иначе отриц число
+
+--- Компиляция и запуск из консоли ---
+    javac MyClass.java  // compile
+    java MyClass args   // execute with arguments args to main String[] args
+
+--- varargs ---
+    variable arguments
+    varargs == *args python, принимает от 0 до бесконечночти
+    static void sum(int ... a)  // функция принимает любое кол-во эл
+                                   sum(1, 9, -3);
+    static void sum2(int[] a)   // аналогичная функция, но менее удобная при
+                                   вызове sum2(new int[]{1, 9,- 3});
+    varaargs может быть только 1, но параметров может быть сколько угодно
+    varargs должен распологаться в самом конце списка параметров
+    (String s, int ... a)
+    public void abc (int[]...a) // при вызове метода можно либо ничего не
+                                   передавать, либо передавать 1+ массивов инт
+
+--- Enhanced for/foreach ---
+    Используется для обхода массивов и коллекций
+    
+    for (int i : array) {                       // enhanced for, i - перемен-я 
+        System.out.print(i + " ");                 принимающая поочер знач
+    }                                              массива. В случ примитивных
+                                                   типов и строк - это копия.
+                                                   Остальные ссылочные -
+                                                   можно поменять значение. 
+    Метки, влож циклы также можно использовать.
+
+    for (int i = 0; i < array.length; i++) {    // the same traditional for
+        System.out.print(array[i] + " ");
+    }
+
+
+
+
+
 
