@@ -205,22 +205,8 @@ DROP TABLE aircrafts;
 
 -- Работа с данными ----------------------------------------------------
 -- внести данные
-INSERT INTO aircrafts       
-  ( aircraft_code, model, range )
-  VALUES ( 'SU9', 'Sukhoi SuperJet-100', 3000 );
+INSERT INTO aircrafts  
   COPY aircrafts FROM '/home/user/air.txt'; # внести из текстового файла
-
--- выборка данных
-SELECT * FROM aircrafts;    
-
--- обновить/изменить данные
-UPDATE aircrafts            
-  SET range = 3500
-  WHERE aircraft_code = 'SU9';
-
--- удалить данные
-DELETE FROM aircrafts       
-  WHERE aircraft_code = 'CN1';
 
 -- Соединения таблиц
 -- по полям, если есть совпадение в обоих таблицах
