@@ -429,7 +429,7 @@
                        -> -1, if not match
     startsWith(s)   // -> boolean, start with String 's' or no
     startsWith(s,i) // -> boolean, start with String 's' from ind 'i' or no
-    endWith(s)      // -> boolean, end with String 's' or no
+    endsWith(s)     // -> boolean, end with String 's' or no
     subString(i)    // -> String, what string from index 'i' to end
     subString(i,j)  // -> String, slice i:j from i(included) to j(not included)
     trim()          // -> String, delete all whitespaces from end and beginning
