@@ -72,6 +72,8 @@
     char c4 = '\u0500';     // 16-рич система
     int a7 = 1_000_000;     // использование для удобства _
 
+    int a, b=10,c;          // обьявить 3 перем типа int и 1 иниц-ть.
+
 --- Системы исчисления ---
     int a = 0b1000;         // двоичная система - число 8
     int a = 074;            // восьмеричная си
@@ -124,7 +126,7 @@
     {}      // body
 
 --- Constructor ---
-    Car car1 = new Car();   // Car() - constructor, as name of class
+    Car car1 = new Car();   // Car() - constructor, the same name as class
                                car1 - Car object
     Car(){}                 // default constructor
     Car(vars){code;}        // custom constructor(перегруженный)
@@ -199,6 +201,8 @@
     protected   +     +    +     -        +
     
     protected видна также в классах-наследниках в любых пакетах.
+    default class не виден в других пакетахб собственно и все его элементы.
+    default constructor of class has the same access modifier as class.
 
     Для каких структур какие есть модификаторы:
                 public private default protected
@@ -251,11 +255,15 @@
     методы      - camel case глагол, что делать, goAhead
     final       - константы, все большие буквы, WHEIGHT
 
---- Время существования ---
+--- garbage collector ---
     объекты существуют в памяти пока на них есть ссылки
     obj = null; // оборвать связь вручную
     После того как память осталась без ссылки ее убирает Garbage Collector
     Управление GC находится под управлением JVM.
+    Можно знать какие объекты могут быть удалены, но когда это будет сделано
+    gc решает самостоятельно.
+    System.gc() // совет коллектору удалить obj
+    finalize()  // вызывается колектором для удаления obj
 
 --- import ---
     импорт по полн имени        с исп import    comment
@@ -316,6 +324,17 @@
 
 --- Ternary operator ---
     (boolean expression) ? (if true) : (if false);
+
+    int a = 4;
+    int b = 5;
+    System.out.println(a < 4 ? "true" : "false");   // sout -> false
+    int c = a < 4 ? a++ : a--;                      // c=4, a=3
+
+    nested:
+    exp1 ? exp2 ? 10 : 5 : 0
+        exp1 true  -> выполняем то что между крайне левым '?'
+                      и крайне правым ':' -> (exp2 ? 10 : 5)
+             false -> выполняем то что справа от крайнего : -> 0
     
 --- switch ---
     switch (expression) {   // типы используемые в выражении
