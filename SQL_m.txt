@@ -369,11 +369,31 @@ ORDER BY column1;
    WHERE | HAVING выражение, включающее вложенный запрос;
    WHERE | HAVING выражение [NOT] IN (вложенный запрос);
    WHERE | HAVING выражение  оператор_сравнения  ANY | ALL (вложенный запрос)
-   
+-- Операторы ANY и ALL
+   Операторы ANY и ALL используются  в SQL для сравнения некоторого значения
+   с результирующим набором вложенного запроса, состоящим из одного столбца.
+   Можно использовать только с вложенными запросами.
+-- ANY в результирующую таблицу будут включены все записи, для которых  
+   выраж со знаком отношения верно хотя бы для одного эл резуль-го запроса
+-- ALL в результирующую таблицу будут включены все записи, для которых  
+   выраж со знаком отношения верно для всех эл результирующего запроса
+-- Examples
+   amount > ANY (10, 12) эквивалентно amount > 10
+   amount < ANY (10, 12) эквивалентно amount < 12
+   amount > ALL (10, 12) эквивалентно amount > 12
+   amount < ALL (10, 12) эквивалентно amount < 10
+  
 SELECT id, name, price  # SELECT UPDATE DELETE INSERT
 FROM products
 WHERE price = (SELECT MAX(price) FROM products) # подзапрос возвр рез-т 1-ым
       id IN (SELECT product_id FROM sales)
+SELECT title, author, amount, price
+FROM book
+WHERE amount < ALL (
+        SELECT AVG(amount) 
+        FROM book 
+        GROUP BY author 
+      );
 
 -- Транзакции - последов-сть ком-д кот должны быть выполнены все или не одной
 START TRANSACTION;
