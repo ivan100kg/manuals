@@ -260,6 +260,10 @@ VALUES
     (val3, val4...),        # можно вносить неск записей(списки одинак размера)
     ...
     (valn, valm…);
+-- добавить из др таблицы можно использовать WHERE, GROUP BY, ORDER BY
+INSERT INTO book (title, author, price, amount) 
+SELECT title, author, price, amount 
+FROM supply;
 
 -- SELECT
 -- Извлечение данных
