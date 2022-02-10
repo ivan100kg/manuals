@@ -387,17 +387,16 @@ ORDER BY column1;
    amount > ALL (10, 12) эквивалентно amount > 12
    amount < ALL (10, 12) эквивалентно amount < 10
   
-SELECT id, name, price  # SELECT UPDATE DELETE INSERT
-FROM products
-WHERE price = (SELECT MAX(price) FROM products) # подзапрос возвр рез-т 1-ым
-      id IN (SELECT product_id FROM sales)
-SELECT title, author, amount, price
-FROM book
-WHERE amount < ALL (
-        SELECT AVG(amount) 
-        FROM book 
-        GROUP BY author 
-      );
+	SELECT id, name, price  # SELECT UPDATE DELETE INSERT
+	FROM products
+	WHERE price = (SELECT MAX(price) FROM products) # подзапрос возвр рез-т 1-ым
+		  id IN (SELECT product_id FROM sales)
+	SELECT title, author, amount, price
+	FROM book
+	WHERE amount < ALL (
+			SELECT AVG(amount) 
+			FROM book 
+			GROUP BY author);
 
 -- Транзакции - последов-сть ком-д кот должны быть выполнены все или не одной
 START TRANSACTION;
