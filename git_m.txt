@@ -1,8 +1,18 @@
-# памятка по git
+# git
 
-# показывает кто и когда вносит изменения
-git config --global user.name "my Name"       # имя
-git config --global user.email myemail@ex.hu  # email
+--- Settings -----------------------------------------------------------------
+git config --list								# all settings
+git config --list --show-origin					# the same + location of
+												  config files
+git config user.name							# show a value of a key
+git config --global user.name "my Name"       	# name
+git config --global user.email myemail@ex.hu  	# email
+git config --global core.editor vim				# default editor
+git config --global init.defaultBranch main		# name of main default new 
+												  branch(master is default)
+
+--- What is Git --------------------------------------------------------------
+
 
 git init                        # создание нового репозитория
 git status                      # статус
