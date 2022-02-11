@@ -41,6 +41,12 @@ ALTER TABLE my_table
 SHOW TABLES;          -показать все таблицы в базе
 EXPLAIN my_table;     -показать структуру таблицы
 DROP TABLE my_table;  -удалить таблицу
+
+--- if-else
+IF search_condition THEN statement_list
+    [ELSEIF search_condition THEN statement_list] ...
+    [ELSE statement_list]
+END IF
 ================================================================================
 
 === PostgreSQL =================================================================
@@ -233,6 +239,14 @@ UPDATE accounts SET balance = balance - 100.00
 -- ...
 COMMIT;
 
+-- CASE expression(if-else)
+CASE 
+      WHEN condition_1  THEN result_1
+      WHEN condition_2  THEN result_2
+      [WHEN ...]
+      [ELSE else_result]
+END
+
 ================================================================================
 
 --- SQL ------------------------------------------------------------------------
@@ -262,8 +276,8 @@ VALUES
     (valn, valm…);
 -- добавить из др таблицы можно использовать WHERE, GROUP BY, ORDER BY
 INSERT INTO book (title, author, price, amount) 
-SELECT title, author, price, amount 
-FROM supply;
+SELECT title, author, price, amount FROM supply
+WHERE author NOT IN ( SELECT author FROM book );	# также можно исп влож запр
 
 -- SELECT
 -- Извлечение данных
@@ -282,6 +296,10 @@ UPDATE table                # table
 SET column1 = 'my var',     # установить новые значения в определенные колонки
     column2 = 1080...
 WHERE column_name = '...';  # условие, при котором необходимо изменить запись
+-- В запросах на обновление можно использовать несколько таблиц
+UPDATE book, supply 
+SET book.amount = book.amount + supply.amount
+WHERE book.title = supply.title AND book.author = supply.author;
 
 -- DELETE
 -- Удаление данных
