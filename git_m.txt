@@ -1,6 +1,6 @@
 # git
 
---- Settings -----------------------------------------------------------------
+--- Settings --------------------------------------------------------------
 git config --list								# all settings
 git config --list --show-origin					# the same + location of
 												  config files
@@ -11,12 +11,39 @@ git config --global core.editor vim				# default editor
 git config --global init.defaultBranch main		# name of main default new 
 												  branch(master is default)
 
---- What is Git --------------------------------------------------------------
+--- Help -----------
+git help <команда>
+git <команда> --help
+man git-<команда>
 
+--- What is Git -------------------------------------------------------------
+# main states of files
+    modifed     - (измененные) поменялись, но ещё не были зафиксированы
+    staged      - (индексированный) это изменённый файл в его текущей версии,
+                  отмеченный для включения в следующий коммит.
+    commited    - (зафиксированный) файл уже сохранён в вашей локальной базе
 
-git init                        # создание нового репозитория
+# main sections of a Git project
+    Working directory           - снимок одной версии проекта
+    Index                       - что попадёт в следующий коммит
+    .git derectory(Repository)  - метаданные и база объектов вашего проекта
+
+    Working dir  Index  .git
+        |          |      |
+        |<----------------+     - checkout the project
+        +--------->|      |     - stage fixes
+                   +----->|     - commit
+    
+--- Getting a Git Repository -------------------------------------------------
+git init        # создание репозитория в сущ каталоге. Создается дир-я .git
+                  содерж все необх файлы репозитория — структуру Git реп-ия.
+git clone <url> # с сервера забирается (pulled) каждая версия каждого файла из
+                  истории проекта. Извлекается рабочая копия последней версии. 
+
+--- Git Basics ------------------------------------------------------------
+# 
 git status                      # статус
-git add filename or -A          # добавить файл или все в репозиторий
+git add filename or -A          # add file to index
 git reset                       # отменить add
 git commit -m "Initial commit." # коммит, фиксация изменений, -m - коммент
 
