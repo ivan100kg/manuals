@@ -95,7 +95,7 @@ wild cards:
     ?       - 1 symbol
     [qw]    - q or w, matches any character inside the brackets
     [0-9]   - matches any character between range
-каталоги/вложенность
+	каталоги/вложенность:
     /temp   - файлы попадающ под шаблон 'temp' только в корневом каталоге
     temp/   - исключить директорию попадающ под шаблон 'temp'
     !temp   - инвертировать шаблон
