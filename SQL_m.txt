@@ -122,6 +122,8 @@ SELECT ('2016-09-16'::timestamp - '2016-09-01'::timestamp)::interval;
 SELECT (date_trunc('hour', current_timestamp)); # до часа 2016-09-27 22:00:00+03
 -- извлечение отдельных полей времени
 SELECT extract( 'mon' FROM timestamp '1999-11-27 12:34:56.123459' );    # 11
+SELECT EXTRACT(YEAR FROM birthday)		# извлечь год из поля birthday
+SELECT AGE('2017-01-01','2011-06-24');	# 5 years 6 mons 7 days
 
 -- Логический тип Boolean
 TRUE    't' 'true'  'yes'   'on'    '1' # истина
@@ -319,7 +321,9 @@ WHERE title IN (			# вложенный запрос
 TRUNCATE TABLE my_table;    # удаляет все и сбрасывает счетчик
 
 -- AS ------------------------------------------------------------------------
-SELECT column1 AS col FROM table;         # псевдоним
+SELECT column1 AS col FROM table;         # псевдоним поля
+SELECT f.name, f.number_plate, f.violation, 
+FROM  fine f, traffic_violation tv
 
 -- WHERE ---------------------------------------------------------------------
 -- фильтрация, используется в SELECT/UPDATE/DELETE
