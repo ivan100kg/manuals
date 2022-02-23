@@ -10,7 +10,11 @@ git config --global user.email myemail@ex.hu  	# email
 git config --global core.editor vim				# default editor
 git config --global init.defaultBranch main		# name of main default new 
 												  branch(master is default)
-
+git config --global pull.rebase "true/false"	# true - перебазирование 
+												  при получении изменений.
+                                                  false - смещение вперёд если 
+												  возможно — иначе создание 
+												  коммита слияния.
 --- Help -----------
 git help <команда>
 git <команда> --help
@@ -173,23 +177,31 @@ git log --pretty="%h - %s" --author='Hamano' --since="2008-10-01"
 # Удалённые репозитории представляют собой версии вашего проекта
   может быть несколько удалённых репозиториев, каждый из которых может
   быть доступен для чтения или для чтения-записи.
-git remote              # названия доступных удалённых репозиториев.
-                          origin - имя сервера по умолчанию с которого
-                          производится клонирование.
-git remote -value       #  адреса для чтения и записи, привяз к реп.
+git remote              	# названия доступных удалённых репозиториев.
+                              origin - имя сервера по умолчанию с которого
+                              производится клонирование.
+git remote -value       	# адреса для чтения и записи, привяз к реп.
+git remote add <repn> <url>	# доб реп и дать ему свое короткое имя 'repn',
+							  так можно связать новый лок реп с GitHub.
+git fetch [remote]			# связаться с реп, получить изменения кот еще нет,
+							  после появятся ссылки все ветки, кот можно
+							  смотреть или слить. Не модифицирует то, над чем 
+							  вы работаете в данный момент, сливается вручную.
+git clone <url>				# автоматически добавляет реп с названием 'origin'
+							  и настраивает локальную ветку master на 
+							  отслеживание удалённой ветки master на сервере.
+git pull 					# извлекает (fetch) данные с сервера, с которого вы
+                              изначально клонировали, с ветки по умолчанию
+							  и автоматически пытается слить (merge) их с кодом
+							  в вашей working directory
+git push <remote> <branch>  # отправка коммитов локальной ветки 'branch' на 
+							  удалённый репозиторий 'remote' (в ту же ветку).
+git remote show <remote>	# больше информации об одном из удалённых реп.
+							  показывает куда и откуда будет что вливаться, 
+							  какие ветки есть и как все настроено.
+git remote rename <o> <n>	# переименовать реп 'o' to 'n'.
+git remote remove <remote>	# удалить репозиторий.
 
-
-# связать реп с созданным на github назовем origin(мб много в проекте)
-git remote add origin https://github.com/ivan100kg/remember.git
-
-# пересылаем на сервер origin - имя master - ветка по умолчанию
-git push origin master
-
-# клонировать себе уже готовый реп с github и получить копию локально
-git clone https://github.com/ivan100kg/remember.git
-
-# скачать изменения/обновления репозитория
-git pull origin master
 
 # Ветки ***
 git branch new_branch    # новая ветка точная копия master
