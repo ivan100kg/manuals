@@ -1,8 +1,8 @@
-# Алгоритм - набор инструкций для выполнения задачи
+# Алгоритм - набор инструкций для выполнения задачи.
 
 ### Время выполнения алгоритма
-Средний случай - он же лучший случай выполнения алгоритма. 
-Худший случай - самый долгий вариант выполнения алгоритма.
+`Средний случай` - он же лучший случай выполнения алгоритма.<br>
+`Худший случай` - самый долгий вариант выполнения алгоритма.<br>
 Для алгоритмов с одинаковой скоростью например O(n) также учитывается
 константа c - некоторый фиксированный пром времени для 1 операции. 
 O(n*c)
@@ -30,6 +30,7 @@ O(n!)        # факториальное время, оч медленные а
 
 ### Алгоритмы поиска
 ##### Бинарный поиск - поиск в отсортированном массиве, O(log n)
+``` python3
 def binary_search(items_list, item):
     """на вход подаётся отсортированный список и значение"""
     low = 0
@@ -44,25 +45,7 @@ def binary_search(items_list, item):
         else:
             high = mid - 1
     return None
-
-
-
-###### Сортировка выбором: скорость O(n**2)
-def smallest(arr):
-    small_val = arr[0]
-    small_ind = 0
-    for i in range(1, len(arr)):
-        if arr[i] < small_val:
-            small_val = arr[i]
-            small_ind = i
-    return small_ind
-
-def selectionSort(arr):
-    sortArr = []
-    for i in range(len(arr)):
-        small_ind = smallest(arr)
-        sortArr.append(arr.pop(small_ind))
-    return sortArr
+```
 
 ##### Рекурсивная функция
 Базовый возврат из функции
@@ -71,6 +54,7 @@ def selectionSort(arr):
 
 ###### Алгоритм быстрой сортировки, разделяй и властвуй.
 Время O(n**2), среднее O(n *logn)
+``` python3
 def quicksort(arr):
     if len(arr) < 2:
         return arr
@@ -79,4 +63,5 @@ def quicksort(arr):
         less  = [i for i in arr[1:] if i ≤ pivot]
         greater = [i for i in arr[1:] if i > pivot]
         return quicksort(less) + [pivot] + quicksort(greater)
+```
 
