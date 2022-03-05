@@ -24,6 +24,12 @@
     JVM         // виртуальная машина Java(интерпретатор) - вып машинный код
     Запускается независимо от ОС.
 
+--- Jshell ---
+    The Java Shell tool (JShell) is an interactive tool for learning 
+    the Java programming language and prototyping Java code.
+    jshell      // запуск Java9+
+    exit        // выход, Ctrl+D
+
 --- Comments ---
     // comment
     /*
@@ -34,12 +40,15 @@
     */
 
 --- Literals ---
-    10      // int
-    100L    // long
-    3.14f   // float
-    2.72    // double
-    'a'     // char
-    "hi"    // String
+    10          // int
+    100L        // long
+    3.14f       // float
+    2.72        // double
+    'a'         // char
+    "hi"        // String
+    NaN         // not a Number 0.0/0
+    Infinity    // 10.0/0
+    -Infinity   // -10.0/0
 
 --- Primitive data types ---
     types       size        range
@@ -533,6 +542,8 @@
 --- Array/Массив ---
     Массив - ссылочный тип данных, которых хранит коллекции элементов одинакового
     типа, которые пронумерованы от 0.
+    Массив содержит заголовок, длину массива.
+    Двумерный массив - массив ссылок на одномерные массивы.
 
     Creation:
     // declaration
@@ -610,6 +621,7 @@
 --- Компиляция и запуск из консоли ---
     javac MyClass.java  // compile
     java MyClass args   // execute with arguments args to main String[] args
+    java MyClass.java   // for java 10+
 
 --- varargs ---
     variable arguments
