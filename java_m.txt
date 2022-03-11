@@ -1265,3 +1265,164 @@
     ExceptionInInitializerError // выбрасывается в статич элементах, когда при
                                    их использовании выбрас runtime exception.
     
+--- Date/Time ---
+    java.time       // package
+    LocalDate       // date: год, месяц, день
+    LocalTime       // time: час, минута, секунда, наносекунда
+    LocalDateTime   // date + time
+    now()           // метод этих классов - показыывает дату/время сейчас
+    Period          // класс период можно передавать в метод plus()/minus()
+                       может принимать любые периоды в годах...днях
+                       используется с LocalDate, LocalDateTime.
+    Duration        // класс длительность, используется с LocalTime и 
+                       LocalDateTime, как Period но меньше - дни..наносек.
+    Эти классы имеют private конструкторы, мы не можем создать объекты с 
+    помощью конструкторов. Но есть статический метод of, который возвращает
+    объект соотв-го класса.
+    Объекты данных классов - immutable.(неизменяемые)
+    Все их методы возвращают нов объекты.
+        
+    of: // создание объектов с пом статич метода of()
+    LocalDate ld = LocalDate.of(1983,1,23);             // date 1 вариант
+    LocalDate ld = LocalDate.of(1983,Month.JAN,23);     // date 2 вариант
+    LocalTime lt = LocalTime.of(hour,min[,сек,msec])    // time
+    LocalDateTime.of(year,mon,day,hour,min,sec,nanosec) // datetime
+    LocalDateTime ldt = LocalDateTime.of(ld,lt)         // из date и time
+    Period p = Period.ofWeeks(2);                       // период=2 недели
+                                                           year - days
+    Duration d = Duration.ofHours(1);                   // длительность = 1 час
+                                                           days - nanosec
+
+    Exceptions:
+    DateTimeExceptions  // исключение если неправильная дата/время
+
+    LocalDate methods:
+    plusDays(long t)                // --> LocalDate, добавить дни
+    minusDays(long t)               // --> LocalDate, отбавить дни
+    plus/minus                      // the same: Months, Weeks, Years
+    plus(Period p)                  // --> LocalDate прибавляет на период
+    minus(Period p)                 // --> LocalDate убавляет на период
+    getDayOfWeek()                  // --> DayOfWeek
+    getDayOfMonth()                 // --> int
+    getDayOfYear()                  // --> int, сначала года
+    getMonth()                      // --> Month
+    getYear()                       // --> int
+    
+    LocalTme methods:
+    plusHours(long hours)           // --> LocalTime, добавить часы
+    ...                             // Minutes, Seconds, Nanos
+    minusNanos(long nsec)           // --> LocalTime, отбавить наносекунды
+    plus(Duration d)                // --> LocalTime прибавляет на длительность
+    minus(Duration d)               // --> LocalTime убавляет на дрительность
+    getHour()                       // --> int... 
+    minute second
+    getNano()                       // --> int 
+    
+    LocalDateTime methods:           
+    ...                             // охватывает все методы выше
+
+    До и после(сравнивать только одинак классы):
+    isAfter(t)                      // --> boolean, после этого?
+    isBefore(t)                     // --> boolean, до этого?
+
+    DateTimeFormatter
+    Класс работающий с временными классами - удобный формат вывода.
+    Нужно брать только ту инфу, которую включают классы.
+     
+    java.time.format.               // package 
+    // create with const vars
+    DateTimeFormatter d1 = DateTimeFormatter.ISO_LOCAL_DATE;    // стд вывод
+    DateTimeFormatter d2 = DateTimeFormatter.ISO_WEEK_DATE;     // 2022-W09-4
+    DateTimeFormatter t1 = DateTimeFormatter.ISO_LOCAL_TIME;
+    DateTimeFormatter dt1 = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    // create with methods
+    DateTimeFormatter sht = 
+        DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);   // 03.03.22 
+                                         (FormatStyle.FULL);    // full
+                                         (FormatStyle.MEDIUM);  // 03.03.2022
+        DateTimeFormatter.ofLocalizedTime()                     // similar
+        DateTimeFormatter.ofLocalizedDateTime()                 // similar
+    // use
+    System.out.println(d.format(d1));   // форматирование вывода для LocalDate
+    System.out.println(d1.format(d));   // the same,в Formatter тоже есть format
+    // свой формат
+    DateTimeFormatter f = DateTimeFormatter.ofPattern("MMMM dd, yyyy, hh:mm");
+        // марта 03, 2022, 07:29
+           y    2014    year
+           yy   14
+           yyyy 2014
+           M    3       month
+           MM   03      
+           MMM  мар
+           MMMM марта
+           w    1       week
+           ww   01      
+           d    9       day
+           dd   09
+           h    7       hour
+           hh   07
+           m    8       minute
+           mm   08      
+           s    30      second
+           ss   30
+           n    5555    nanoseconds
+           nnnnn    0555
+
+    parse()
+    Переводит дату/время из строки в объект времени, строка должна
+    соответствовать формату.
+    DateTimeFormatter f1 = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+    LocalDate ld = LocalDate.parse("1983.01.23", f1);
+    System.out.println(ld); // 1983-01-23 - default format.
+    LocalDate ld = LocalDate.parse("1983-01-23");   // если строка в таком виде,
+                                                       то можно без форматтера.
+
+--- Lambda exspressions ---
+    Анонимный метод(без имени).
+    Переопред метода инт-йса без создания класса имплементирующуго этот инт-йс.
+    ->  // оператор в лямда выр - разделяет список параметров и тело метода.
+    interface I { void foo(); } // функциональный интерефейс(1 метод)
+    bar(() -> {code;})          // переопределение метода
+    public class A { // класс в методе которого используется интерфейс
+        // метод, один из параметров которого интерфейс I
+        static void foo(double b, I i, int a) {
+            // в методе класса идет вызов метода интерфейса i.bar(param)
+            // для наглядности используются доп параметры
+            System.out.println(a + " Hi " + i.bar(" bla-bla ") + b);
+        }
+        public static void main(String[] args) {
+            // вызываем метод класса и переопределяем метод интерфейса на месте.
+            foo(2.72, (String s) -> {   // здесь идет переопределение метода
+                return "everyone" + s;  // интерфейса, без создания доп класса.
+            }, 12);                     // (String s) мож просто (s) - параметр
+        }                               // {return "everyone" + s;} - тело
+                                        // 2.72 и 12 - доп параметры для нагляд
+    }
+    // чтобы использовать lambda выражения в интерфейсе дол быть только 1 метод
+    // Функциональный интерфейс - интерфейс с 1 абстрактным методом
+    interface I {               // Функциональный интерфейс 
+        String bar(String s);   // метод который должен быть переопределен
+    }    
+    Способы написания lambda:
+    (int i, int j) -> {  // указ тип папаметра, несколько инструкций.
+        i += 10;
+        return i;
+    }
+    (i,y) -> i+y        // неск параметров, 1 инструкция, возвращ int
+    i -> {return i+10;} // если 1 парам - без указания типа параметра
+    i -> i+10           // самый сокращенный, если 1 инструкция.
+    () -> 5             // нет параметров, возврат int
+    () -> {}            // без аргументов и без тела
+
+--- interface Predicate<T> ---
+    Функциональный интерфейс под любой тип данных, уже есть, не нужно объявлять
+    package: java.util.function.    
+    public interface Predicate<T> {
+        boolean test(T t);
+    }
+    Просто в параметре медода принимающего интерфейс написать Predicate<MyCl> t,
+    класс выбрать тот какой нужен.
+    arr.removeIf(x -> x.name.endsWith("a"));    // пример с ArrayList
+
+
+
