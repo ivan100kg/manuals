@@ -310,11 +310,11 @@ while [ $repeat -gt 0 ]; do {
     repeat=$((repeat - 1))
 }
 done
+# чтение из файла с пом read, присваивание, вывод
 while read distro version release; do 
 	printf "Distro: %s\tVersion: %s\tReleased: %s\n" $distro $version $release
 done < distros.txt  
-#чтение из файла с пом read, присваивание, вывод
-  -либо можно передать по конвейеру: файл|while read var;do ... ; done
+# либо можно передать по конвейеру: файл|while read var;do ... ; done
 
 --- for ---
 for i in <list>; do         # <list> список аргументов через пробел
