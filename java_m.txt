@@ -1416,6 +1416,7 @@
     }
     // чтобы использовать lambda выражения в интерфейсе дол быть только 1 метод
     // Функциональный интерфейс - интерфейс с 1 абстрактным методом
+    @FunctionalInterface        // необязательная аннотация
     interface I {               // Функциональный интерфейс 
         String bar(String s);   // метод который должен быть переопределен
     }    
@@ -1446,3 +1447,110 @@
     Example:
     LocalDate ld = LocalDate.of(1983,1,23);
 
+--- enum ---
+    перечисление — это список именованных однотипных констант, определяющих
+    новый тип данных, в объектах которого могут храниться только значения
+     из этого списка. 
+    // самый простой случай
+    public enum Fruit {
+        ORANGE , APPLE , BANANA , CHERRY
+    }
+
+    public static void main(String[] args) {
+        Fruit fruit = Fruit.APPLE;
+        System.out.println(fruit);
+        if (fruit == Fruit.APPLE) {
+            System.out.println( "fruit действительно является яблоком" );
+        }
+        switch (fruit ) {
+            case APPLE:
+                System.out.println( "fruit - яблоко" );
+                break ;
+            case ORANGE:
+                System.out.println( "fruit - апельсин" );
+                break ;
+            case CHERRY:
+                System.out.println( "fruit - вишня" );
+                break ;
+        }
+
+        System.out.println( "Все элементы перечисления:" );
+        for (Fruit fruit : Fruit.values()) {
+            System.out.println(fruit);
+        }
+        System.out.println( "Поиск по названию: " + Fruit.valueOf( "BANANA" ));
+    }
+    // немного касомизированный случай
+    public enum Month {
+    JAN(1), FEB(2), MAR(3), APR(4), MAY(5), JUN(6), JUL(7), AUG(8), SEP(9), OCT(10), NOV(11), DEC(12);
+
+    private int number;
+
+    public int getNumber() {
+        return number;
+    }
+
+    Month(int number) {
+        this.number = number;
+    }
+    }
+    Использование:
+    Month month = Month.JAN;    // может принимать только значения enum
+
+--- Inner classes ---
+    Вложенные классы - один класс в теле другого класса.
+    Inner class имеет доступ к внешним полям методам внешнего класса,
+    а outer class не имеет доступа к полям иметодам внутр класса.
+    Объект внутреннего класса не может существовать без объекта 
+    внешнего класса.
+    Нужен в основном для группировки данных и только в этом 
+    классе и нигде больше не требуются.
+    class Outer {
+        int out;
+
+        class Inner {
+            int in1;
+        }
+
+        static Inner2 {
+            int in2;
+        }
+       
+        public static void main(String[] args) {
+            Inner inner = new Outer().new Inner();  // привязка к obj
+            Inner2 inner2 = new Inner2();           // без привязки
+        }
+    }
+
+--- Local class ---
+    Это класс объявленный в теле метода.
+    Нужен в основном для группировки данных только в данном методе.
+
+--- Anonimous inner local class ---
+    Класс создается на месте без имени и сразу используется. 
+    Используются если такой класс нужен только в одном месте программы
+    и больше нигде не переисрпользуются, например обработчик кнопки.
+
+    button3.addActionListener(new ActionListener() {    // anonymous
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println(3);
+        }
+    });
+
+    class MainApp {
+        public static void main(String[] args) {
+            // анонимный класс из интерфейса
+            Flyable flyable = new Flyable() {
+                @Override
+                public void fly() {}
+            };
+            System.out.println(flyable.getClass().getName()); // MainApp$1
+            // анонимный класс из абстрактного класса
+            Animal animal = new Animal() {
+                @Override
+                void run() {}
+            };
+            System.out.println(animal.getClass().getName()); // MainApp$2
+        }
+    }
