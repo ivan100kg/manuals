@@ -1230,7 +1230,9 @@
     e - показывает тип исключения и сообщение/разъяснение.
     e.getMessage()          // сообщение исключения
     e.printStackTrace(      // вывод стэка ошибки
-    
+
+    catch(FileNotFoundException | NullPointerException e) // 2 исключ в 1 c.
+
     Порядок перехвата исключений от наследников к базовым, если поставить
     базовый класс Throwable на первый catch - остальные никогда не обработ. 
     catch (FileNotFoundException e) {
@@ -1257,6 +1259,16 @@
     Поддерживаются вложенные(nested) try-catch.
     Если исключения выбрасываются в catch блоке оно дол быть обработано
     во вложенном блоке, т.к. в этом же блоке поймать нельзя.
+
+--- try with resourses ---
+    Используется с Closeable(интерфейс) объектами(напр FileOutputStream).
+    Finnaly как бы используется по умолчанию, в котором файл закрывается.
+    try (FileOutputStream out2 = new FileOutputStream("2.txt")) {
+
+    } catch (IOException e) {
+        e.printStackTrace();
+    }   // out2.close() произойдет в любом случае, не надо ничего городить
+    Пожожа на open with в Python.
 
 --- throws ---
     Выброс исключений
