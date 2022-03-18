@@ -659,59 +659,6 @@
 --- Object ---
     Cамый главный класс в Java. От которого унаследованы все классы.
 
---- ArrayList ---
-
-    package java.util, произошел от List
-    Может менять длину.
-
-    Creation
-    ArrayList по умолчанию включает в себя массив объектов класса Object.
-    Т.е. элементами массва могут быть любые ссылочные типы данных, так как 
-    все они произошли от Object.
-    Примитивные типы данных не могут содержаться в ArrayList.
-    ArrayList list = new ArrayList();                   // ListArray Object
-    ArrayList<Object> list = new ArrayList<>();         // the same as above
-    ArrayList<Object> list = new ArrayList<Object>();   // the same as above
-    ArrayList<String> l1 = new ArrayList<>();   // только String objects
-    ArrayList<String> l2 = new ArrayList<>(8);  // capacity = 8, может увелич-ся
-    ArrayList<String> l3 = new ArrayList<>(l1); // из другого листа(разн адреса)
-
-    Methods
-    size()                  // -> int, размер списка(кол-во эл-ов)
-    add(DataType el)        // -> boolean, добавить в конец списка
-    add(nt i, DataType el)  // -> boolean, добавить в индекс 'i', остальные сдвиг
-    addAll(ArrayList a)     // -> boolean, добавить в конец элементы
-    addAll(int, ArrayList a)// -> boolean, добавить элементы в индекс 'i'
-    get(int index)          // -> DataType, элемент под индексом 'i'
-    indexOf(Object el)      // -> int, 1-ый индекс запрашиваемого элелента, else -1
-    lastIndexOf(Object el)  // -> int, посл индекс запрашиваемого элелента, else -1
-    set(int i, DataType el) // -> DataType, заменяет элемент под индексом 'i'
-    remove(Object el)       // -> boolean, удаляет элемент ссылка на кот в параметре
-    remove(int index)       // -> DataType, удалить элем по индексу 'index'
-    clear()                 // -> void, удалить все элементы
-    isEmpty()               // -> boolean, пустой?
-    contains(Object el)     // -> boolean, есть ли объект в листе?
-    toString()              // -> String, возвращ строковое предст об
-    clone()                 // -> Object, сам массив получ нов адрес, но эл-ты те же
-    toArray()               // -> Object, в Object массив
-    toArray(DataType[] arr) // -> DataType, массив выбранного типа.
-    equals(ArrayList l)     // -> boolean, равны если элементы и их порядок одинак
-    Arrays.asList(DataType[])               // -> List<DataType>, List объект
-    Collections.sort(ArrayList<DataType>    // -> void, сортировка
-
-    Iterator
-    Iterator<String> it = list.iterator();
-    while(it.hasNext()){        // приимущество перед foreach, можно удалять эл
-        System.out.println(it.next());
-    }
-    for (String s : list) {     // the same
-        System.out.println(s);
-    }
-
-    wrapper class
-    У каждого примитивного типа данных есть есть wrapper class 
-    int - Integer
-
 --- Encapsulation/Инкапсуляция ---
     Getters-Setters
     Скрыть реализацию данных при необходимости можно с помощью private
@@ -1566,3 +1513,178 @@
             System.out.println(animal.getClass().getName()); // MainApp$2
         }
     }
+
+--- Generics/дженерики/обобщения ---
+    Дженерики - это синтаксический сахар для создания классов и не более.
+    Компиллятор в итоге создает обычные классы без взяких <>.
+
+    // обобщенный класс
+    public class MyClass<T, M, ...> // один или несколько обобщ типов
+    Внутри обобщ классов нельзя создавать объекты этого класса в методах,
+    также нельзя создавать статические поля и методы с исп T
+    public class GenBox<T> {    // это обобщение, обобщенный класс
+        T obj;                  // тип T определяется при первом создании объекта
+                                   исп только ссылочные типы данных
+        public GenBox(T obj) {      // Constructor
+            this.obj = obj;
+        }
+
+        public T getObj() {         // Getter
+            return obj;
+        }
+
+        public void setObj(T obj) { // Setter
+            this.obj = obj;
+        }
+    }
+    // создание объектов
+    GenBox<String>  strBox = new GenBox<>("Java");  // Тут внутри все строки
+    GenBox<Integer> intBox = new GenBox<>(100);     // а тут все Integer
+    int sum = intBox1.getObj() + intBox2.getObj();  // сумма
+
+    // пример класса считающего сриднее для чисел
+    public class BoxWithNumbers<N extends Number> { // ограничиваем создание
+        private N[] array;                             объекты - только нас-
+                                                       ледники Number
+        public BoxWithNumbers(N ... array) {        // Constructor
+            this.array = array;
+        }
+
+        public double average() {                   // calculate average
+            double avg = 0.0;
+            for (int i = 0; i > array.length; i++) {
+                avg += array[i].doubleValue();      // приводим любой тип
+            }                                          Number к Double(double)
+            return avg/array.length;
+        }
+
+        // метод сравнения двух средних
+        // <?> - означает любой тип, чтобы обойтись без приведения типов
+        // <? extends Number> - необязательно тут, так как по конструктору
+           итак пройдет только тип Number.
+        public boolean compareAverage(BoxWithNumbers<?> another) {
+            return Math.abs(this.average()) - another.average() < 0.0001;
+    }
+    }
+    // использование
+    Благодаря varargs можно подать как массив так и просто цифры
+    В зависимости от типа коробки можно подавать любые числа, даже смешанные
+    BoxWithNumbers<Integer> intBox = new BoxWithNumbers<>(new Integer[]{1,2,3,4});
+    BoxWithNumbers<Number> numBox = new BoxWithNumbers<>(1.2, 30, 3.14f);
+
+    // Снова о Wildcard <?>
+    GenBox<Number> box          // только Number
+    GenBox<? extends Number>    // либо Number, либо наследник
+    GenBox<? super Number> box  // либо Number, либо родитель
+
+    // обобщенный метод
+    Также к T можно добавлять ограничения extends
+    public static <T> T getFirstElement(List<T> list) {
+        return list.get(0);
+    }
+
+    // обобщенный интерфейс
+    Comparable<> обобщенный интерефейс, в него помещаем нужный тип,
+    далее реализуем сравнение в методе compareTo().
+    Это упращает сравнение, не нужно сверять типы, проверять на null.
+    public class Box implements Comparable<Box> {
+        private int size;
+
+        public Box(int size) {
+            this.size = size;
+        }
+
+        @Override
+        public int compareTo(Box o) {
+            return this.size - o.size;
+        }
+    }
+
+--- Коллекции ---
+    динамические массивы, связанные списки, отображения.
+
+--- ArrayList ---
+
+    package java.util, произошел от List
+    Это обертка над массивом.
+    Скорость чтения O(1)
+    Скорость вставки O(n)
+    Может менять длину.
+    ArrayList по умолчанию включает в себя массив объектов класса Object.
+    Т.е. элементами массва могут быть любые ссылочные типы данных, так как 
+    все они произошли от Object.
+    Примитивные типы данных не могут содержаться в ArrayList.
+
+    // capacity
+    capacity = 10; по умолчанию, растет автоматически.
+    list.ensureCapacity(1000000);   // увеличить емкость сразу на миллион.
+    list.trimToSize();              // убрать лишнюю емкость
+    
+    // creation
+    ArrayList list = new ArrayList();                   // ListArray Object
+    ArrayList<Object> list = new ArrayList<>();         // the same as above
+    ArrayList<Object> list = new ArrayList<Object>();   // the same as above
+    ArrayList<String> l1 = new ArrayList<>();   // только String objects
+    ArrayList<String> l2 = new ArrayList<>(8);  // capacity = 8, может увелич-ся
+    ArrayList<String> l3 = new ArrayList<>(l1); // из другого листа(разн адреса)
+    ArrayList<String> l4 = new ArrayList<>(Arrays.asList("a","b","c")); // так
+
+    Methods
+    size()                  // -> int, размер списка(кол-во эл-ов)
+    add(DataType el)        // -> boolean, добавить в конец списка
+    add(nt i, DataType el)  // -> boolean, добавить в индекс 'i', остальные сдвиг
+    addAll(ArrayList a)     // -> boolean, добавить в конец элементы
+    addAll(int, ArrayList a)// -> boolean, добавить элементы в индекс 'i'
+    get(int index)          // -> DataType, элемент под индексом 'i'
+    indexOf(Object el)      // -> int, 1-ый индекс запрашиваемого элелента, else -1
+    lastIndexOf(Object el)  // -> int, посл индекс запрашиваемого элелента, else -1
+    set(int i, DataType el) // -> DataType, заменяет элемент под индексом 'i'
+    remove(Object el)       // -> boolean, удаляет элемент ссылка на кот в параметре
+    remove(int index)       // -> DataType, удалить элем по индексу 'index'
+    clear()                 // -> void, удалить все элементы
+    isEmpty()               // -> boolean, пустой?
+    contains(Object el)     // -> boolean, есть ли объект в листе?
+    toString()              // -> String, возвращ строковое предст об
+    clone()                 // -> Object, сам массив получ нов адрес, но эл-ты те же
+    toArray()               // -> Object, в Object массив
+    toArray(DataType[] arr) // -> DataType, массив выбранного типа.
+    equals(ArrayList l)     // -> boolean, равны если элементы и их порядок одинак
+    
+    // обход листа + действие
+    l4.forEach(new Consumer<String>() { // с помощью аноним класса Consumer
+            @Override
+            public void accept(String s) {
+                System.out.println(s.length());
+            }
+        });
+    forEach((s)-> System.out.println(s.length());   // -> void, тоже самое(лямбда)
+
+    // сортировка
+    Collections.sort(list)              // -> void, как по словарю
+    l4.sort(new Comparator<String>() {  // -> void, с помощью анонимного класса
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.length() - o2.length();   // тут своя реализация
+            }
+        });
+    l4.sort((o1, o2) -> o1.length() - o2.length()); // то же самое но в лямбда
+
+    while(list.remove("a"));    // удалить все символы 'a' из списка
+
+    Iterator
+    Iterator<String> it = list.iterator();
+    while(it.hasNext()){        // приимущество перед foreach, можно удалять эл
+        System.out.println(it.next());
+    }
+    for (String s : list) {     // the same
+        System.out.println(s);
+    }
+
+--- LinkedList ---
+    Связанный список.
+    Не содержат массивов. Каждые элемент имеет ссылку на предыдущий и
+    последующий элемент. У первого и последнего 1 из ссылок - null.
+    При запросе элемента по индеку - пробегает максимум половину списка.
+    Скорость чтения O(n)
+    Скорость вставки O(1)
+    Подходит для создания структуры FIFO LIFO
