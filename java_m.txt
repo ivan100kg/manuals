@@ -1527,6 +1527,8 @@
     GenBox<Number> box          // только Number
     GenBox<Number & String> box // только Number или String
     GenBox<Cat & Serializable>  // только Cat или interface Serializable
+    GenBox<T extends Cat>       // все объекты типа Т - подклассы Cat
+    GenBox<?>                   // любой тип
     GenBox<? extends Number>    // либо Number, либо наследник
     GenBox<? super Number> box  // либо Number, либо родитель
     GenBox<? extends Number & String>   // либо Number, либо наследник
@@ -1582,10 +1584,10 @@
     BoxWithNumbers<Number> numBox = new BoxWithNumbers<>(1.2, 30, 3.14f);
 
     // обобщенный метод
-    Также к T можно добавлять ограничения extends
-    public static <T> T getFirstElement(List<T> list) {
-        return list.get(0);
-    }
+    Также к T можно добавлять ограничения extends.
+    public static <T> T getFirstElement(List<T> list) {...}
+    public static <T> ArrayList<T> toArrayList(T[] array) {...}
+    public static <T> void change(List<T> list, int i1, int i2) {...}
 
     // обобщенный интерфейс
     Comparable<> обобщенный интерефейс, в него помещаем нужный тип,
