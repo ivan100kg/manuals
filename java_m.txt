@@ -1719,11 +1719,15 @@
 --- HashMap ---
     Структура ключ-значение. Содержит внутреннюю таблицу с индексами от 0 до
     максимальной емкости HashMap, иными словами 0 - capacity-1
+    
     capacity=16     # по умолчанию 16, др. можно указать при создании
                       емкость должна соответствовать числу = степени двойки
-    HashMap<k, v>   # два типа: k-ключ, v-значение (Допустим Integer, String)
+    loadFactor=0.75 # загруженность таблицы: 16*0.75=12 элементов максимум,
+                      если кладем больше - емкость увеличивается вдвое,
+                      происходит перекэширование и записи расклад по новому
     
-    HashMap<Integer, String> dict = new HashMap<>();    # create
+    HashMap<k, v>   # два типа: k-ключ, v-значение (Допустим Integer, String)    
+    Map<Integer, String> dict = new HashMap<>();        # create
     dict.put(1, "Russia");                              # put
     При добавлении ключа+значение из ключа берется его hashcode и как-то
     совмещается с размером capacity и генерится число от 0 до capacity-1,
@@ -1734,4 +1738,29 @@
     dict.get(1)     # получить значение по ключу
     При запросе опять же берется hashcode ключа, совмещается с емкостью,
     генерится индекс, и по индексу находим нашу пару, забираем значение,
-    если в индексе несколько пар - тут уже ищется по ключу и берется знач.
+    если в индексе несколько пар - тут уже ищется по ключу в связ списке
+    и берется знач.
+
+    Methods:
+    get(k)              // -> v, get value
+    getOrDefault(k, d)  // -> v, if not -> d
+    put(k, v)           // -> void, put key->value
+    putAll(Map)         // -> void, put another Map
+    putIfAbsent(k, v)   // -> void, put k->v if key absent
+    clear()             // all delete
+    clone()             // 
+    containsKey(k)      // -> boolean
+    containsValue(v)    // -> boolean
+    isEmpty()           // -> boolean
+    remove(k)           // -> val, remove k:v
+    size()              // -> int, count of k:v
+    keySet()            // -> Set of key
+    values()            // -> Set of values
+    entrySet()          // -> Set of (key, values)
+
+    Обход HashMap:
+    map.forEach((s1,s2)-> System.out.println(s1+":"+s2));   // BiConsumer
+    for (Map.Entry<String, String> o : map.entrySet()) {    // for
+        o.getKey()
+        o.getValue()
+    }   
