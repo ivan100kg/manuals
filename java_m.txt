@@ -475,6 +475,10 @@
     toUpperCase()   // -> String, all letters convert to Upper case
     contains(s)     // -> boolean, does our String contains 's'?
     equalsIgnoreCase// -> boolean?, comparsion with ignore case
+    
+    Кодировка/Локаль
+    "s".toLowerCase(Locale.ROOT);           // во избеж багов лучшая локаль
+    "s".getBytes(StandardCharsets.UTF_8);   // байты Юникода
 
     Конкатенация, неявное приведение типов
     i1, i2  - int
@@ -1489,6 +1493,7 @@
     Класс создается на месте без имени и сразу используется. 
     Используются если такой класс нужен только в одном месте программы
     и больше нигде не переисрпользуются, например обработчик кнопки.
+    Такой класс базируется на интерфейсе или абстрак классе.
 
     button3.addActionListener(new ActionListener() {    // anonymous
         @Override
@@ -1496,7 +1501,9 @@
             System.out.println(3);
         }
     });
-
+    // the same with lambda
+    button3.addActionListener(e -> System.out.println(3));  // anonymous
+                                                               lambda
     class MainApp {
         public static void main(String[] args) {
             // анонимный класс из интерфейса
@@ -1696,7 +1703,8 @@
         });
     l4.sort((o1, o2) -> o1.length() - o2.length()); // то же самое но в лямбда
 
-    while(list.remove("a"));    // удалить все символы 'a' из списка
+    while(list.remove("a"));            // удалить все символы 'a' из списка
+    list.removeIf(s -> s.equals("a"));  // то же самое
 
     Iterator
     Iterator<String> it = list.iterator();
@@ -1717,6 +1725,12 @@
     Подходит для создания структуры FIFO LIFO
 
 --- HashMap ---
+    Map             - interface, HashMap - одна из реализаций Map.
+    HashMap         - ключи в случайном порядке
+    LinkedHashMap   - ключи по порядку добавления
+    TreeMap         - порядок по сортированным ключам
+    HashTable       - устаревшая, не synchonized
+
     Структура ключ-значение. Содержит внутреннюю таблицу с индексами от 0 до
     максимальной емкости HashMap, иными словами 0 - capacity-1
     
@@ -1763,4 +1777,35 @@
     for (Map.Entry<String, String> o : map.entrySet()) {    // for
         o.getKey()
         o.getValue()
-    }   
+    }
+
+--- Set ---
+    Хранит уникальные значения.
+    Set<String> set = new HashSet<>();  // create
+
+    Methods:
+    add(s)              // -> boolean, add val if not exists
+    addAll(Map)         // -> void, put Collection
+    remove(s)           // -> boolean, remove
+    size()              // -> int, count of val
+    clear()             // -> void, all delete
+    containsAll(col)    // -> boolean
+    isEmpty()           // -> boolean
+
+    обход + удаление с условием
+    set.removeIf(s -> s.equals("b"));
+
+--- Обход коллекций ---
+    Обход + модификация коллекции(например удаление)
+    list.iterator() // for List(list - уже сущ объект списка)
+    set.iterator()  // for Set(set - уже сущ объект множества)
+
+    Iterator<String> it = list.iterator();  // с пом Iterator
+    while (it.hasNext()) {
+            String s = it.next();
+            if (s.equals("a")) {
+                it.remove();                // удаление элемента
+            }
+        }
+    list.removeIf(s -> s.equals("a"));      // тоже самое удаление
+
