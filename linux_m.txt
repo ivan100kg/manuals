@@ -1436,6 +1436,18 @@ grep CRON /var/log/syslog # логи
 30 5 1 2 * echo "each 1st day in Feb at 5:30 every year $(date)" >> /tmp/test
 
 --- anacron --------------------------------------------------------------
+Anacron имеет приоритет над cron если он установлен в системе, работает не
+в абсолютном времени, а относительно самой последней загрузки системы.
+/etc/anacrontab     # файл с заданиями
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+HOМE=/root
+LOGNAМE=root
+1 5 cron.daily run-parts --report /etc/cron.daily   
+7 10 cron.weekly run-parts --report /etc/cron.weekly
+@monthly 15 cron.monthly run-parts --report /etc/cron.monthly
+1 5     # каждый день через 5 минут после загрузки системы
+7 10    # каждый седьмой день через 10 мин после загрузки системы
 
 
 --- Запуск скриптов при входе в систему и при запуске оболочки -----------
