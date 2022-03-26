@@ -1816,3 +1816,130 @@
     ● previousIndex() - получение индекса предыдущего элемента;
     ● add() - добавить новый элемент на то место, на кот указ итератор;
     ● set() - изменить элемент, на который указывает итератор.
+
+--- Многопоточность ---
+    Потоки бывают обычные и потоки-демоны. Приложение работает пока хоть
+    1 обычный поток не завершился, демонов же никто не ждет, программа
+    закроется если все обычные завершены, а демоны еще нет допустим.
+    
+    Создание потоков:
+    
+    # вариант 1 - унаследоваться от Thread
+    public class ThreadExampleClass extends Thread {   
+        @Override
+        public void run() {                         // этот метод запустится в 
+            for (int i = 0; i < 10; i++) {             || потоке при вызове 
+                System.out.println("thread-" + i);     метода obj.start().
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public static void main(String[] args) {
+            Thread t = new ThreadExampleClass();
+            t.start();                              // запуск в отдельном потоке
+            // код продолжается выполняться дальше параллельно
+        }
+    }
+
+    # вариант 2 - использовать интерфейс Runnable(более простой/понятный)
+    public class RunnableExampleClass implements Runnable{
+        @Override
+        public void run() {                         // переопределяем метод
+            for (int i = 0; i < 10; i++) {
+                System.out.println("thread-" + i);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public static void main(String[] args) {
+            Thread t = new ThreadExampleClass();
+            t.start();                              // запуск в отдельном потоке
+            // код продолжается выполняться дальше
+        }
+    }
+
+    # вариант 3 - анонимный класс/lambda
+    public class AnonymousExampleClass {
+        public static void main(String[] args) {
+            Thread t = new Thread(new Runnable() {  // переопределяем на месте
+                @Override                              можно завернуть в lambda
+                public void run() {
+                    for (int i = 0; i < 10; i++) {
+                        System.out.println("thread-" + i);
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+
+            t.start();
+            // код продолжается выполняться дальше
+        }
+    }
+
+    --- tread.join - дождаться выполнения потока ---
+    t.start();                              // запуск потока
+    try {
+        t.join();                           // ждать завершения потока
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    System.out.println("END");              // продолжить после заверш потока
+
+    --- Daemon/демон - поток завершения которого программа не ждет ---
+    public class DaemonExample {
+        public static void main(String[] args) {
+            Thread tTimer = new Thread(() -> {
+                for (int i = 0; i < 10; i++) {
+                    System.out.println("thread-" + i);
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            tTimer.setDaemon(true);         // исп поток как демон
+            tTimer.start();
+            System.out.println("main -> sleep");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("main: -> end");
+        }
+    }
+
+    --- Methods ---
+    start()         // void, запуск потока
+    interrupt()     // void, прервать поток, с пом проверки 
+                       Thread.currentThread().isInterrupted() в
+                       определении тела потока. 
+    run()           // void, запуск задачи не в потоке
+    join()          // void, ожидание завершения потока
+    join(msec)      // void, ожидание завершения потока в течение 'm' msec
+    setDaemon(true) // void, преобразовать в поток-демон
+    isDaemon()      // -> boolean, поток - демон?
+    isAlive()       // -> boolean, поток выполняется?
+    isInterrupted() // -> boolean, поток прерван?
+    setPriority(i)  // void, задать приоритет int
+    getStacTrace()  // -> StackTraceElement, инфо
+
+    --- Ordering/очередность ---
+    // Нет гарантии в очередности потоков, может быть по разному
+    new Thread(() -> System.out.println(1)).start();
+    new Thread(() -> System.out.println(2)).start();
+    new Thread(() -> System.out.println(3)).start();
