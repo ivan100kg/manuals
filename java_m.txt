@@ -210,7 +210,6 @@
     Example:
         com.github.ivan100kg.project
 
-
 --- Access modifier/Контроллер доступа ---
     От строгого:
     private -> default -> protected -> public
@@ -1906,6 +1905,10 @@
     }
     System.out.println("END");              // продолжить после заверш потока
 
+    // два join подряд работают последовательно
+    t1.join();  // дожидаемся окончания, переходим дальше
+    t2.join();  // если не завершился ждем, иначе проскакиваем
+
     --- Daemon/демон - поток завершения которого программа не ждет ---
     public class DaemonExample {
         public static void main(String[] args) {
@@ -1952,3 +1955,30 @@
     new Thread(() -> System.out.println(1)).start();
     new Thread(() -> System.out.println(2)).start();
     new Thread(() -> System.out.println(3)).start();
+
+    --- Raised condition, synchronized ---
+    Если потоки пытаются модифицировать одну и ту же переменную
+    возможны расхождения в ожидаемых результатах. Для предотвращения
+    таких ситуаций  используют synchronyzed methods.
+
+    // обычные методы
+    public class Counter {
+    private int c;
+    public int value() { return c; }
+    public SyncCounter() { c = 0; }
+    public void inc() { c++; }
+    public void dec() { c--; }
+    }
+    
+    // синхронизованные методы
+    public class SyncCounter {
+    private int c;
+    public int value() { return c; }
+    public SyncCounter() { c = 0; }
+    public synchronized void inc() { c++; }
+    public synchronized void dec() { c--; }
+    }
+
+    synchronized - доступ к методам осуществ потоками по очереди,
+    при чем все методы одновременно, т.е. если поток работае с inc()
+    то другой поток будет ждать чтобы использовать inc() и dec()
