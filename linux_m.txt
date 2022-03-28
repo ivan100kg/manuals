@@ -1421,6 +1421,13 @@ done < <(ls -l|tail -n +2) -вывод подоб-ки напрвл-ся на с
 # различные примеры
 rm $(find . -name '*.class')    # удалить рез-ты
 
+--- Databases --------------------------------------------------------------
+# Postgres, можно разрешить sudo без пароля, будет удобнее (sudo visudo)
+sudo -u postgres psql -d mydb -c "SELECT * FROM celebrities;"
+# with root
+psql -U postgres -d mydb -c "SELECT * FROM celebrities;"
+su -c "psql -d mydb -c \"SELECT * FROM celebrities;\"" postgres
+
 
 # Асинхронное выполнение
 wait pid  # приостановка процесса, пока не завершится pid(какой-то фон.проц) 
