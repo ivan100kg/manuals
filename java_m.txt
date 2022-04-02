@@ -2050,3 +2050,62 @@
     объекту Х он должен снять свою блокировку с объекта У, чтобы первый поток 
     исполнения мог завершиться.
 
+    --- wait notify ---
+    вызываются на объекте держащим монитор:
+    wait        - освобождает монитор и переводит вызывающий поток в состояние 
+                  ожидания до тех пор, пока другой поток не вызовет метод 
+                  notify()/notifyAll();
+    notify      - продолжает работу потока, у кот ранее был вызван метод wait();
+    notifyAll   - возобн работу всех потоков, у кот был вызван метод wait().
+    volatile    - этот модификатор вынуждает потоки отключить оптимизацию доступа
+                  и использовать единственный экземпляр переменной(примитив тип).
+
+    public class WaitNotifyApp {
+        private final Object mon = new Object();
+        private volatile char currentLatter = 'A';
+
+        public static void main(String[] args) {
+            WaitNotifyApp waitNotifyApp = new WaitNotifyApp();
+            new Thread(() -> {
+                waitNotifyApp.printA();
+            }).start();
+            new Thread(() -> {
+                waitNotifyApp.printB();
+            }).start();
+
+        }
+
+        public void printA() {
+            synchronized (mon) {
+                try {
+                    for (int i = 0; i<5; i++){
+                        while (currentLatter != 'A'){
+                            mon.wait();
+                        }
+                        System.out.print("A");
+                        currentLatter = 'B';
+                        mon.notifyAll();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public void printB() {
+            synchronized (mon) {
+                try {
+                    for (int i = 0; i<5; i++){
+                        while (currentLatter != 'B'){
+                            mon.wait();
+                        }
+                        System.out.print("B");
+                        currentLatter = 'A';
+                        mon.notifyAll();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
