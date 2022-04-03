@@ -631,9 +631,13 @@
     ==, equals()    // сравнивают адреса массивов
 
     class java.utils.Arrays
-    sort(arr)               // -> sorted arr, сортирует массив
-    binarySearch(arr,val)   // -> int, приним сорт массив и нужное значение,
+    sort(arr)               // void, сортирует массив
+    binarySearch(arr,val)   // -> type, приним сорт массив и нужное значение,
                                возвращ индекс найденного эл, иначе отриц число
+    fill(arr,val)           // void, наполнить массив значениями val
+
+    Копия массива/части массива
+    System.arraycopy(a, 0, b, 0, a.lenght/2);   // копировать половину
 
 --- Компиляция и запуск из консоли ---
     javac MyClass.java  // compile
