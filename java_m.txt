@@ -1902,7 +1902,7 @@
         }
     }
 
-    --- tread.join - дождаться выполнения потока ---
+--- tread.join - дождаться выполнения потока ---
     t.start();                              // запуск потока
     try {
         t.join();                           // ждать завершения потока
@@ -1915,7 +1915,7 @@
     t1.join();  // дожидаемся окончания, переходим дальше
     t2.join();  // если не завершился ждем, иначе проскакиваем
 
-    --- Daemon/демон - поток завершения которого программа не ждет ---
+--- Daemon/демон - поток завершения которого программа не ждет ---
     public class DaemonExample {
         public static void main(String[] args) {
             Thread tTimer = new Thread(() -> {
@@ -1941,7 +1941,7 @@
         }
     }
 
-    --- Methods ---
+--- Thread methods ---
     start()         // void, запуск потока
     interrupt()     // void, прервать поток, с пом проверки 
                        Thread.currentThread().isInterrupted() в
@@ -1956,13 +1956,13 @@
     setPriority(i)  // void, задать приоритет int
     getStacTrace()  // -> StackTraceElement, инфо
 
-    --- Ordering/очередность ---
+--- Ordering/очередность ---
     // Нет гарантии в очередности потоков, может быть по разному
     new Thread(() -> System.out.println(1)).start();
     new Thread(() -> System.out.println(2)).start();
     new Thread(() -> System.out.println(3)).start();
 
-    --- Raised condition, Синхронизация ---
+--- Raised condition, Синхронизация ---
     Если потоки пытаются модифицировать одну и ту же переменную
     возможны расхождения в ожидаемых результатах. Для предотвращения
     таких ситуаций  используют synchronyzed methods.
@@ -2056,7 +2056,7 @@
     объекту Х он должен снять свою блокировку с объекта У, чтобы первый поток 
     исполнения мог завершиться.
 
-    --- wait notify ---
+--- wait notify ---
     вызываются на объекте держащим монитор:
     wait        - освобождает монитор и переводит вызывающий поток в состояние 
                   ожидания до тех пор, пока другой поток не вызовет метод 
@@ -2116,3 +2116,76 @@
             }
         }
     }
+
+--- ExecutorService/пуллы потоков ---
+    ExecutorService - механизм асинхронного выполнения, который способен 
+    выполнять задачи в фоновом режиме - реализация пула потоков. Потоки 
+    выполняют переданные им задачи.
+    java.util.concurrent;   // package
+    // 10 рабоч потоков
+    ExecutorService executorService = Executors.newFixedThreadPool ( 10 );
+    // задача, передаваемая на выполнение одному из потоков
+    executorService.execute( new Runnable() {
+        public void run() {
+            System. out .println( "Асинхронная задача" );
+        }
+    });
+    executorService.shutdown();     // остановить неисп потоки, не приним задачи
+
+    Виды пулов потоков, creation:
+    newSingleThreadExecutor();      // пул в котором только один рабочий поток
+    newFixedThreadPool( 10 );       // пул с фиксированным количеством потоков
+    xecutors.newCachedThreadPool(); // пул, кот может автоматически расширяться
+
+    Methods:
+    execute(Runnable)       // void, отдать задачу в пул потоков
+    shutdown()              // void, останов неисп потоки, больше не приним задачи
+    shutdownNow()           // void, послать Interrupt всем потокам, обраб вручную
+    awaitTermination(long)  // -> boolean, подождать пока не выполнятся(типа join)
+    isShutDown()            // -> boolean
+    isTerminated()          // -> boolean\
+    submit(Runnable)        // -> Future, объект который можно использовать для 
+                               проверки завершенности выполнения задачи.
+    submit(Callable)        // -> Future, в отличие от Runnable, его метод call()
+                               может возвращать результат
+    invokeAll(Collection)   // -> List<Future>, отдать неск задач на выполнение
+    invokeAny(Collection)   // -> List<Future>, отдать неск задач, выполнить 
+                               хотя бы одну, остальные нет.
+    
+    ExecutorService executorService = Executors.newFixedThreadPool ( 2 );
+    Future future = executorService.submit ( new Runnable() {
+        public void run () {
+            System . out . println ( "Асинхронная задача" );
+        }
+    });
+    future.get(); // вернет null если задача завершилась корректно
+    Future future = executorService.submit( new Callable<>(){
+        public Object call() throws Exception {
+            System.out.println( "Асинхронный вызов" );
+        return "Результат из потока" ;
+        }
+    });
+    System. out .println( "future.get() = " + future.get()); // возвращает данные
+    executorService.shutdown();
+
+    Фабрика потоков для пулла:
+    Подготавливает и настраивает потоки для пулла.
+    Описываем как для приходящей в пулл задачи выделять новый поток.
+    ExecutorService service = Executors.newFixedThreadPool(2, new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable r) {   // описываем как созд-ся поток
+            Thread t = new Thread(r);   
+            t.setPriority(10);
+            t.setName("abc");
+            System.out.println("created");
+            return t;
+        }
+    });
+    service.execute(() -> System.out.println(1));   // запуск задачи
+
+    Задачи по расписанию:
+    задача будет выполнена после опред времени.
+    ScheduledExecutorService s = Executors.newScheduledThreadPool(2);
+
+
+
