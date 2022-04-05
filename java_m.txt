@@ -2220,7 +2220,132 @@
                 не будет заблокирован.
     tryLock(long timeout,TimeUnit timeUnit)
                 Похож на tryLock(), но в течение заданного времени пытается 
-                захватить объект Lock.
+                захватить объект Lock. Если нет - то нет.
     unlock()    Разблокирует объект Lock. Вызывается только потоком, который 
                 владеет блокировкой Lock. При попытке других потоков обратиться 
-                к этому методу будет выдано исключение RuntimeException.   
+                к этому методу будет выдано исключение RuntimeException.
+    lockInterruptibly()
+                Если где-то у потока вызвать interrupt, то в коде где
+                произходит захват lock.lockInterruptibly() - произойдет
+                выброс InterruptedException - где уже можно его обработать
+                вручную и освободить Lock.
+    Example:
+     // lock/unlock делаем в try/finally
+    public static void main(String[] args) {
+        final Lock lock = new ReentrantLock();          // Lock obj
+        new Thread(() -> {                              // 1-st Thread
+            System.out.println("T-BEFORE-LOCK-1");
+            lock.lock();                                // lock()
+            System.out.println("T-GET-LOCK-1");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                System.out.println("T-END-1");
+                lock.unlock();                          // unlock()
+            }
+        }).start();
+        new Thread(() -> {                              // 2-nd Thread
+            System.out.println("T-BEFORE-LOCK-2");
+            try {
+                if (lock.tryLock(1, TimeUnit.HOURS)) {
+                    lock.lock();
+                    System.out.println("T-GET-LOCK-2");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        System.out.println("T-END-2");
+                        lock.unlock();
+                    }
+                } else {
+                    System.out.println("T-2-TRY-FALSE-WAITING 1 HOUR");
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+--- ReadWriteLock ---
+    Интерфейс java.util.concurrent.locks.ReadWriteLock – это продвинутый 
+    механизм для блокировки потоков. Он позволяет множеству потоков одновременно
+    читать данные, или только одному потоку – их записывать. Ресурс открыт для 
+    чтения множеству потоков без риска ошибок. Проблемный момент – если несколько
+    потоков одновременно читают и записывают данные.
+    
+    Read Lock   Если нет потоков, которые захватили объект этого типа для записи, 
+                то множество потоков могут захватить его для чтения.
+    Write Lock  Если нет потоков, которые захватили этот объект для записи или 
+                чтения, то только один поток может захватить его для записи.
+        
+    ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    
+    readWriteLock.readLock().lock();
+    // множество читателей может зайти в эту секцию,
+    // если нет записывающих потоков
+    readWriteLock.readLock().unlock();
+    
+    readWriteLock.writeLock().lock();
+    // только один поток-писатель может зайти в эту секцию,
+    // при условии, что ни один из потоков не занимается чтением
+    readWriteLock.writeLock().unlock();
+
+    Example:
+    public static void main(String[] args) {
+        ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+        // read
+        new Thread(() -> {
+            rwl.readLock().lock();
+            try {
+                System.out.println("1-thread-start-reading");
+                Thread.sleep(3000);
+                System.out.println("1-thread-end-reading");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                rwl.readLock().unlock();
+            }
+        }).start();
+
+        new Thread(() -> {
+            rwl.readLock().lock();
+            try {
+                System.out.println("2-thread-start-reading");
+                Thread.sleep(3000);
+                System.out.println("2-thread-end-reading");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                rwl.readLock().unlock();
+            }
+        }).start();
+
+        // write
+        new Thread(() -> {
+            rwl.writeLock().lock();
+            try {
+                System.out.println("3-thread-start-writing");
+                Thread.sleep(3000);
+                System.out.println("3-thread-end-writing");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                rwl.writeLock().unlock();
+            }
+        }).start();
+
+        new Thread(() -> {
+            rwl.writeLock().lock();
+            try {
+                System.out.println("4-thread-start-writing");
+                Thread.sleep(3000);
+                System.out.println("4-thread-end-writing");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                rwl.writeLock().unlock();
+            }
+        }).start();
+    }
