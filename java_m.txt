@@ -1416,6 +1416,44 @@
     класс выбрать тот какой нужен.
     arr.removeIf(x -> x.name.endsWith("a"));    // пример с ArrayList
 
+--- Comparable ---
+    Интерфейс для сравнения объектов одинакового типа. 
+    Осуществляя интерфейс Comparable, можно будет сортировать массивы и коллекции
+    объектов этого класса с помощью Arrays.sort и Collections.sort.
+    
+    public interface Comparable<T> {    // интерфейс
+        public int compareTo(T o);
+    }
+
+    При сравнении возвращать:
+        int>0   если this > o
+        int<0   если this < o
+        0       если this == o
+
+    Example:
+    class MyClass implements Comparable<MyClass> {
+        private int id;
+        MyClass(int id) {
+            this.id = id;
+        }
+        @Override
+        public int compareTo(MyClass o) {
+            return this.id - o.id;
+        }
+
+        public static void main(String[] args) {
+            MyClass[] arr = {new MyClass(1), new MyClass(6), new MyClass(3)};
+            Arrays.sort(arr);
+            List<MyClass> list = new ArrayList<>(Arrays.asList(arr));
+            Collections.sort(list);
+
+        }
+    }
+
+    // встроенный функционал reference классов
+    Integer.compare(2, 5);  // -1
+    "123".compareTo("234"); // -1          
+
 --- of ---
     // создание объектов класса с пом статич метода of()
     // конструкторы как правило делают недоступными
@@ -2476,3 +2514,4 @@
     ai.decrementAndGet();
     ai.incrementAndGet();
     ai.getAndSet(4);
+
