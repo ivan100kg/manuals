@@ -2187,7 +2187,7 @@
     задача будет выполнена после опред времени.
     ScheduledExecutorService s = Executors.newScheduledThreadPool(2);
 
---- Lock ---
+--- Lock/замок ---
     package java.util.concurrent;   # различные утилиты по работе с многопоточностью
     Интерфейс Lock из пакета java.util.concurrent – это продвинутый механизм 
     синхронизации потоков. По гибкости он выигрывает в сравнении с блоками 
@@ -2349,3 +2349,57 @@
             }
         }).start();
     }
+
+--- Коллекции для многопоточности ---
+    // синхронизированные коллекции
+    Vector<String> list = new Vector<>();
+    ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>(); 
+
+    // каждую обычную коллекцию можно преобразовать в синхронизированную
+    Map<String,String> map = new HashMap<>();
+    map = Collections.synchronizedMap(map);
+
+    // Если поток работ со списком, а другой меняет этот список, то созд копия
+    CopyOnWriteArrayList<Integer> copyList = new CopyOnWriteArrayList<>();
+
+    // блокирующая очередь, позволяет потоку входить в режим ожидания если
+       места в очереди нет, также с потоком который извлекает данные, если
+       очередь пуста - будет ожидать.
+    ArrayBlockingQueue<String> arrayBQ = new ArrayBlockingQueue<String>(6);
+
+--- CountDownLatch/защелка ---
+    Позволяет потоку ожидать завершения операций, выполняющихся в других потоках.
+    Режим ожидания запускается методом await(). При создании объекта определяется 
+    количество требуемых операций, после чего уменьшается при вызове метода 
+    countDown(). Как только счетчик доходит до нуля, с ожидающего потока 
+    снимается блокировка.
+    Все это для того чтоб не ждать join() каждый поток по отдельности.
+    В await() можно выставить таймаут чтоб не зависнуть
+
+    Example
+    public static void main(String[] args) {
+        final int THREADS_COUNT = 6;
+        final CountDownLatch countDownLatch = new CountDownLatch(THREADS_COUNT);
+
+        System.out.println("Start");
+        for (int i = 0; i < THREADS_COUNT; i++) {
+            final int w = i;
+            new Thread(() -> {
+                try {
+                    Thread.sleep(200 + w + (int) (500 + Math.random()));
+                    System.out.println("Thread #" + w + " is ready");
+                    countDownLatch.countDown(); // убавляем счетчик на 1
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+
+        try {
+            countDownLatch.await();             // поток main ждет завершения 
+        } catch (InterruptedException e) {      // всех потоков(когда счетчик=0)   
+            e.printStackTrace();
+        }
+        System.out.println("Work is completed");
+    }
+    
