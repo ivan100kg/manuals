@@ -2377,6 +2377,7 @@
     В await() можно выставить таймаут чтоб не зависнуть
 
     Example
+    import java.util.concurrent.CountDownLatch;
     public static void main(String[] args) {
         final int THREADS_COUNT = 6;
         final CountDownLatch countDownLatch = new CountDownLatch(THREADS_COUNT);
@@ -2411,6 +2412,7 @@
     для освобождения – release().
 
     Example:
+    import java.util.concurrent.Semaphore;
     public static void main(String[] args) {
         Semaphore smp = new Semaphore(2);
         for (int i = 0; i < 5; i++) {
@@ -2426,6 +2428,34 @@
                 } finally {
                     System.out.println("Поток " + w + " освободил ресурс");
                     smp.release();  // увеличить счетчик на 1
+                }
+            }).start();
+        }
+    }
+
+--- CyclicBarrier ---
+    Основной поток создает 6 потоков и ждет, пока каждый из них не закончит 
+    приготовление к работе. CyclicBarrier выполняет синхронизацию заданного 
+    количества потоков в одной точке. Как только заданное количество потоков 
+    заблокировалось (вызовами метода await()) , с них одновременно снимается 
+    блокировка.
+    Старт разом заданного кол-ва потоков.
+
+    Example:
+    import java.util.concurrent.CyclicBarrier;
+    public static void main(String[] args) {
+        CyclicBarrier cb = new CyclicBarrier(3);
+        for (int i = 0; i < 3; i++) {
+            final int w = i;
+            new Thread(() -> {
+                try {
+                    System.out.println("Поток " + w + " готовится");
+                    Thread.sleep(100 + (int) (3000 * Math.random()));
+                    System.out.println("Поток " + w + " готов");
+                    cb.await();     // убавить счетчик на 1
+                    System.out.println("Поток " + w + " запустился");
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }).start();
         }
