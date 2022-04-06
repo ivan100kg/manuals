@@ -1420,6 +1420,7 @@
     Интерфейс для сравнения объектов одинакового типа. 
     Осуществляя интерфейс Comparable, можно будет сортировать массивы и коллекции
     объектов этого класса с помощью Arrays.sort и Collections.sort.
+    Если объекты равны - рекомендуется чтобы equals() так же были равны.
     
     public interface Comparable<T> {    // интерфейс
         public int compareTo(T o);
@@ -1452,7 +1453,53 @@
 
     // встроенный функционал reference классов
     Integer.compare(2, 5);  // -1
-    "123".compareTo("234"); // -1          
+    "123".compareTo("234"); // -1      
+
+--- Comporator ---
+    интерефейс, Функция сравнения, которая налагает полный порядок на некоторую 
+    коллекцию объектов. Компараторы могут быть переданы в метод сортировки 
+    (например, Arrays.sort или Collections.sort), чтобы обеспечить точный 
+    контроль над порядком сортировки. В отличие от Comparable метод compare
+    принимает 2 объекта. 
+    Можно делать много коппораторов для нужной сортировки по нужным полям.
+    Класс в котором нужно организовать сортировку не обязательно должен 
+    имплементить Comparable, если организовать для него Comparator. Просто
+    будет вместо Array.sort(arr) ==> Arrays.sort(arr, comporator), также
+    с коллекциями Collections.sort(list) ==> Collections.sort(list, comporator),
+    или у всех коллекций есть уже метод sort, еще проще list.sort(comporator).
+    Можно Comporator прям на месте определить через Lambda/anonymous.
+    Если объекты равны - рекомендуется чтобы equals() так же были равны. 
+
+
+    public interface Comparator<T> {    // interface
+         int compare(T o1, T o2);
+    }    
+
+    Example
+    public class IdComparator implements Comparator<MyClass> {
+        @Override
+        public int compare(MyClass o1, MyClass o2) {
+            if (o1.getId() == o2.getId()) {
+                return 0;
+            } else if (o1.getId() < o2.getId()) {
+                return -1;
+            } else
+                return 1;
+        }
+
+        public static void main(String[] args) {
+            MyClass m1 = new MyClass(8);
+            MyClass m2 = new MyClass(79);
+            MyClass[] arr = {new MyClass(1), new MyClass(6), new MyClass(3)};
+            List<MyClass> list = new ArrayList<>(Arrays.asList(arr));
+            IdComparator ic = new IdComparator();
+            System.out.println(ic.compare(m1, m2));
+            list.sort(ic);
+            Collections.sort(list, ic);
+
+        }
+    }
+
 
 --- of ---
     // создание объектов класса с пом статич метода of()
