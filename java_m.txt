@@ -2374,7 +2374,7 @@
     countDown(). Как только счетчик доходит до нуля, с ожидающего потока 
     снимается блокировка.
     Все это для того чтоб не ждать join() каждый поток по отдельности.
-    В await() можно выставить таймаут чтоб не зависнуть
+    В await() можно выставить таймаут чтоб не зависнуть.
 
     Example
     import java.util.concurrent.CountDownLatch;
@@ -2440,6 +2440,7 @@
     заблокировалось (вызовами метода await()) , с них одновременно снимается 
     блокировка.
     Старт разом заданного кол-ва потоков.
+    Далее CyclicBarrier снова принимает начальное значение и все по кругу.
 
     Example:
     import java.util.concurrent.CyclicBarrier;
@@ -2452,7 +2453,7 @@
                     System.out.println("Поток " + w + " готовится");
                     Thread.sleep(100 + (int) (3000 * Math.random()));
                     System.out.println("Поток " + w + " готов");
-                    cb.await();     // убавить счетчик на 1
+                    cb.await();     // убавить счетчик на 1, если 0 - старт все
                     System.out.println("Поток " + w + " запустился");
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -2460,3 +2461,18 @@
             }).start();
         }
     }
+
+--- Atomic types ---
+    Для избавления от raised condition чтобы к одним данным был одновременный
+    доступ помиио synchonized get set можно использовать атомарные типы данных.
+    import java.util.concurrent.atomic*;    # атомарные типы данных
+    Все операции этих типов - атомарные, т.е. выполняются в один момент времени
+    одним потоком.
+    
+    Example:
+    AtomicInteger ai = new AtomicInteger(10);
+    ai.getAndAdd(2);
+    ai.addAndGet(3);
+    ai.decrementAndGet();
+    ai.incrementAndGet();
+    ai.getAndSet(4);
