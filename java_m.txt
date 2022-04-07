@@ -1631,7 +1631,10 @@
 
     // List<Object> list и new ArrayList<String>() не имеют насл связи,
        привычное наследование у дженериков так не работает.
-    List<Object> testList = new ArrayList<String>();    // неверно
+    List<Object> l1 = new ArrayList<String>();  // неверно - только Object
+    List<?> 12 = new ArrayList<String>();       // верно - любой тип, но
+                                                   добавить в такой список 
+                                                   ничего нельзя, т.к тип неизв
 
     // Переменная типа указывается:
     Обьявление дженерик класса:
@@ -1648,13 +1651,11 @@
     public interface Comparable<T>{     // 
         public int compareTo(T o) }     // использование
     
-    // Аргументы типа используются при использовании типа:
-    GenBox<Number> box                  // Number+subclasses
-
-    // Использование в параметрах методов, wildcard <?>
-    GenBox<?>                           // любой тип
-    GenBox<? extends Number>            // Number+subclasses
-    GenBox<? super Number> box          // Number+parents
+    // Использование generics, wildcard <?>
+    List<Number> l1 = new ArrayList<>();                    // Number only
+    List<?> l2 = new ArrayList<String>();                   // any type
+    List<? super Integer> l3 = new ArrayList<Number>();     // Integer+parents
+    List<? extends Number> l4 = new ArrayList<Double>();    // Number+subclasses
 
 
     public class GenBox<T> {    // это обобщение, обобщенный класс
