@@ -1,4 +1,3 @@
-# manuals
-My `synopsis` and `notes` of some science.
-
-Language: `Russian`.
+# Manuals
+### Description
+My notes on various topics.
