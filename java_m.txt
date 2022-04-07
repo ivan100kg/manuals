@@ -1127,15 +1127,16 @@
                                классами выше, не читается/записывается.
                                
 --- Исключения ---
-    Иерархия классов:
-    Object <--+ 
-              |
-              +- Throwable  // главный класс для 'выбрасываемых' объектов
-                 ^   ^
-                 |   Error  // класс Ошибок со своими подклассами
-                Exception   // класс Исключений со своими подклассами
-                 ^
-           RuntimeException // один из основных, имеет множество подклассов
+    Hierarchy(часть):
+                       Throwable
+                /                    \
+        Error                           Exception   — InterruptedException
+    StackOverFlowError               /             \
+    OutOfMemoryError      RuntimeException            IOException
+    LinkageError        IndexOutOfBoundExceptoin    FileNotFoundException
+                        IllegalArgumentException    SocketException
+                        NumberFormatException
+                        ArithmeticException
     
     Сабклассы RuntimeException:
     Unchecked exceptions, Java не заставляет их проверять.
@@ -1752,6 +1753,18 @@
     ● SortedSet и SortedMap представляют собой упорядоченные в порядке 
     возрастания версии коллекций Set (сортировка идет по элементам) и 
     Map (сортировка производится по ключам).
+
+    Hierarchy:
+                  Iterable
+                     |
+                 Collection
+           /         |         \
+      List        Queue           Set             Map
+    ArrayList   PriorityQueue   HashSet         HashMap
+    LinkedList  Deque           LinkedHashSet   LinkedHashMap
+    Vector      ArrayDeque      SortedSet       HashTable
+    Stack                       TreeSet         SortedMap
+                                                TreeMap
 
 --- ArrayList ---
 
