@@ -1500,7 +1500,6 @@
         }
     }
 
-
 --- of ---
     // создание объектов класса с пом статич метода of()
     // конструкторы как правило делают недоступными
@@ -1621,21 +1620,42 @@
 --- Generics/дженерики/обобщения ---
     Дженерики - это синтаксический сахар для создания классов и не более.
     Компиллятор в итоге создает обычные классы без взяких <>.
+    Вместо допустим <T> подставляется Object
 
     // обобщенный класс
-    public class MyClass<T, M, ...> // один или несколько обобщ типов
-    Внутри обобщ классов нельзя создавать объекты этого класса в методах,
+    public class MyClass<T, M, ...> // один или несколько обобщ типов.
+    Буквы обычно: T-type, V-value, K-key, E-element 
+    Внутри обобщ классов нельзя создавать объекты этого типа в методах,
     также нельзя создавать статические поля и методы с исп T.
+    <> - diamond
 
-    // ограничения в обобщениях, Wildcard <?>
-    GenBox<Number> box          // только Number
-    GenBox<Number & String> box // только Number или String
-    GenBox<Cat & Serializable>  // только Cat или interface Serializable
-    GenBox<T extends Cat>       // все объекты типа Т - подклассы Cat
-    GenBox<?>                   // любой тип
-    GenBox<? extends Number>    // либо Number, либо наследник
-    GenBox<? super Number> box  // либо Number, либо родитель
-    GenBox<? extends Number & String>   // либо Number, либо наследник
+    // List<Object> list и new ArrayList<String>() не имеют насл связи,
+       привычное наследование у дженериков так не работает.
+    List<Object> testList = new ArrayList<String>();    // неверно
+
+    // Переменная типа указывается:
+    Обьявление дженерик класса:
+    class GenBox<T>                     // любой тип
+    GenBox<K, V>                        // 2 любых типа
+    GenBox<T extends Cat>               // Cat + subclasses
+    GenBox<T extends Cat & Runnable>    // Cat+subclasses+implements Runnable
+    GenBox<T extends I1 & I2>           // classes implements I1+I2
+    Объявление джененрик метода:
+    T foo(T val){return val;}           // использование далее
+    Объявление джененрик конструктора:
+    GenBox(T val){this.val=val}         // использование далее
+    Объявление интерфейса:
+    public interface Comparable<T>{     // 
+        public int compareTo(T o) }     // использование
+    
+    // Аргументы типа используются при использовании типа:
+    GenBox<Number> box                  // Number+subclasses
+
+    // Использование в параметрах методов, wildcard <?>
+    GenBox<?>                           // любой тип
+    GenBox<? extends Number>            // Number+subclasses
+    GenBox<? super Number> box          // Number+parents
+
 
     public class GenBox<T> {    // это обобщение, обобщенный класс
         T obj;                  // тип T определяется при первом создании объекта
@@ -1643,11 +1663,9 @@
         public GenBox(T obj) {      // Constructor
             this.obj = obj;
         }
-
         public T getObj() {         // Getter
             return obj;
         }
-
         public void setObj(T obj) { // Setter
             this.obj = obj;
         }
@@ -2561,4 +2579,14 @@
     ai.decrementAndGet();
     ai.incrementAndGet();
     ai.getAndSet(4);
+
+--- Stream API ---
+    В языке Java есть понятие потоков, но ни классы InputStream (поток ввода) 
+    и OutputStream (поток вывода), ни Thread (поток исполнения) не имеют ничего 
+    общего с новшеством Java 8 — Stream API. Stream API работает не с потоком 
+    в прямом смысле слова, а с цепочкой функций, вызываемых из самих себя. Он 
+    обеспечивает функциональное программирование в Java 8. Поток — это 
+    последовательность элементов и функций, которые поддерживают различные 
+    виды операций. Чтобы не путаться в понятиях, обозначим Stream API как стрим.
+
 
