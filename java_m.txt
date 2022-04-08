@@ -1804,6 +1804,8 @@
     set(int i, DataType el) // -> DataType, заменяет элемент под индексом 'i'
     remove(Object el)       // -> boolean, удаляет элемент ссылка на кот в параметре
     remove(int index)       // -> DataType, удалить элем по индексу 'index'
+    removeAll(Collection c) // -> boolean, удалить все элем равные элем в коллекц 
+    retainAll(Collection c) // -> boolean, удалить все элем не равные элем в коллек
     clear()                 // -> void, удалить все элементы
     isEmpty()               // -> boolean, пустой?
     contains(Object el)     // -> boolean, есть ли объект в листе?
@@ -1812,6 +1814,9 @@
     toArray()               // -> Object, в Object массив
     toArray(DataType[] arr) // -> DataType, массив выбранного типа.
     equals(ArrayList l)     // -> boolean, равны если элементы и их порядок одинак
+
+    Array from list:
+    String[] sArray = aList.toArray(new String[0]); // пишем 0 - авто размер
     
     // обход листа + действие
     l4.forEach(new Consumer<String>() { // с помощью аноним класса Consumer
@@ -1852,6 +1857,19 @@
     Скорость чтения O(n)
     Скорость вставки O(1)
     Подходит для создания структуры FIFO LIFO
+
+    Specific methods:
+    peek()              //
+    peekFirst()         // --> DataType, first элем or null if empty list
+    peekLast()          // --> DataType, last элем or null if empty list
+    pop()               // --> DataType, Удалить first элем == removeFirst()
+    push()              // void, вставить элем в начало списка ==  addFirst()
+    poll()              //
+    pollFirst()         // --> DataType, Удалить first элем or null if empty list
+    pollLast()          // --> DataType, Удалить last элем or null if empty list
+    offerFirst(el)      // --> boolean, вставить в начало
+    offer()             //
+    offerLast(el)       // --> boolean, вставить в конец
 
 --- HashMap ---
     Map             - interface, HashMap - одна из реализаций Map.
@@ -1929,14 +1947,12 @@
     list.iterator() // for List(list - уже сущ объект списка)
     set.iterator()  // for Set(set - уже сущ объект множества)
 
-    Iterator<String> it = list.iterator();  // с пом Iterator
-    while (it.hasNext()) {
-            String s = it.next();
-            if (s.equals("a")) {
-                it.remove();                // удаление элемента
-            }
-        }
-    list.removeIf(s -> s.equals("a"));      // тоже самое удаление
+    Iterator<String> it = aList.listIterator();
+    while (it.hasNext()) {                      // есть след элемент?
+        if(it.next().equals("a"))               // получить элемент
+            it.remove();                        // удаление элемента
+    }
+    aList.removeIf(s -> s.equals("a"));         // тоже самое удаление
 
     listIterator() - имеет больше методов чем iterator()
     ● hasPrevious() - проверка есть ли элемент слева;
