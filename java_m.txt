@@ -630,7 +630,7 @@
     Comparsion:
     ==, equals()    // сравнивают адреса массивов
 
-    class java.utils.Arrays
+    Arrays - класс для различных манипуляций с массивами:
     sort(arr)               // void, сортирует массив
     binarySearch(arr,val)   // -> type, приним сорт массив и нужное значение,
                                возвращ индекс найденного эл, иначе отриц число
@@ -1285,6 +1285,10 @@
     Duration d = Duration.ofHours(1);                   // длительность = 1 час
                                                            days - nanosec
 
+    Засечь время:
+    long start = System.currentTimeMillis();
+    long finish = System.currentTimeMillis() - start;
+
     Exceptions:
     DateTimeExceptions  // исключение если неправильная дата/время
 
@@ -1368,6 +1372,9 @@
     System.out.println(ld); // 1983-01-23 - default format.
     LocalDate ld = LocalDate.parse("1983-01-23");   // если строка в таком виде,
                                                        то можно без форматтера.
+
+--- Random ---
+    (int) ((Math.random() * (max - min)) + min);    // генератор инт [min, max)
 
 --- Lambda exspressions ---
     Анонимный метод(без имени).
@@ -1731,6 +1738,13 @@
     }
 
 --- Коллекции ---
+    Collections - класс для манипуляций с коллекциями
+    Методы
+    sort()
+    binarySearch()
+    reverse()
+    shuffle()
+
     ● Collection - является “корневый” элементом иерархии коллекций. 
     Коллекция представляет собой группу объектов, называемых элементами. 
     Интерфейс описывает функционал присущий абсолютно всем коллекциям.
