@@ -1888,12 +1888,23 @@
 --- Vector ---
     Устаревший synchronized class. В основе содержит массив Object.
     Используется в многопоточности - но есть методы получше.
-    List<Integer> vList = new Vector<>();
+    List<Integer> vList = new Vector<>();   
+    Vector<Integer> vList = new Vector<>(); 
     
     Methods:
     add()
     get()
     remove()
+
+--- Stack ---
+    Устаревший synchonized class. Использует принцип LIFO.
+    List<Integer> sList = new Stack<>();
+    Stack<Integer> sList = new Stack<>();
+
+    Methods:
+    push()  // добавить в стек
+    pop()   // изъять из стека
+    peek()  // посмотреть верхний элемент
 
 --- HashMap ---
     Map             - interface, HashMap - одна из реализаций Map.
