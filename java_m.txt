@@ -1885,6 +1885,16 @@
     offer()             //
     offerLast(el)       // --> boolean, вставить в конец
 
+--- Vector ---
+    Устаревший synchronized class. В основе содержит массив Object.
+    Используется в многопоточности - но есть методы получше.
+    List<Integer> vList = new Vector<>();
+    
+    Methods:
+    add()
+    get()
+    remove()
+
 --- HashMap ---
     Map             - interface, HashMap - одна из реализаций Map.
     HashMap         - ключи в случайном порядке
