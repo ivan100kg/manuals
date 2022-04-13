@@ -2030,6 +2030,12 @@
     является synchonized. Но для многопоточности следует использовать
     ConcurrentHashMap.
     Ни ключ ни значение не могут быть null.
+    Hashtable<String, Integer> htMap = new Hashtable<>();
+    htMap.put("Ivan", 39);
+    htMap.put("Igor", 42);
+    htMap.put("Ilya", 34);
+    System.out.println(htMap.contains(42));
+    System.out.println(htMap);
 
 --- Set ---
     Хранит уникальные значения.
