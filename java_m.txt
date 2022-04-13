@@ -2015,6 +2015,16 @@
     subMap(from,to)     // -> TreeMap, срез от и до
     вернуть/удалить-вернуть 1-ый/последний keys/values/EntrySet
 
+--- LinkedHashMap ---
+    Наследник HashMap, хранит информацию о порядке добавления элементов(по умолч)
+    или порядке их использования(put, get..) включить эту опцию тут написав true-+
+    Производительность ниже HashMap.                                        v----+  
+    LinkedHashMap<String, Integer> lhMap = new LinkedHashMap<>(16, 0.75f,false);
+    lhMap.put("Ivan", 39);
+    lhMap.put("Igor", 42);
+    lhMap.put("Ilya", 34);
+    System.out.println(lhMap);
+
 --- Set ---
     Хранит уникальные значения.
     Set<String> set = new HashSet<>();  // create
