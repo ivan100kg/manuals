@@ -2037,8 +2037,12 @@
     System.out.println(htMap.contains(42));
     System.out.println(htMap);
 
---- Set ---
-    Хранит уникальные значения.
+--- HashSet ---
+    Множество. Хранит уникальные значения.
+    В основе Set лежит Map, при добавлении в HashSet нового значения, на самом
+    деле доб ключ в HashMap и какая-то константа-заглушка в кач значения.
+    Нет порядка элементов.
+
     Set<String> set = new HashSet<>();  // create
 
     Methods:
@@ -2047,10 +2051,16 @@
     remove(s)           // -> boolean, remove
     size()              // -> int, count of val
     clear()             // -> void, all delete
-    containsAll(col)    // -> boolean
+    contains(el)        // -> boolean
     isEmpty()           // -> boolean
 
-    обход + удаление с условием
+    Операции над множествами:
+    set1.addAll(set2)       // U Объединение множеств
+    set1.retainAll(set2)    // ∩ пересечение множеств
+    set1.removeAll(set2)    // \ разность множеств
+
+
+    // обход + удаление с условием
     set.removeIf(s -> s.equals("b"));
 
 --- Iterator ---
