@@ -2025,6 +2025,12 @@
     lhMap.put("Ilya", 34);
     System.out.println(lhMap);
 
+--- HashTable ---
+    Устаревший класс, работает по тем же принципам что и HashMap, но
+    является synchonized. Но для многопоточности следует использовать
+    ConcurrentHashMap.
+    Ни ключ ни значение не могут быть null.
+
 --- Set ---
     Хранит уникальные значения.
     Set<String> set = new HashSet<>();  // create
