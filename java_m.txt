@@ -2070,7 +2070,7 @@
     Элементы должны быть Comparable либо при создании указать Comparator.
 
     // пример - свой компаратор
-    TreeSet<String> tSet = new TreeSet<>((o1, o2) -> o2.hashCode() - o1.hashCode());
+    TreeSet<String> tSet = new TreeSet<>();
     tSet.add("Ivan");
     tSet.add("Igor");
     tSet.add("Ilya");
@@ -2081,6 +2081,21 @@
     headSet(toKey)      // -> TreeSet, срез [:toKey]
     tailSet(fromKey)    // -> TreeSet, срез [fromKey:]
     subSet(from,to)     // -> TreeSet, срез от и до [from:to]
+
+--- LinkedHashSet ---
+    Наследник HashSet, хранит информацию о порядке добавления элементов.
+    Производительность ниже чем HashSet.
+    В основе лежит HashMap: ключи - элементы LinkedHashSet, значения - заглушка.
+
+    LinkedHashSet<String> lhSet = new LinkedHashSet<>();
+    lhSet.add("Ivan");
+    lhSet.add("Igor");
+    lhSet.add("Ilya");
+    System.out.println(lhSet);  // [Ivan, Igor, Ilya]
+
+    Methods:
+    contains(el)    // -> boolean
+
 
 --- Iterator ---
     Обход + модификация коллекции(например удаление)
