@@ -1793,7 +1793,7 @@
            /         |         \
       List        Queue           Set             Map
     ArrayList   PriorityQueue   HashSet         HashMap
-    LinkedList  Deque           LinkedHashSet   LinkedHashMap
+    LinkedList<-Deque           LinkedHashSet   LinkedHashMap
     Vector      ArrayDeque      SortedSet       HashTable
     Stack                       TreeSet         SortedMap
                                                 TreeMap
@@ -2096,6 +2096,20 @@
     Methods:
     contains(el)    // -> boolean
 
+--- Queue and LinkedList ---
+    Коллекция хранящая последовательность элементов. Добавляется элемент в 
+    конец очереди, используется из начала очереди.
+    FIFO - first in first out.
+    LinkedList используетя для создания очереди, он имплементирует интерфейсы
+    Queue и Deque(еще одна очередь - двусторонняя).
+
+    Queue<String> queue = new LinkedList<>();   // create
+    queue.add("Ivan")       // -> boolean, доб в кон очер если нет места - исключ
+    queue.offer("Ivan")     // -> boolean, доб в кон очер если есть место
+    queue.remove();         // -> type, удалить 1-ый elem, если нет - исключ
+    queue.poll();           // -> type, удалить 1-ый elem, если нет -> null 
+    queue.element();        // -> 1ый элем, если нет - исключ 
+    queue.peek();           // -> 1ый элем, если нет -> null 
 
 --- Iterator ---
     Обход + модификация коллекции(например удаление)
