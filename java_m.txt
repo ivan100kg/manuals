@@ -2002,6 +2002,7 @@
 --- TreeMap ---
     Элементы TreeMap сортированные по ключу. В основе лежит красно-черное
     дерево. Работает быстро, но не так быстро как HashMap.
+    Ключи должны быть Comparable либо при создании указать Comparator.
 
     Map<String, Integer> tMap = new TreeMap<>();
     // стандартые методы
@@ -2009,10 +2010,10 @@
     tMap.get("Ivan");
     tMap.remove("Ivan");
     Methods:
-    desendingMap()      // развернуть сортировку
-    headMap(toKey)      // -> TreeMap, объекты сначала до ключа
-    tailMap(fromKey)    // -> TreeMap, объекты начиная с ключа и до конца
-    subMap(from,to)     // -> TreeMap, срез от и до
+    desendingMap()      // -> TreeMap, reverse
+    headMap(toKey)      // -> TreeMap, объекты сначала до ключа, срез [:toKey]
+    tailMap(fromKey)    // -> TreeMap, объекты начиная с ключа и до конца [fromKey:]
+    subMap(from,to)     // -> TreeMap, срез от и до [from:to]
     вернуть/удалить-вернуть 1-ый/последний keys/values/EntrySet
 
 --- LinkedHashMap ---
@@ -2059,9 +2060,27 @@
     set1.retainAll(set2)    // ∩ пересечение множеств
     set1.removeAll(set2)    // \ разность множеств
 
-
     // обход + удаление с условием
     set.removeIf(s -> s.equals("b"));
+
+--- TreeSet ---
+    Хранит элементы в отсортированном по возрастанию порядке.
+    В основе лежит TreeMap: ключи - это элементы TreeSet, значения - заглушка.
+    В основе красно-черное дерево.
+    Элементы должны быть Comparable либо при создании указать Comparator.
+
+    // пример - свой компаратор
+    TreeSet<String> tSet = new TreeSet<>((o1, o2) -> o2.hashCode() - o1.hashCode());
+    tSet.add("Ivan");
+    tSet.add("Igor");
+    tSet.add("Ilya");
+    System.out.println(tSet);   // [Igor, Ilya, Ivan]
+
+    Methods:
+    descendingSet()     // -> TreeSet, reverse
+    headSet(toKey)      // -> TreeSet, срез [:toKey]
+    tailSet(fromKey)    // -> TreeSet, срез [fromKey:]
+    subSet(from,to)     // -> TreeSet, срез от и до [from:to]
 
 --- Iterator ---
     Обход + модификация коллекции(например удаление)
