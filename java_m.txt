@@ -858,8 +858,10 @@
 
 --- Interface ---
     Java 7
-	Интерфейс это не класс это как бы протокол который можно имплементировать
+    Интерфейс это не класс это как бы протокол который можно имплементировать
 	классом.
+    Имплементируя интерфейс - выполняется контракт на переопределение всех
+    методов + выполнение требований в описании javadoc.
 	Интерфейс может быть public(1 в файле с таким же именем) либо default.
 	abstract interface Help{}	// создать интерфейс, abstract можно опустить
 	Интерфейс не может быть final.
@@ -870,8 +872,8 @@
     class Teacher implements Help   // (без extends) осуществить интерфейс
     class T extends E implements Help, Swim, ...    // many interfaces
     Внутри класса осуществляюго интерфейс необходимо перезаписать абс методы
-    или сделать класс абстрактным(все как с абстрактными классами)
-	Интерфейсы могут содержать константы - public final static int A = 10;
+    или сделать класс абстрактным(все как с абстрактными классами)	
+    Интерфейсы могут содержать константы - public final static int A = 10;
 	Если класс имплементирует интнрфейс то он гарантированно будет иметь
 	все методы интерфейса.
 	Интерфейсы описывают что должно быть сделано, но как это будет сделано
@@ -886,14 +888,8 @@
     abstract class implements i1	// абстрактный класс может имп интерфейс
 									   может оверрайдить все или часть или ни
 									   одного метода, по желанию.
-	
---- class vs interface ---
-	Class can extends 0 or 1 class.
-	Class can implements 0 or more interfaces.
-	Interface can't implements or extends class.
-	Interface can extends 0 or more interfaces.
-	
---- new in Java 8 ---
+
+    new in Java 8
 	Методы в интерфейсах возможно объявить default(это не access modifier),
 	а дефолтная реализация public метода.
 	Такие методы могут быть исп только в интерфейсах.
@@ -908,6 +904,22 @@
 	I1 Ret(){return new Zz(I1 i1);}	// можно использовать в return types,
 									   в параметрах метода, подставлять классы
 									   импл этот интерфейс.
+    Фабричный метод
+    Можно создать экземпляр класса через static method интерфейса.
+    interface Vector {
+        static Vector of(double x, double y, double z) {
+            if(x==0 && y==0 & z==0) {
+                return ZeroVector.INSTANCE;
+            }
+            return new ArrayVector(x,y,z);
+        }
+    }
+	
+--- class vs interface ---
+	Class can extends 0 or 1 class.
+	Class can implements 0 or more interfaces.
+	Interface can't implements or extends class.
+	Interface can extends 0 or more interfaces.
 
 --- Polymorphism ---
     Способность объекта принимать несколько форм.
