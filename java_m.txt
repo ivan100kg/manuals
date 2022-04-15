@@ -2123,6 +2123,26 @@
     pQueue.peek();              // return 5
     pQueue.remove();            // remove 5
 
+--- Deque and ArrayDeque ---
+    Double ended queue(двунаправленная очередь).
+    Элементы могут использоваться с обоих концов.
+    FIFO and LIFO.
+    В качестве Deque может выступать LinkedList или ArrayDeque.
+
+    ArrayDeque<Integer> deque = new ArrayDeque<>();
+    deque.addFirst(5);      // добавить в начало очереди(исключ если места нет)
+    deque.addLast(13);      // добавить в конец очереди(исключ если места нет)
+    deque.offerFirst(42);   // добавить в начало очереди(если есть место)
+    deque.offerLast(31);    // добавить в конец очереди(если есть место)
+    deque.removeFirst();    // удалить сначала/ичключ
+    deque.removeLast();     // удалить сконца/исключ
+    deque.pollFirst();      // удалить сначала/false
+    deque.pollLast();       // удалить сконца/false
+    deque.getFirst();       // вывести 1-ый эл/исключ
+    deque.getLast();        // вывести посл эл/исключ
+    deque.peekFirst();      // вывести 1-ый эл/null
+    deque.peekLast();       // вывести посл эл/null
+
 --- Iterator ---
     Обход + модификация коллекции(например удаление)
     list.iterator() // for List(list - уже сущ объект списка)
