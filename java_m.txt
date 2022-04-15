@@ -2111,6 +2111,18 @@
     queue.element();        // -> 1ый элем, если нет - исключ 
     queue.peek();           // -> 1ый элем, если нет -> null 
 
+--- PriorityQueue ---
+    Это специальный вид очереди, вкотором используется натуральная сортировка
+    или та которую мы описываем с помощью Comparable или Comparator.
+    Используется тот элемент из очереди, чей приоритет выше.
+
+    PriorityQueue<Integer> pQueue = new PriorityQueue<>();
+    pQueue.add(42);
+    pQueue.add(5);
+    pQueue.offer(13);
+    pQueue.peek();              // return 5
+    pQueue.remove();            // remove 5
+
 --- Iterator ---
     Обход + модификация коллекции(например удаление)
     list.iterator() // for List(list - уже сущ объект списка)
