@@ -1582,7 +1582,20 @@
     Использование:
     Month month = Month.JAN;    // может принимать только значения enum
 
---- Inner classes ---
+--- Nested classes ---
+    Нужны для тесной привязки одного класса к другому.
+    public class MainApp {
+    static class StaticClass {  // static class
+    }
+
+    class InnerClass {          // inner class 
+    }
+
+    void method() {             
+        class LocalClass {      // local class
+        }
+    }
+
     Вложенные классы - один класс в теле другого класса.
     Inner class имеет доступ к внешним полям методам внешнего класса,
     а outer class не имеет доступа к полям иметодам внутр класса.
@@ -1607,7 +1620,11 @@
         }
     }
 
---- Local class ---
+    Static class
+
+    Ineer class
+
+    Local class
     Это класс объявленный в теле метода.
     Нужен в основном для группировки данных только в данном методе.
 
