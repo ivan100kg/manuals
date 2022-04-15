@@ -361,7 +361,7 @@
     
 --- switch ---
     switch (expression) {   // типы используемые в выражении
-        case val1:             int byte short char String
+        case val1:             int byte short char String Enum
             code; 
             break;
         case val2: 
@@ -373,6 +373,19 @@
         case default:   // выполняется в посл очередь, может быть вставлен выше
             code; 
     }
+
+    Для Enum, если все варианты перечислены - default не нужен.
+
+--- enchanced switch ---
+    int a = 10;
+    switch (a) {
+        case 2 -> System.out.println(2);
+        case 3 -> System.out.println(3);
+        case 10 -> System.out.println(10);
+        default -> System.out.println("unknown");
+    }
+
+
 
 --- loops ---
     Unreachable statement
