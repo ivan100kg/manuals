@@ -1639,6 +1639,17 @@
     обращаться к ним чере созданный объект статик класса.
 
     Ineer class
+    При создании объекта внутреннего класса всегда задействован объект
+    внешнего класса, объект inner всегда ассоциируется с объектом outer.
+    Ведете себя как обычный instance элемент.
+    Класс не может содержать static элементы, но может final static.
+    Inner класс может обращаться к любым переменным outer класса и к private.
+    Внешний класс создав об внутр класса может обращаться к private эл.
+    this.new Inner();                               // create in constructor
+    Outer outer = new Outer();                      // outer class object
+    Outer.Inner inner = outer.new Inner();          // create in other class
+    Outer.Inner inner = new Outer().new Inner();    // create in other class
+    
 
     Local class
     Это класс объявленный в теле метода.
