@@ -379,13 +379,11 @@
 --- enchanced switch ---
     int a = 10;
     switch (a) {
-        case 2 -> System.out.println(2);
+        case 2, 5 -> System.out.println("2 5");
         case 3 -> System.out.println(3);
         case 10 -> System.out.println(10);
         default -> System.out.println("unknown");
     }
-
-
 
 --- loops ---
     Unreachable statement
@@ -1610,43 +1608,35 @@
 
 --- Nested classes ---
     Нужны для тесной привязки одного класса к другому.
-    public class MainApp {
-    static class StaticClass {  // static class
-    }
-
-    class InnerClass {          // inner class 
-    }
-
-    void method() {             
-        class LocalClass {      // local class
+    
+    public class Outer {        // outer class
+        static class Static {}  // static class
+        class Inner {}          // inner class 
+        void method() {         // some method    
+            class Local {}      // local class
         }
     }
 
-    Вложенные классы - один класс в теле другого класса.
-    Inner class имеет доступ к внешним полям методам внешнего класса,
-    а outer class не имеет доступа к полям иметодам внутр класса.
-    Объект внутреннего класса не может существовать без объекта 
-    внешнего класса.
-    Нужен в основном для группировки данных и только в этом 
-    классе и нигде больше не требуются.
-    class Outer {
-        int out;
-
-        class Inner {
-            int in1;
-        }
-
-        static Inner2 {
-            int in2;
-        }
-       
+    class Outer2 {
         public static void main(String[] args) {
-            Inner inner = new Outer().new Inner();  // привязка к obj
-            Inner2 inner2 = new Inner2();           // без привязки
+            Outer.Static s = new Outer.Static();    // create obj from nested
+                                                       static class
         }
     }
 
     Static class
+    Похож на обыйчный класс но находится внутри другого класса.
+    Outer.Static oS = new Outer.Static();   // create
+    Создавать можно и в других классах используя внешний класс в теле
+    которого он располагается: new Outer.InnerStatic();
+    Могут быть private, final, abstract, может extends, implements.
+    Статик класс может содержать статик и обычные переменные.
+    Статик класс может обращаться даже к private static эл внеш класса,
+    но к обычным не статик элементам доступа нет.
+    Внешний класс может обращаться к статик элементам статик класса
+    через имя класса IneerStatic.staticValue;
+    Внешний класс может иметь доступ к не статик переменным, просто нужно
+    обращаться к ним чере созданный объект статик класса.
 
     Ineer class
 
