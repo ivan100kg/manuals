@@ -1617,13 +1617,6 @@
         }
     }
 
-    class Outer2 {
-        public static void main(String[] args) {
-            Outer.Static s = new Outer.Static();    // create obj from nested
-                                                       static class
-        }
-    }
-
     Static class
     Похож на обыйчный класс но находится внутри другого класса.
     Outer.Static oS = new Outer.Static();   // create
@@ -1649,11 +1642,14 @@
     Outer outer = new Outer();                      // outer class object
     Outer.Inner inner = outer.new Inner();          // create in other class
     Outer.Inner inner = new Outer().new Inner();    // create in other class
-    
 
     Local class
-    Это класс объявленный в теле метода.
+    Это класс объявленный в теле метода/конструктора.
     Нужен в основном для группировки данных только в данном методе.
+    Не виден вне метода в котором он создается, не может быть static.
+    Local class может обращаться даже к private эл внешнего класса.
+    Local class может обращаться к final/effectively final(не меняются в коде)
+    переменным блока в котором он создан.
 
 --- Anonimous inner local class ---
     Класс создается на месте без имени и сразу используется. 
