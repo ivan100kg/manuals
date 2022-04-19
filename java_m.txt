@@ -1224,6 +1224,9 @@
     не считается ошибкой.
     Ловить метод на checked исключения, если они не указ в сигнатуре - нельзя.
 
+    Исключения при выбрасывании показывают время когда было оно 
+    создано(new Exception), а не когда было выброшено throw.
+
 --- try/catch/finnaly ---
     Обработка исключений:
     try {                   // try - 1 block
@@ -1233,8 +1236,9 @@
     } finally {             // выполняется всегда - 1 block
         code;
     }
-    e - показывает тип исключения и сообщение/разъяснение.
+    e - оbject типа исключения
     e.getMessage()          // сообщение исключения
+    e.getCause()            // причина исключения
     e.printStackTrace(      // вывод стэка ошибки
 
     catch(FileNotFoundException | NullPointerException e) // 2 исключ в 1 c.
@@ -1717,6 +1721,7 @@
 
     // List<Object> list и new ArrayList<String>() не имеют насл связи,
        привычное наследование у дженериков так не работает.
+    Class<Object> != Class<String>;             // нет системы надтип подтип
     List<Object> l1 = new ArrayList<String>();  // неверно - только Object
     List<?> 12 = new ArrayList<String>();       // верно - любой тип, но
                                                    добавить в такой список 
@@ -1743,7 +1748,6 @@
     List<? super Integer> l3 = new ArrayList<Number>();     // Integer+parents
     List<? extends Number> l4 = new ArrayList<Double>();    // Number+subclasses
 
-
     public class GenBox<T> {    // это обобщение, обобщенный класс
         T obj;                  // тип T определяется при первом создании объекта
                                    исп только ссылочные типы данных
@@ -1757,6 +1761,10 @@
             this.obj = obj;
         }
     }
+
+    // производители, потребители, использование ? extends или super
+    PECS Pruducer-extends, Consumer-super
+
     // создание объектов
     GenBox<String>  strBox = new GenBox<>("Java");  // Тут внутри все строки
     GenBox<Integer> intBox = new GenBox<>(100);     // а тут все Integer
