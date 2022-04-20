@@ -1040,7 +1040,7 @@
         a.equals(b) должно возвращ или только true или только false.
         Для non-null ссыл перем a, a.equals(null) дол возвр всегда false
 
----Objects ---
+--- Objects ---
     Этот класс состоит из статических служебных методов для работы с объектами 
     или проверки определенных условий перед операцией.
     Objects.equals();   // сравнивает 2 объекта, null обрабатывает корректно.
@@ -1871,6 +1871,14 @@
     Stack                       TreeSet         SortedMap
                                                 TreeMap
 
+    Не надо использовать
+    Enumeration -> Iterator
+    Vector      -> ArrayList
+    Stack       -> ArrayDeque
+    Dictionary  -> Map
+    HashTable   -> HashMap
+    LinkedList  -> ArrayList/ArrayDeque
+
 --- ArrayList ---
 
     package java.util, произошел от List
@@ -2187,7 +2195,8 @@
 --- PriorityQueue ---
     Это специальный вид очереди, вкотором используется натуральная сортировка
     или та которую мы описываем с помощью Comparable или Comparator.
-    Используется тот элемент из очереди, чей приоритет выше.
+    Используется тот элемент из очереди, чей приоритет выше, основана на 
+    структуре данных куча. 
 
     PriorityQueue<Integer> pQueue = new PriorityQueue<>();
     pQueue.add(42);
