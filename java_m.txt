@@ -1515,6 +1515,29 @@
     // use
     MySup(() -> "Hello");   // lambda
 
+--- Consumer ---
+    Consumer/Потребитель - потребляет и что-то делает с объектом.
+    Принимает объект.
+    Ничего не возвращает.
+
+    @FunctionalInterface
+    public interface Consumer<T> {
+        void accept(T t);
+    }
+
+    Example:
+    // method
+    public static void changeCar(Car car, Consumer<Car> carConsumer) {
+        carConsumer.accept(car);
+    }
+    // use
+    changeCar(arrayList.get(0), car -> car.engine *= 0.2);  // изменяем  
+
+    // использование в коллекциях forEach
+    List<String> list = List.of("Hello", "ok", "Bye");
+    list.forEach(s -> System.out.println(s));   // lambda
+    list.forEach(System.out::println);          // method reference
+
 --- Comparable ---
     Интерфейс для сравнения объектов одинакового типа. 
     Осуществляя интерфейс Comparable, можно будет сортировать массивы и коллекции
