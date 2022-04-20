@@ -1467,16 +1467,35 @@
     () -> {}                    // нет параметров и тела
 
 --- interface Predicate<T> ---
-    Predicate/сказуемое.
+    Predicate/предикат - это утверждение, высказанное об объекте.
     Функциональный интерфейс под любой тип данных. Принимающий объект класса
-    возвращающий boolean;
-    package: java.util.function.    
+    возвращающий boolean
+
+    package: java.util.function.Predicate 
     public interface Predicate<T> {
         boolean test(T t);
     }
-    Просто в параметре медода принимающего интерфейс написать Predicate<MyCl> t,
-    класс выбрать тот какой нужен.
-    arr.removeIf(x -> x.name.endsWith("a"));    // пример с ArrayList
+
+    Example:
+    // метод с параметром Predicate
+    void testStudents(ArrayList<Student> arrayList, Predicate<Student> predicate) {
+        for (Student st : arrayList) {
+            if (predicate.test(st))
+                System.out.println(st);
+        }
+    }
+    // use
+    si.testStudents(students, st -> st.avgGrade > 7);   // lambda
+
+    Использование в методе коллекций removeIf()
+    arrayList.removeIf(s -> s.length() < 5);    // удалить строки длиной < 5
+
+    Объединение предикатов (И ИЛИ)
+    Predicate<String> p1 = s -> s.lenght() < 5; // создать предикат
+    Predicate<String> p2 = s -> s.lenght() > 3;    
+    arrayList.removeIf(p1.and(p2));             // И
+    arrayList.removeIf(p1.or(p2));              // ИЛИ
+    arrayList.removeIf(p1.negate());            // НЕ
 
 --- Comparable ---
     Интерфейс для сравнения объектов одинакового типа. 
