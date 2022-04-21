@@ -1497,7 +1497,7 @@
     arrayList.removeIf(p1.or(p2));              // ИЛИ
     arrayList.removeIf(p1.negate());            // НЕ
 
---- Supplier ---
+--- interface Supplier<T> ---
     Supplier/Поставщик - Представляет поставщика результатов.
     Ничего не принимает.
     Поставляет объекты когда его метод вызывается.
@@ -1515,7 +1515,7 @@
     // use
     MySup(() -> "Hello");   // lambda
 
---- Consumer ---
+--- interface Consumer<T> ---
     Consumer/Потребитель - потребляет и что-то делает с объектом.
     Принимает объект.
     Ничего не возвращает.
@@ -1537,6 +1537,11 @@
     List<String> list = List.of("Hello", "ok", "Bye");
     list.forEach(s -> System.out.println(s));   // lambda
     list.forEach(System.out::println);          // method reference
+
+--- interface Function<T, R> ---
+    Представляет функцию, которая принимает один аргумент и выдает результат.
+    Принимает объект одного типа.
+    Возвращает объект другого типа.
 
 --- Comparable ---
     Интерфейс для сравнения объектов одинакового типа. 
