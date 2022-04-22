@@ -1540,10 +1540,19 @@
 
 --- interface Function<T, R> ---
     Представляет функцию, которая принимает один аргумент и выдает результат.
-    Принимает объект одного типа.
-    Возвращает объект другого типа.
+    Принимает объект одного типа T.
+    Возвращает объект другого типа R.
 
---- Comparable ---
+    @FunctionalInterface
+    public interface Function<T, R> {
+        R apply(T t);
+    }
+
+    Example:
+    Function<Student, Double> f = student -> student.avgGrade;  // create
+    System.out.println(f.apply(students.get(0)));               // use
+
+--- interface Comparable<T> ---
     Интерфейс для сравнения объектов одинакового типа. 
     Осуществляя интерфейс Comparable, можно будет сортировать массивы и коллекции
     объектов этого класса с помощью Arrays.sort и Collections.sort.
@@ -1582,7 +1591,7 @@
     Integer.compare(2, 5);  // -1
     "123".compareTo("234"); // -1      
 
---- Comporator ---
+--- interface Comparator<T> ---
     интерефейс, Функция сравнения, которая налагает полный порядок на некоторую 
     коллекцию объектов. Компараторы могут быть переданы в метод сортировки 
     (например, Arrays.sort или Collections.sort), чтобы обеспечить точный 
