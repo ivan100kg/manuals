@@ -2991,6 +2991,7 @@
         list.set(i, String.valueOf(list.get(i).length()));
     }
 
+    // заменим элементы с помощью stream
     // работа с коллекциями
     list.stream();                          // Поток всех элементов списка
     list.stream().map(el -> el.length());   // новый поток с результами
