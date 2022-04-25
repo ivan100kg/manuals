@@ -2977,25 +2977,19 @@
     В методах стрима используются lambda.
     Методы стримма позволяют писать быстрый код для раб с коллекциями.
     Stream это не поток в программе и не поток чтения/записи файла.
-    Любой поток можно преобразовать в любую коллекцию или массив
+    Любой поток можно преобразовать в любую коллекцию или массив.
+    Методы stream не меняют саму коллекцию или массив от которой был создан
+    поток.
 
-    Exammple:
-    List<String> list = new ArrayList<>();
-    list.add("Hello");
-    list.add("Bye");
-    list.add("Ok");
-    list.add("Always");
-
-    // заменим элементы - обычный способ for
-    for (int i = 0; i < list.size(); i++) {
-        list.set(i, String.valueOf(list.get(i).length()));
-    }
-
-    // заменим элементы с помощью stream
     // работа с коллекциями
-    list.stream();                          // Поток всех элементов списка
-    list.stream().map(el -> el.length());   // новый поток с результами
-    // возвращает новый список из потока
+    List<String> list = new ArrayList<>();      // List
+    list.stream();                              // Поток всех элементов списка
+    list.stream().map(el -> el.length());       // новый поток с результами
+    list.stream().collect(Collectors.toSet())   // list -> set
+    set.stream().collect(Collectors.toList())   // set -> list
+
+    // создаем поток из коллекции, применяем метод, 
+    // полученный поток преобразуем в коллекцию
     list.stream().map(el -> el.length()).collect(Collectors.toList());  // toList
     list.stream().map(el -> el.length()).toList();                      // Java16
 
@@ -3006,6 +3000,7 @@
     Arrays.stream(array).map(el -> el * el).toArray();  // новый массив
 
     Methods:
-    map(Function<T,R>)      // -> Stream, применяет Function к каждому элементу
+    map(Function<T,R>)      // -> Stream, применяет Function к каждому эл. (i)
+    filter(Predicate<E>)    // -> Stream, фильтрует данные из набора
 
 
