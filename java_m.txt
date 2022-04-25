@@ -3022,6 +3022,8 @@
     optional.ifPresent(System.out::println);                        // the same
 
     Methods:
+    i - intermediate method(lazy)
+    t - terminal method(eager)
     map(Function<T,R>)      // -> Stream, применяет Function к каждому эл. (i)
     filter(Predicate<E>)    // -> Stream, фильтрует данные из набора       (i)
     forEach(Consumer<T>)    // -> void, обход элементов                    (t)
@@ -3035,8 +3037,8 @@
         в результате после прохождения всей коллекции возвращается acc.
     reduce(BinaryOperator<T>)       // -> Optional, возвращ аккумулир знач  (t)
     reduce(T i, BinaryOperator<T>)  // -> Type, acc=i, el=1-й эл            (t)
-    sorted()                // -> Stream, сортир поток Comparable эл
-    sorted(Comparator)      // -> Stream, сортир поток
+    sorted()                // -> Stream, сортир поток Comparable эл        (i)
+    sorted(Comparator)      // -> Stream, сортир поток                      (i)
 
     Example:
     list.stream().map(element -> element.length()).toList();
@@ -3044,5 +3046,26 @@
     Arrays.stream(array).forEach(value -> System.out.print(value * 2));
     int i = list.stream().reduce(1, (acc, el) -> acc * el);
     String s = strings.stream().reduce((acc, el) -> acc + " " + el).get();
+
+    Chaining
+    Из методов можно делать цепочки - передавая поток с одного в другой.
+    Source(колл/массив) -> intermediate methods(lazy) -> Terminal method(eager)
+    Intermediate methods(lazy) на вход получают stream и возвращают stream,
+    не работают пока не вызовется Terminal method. Lazy - не сработает
+    пока что-то не произойдет.
+    Terminal method(eager) - возвращает что-то оличное от stream. Eager - 
+    действующий сразу, нетерпеливый.
+                        
+    Arrays.stream(array)                                
+            .filter(e -> e % 2 != 0)                    // intermediate method
+            .map(e ->                                   // intermediate method
+            {
+                if (e % 3 == 0) e = -1;
+                return e;
+            })
+            .sorted()                                   // intermediate method
+            .forEach(el -> System.out.print(el + " ")); // terminal method
+
+    
 
 
