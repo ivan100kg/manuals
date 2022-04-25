@@ -3025,12 +3025,21 @@
     map(Function<T,R>)      // -> Stream, применяет Function к каждому эл. (i)
     filter(Predicate<E>)    // -> Stream, фильтрует данные из набора       (i)
     forEach(Consumer<T>)    // -> void, обход элементов                    (t)
-    reduce(BinaryOperator<T>)       // -> Optional, 
-    reduce(T, BinaryOperator<T>)    // -> Optional, 
+    reduce() агрегатная функция - производит операции над элементами,
+    вычисляет одно общее значение и возвращает его в виде Optional.
+    Example: reduce((acc, el) -> acc * el)
+        acc - общ знач кот вычисл и потом возвращ, изначально = 1-му эл
+        el  - каждый элемент коллекции/массива, изнач = 2-му эл
+        по нашей lambda значение acc увеличивается на произведение на сл эл
+        acc *= el
+        в результате после прохождения всей коллекции возвращается acc.
+    reduce(BinaryOperator<T>)       // -> Optional, возвращ аккумулир знач
+    reduce(T i, BinaryOperator<T>)  // -> Type, acc=i, el=1-й эл
 
     Example:
     list.stream().map(element -> element.length()).toList();
     students.stream().filter(student -> student.sex == 'w').toList();
     Arrays.stream(array).forEach(value -> System.out.print(value * 2));
+    list.stream().reduce((acc, el) -> acc * el);
 
 
