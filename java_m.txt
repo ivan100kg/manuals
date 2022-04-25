@@ -2990,6 +2990,10 @@
     Методы stream не меняют саму коллекцию или массив от которой был создан
     поток.
 
+    // create stream
+    Stream<Integer> integerStream = Stream.of(1, 2, 3, 4);
+    integerStream.filter(integer -> integer < 3);
+
     // работа с коллекциями
     List<String> list = new ArrayList<>();      // List
     list.stream();                              // Поток всех элементов списка
