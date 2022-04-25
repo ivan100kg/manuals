@@ -3012,10 +3012,21 @@
     Arrays.stream(array).map(el -> el*el);  // новый поток с результами
     Arrays.stream(array).map(el -> el * el).toArray();  // новый массив
 
+    Optional<T>
+    класс - контейнер-обертка над типом данных, может содержать null
+    isPresent() -> boolean, проверка на null.
+    get()       -> Type, возвращает объект типа.
+    Example:
+    Optional<Integer> optional = list.stream().reduce((acc, el) -> acc * el);
+    if (optional.isPresent()) System.out.println(optional.get());   // get
+    optional.ifPresent(System.out::println);                        // the same
+
     Methods:
     map(Function<T,R>)      // -> Stream, применяет Function к каждому эл. (i)
     filter(Predicate<E>)    // -> Stream, фильтрует данные из набора       (i)
-    forEach(Consumer<T>)    // -> void, обход элементов
+    forEach(Consumer<T>)    // -> void, обход элементов                    (t)
+    reduce(BinaryOperator<T>)       // -> Optional, 
+    reduce(T, BinaryOperator<T>)    // -> Optional, 
 
     Example:
     list.stream().map(element -> element.length()).toList();
