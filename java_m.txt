@@ -1467,6 +1467,15 @@
     () -> 5                     // нет параметров, возврат int
     () -> {}                    // нет параметров и тела
 
+--- Method reference ---
+    Вместо лямбды в forEach можно вставить method reference, 
+    синтаксис: class::method
+    в результате ко всем элементам коллекции применяется этот метод.
+
+    Example: 
+    list.forEach(el -> System.out.println(el));
+    list.forEach(System.out::println);
+
 --- interface Predicate<T> ---
     Predicate/предикат - это утверждение, высказанное об объекте.
     Принимает объект.
