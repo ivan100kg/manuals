@@ -2990,6 +2990,14 @@
     Методы stream не меняют саму коллекцию или массив от которой был создан
     поток.
 
+    Методы stream.
+    Intermediate methods(lazy) на вход получают stream и возвращают stream,
+    не работают пока не вызовется Terminal method. Lazy - не сработает
+    пока что-то не произойдет.
+    Terminal method(eager) - возвращает что-то оличное от stream. Eager - 
+    действующий сразу, нетерпеливый.
+    После использования на потоке terminal method, стрим нельзя переиспользовать.
+
     // create stream
     Stream<Integer> integerStream = Stream.of(1, 2, 3, 4);
     integerStream.filter(integer -> integer < 3);
@@ -3039,22 +3047,26 @@
     reduce(T i, BinaryOperator<T>)  // -> Type, acc=i, el=1-й эл            (t)
     sorted()                // -> Stream, сортир поток Comparable эл        (i)
     sorted(Comparator)      // -> Stream, сортир поток                      (i)
+    Stream.concat(stream2, stream3) // -> Stream, concat streams
+    distinct()              // -> Stream, uniq elements                     (i)
+    count()                 // -> long, count of elements                   (t)
+    peek(Consumer<T>)       // -> Stream, обход элем - не терминальный      (i)
+    
 
-    Example:
+    Examples:
     list.stream().map(element -> element.length()).toList();
     students.stream().filter(student -> student.sex == 'w').toList();
     Arrays.stream(array).forEach(value -> System.out.print(value * 2));
     int i = list.stream().reduce(1, (acc, el) -> acc * el);
     String s = strings.stream().reduce((acc, el) -> acc + " " + el).get();
+    Stream.concat(stream2, stream3);
+    System.out.println(stream5.distinct().toList());
+    System.out.println(stream1.distinct().count());
+    System.out.println(stream5.distinct().peek(System.out::println).count());
 
     Chaining
     Из методов можно делать цепочки - передавая поток с одного в другой.
     Source(колл/массив) -> intermediate methods(lazy) -> Terminal method(eager)
-    Intermediate methods(lazy) на вход получают stream и возвращают stream,
-    не работают пока не вызовется Terminal method. Lazy - не сработает
-    пока что-то не произойдет.
-    Terminal method(eager) - возвращает что-то оличное от stream. Eager - 
-    действующий сразу, нетерпеливый.
                         
     Arrays.stream(array)                                
             .filter(e -> e % 2 != 0)                    // intermediate method
