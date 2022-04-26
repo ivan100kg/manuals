@@ -3053,7 +3053,12 @@
     peek(Consumer<T>)       // -> Stream, обход элем - не терминальный      (i)
     flatMap(Function<T>, Stream<R>) // -> Stream, позволяет добраться до    (i)
                                        коллекций во вложенных коллец, в итоге
-                                       все данные объед в 1 поток.       
+                                       все данные объед в 1 поток.
+    collect()               // -> Collection, собирает коллекции            (t)
+    collect(Collectors.groupingBy(Function<T,R>))   // -> Map, group by     (t)
+                                                       map с группами
+    collect(Collectors.partitioningBy(Predicate<T>) // -> Map, separ by     (t)
+                                                       map из 2-х эл t|f
 
     Examples:
     list.stream().map(element -> element.length()).toList();
@@ -3067,6 +3072,10 @@
     System.out.println(stream5.distinct().peek(System.out::println).count());
     facultyList.stream().flatMap(faculty -> faculty.getStudents().stream())
                 .forEach(System.out::println);
+    Map<Character, List<Student>> map1 =  students.stream()
+                .collect(Collectors.groupingBy(student -> student.getSex()));
+    Map<Boolean, List<Student>> map2 =  students.stream()
+                .collect(Collectors.partitioningBy(el->el.getAvgGrade()>7));
 
     Chaining
     Из методов можно делать цепочки - передавая поток с одного в другой.
