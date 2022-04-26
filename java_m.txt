@@ -3063,7 +3063,10 @@
     min(Comparator<T>)      // -> Type, min element                         (t)
     max(Comparator<T>)      // -> Type, max element                         (t)
     limit(long n)           // -> Stream, limit(n) of elements              (i)
-    skip(long n)            // -> Stream. skip n-first elements             (i)
+    skip(long n)            // -> Stream, skip n-first elements             (i)
+    mapToInt(Function<>)    // -> IntStream, stream of Integers             (i)
+                               IntStream может исп sum, avg, min .. methods
+    mapToDouble(Function<>) // -> DoubleStream, stream of Doubles           (i)    
 
     Examples:
     list.stream().map(element -> element.length()).toList();
@@ -3076,11 +3079,15 @@
     System.out.println(stream1.distinct().count());
     System.out.println(stream5.distinct().peek(System.out::println).count());
     facultyList.stream().flatMap(faculty -> faculty.getStudents().stream())
-                .forEach(System.out::println);
+            .forEach(System.out::println);
     Map<Character, List<Student>> map1 =  students.stream()
-                .collect(Collectors.groupingBy(student -> student.getSex()));
+            .collect(Collectors.groupingBy(student -> student.getSex()));
     Map<Boolean, List<Student>> map2 =  students.stream()
-                .collect(Collectors.partitioningBy(el->el.getAvgGrade()>7));
+            .collect(Collectors.partitioningBy(el->el.getAvgGrade()>7));
+    List<Integer> courses = students.stream()
+            .mapToInt(el->el.getAge())
+            .boxed()    // boxing вручную
+            .collect(Collectors.toList());
 
     Chaining
     Из методов можно делать цепочки - передавая поток с одного в другой.
