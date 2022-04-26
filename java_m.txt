@@ -3059,6 +3059,11 @@
                                                        map с группами
     collect(Collectors.partitioningBy(Predicate<T>) // -> Map, separ by     (t)
                                                        map из 2-х эл t|f
+    findFirst()             // -> Optional, first element of stream         (t)
+    min(Comparator<T>)      // -> Type, min element                         (t)
+    max(Comparator<T>)      // -> Type, max element                         (t)
+    
+
 
     Examples:
     list.stream().map(element -> element.length()).toList();
