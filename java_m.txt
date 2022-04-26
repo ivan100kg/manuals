@@ -3062,8 +3062,8 @@
     findFirst()             // -> Optional, first element of stream         (t)
     min(Comparator<T>)      // -> Type, min element                         (t)
     max(Comparator<T>)      // -> Type, max element                         (t)
-    
-
+    limit(long n)           // -> Stream, limit(n) of elements              (i)
+    skip(long n)            // -> Stream. skip n-first elements             (i)
 
     Examples:
     list.stream().map(element -> element.length()).toList();
