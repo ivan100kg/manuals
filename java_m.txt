@@ -3051,7 +3051,9 @@
     distinct()              // -> Stream, uniq elements                     (i)
     count()                 // -> long, count of elements                   (t)
     peek(Consumer<T>)       // -> Stream, обход элем - не терминальный      (i)
-    
+    flatMap(Function<T>, Stream<R>) // -> Stream, позволяет добраться до    (i)
+                                       коллекций во вложенных коллец, в итоге
+                                       все данные объед в 1 поток.       
 
     Examples:
     list.stream().map(element -> element.length()).toList();
@@ -3063,6 +3065,8 @@
     System.out.println(stream5.distinct().toList());
     System.out.println(stream1.distinct().count());
     System.out.println(stream5.distinct().peek(System.out::println).count());
+    facultyList.stream().flatMap(faculty -> faculty.getStudents().stream())
+                .forEach(System.out::println);
 
     Chaining
     Из методов можно делать цепочки - передавая поток с одного в другой.
