@@ -1468,9 +1468,15 @@
     () -> {}                    // нет параметров и тела
 
 --- Method reference ---
-    Вместо лямбды в forEach можно вставить method reference, 
-    синтаксис: class::method
-    в результате ко всем элементам коллекции применяется этот метод.
+    Вместо лямбды можно применять method reference.
+    синтаксис: 
+    # статический метод класса - исп class::staticMethod
+    IntBinaryOperator sum = Integer::sum;   // В интерфейсе IntBinaryOperator
+                                               переопр applyAsInt(int a, int b)
+                                               с пом метода Integer.sum(a,b)
+    IntBinaryOperator sum = (a,b)-> a+b;    // аналогично
+
+    # Нестатический метод класса - исп class::method
 
     Example: 
     list.forEach(el -> System.out.println(el));
