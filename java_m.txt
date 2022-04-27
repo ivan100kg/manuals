@@ -3088,6 +3088,8 @@
             .mapToInt(el->el.getAge())
             .boxed()    // boxing вручную
             .collect(Collectors.toList());
+    int sum = students.stream().mapToInt(el -> el.age).sum();
+    int max = students.stream().mapToInt(el -> el.age).max().getAsInt();
 
     Chaining
     Из методов можно делать цепочки - передавая поток с одного в другой.
@@ -3103,6 +3105,15 @@
             .sorted()                                   // intermediate method
             .forEach(el -> System.out.print(el + " ")); // terminal method
 
+    Parallel steram 
+    Возможность исп неск ядер процессора при вып операций со stream.
+    Целесообразно для большого количества элементов.
+    Коллекция делится и выполняются нужные операции, потом результаты 
+    между собой. Деление не подходит - здесь важен порядок.
     
+    create:
+    list.parallelStream();          // из коллекций/массивов
+    Stream<T> s = Stream.of(...);   // с нуля
+    s.parallel();
 
 
