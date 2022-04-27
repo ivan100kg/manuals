@@ -2330,15 +2330,22 @@
     ● set() - изменить элемент, на который указывает итератор.
 
 --- Многопоточность ---
-    Потоки бывают обычные и потоки-демоны. Приложение работает пока хоть
-    1 обычный поток не завершился, демонов же никто не ждет, программа
-    закроется если все обычные завершены, а демоны еще нет допустим.
+    Многопоточность - принцип построения программы, при котором несколько
+    блоков кода могут выполнятся одновремено.
+
+    Main - главный поток запуск - public static void main(String[] args)
+    Остальные создаваемые потоки работают параллельно main.
+    
+    Потоки бывают обычные и потоки-демоны. 
+    Приложение работает пока хоть 1 обычный поток не завершился.
+    Демонов никто не ждет, программа закроется если все обычные завершены,
+    а демоны могут еще не завершится и хрен с ними.
     Для каждого потока создается свой stack.
     Потоки могут заглядывать друг к другу в heap.
     
-    Создание потоков:
+    Создание потоков: (предпочтительно вариант2/3)
     
-    # вариант 1 - унаследоваться от Thread
+    # вариант 1 - унаследоваться от Thread, переопределить run()
     public class ThreadExampleClass extends Thread {   
         @Override
         public void run() {                         // этот метод запустится в 
@@ -2359,7 +2366,7 @@
         }
     }
 
-    # вариант 2 - использовать интерфейс Runnable(более простой/понятный)
+    # вариант 2 - использовать интерфейс Runnable, переопределить run()
     public class RunnableExampleClass implements Runnable{
         @Override
         public void run() {                         // переопределяем метод
@@ -2374,13 +2381,13 @@
         }
 
         public static void main(String[] args) {
-            Thread t = new ThreadExampleClass();
+            Thread t = new RunnableExampleClass();
             t.start();                              // запуск в отдельном потоке
             // код продолжается выполняться дальше
         }
     }
 
-    # вариант 3 - анонимный класс/lambda
+    # вариант 3 - анонимный класс/lambda, переопределяем run()
     public class AnonymousExampleClass {
         public static void main(String[] args) {
             Thread t = new Thread(new Runnable() {  // переопределяем на месте
@@ -2401,6 +2408,15 @@
             // код продолжается выполняться дальше
         }
     }
+
+    # вариант 3.1 - анонимный поток(самое короткое написание)
+    public static void main(String[] args) {
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                System.out.println("1: " + i);
+            }
+        }).start();
+     }
 
 --- tread.join - дождаться выполнения потока ---
     t.start();                              // запуск потока
@@ -3032,9 +3048,9 @@
     Methods:
     i - intermediate method(lazy)
     t - terminal method(eager)
-    map(Function<T,R>)      // -> Stream, применяет Function к каждому эл. (i)
-    filter(Predicate<E>)    // -> Stream, фильтрует данные из набора       (i)
-    forEach(Consumer<T>)    // -> void, обход элементов                    (t)
+    map(Function<T,R>)      // -> Stream, применяет Function к каждому эл.  (i)
+    filter(Predicate<E>)    // -> Stream, фильтрует данные из набора        (i)
+    forEach(Consumer<T>)    // -> void, обход элементов                     (t)
     reduce() агрегатная функция - производит операции над элементами,
     вычисляет одно общее значение и возвращает его в виде Optional.
     Example: reduce((acc, el) -> acc * el)
@@ -3088,7 +3104,7 @@
             .mapToInt(el->el.getAge())
             .boxed()    // boxing вручную
             .collect(Collectors.toList());
-    int sum = students.stream().mapToInt(el -> el.age).sum();
+    int sum = students.stream().mapToInt(el -> el.age).sum();   // сумма!
     int max = students.stream().mapToInt(el -> el.age).max().getAsInt();
 
     Chaining
