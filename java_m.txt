@@ -2475,7 +2475,10 @@
     isDaemon()      // -> boolean, поток - демон?
     isAlive()       // -> boolean, поток выполняется?
     isInterrupted() // -> boolean, поток прерван?
-    setPriority(i)  // void, задать приоритет int
+    setName(String) // -> void, set name of thread
+    getName()       // -> String, get name of thread
+    setPriority(i)  // void, задать приоритет int [0-10]
+    getPriority()   // int, текущий приоритет потока
     getStacTrace()  // -> StackTraceElement, инфо
 
 --- Ordering/очередность ---
