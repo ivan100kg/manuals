@@ -3043,9 +3043,13 @@
     Arrays.stream(array).map(el -> el * el).toArray();  // новый массив
 
     Optional<T>
-    класс - контейнер-обертка над типом данных, может содержать null
+    класс - контейнер-обертка над типом данных.
+    Хранит либо значение(не null), либо его отсутствие.
+    Optional.of(obj);           // create, if null - exception
+    Optional.ofNullable(obj)    // если null - пустой Optional    
     isPresent() -> boolean, проверка на null.
     get()       -> Type, возвращает объект типа.
+    orElse(val) -> val, если коробка пуста вернуть val.
     Example:
     Optional<Integer> optional = list.stream().reduce((acc, el) -> acc * el);
     if (optional.isPresent()) System.out.println(optional.get());   // get
