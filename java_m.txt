@@ -3031,6 +3031,7 @@
     Stream<Integer> integerStream = Stream.of(1, 2, 3, 4);  // Stream.of(obj...)
     Stream<Integer> integerStream = list.stream();          // obj.stream()
     integerStream.filter(integer -> integer < 3);
+    Stream<Double> doubleStream = Stream.generate(Math::random);    // генератор
 
     // работа с коллекциями
     List<String> list = new ArrayList<>();      // List
