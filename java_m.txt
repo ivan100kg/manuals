@@ -1557,8 +1557,9 @@
 
 --- interface Function<T, R> ---
     Представляет функцию, которая принимает один аргумент и выдает результат.
-    Принимает объект одного типа T.
-    Возвращает объект другого типа R.
+    Принимает объект T.
+    Возвращает объект R.
+    Типы могут совпадать.
 
     @FunctionalInterface
     public interface Function<T, R> {
@@ -3049,20 +3050,30 @@
     Arrays.stream(array).map(el -> el*el);  // новый поток с результами
     Arrays.stream(array).map(el -> el * el).toArray();  // новый массив
 
-    Optional<T>
+    Specialized streams
+    Содержат доп спец методы (sum, max, min, count, range, rangeClosed)
+    IntStream()     // int
+    DoubleStream()  // double
+    LongStream()    // long
+    Example:
+    IntStream.range(0,1000).forEach(System.out::println);   // [0;1000)
+
+ --- Optional<T> ---
     класс - контейнер-обертка над типом данных.
     Хранит либо значение(не null), либо его отсутствие.
     Optional.of(obj);           // create, if null - exception
-    Optional.ofNullable(obj)    // если null - пустой Optional    
-    isPresent() -> boolean, проверка на null.
-    get()       -> Type, возвращает объект типа.
-    orElse(val) -> val, если коробка пуста вернуть val.
+    Optional.ofNullable(obj)    // если null - пустой Optional
+    Methods:    
+    isPresent()                 // -> boolean, проверка на null.
+    ifPresent(Consumer<T>)      // -> void, если не пустой вып accept()
+    get()                       // -> Type, возвращает объект типа.
+    orElse(val)                 // -> val, если коробка пуста вернуть val.
     Example:
     Optional<Integer> optional = list.stream().reduce((acc, el) -> acc * el);
     if (optional.isPresent()) System.out.println(optional.get());   // get
     optional.ifPresent(System.out::println);                        // the same
 
-    Methods:
+--- Stream Methods ---
     i - intermediate method(lazy)
     t - terminal method(eager)
     map(Function<T,R>)      // -> Stream, применяет Function к каждому эл.  (i)
@@ -3087,23 +3098,30 @@
     noneMatch(Predicate<T>) // -> boolean, не 1 эл не соотв условию         (t)
     count()                 // -> long, count of elements                   (t)
     peek(Consumer<T>)       // -> Stream, обход элем - не терминальный      (i)
-    flatMap(Function<T>, Stream<R>) // -> Stream, позволяет добраться до    (i)
-                                       коллекций во вложенных коллец, в итоге
-                                       все данные объед в 1 поток.
+   
     collect()               // -> Collection, собирает коллекции            (t)
     collect(Collectors.groupingBy(Function<T,R>))   // -> Map, group by     (t)
                                                        map с группами
     collect(Collectors.partitioningBy(Predicate<T>) // -> Map, separ by     (t)
                                                        map из 2-х эл t|f
-    findAny().ifPresent()   // -> Optional, первый попавшийся элемент       ()
+    findAny().ifPresent()   // -> Optional, первый попавшийся элемент       (t)
     findFirst()             // -> Optional, first element of stream         (t)
     min(Comparator<T>)      // -> Type, min element                         (t)
     max(Comparator<T>)      // -> Type, max element                         (t)
     limit(long n)           // -> Stream, limit(n) of elements              (i)
     skip(long n)            // -> Stream, skip n-first elements             (i)
+    Преобразование к спец потокам:
     mapToInt(Function<>)    // -> IntStream, stream of Integers             (i)
                                IntStream может исп sum, avg, min .. methods
-    mapToDouble(Function<>) // -> DoubleStream, stream of Doubles           (i)    
+    mapToDouble(Function<>) // -> DoubleStream, stream to DoubleStream      (i)    
+    mapToLong(Function<>)   // -> LongStream, stream to LongStream          (i)  
+    Поток из потоков вложенных коллекций:
+    flatMap(Function<T>, Stream<R>) // -> Stream, позволяет добраться до    (i)
+                                       коллекций во вложенных коллец, в итоге
+                                       все данные объед в 1 поток.
+    flatMapToInt()                  // -> Stream
+    flatMapToDouble()               // -> Stream
+    flatMapToLong()                 // -> Stream    
 
     Examples:
     list.stream().map(element -> element.length()).toList();
@@ -3128,10 +3146,10 @@
     int sum = students.stream().mapToInt(el -> el.age).sum();   // сумма!
     int max = students.stream().mapToInt(el -> el.age).max().getAsInt();
 
-    Chaining
+--- Stream Chaining ---
     Из методов можно делать цепочки - передавая поток с одного в другой.
-    Source(колл/массив) -> intermediate methods(lazy) -> Terminal method(eager)
-                        
+    Source(колл/массив) -> intermediate methods(lazy) -> Terminal method(eager)   
+    Example:                     
     Arrays.stream(array)                                
             .filter(e -> e % 2 != 0)                    // intermediate method
             .map(e ->                                   // intermediate method
@@ -3142,12 +3160,11 @@
             .sorted()                                   // intermediate method
             .forEach(el -> System.out.print(el + " ")); // terminal method
 
-    Parallel steram 
+--- Parallel steram  ---
     Возможность исп неск ядер процессора при вып операций со stream.
     Целесообразно для большого количества элементов.
     Коллекция делится и выполняются нужные операции, потом результаты 
-    между собой. Деление не подходит - здесь важен порядок.
-    
+    между собой. Деление не подходит - здесь важен порядок.    
     create:
     list.parallelStream();          // из коллекций/массивов
     Stream<T> s = Stream.of(...);   // с нуля
