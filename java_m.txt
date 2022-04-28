@@ -3050,6 +3050,12 @@
     Arrays.stream(array).map(el -> el*el);  // новый поток с результами
     Arrays.stream(array).map(el -> el * el).toArray();  // новый массив
 
+    
+    // работа с файлами
+    Files.lines(Paths.get("1.txt")) // получаем поток и вертим им как хотим
+            .map(s -> s.toUpperCase(Locale.ROOT))
+            .forEach(System.out::println);
+
     Specialized streams
     Содержат доп спец методы (sum, max, min, count, range, rangeClosed)
     IntStream()     // int
@@ -3079,6 +3085,7 @@
     map(Function<T,R>)      // -> Stream, применяет Function к каждому эл.  (i)
     filter(Predicate<E>)    // -> Stream, фильтрует данные из набора        (i)
     forEach(Consumer<T>)    // -> void, обход элементов                     (t)
+    
     reduce() агрегатная функция - производит операции над элементами,
     вычисляет одно общее значение и возвращает его в виде Optional.
     Example: reduce((acc, el) -> acc * el)
@@ -3089,6 +3096,7 @@
         в результате после прохождения всей коллекции возвращается acc.
     reduce(BinaryOperator<T>)       // -> Optional, возвращ аккумулир знач  (t)
     reduce(T i, BinaryOperator<T>)  // -> Type, acc=i, el=1-й эл            (t)
+    
     sorted()                // -> Stream, сортир поток Comparable эл        (i)
     sorted(Comparator)      // -> Stream, сортир поток                      (i)
     Stream.concat(stream2, stream3) // -> Stream, concat streams
@@ -3098,30 +3106,35 @@
     noneMatch(Predicate<T>) // -> boolean, не 1 эл не соотв условию         (t)
     count()                 // -> long, count of elements                   (t)
     peek(Consumer<T>)       // -> Stream, обход элем - не терминальный      (i)
-   
+    
+    // Сборка коллекций, других типов с пом collect()
     collect()               // -> Collection, собирает коллекции            (t)
     collect(Collectors.groupingBy(Function<T,R>))   // -> Map, group by     (t)
                                                        map с группами
     collect(Collectors.partitioningBy(Predicate<T>) // -> Map, separ by     (t)
                                                        map из 2-х эл t|f
+    collect(Collectors.joining(","))                // -> String            (t)
+
     findAny().ifPresent()   // -> Optional, первый попавшийся элемент       (t)
     findFirst()             // -> Optional, first element of stream         (t)
     min(Comparator<T>)      // -> Type, min element                         (t)
     max(Comparator<T>)      // -> Type, max element                         (t)
     limit(long n)           // -> Stream, limit(n) of elements              (i)
     skip(long n)            // -> Stream, skip n-first elements             (i)
+    
     Преобразование к спец потокам:
     mapToInt(Function<>)    // -> IntStream, stream of Integers             (i)
                                IntStream может исп sum, avg, min .. methods
     mapToDouble(Function<>) // -> DoubleStream, stream to DoubleStream      (i)    
     mapToLong(Function<>)   // -> LongStream, stream to LongStream          (i)  
+    
     Поток из потоков вложенных коллекций:
     flatMap(Function<T>, Stream<R>) // -> Stream, позволяет добраться до    (i)
                                        коллекций во вложенных коллец, в итоге
                                        все данные объед в 1 поток.
     flatMapToInt()                  // -> Stream
     flatMapToDouble()               // -> Stream
-    flatMapToLong()                 // -> Stream    
+    flatMapToLong()                 // -> Stream
 
     Examples:
     list.stream().map(element -> element.length()).toList();
