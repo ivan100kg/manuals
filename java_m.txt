@@ -3033,8 +3033,8 @@
     collection.stream();    // stream from collection
     Arrays.stream(arr);     // stream from array
     
-    Stream<Double> doubleStream = Stream.generate(Math::random);    // генератор
-    IntStream.iterate(seed, n -> ((n * n) / 10) % 1000);            // то же
+    Stream.generate(Math::random);                          // генератор double
+    IntStream.iterate(seed, n -> ((n * n) / 10) % 1000);    // iterator int 
 
     // работа с коллекциями
     List<String> list = new ArrayList<>();      // List
