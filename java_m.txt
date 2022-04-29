@@ -2341,6 +2341,10 @@
     Многопоточность - принцип построения программы, при котором несколько
     блоков кода могут выполнятся одновремено.
 
+    Состояние потоков
+    New -> Runnable -> Terminated
+            /     \
+        ready -> running
     main - главный поток запуск - public static void main(String[] args)
     Остальные создаваемые потоки работают параллельно main.
     
@@ -2351,8 +2355,13 @@
     Для каждого потока создается свой stack.
     Потоки могут заглядывать друг к другу в heap.
     
-    Создание потоков: (предпочтительно вариант2/3)
-    
+    concurrency - согласованность, вып неск задач потоками(возможно на 1 ядре)
+    parallelism - вып задач одновременно за счет многоядерного процессора 
+    синхронный  - вып задач последовательно друг за другом
+    асинхронный - вып задач не последовательно, переключаясь с одного на др,
+                  на многоядерном процессоре - параллельно.
+
+    Создание потоков: (предпочтительно вариант2/3)        
     # вариант 1 - унаследоваться от Thread, переопределить run()
     public class ThreadExampleClass extends Thread {   
         @Override
@@ -2469,20 +2478,21 @@
     Thread.currentThread(); // -> Thread, тек поток
     Thread.sleep(Long ms);  // -> void, заснуть на ms millisecs
     start()                 // void, запуск потока
-    interrupt()             // void, прервать поток, с пом проверки 
+    interrupt()             // -> void, прервать поток, с пом проверки 
                                Thread.currentThread().isInterrupted() в
-                              определении тела потока. 
-    run()                   // void, запуск задачи не в новом потоке
-    join()                  // void, ожидание завершения потока
-    join(msec)              // void, ожидание заверше потока в теч 'm' msec
-    setDaemon(true)         // void, преобразовать в поток-демон
+                               определении тела потока. 
+    run()                   // -> void, запуск задачи не в новом потоке
+    join()                  // -> void, ожидание завершения потока
+    join(msec)              // -> void, ожидание заверш потока макс 'm' msec
+    setDaemon(true)         // -> void, преобразовать в поток-демон
     isDaemon()              // -> boolean, поток - демон?
     isAlive()               // -> boolean, поток выполняется?
     isInterrupted()         // -> boolean, поток прерван?
     setName(String)         // -> void, set name of thread
     getName()               // -> String, get name of thread
-    setPriority(i)          // void, задать приоритет int [0-10]
-    getPriority()           // int, текущий приоритет потока
+    getState()              // -> enum State, состояние потока
+    setPriority(i)          // -> void, задать приоритет int [0-10]
+    getPriority()           // -> int, текущий приоритет потока
     getStacTrace()          // -> StackTraceElement, инфо
 
 --- Ordering/очередность ---
