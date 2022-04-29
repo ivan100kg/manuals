@@ -2501,27 +2501,27 @@
     new Thread(() -> System.out.println(2)).start();
     new Thread(() -> System.out.println(3)).start();
 
---- Raised condition, Синхронизация ---
+--- Race condition(Гонка), Синхронизация ---
     Если потоки пытаются модифицировать одну и ту же переменную
     возможны расхождения в ожидаемых результатах. Для предотвращения
-    таких ситуаций  используют synchronyzed methods.
+    таких ситуаций используют synchronyzed methods.
 
     // обычные методы
     public class Counter {
-    private int c;
-    public int value() { return c; }
-    public SyncCounter() { c = 0; }
-    public void inc() { c++; }
-    public void dec() { c--; }
+        private int c;
+        public int value() { return c; }
+        public SyncCounter() { c = 0; }
+        public void inc() { c++; }
+        public void dec() { c--; }
     }
     
     // синхронизованные методы
     public class SyncCounter {
-    private int c;
-    public int value() { return c; }
-    public SyncCounter() { c = 0; }
-    public synchronized void inc() { c++; }
-    public synchronized void dec() { c--; }
+        private int c;
+        public int value() { return c; }
+        public SyncCounter() { c = 0; }
+        public synchronized void inc() { c++; }
+        public synchronized void dec() { c--; }
     }
 
     synchronized - доступ к методам осуществ потоками по очереди,
@@ -2595,6 +2595,15 @@
     объекту Х он должен снять свою блокировку с объекта У, чтобы первый поток 
     исполнения мог завершиться.
 
+--- volatile ---
+    запрещает кэширование переменной внутри процессора, 
+    хранить и сп переменную только в памяти. Использовать
+    когда неcколько потоков работают с одной переменной. Причем
+    когда только 1 поток может изменять перем, остальные - читать.
+    Использовать совместно с synchonized блоками если изменять
+    нужно более чем одному потоку.
+    volatile boolean b = true;  // create
+
 --- wait notify ---
     вызываются на объекте держащим монитор:
     wait        - освобождает монитор и переводит вызывающий поток в состояние 
@@ -2602,10 +2611,7 @@
                   notify()/notifyAll();
     notify      - продолжает работу потока, у кот ранее был вызван метод wait();
     notifyAll   - возобн работу всех потоков, у кот был вызван метод wait().
-    volatile    - запрещает кэширование переменной внутри процессора, исполь-
-                  зовать когда немколько потоков работают с одной переменной,
-                  использовать совместно с synchonized блоками.
-
+   
     public class WaitNotifyApp {
         private final Object mon = new Object();
         private volatile char currentLatter = 'A';
@@ -3002,7 +3008,7 @@
     }
 
 --- Atomic types ---
-    Для избавления от raised condition чтобы к одним данным был одновременный
+    Для избавления от race condition чтобы к одним данным был одновременный
     доступ помиио synchonized get set можно использовать атомарные типы данных.
     import java.util.concurrent.atomic*;    # атомарные типы данных
     Все операции этих типов - атомарные, т.е. выполняются в один момент времени
