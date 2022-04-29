@@ -3028,10 +3028,13 @@
     После использования на потоке terminal method, стрим нельзя переиспользовать.
 
     // create stream
-    Stream<Integer> integerStream = Stream.of(1, 2, 3, 4);  // Stream.of(obj...)
-    Stream<Integer> integerStream = list.stream();          // obj.stream()
-    integerStream.filter(integer -> integer < 3);
+    Stream.empty()          // empty stream
+    Stream.of(elems);       // stream of elements
+    collection.stream();    // stream from collection
+    Arrays.stream(arr);     // stream from array
+    
     Stream<Double> doubleStream = Stream.generate(Math::random);    // генератор
+    IntStream.iterate(seed, n -> ((n * n) / 10) % 1000);            // то же
 
     // работа с коллекциями
     List<String> list = new ArrayList<>();      // List
@@ -3114,7 +3117,7 @@
                                                        map с группами
     collect(Collectors.partitioningBy(Predicate<T>) // -> Map, separ by     (t)
                                                        map из 2-х эл t|f
-    collect(Collectors.joining(","))                // -> String            (t)
+    collect(Collectors.joining(delimeter,pre,suf))  // -> String            (t)
 
     findAny().ifPresent()   // -> Optional, первый попавшийся элемент       (t)
     findFirst()             // -> Optional, first element of stream         (t)
