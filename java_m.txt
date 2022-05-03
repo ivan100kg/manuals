@@ -2523,6 +2523,8 @@
     может, если пожелает, повторно войти в него.
     Монитор - это тот объект у которого был вызван synchronized метод.
 
+    Конструкторы синхронизировать нельзя.
+
 --- Race(Гонка), synchronized methods---
     Data Race - потоки пытаются модифицировать одну и ту же переменную
     возможны расхождения в ожидаемых результатах. Для предотвращения
@@ -2554,9 +2556,10 @@
     Работают как synchronized методы, только синхронизируют не весь 
     код в методе(хотя можно и весь), а лишь его часть, размещается в методе.
     Снтаксис: synchronized (object) { синхр код; }
-    public void someMethod() {  // какой-то метод
+    static final Object lock = new Object();    // obj в кач монитора
+    public void someMethod() {                  // какой-то метод
         // some code ...
-        synchronized (this) {   // монитор объекта this который захват-ся
+        synchronized (lock) {                   // sync block
             Counter.count++;
             System.out.println(Counter.count);
         }
@@ -2565,9 +2568,11 @@
 
     Этот способ подойдет для работы с разными полями класса, на каждое
     поле свой монитор - чтобы синхронизировать не все методы, а только те
-    которые модифицируют одни и те же данные
+    которые модифицируют одни и те же данные.
+
+    Несколько мониторов:
     public class SyncMonitorApp {
-        private Object monitor1 = new Object();
+        private Object monitor1 = new Object(); // любой объект в кач монитора
         private Object monitor2 = new Object();
         private int c1 = 0;
         private int c2 = 0;
