@@ -2501,32 +2501,8 @@
     new Thread(() -> System.out.println(2)).start();
     new Thread(() -> System.out.println(3)).start();
 
---- Race(Гонка), synchronized methods---
-    Data Race - потоки пытаются модифицировать одну и ту же переменную
-    возможны расхождения в ожидаемых результатах. Для предотвращения
-    таких ситуаций используют synchronyzed methods.
-
-    class C {
-        volatile static int c;                      // volatile
-        public synchronized static void inc() {     // static synchronized
-            c++;
-        }
-    }
-
-    public class Counter implements Runnable {      
-        public void inc() { C.c++; }                // not synchronized
-    }
-    
-    public class SyncCounter implements Runnable {
-        public synchronized void inc() { C.c++; }   // synchronized
-    }
-
-    synchronized - доступ к методам осуществ потоками по очереди,
-    при чем все методы одновременно, т.е. если поток работае с inc()
-    то другой поток будет ждать чтобы использовать inc()
-
 --- Monitor ---
-    Спец механизм с пом кот вып корректная синхронизация.
+    Спец механизм с пом кот вып-ся корректная синхронизация.
     У каждого объекта/класса есть привяз к нему сущность - монитор.
     2 статуса монитора: свободен/занят.
     Используется при использовании synchronized.
@@ -2547,61 +2523,65 @@
     может, если пожелает, повторно войти в него.
     Монитор - это тот объект у которого был вызван synchronized метод.
 
+--- Race(Гонка), synchronized methods---
+    Data Race - потоки пытаются модифицировать одну и ту же переменную
+    возможны расхождения в ожидаемых результатах. Для предотвращения
+    таких ситуаций используют synchronyzed methods.
+    Synchronized methods под капотом используют monitor obj/class, если
+    метод не статичный - то это по умолчанию объект this, если статик
+    метод - monitor класса.
+
+    class C {
+        volatile static int c;                      // volatile
+        public synchronized static void inc() {     // static synchronized
+            c++;
+        }
+    }
+
+    public class Counter implements Runnable {      
+        public void inc() { C.c++; }                // not synchronized
+    }
+    
+    public class SyncCounter implements Runnable {
+        public synchronized void inc() { C.c++; }   // synchronized
+    }
+
+    synchronized - доступ к методам осуществ потоками по очереди,
+    при чем все методы одновременно, т.е. если поток работае с inc()
+    то другой поток будет ждать чтобы использовать inc()
+
 --- Synchronized block ---
     Работают как synchronized методы, только синхронизируют не весь 
-    код в методе, а лишь его часть, размещается в методе.
-    public void someMethod() {
+    код в методе(хотя можно и весь), а лишь его часть, размещается в методе.
+    Снтаксис: synchronized (object) { синхр код; }
+    public void someMethod() {  // какой-то метод
+        // some code ...
         synchronized (this) {   // монитор объекта this который захват-ся
             Counter.count++;
             System.out.println(Counter.count);
         }
+        // some code ...
     }
 
-
-    // 2-ой способ через какой-ниб java-оbject(любой)
-       этот способ подойдет для работы с разными полями класса, на каждое
-       поле свой монитор - чтобы синхронизировать не все методы, а только те
-       которые модифицируют одни и те же данные
+    Этот способ подойдет для работы с разными полями класса, на каждое
+    поле свой монитор - чтобы синхронизировать не все методы, а только те
+    которые модифицируют одни и те же данные
     public class SyncMonitorApp {
         private Object monitor1 = new Object();
         private Object monitor2 = new Object();
         private int c1 = 0;
         private int c2 = 0;
-        public void inc1() {        
-            synchronized (monitor1) {
-                с1++;
-            }
-        }
-        public void inc2() {        
-            synchronized (monitor2) {
-                с2++;
-            }
-        }
-        public void dec1() {        
-            synchronized (monitor1) {
-                с1--;
-            }
-        }
-        public void dec2() {        
-            synchronized (monitor2) {
-                с2--
-            }
-        }
+        public void inc1() { synchronized (monitor1) { с1++; } }
+        public void inc2() { synchronized (monitor2) { с2++; } }
+        public void dec1() { synchronized (monitor1) { с1--; } }
+        public void dec2() { synchronized (monitor2) { с2--  } }
     }
 
-    // статические sync методы также перехватывают монитор и сам класс
-       не дает обращаться к другим статик методам когда монитор занят.
-    public synchronized static void classMethod(){
-        System.out.println("Sync Static method -START");
-        for (int i =0; i<10;i++){
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        System.out.println("Sync Static method -END");
-    }
+    Статические sync методы также перехватывают монитор и сам класс
+    не дает обращаться к другим статик методам когда монитор занят.
+    Монитор статик методов - это класс: запись SomeClass.class
+    public synchronized static void def(){}                     // method
+    public static void def(){ synchronized (MyClass.class) }    // block
 
 --- DeadLock ---
     взаимной блокировкой, которая происходит в том случае,
