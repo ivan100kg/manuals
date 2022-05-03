@@ -1,0 +1,10 @@
+Start using Linux
+who             - show who is logged on
+w               - show who is logged on and what they are doing
+hostname        - show or set the system's host name
+passwd          - change user password
+date            - print or set the system date and time
+cal             - displays a calendar and the date of Easter
+exit            - cause normal process termination
+poweroff        - power-off or reboot the machine
+
