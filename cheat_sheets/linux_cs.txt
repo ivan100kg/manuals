@@ -16,3 +16,25 @@ cd              - change directory
 rmdir <path>    - remove empty directories
 find            - search for files in a directory hierarchy
 
+Files
+ls List the files in the current directory.
+ls -l Long list of files in the current directory.
+ls -a List also the hidden files in the current directory.
+touch foo Create an empty file named foo.
+touch .foo Create a hidden file named .foo.
+touch -t 197002271130 bar Create a file named bar with a specific time stamp.
+rm foo Remove the foo file.
+rm -i foo Ask for permission to remove the foo file.
+rm -rf foo Remove foo recursively and forced.
+wget http://linux-training.be/foo Download foo from http://linux-training.be.
+file bar Identify the type of file for bar.
+cp foo bar Copy the foo file to bar.
+cp foo1 foo2 foo3 bar/ Copy multiple files to the bar directory.
+cp -i foo bar Copy foo to bar but ask permission before overwriting a file.
+cp -p foo bar Copy and preserve the time stamp.
+mv foo bar Rename the foo file to bar.
+mv foo1 foo2 foo3 bar/ Move multiple files to the bar directory.
+rename ’s/foo/bar/’ * Rename all files in the current directory replacing the string foo with the string bar.
+find -name foo Search for the file (or directory) named foo.
+find -type f -name foo Search for the file (not directory) named foo.
+find -type d -name foo Search for the directory named foo.
