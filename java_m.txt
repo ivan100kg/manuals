@@ -1084,6 +1084,11 @@
         return Objects.hash(firstName, lastName);
     }
 
+    Hash code generating
+    Double.hashCode(double)     // get hash code from Double/Integer/Long,...
+    Arrays.hashCode(arr)        // get hash code from an array
+    Objects.hash(var1,var2,…)   // get hash code from anything(Lazy method)
+
 --- Wrapper classes ---
     Классы оборачивающие какие-то данные.
     Позволяют примитивные типы данных использовать как классы.
