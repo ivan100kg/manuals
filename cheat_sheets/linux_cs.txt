@@ -8,3 +8,11 @@ cal             - displays a calendar and the date of Easter
 exit            - cause normal process termination
 poweroff        - power-off or reboot the machine
 
+Directories
+ls              - list the contents of the current directory
+mkdir <path>    - make (create) a new directory named foo
+pwd             - print the name of the current (working) directory
+cd              - change into your home directory
+rmdir <path>    - remove (delete) the empty directory foo
+find -name foo  - search for the directory (or file) named foo
+
