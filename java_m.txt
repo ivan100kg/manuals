@@ -1084,7 +1084,7 @@
         return Objects.hash(firstName, lastName);
     }
 
-    Hash code generating
+    Hash code generating:
     Double.hashCode(double)     // get hash code from Double/Integer/Long,...
     Arrays.hashCode(arr)        // get hash code from an array
     Objects.hash(var1,var2,…)   // get hash code from anything(Lazy method)
@@ -1612,7 +1612,8 @@
 
     // встроенный функционал reference классов
     Integer.compare(2, 5);  // -1
-    "123".compareTo("234"); // -1      
+    "123".compareTo("234"); // -1   
+    Boolean.compare(b1, b2) // true      
 
 --- interface Comparator<T> ---
     интерефейс, Функция сравнения, которая налагает полный порядок на некоторую 
@@ -3162,11 +3163,12 @@
     
     // Сборка коллекций, других типов с пом collect()
     collect()               // -> Collection, собирает коллекции            (t)
+                                  Collectors.toMap()/toList()/toSet()
     collect(Collectors.groupingBy(Function<T,R>))   // -> Map, group by     (t)
                                                        map с группами
     collect(Collectors.partitioningBy(Predicate<T>) // -> Map, separ by     (t)
                                                        map из 2-х эл t|f
-    collect(Collectors.joining(delimeter,pre,suf))  // -> String            (t)
+    collect(Collectors.joining(delimeter,pre,suf))  // -> String, 0,1,3 par (t)
 
     allMatch(Predicate<T>)  // -> boolean, все ли эл соотв условию          (t)
     anyMatch(Predicate<T>)  // -> boolean, хоть 1 эл соотв условию          (t)
@@ -3177,7 +3179,7 @@
     min(Comparator<T>)      // -> Type, min element                         (t)
     max(Comparator<T>)      // -> Type, max element                         (t)
         
-    Преобразование к спец потокам:
+    Преобразование к спец потокам как map:
     mapToInt(Function<>)    // -> IntStream, stream of Integers             (i)
                                IntStream может исп sum, avg, min .. methods
     mapToDouble(Function<>) // -> DoubleStream, stream to DoubleStream      (i)    
