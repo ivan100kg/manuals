@@ -24,3 +24,13 @@ wget <url>      - the non-interactive network downloader
 file <path>     - determine file type
 cp              - copy files and directories
 mv              - move (rename) files
+
+File contents
+head <path>     - output the first part of files
+tail <path>     - output the last part of files.
+cat <path>      - concatenate files and print on the standard output
+tac <path>      - concatenate and print files in reverse
+wc <path>       - print newline, word, and byte counts for each file
+grep <path>     - print lines that match patterns
+more <path>     - file perusal filter for crt viewing
+echo 'str'      - display a line of text
