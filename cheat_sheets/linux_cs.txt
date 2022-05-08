@@ -10,27 +10,39 @@ poweroff        - power-off or reboot the machine
 
 Directories
 ls              - list directory contents
-mkdir <path>    - make directories
+mkdir           - make directories
 pwd             - print name of current/working directory
 cd              - change directory
-rmdir <path>    - remove empty directories
+rmdir           - remove empty directories
 find            - search for files in a directory hierarchy
 
 Files
 ls              - list directory contents
-touch <path>    - change file timestamps/new file
-rm <path>       - remove files or directories
-wget <url>      - the non-interactive network downloader
-file <path>     - determine file type
+touch           - change file timestamps/new file
+rm              - remove files or directories
+wget            - the non-interactive network downloader
+file            - determine file type
 cp              - copy files and directories
 mv              - move (rename) files
 
 File contents
-head <path>     - output the first part of files
-tail <path>     - output the last part of files.
-cat <path>      - concatenate files and print on the standard output
-tac <path>      - concatenate and print files in reverse
-wc <path>       - print newline, word, and byte counts for each file
-grep <path>     - print lines that match patterns
-more <path>     - file perusal filter for crt viewing
-echo 'str'      - display a line of text
+head            - output the first part of files
+tail            - output the last part of files.
+cat             - concatenate files and print on the standard output
+tac             - concatenate and print files in reverse
+wc              - print newline, word, and byte counts for each file
+grep            - print lines that match patterns
+more            - file perusal filter for crt viewing
+echo            - display a line of text
+
+Compression
+gzip 
+zmore 
+zcat 
+zgrep 
+gunzip 
+bzip2 
+bzmore 
+bzcat 
+bzgrep 
+bunzip2 
