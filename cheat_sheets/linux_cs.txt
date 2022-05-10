@@ -36,13 +36,13 @@ more            - file perusal filter for crt viewing
 echo            - display a line of text
 
 Compression
-gzip 
-zmore 
-zcat 
-zgrep 
-gunzip 
-bzip2 
-bzmore 
-bzcat 
-bzgrep 
-bunzip2 
+gzip            - compress or expand files
+zmore           - file perusal filter for crt viewing of compressed text
+zcat            - compress or expand files
+zgrep           - search possibly compressed files for a regular expression
+gunzip          - compress or expand files
+bzip2           - a block-sorting file compressor
+bzmore          - file perusal filter for crt viewing of bzip2 compresse
+bzcat           - decompresses files to stdout
+bzgrep          - search possibly bzip2 compressed files for a regular ex
+bunzip2         - a block-sorting file compressor
