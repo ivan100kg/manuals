@@ -2752,9 +2752,9 @@
     java.util.concurrent;   // package
 
     Виды пулов потоков, creation:
-    newSingleThreadExecutor();      // пул в котором только один рабочий поток
-    newFixedThreadPool( 10 );       // пул с фиксированным количеством потоков
-    xecutors.newCachedThreadPool(); // пул, кот может автоматически расширяться
+    newSingleThreadExecutor();  // пул в котором только один рабочий поток
+    newFixedThreadPool( 10 );   // пул с фиксированным количеством потоков
+    newCachedThreadPool();      // пул, кот может автоматически расширяться
 
     Methods:
     execute(Runnable)       // void, отдать задачу в пул потоков
@@ -2774,31 +2774,33 @@
     invokeAny(Collection)   // -> List<Future>, отдать неск задач, выполнить 
                                хотя бы одну, остальные нет.
     
-    ExecutorService executorService = Executors.newFixedThreadPool ( 2 );
-    Future future = executorService.submit ( new Runnable() {
-        public void run () {
-            System . out . println ( "Асинхронная задача" );
-        }
-    });
-    future.get(); // вернет null если задача завершилась корректно
-    Future future = executorService.submit( new Callable<>(){
-        public Object call() throws Exception {
-            System.out.println( "Асинхронный вызов" );
-        return "Результат из потока" ;
-        }
-    });
-    System. out .println( "future.get() = " + future.get()); // возвращает данные
-    executorService.shutdown();
-
+    Example:
     // 10 рабоч потоков
-    ExecutorService executorService = Executors.newFixedThreadPool ( 10 );
+    ExecutorService executorService = Executors.newFixedThreadPool(10);
     // задача, передаваемая на выполнение одному из потоков
-    executorService.execute( new Runnable() {
+    executorService.execute(new Runnable() {
         public void run() {
-            System. out .println( "Асинхронная задача" );
+            System.out.println("Асинхронная задача");
         }
     });
     executorService.shutdown();     // остановить неисп потоки, не приним задачи
+
+    Future/Runnable/Callable:
+    ExecutorService executorService = Executors.newFixedThreadPool(2);
+    Future future = executorService.submit(new Runnable() {
+        public void run () {
+            System.out.println("Асинхронная задача");
+        }
+    });
+    future.get(); // вернет null если задача завершилась корректно
+    Future future = executorService.submit(new Callable<>(){
+        public Object call() throws Exception {
+            System.out.println("Асинхронный вызов");
+        return "Результат из потока" ;
+        }
+    });
+    System. out .println("future.get() = " + future.get()); // возвращает данные
+    executorService.shutdown();
 
     Фабрика потоков для пулла:
     Подготавливает и настраивает потоки для пулла.
@@ -2815,10 +2817,27 @@
     });
     service.execute(() -> System.out.println(1));   // запуск задачи
 
-    Задачи по расписанию:
-    задача будет выполнена после опред времени.
+--- ScheduledExecutorService ---
+    Установка расписания на запуск потоков из пула.
+    Create:
     ScheduledExecutorService s = Executors.newScheduledThreadPool(2);
+    Methods:
+    schedule(Runnable, time)    // -> ScheduledFuture, запуск задачи спустя время
+    shutdown()                  // void, больше не приним задачи, вып текущие,
+                                   прекращает работу пула.
+    scheduleAtFixedRate(R,t,p)  // -> ScheduledFuture, запуск задачи спустя время
+                                   периодически снова запускать через время 'p'.
+                                   обычно после такого вызова в тек потоке делают
+                                   sleep() + shutdown() - иначе бесконеч вып-ие.
+    scheduleWithFixedDelay(..)  // -> ScheduledFuture, запуск задачи через время,
+                                   промежутки между концом работы одной задачи и
+                                   начала работы другой - время в парам.
 
+    Examples:
+    schedule(() -> System.out.println("Hi"), 3, TimeUnit.SECONDS);
+    scheduleAtFixedRate(() -> System.out.println("Ok"), 3, 1, TimeUnit.SECONDS);
+    scheduleWithFixedDelay(() -> System.out.println("go"), 2, 1, TimeUnit.SECONDS);
+    
 --- Lock/замок ---
     Lock - interface. 
     ReeentrantLock - class that implements Lock.
