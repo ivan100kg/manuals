@@ -110,3 +110,9 @@ J   Объединяет строки
 u   Отменяет последнее изменение
 U   Отменяет все изменения на строке
 ^R  Отмена отмены
+^n 	autocomplete texts that are already written
+
+For macro:
+press q for starting the recording followed by some character 
+as the macro name, then perform some action (delete, replace, move, etc,.) 
+and press q again to stop the recording. Use ‘@’ to play a macro followed by its name.
