@@ -2742,19 +2742,14 @@
     }
 
 --- ExecutorService/пуллы потоков ---
-    ExecutorService - механизм асинхронного выполнения, который способен 
-    выполнять задачи в фоновом режиме - реализация пула потоков. Потоки 
-    выполняют переданные им задачи.
+    Thread pool - множество потоков, каждый из которых предназначен для
+    выполнения той или иной задачи.
+    Принцип работы: в thread pool закидываются задачи и уже внутри регулир
+    кто какую задачу какой поток будет выполнять.
+    Executor - интерфейс с помощью которого идет работа с thread pool.
+    ExecutorService - интерфейс, одна из реализаций Executor.
+    Executors - класс с множеством static methods для создания пулов.
     java.util.concurrent;   // package
-    // 10 рабоч потоков
-    ExecutorService executorService = Executors.newFixedThreadPool ( 10 );
-    // задача, передаваемая на выполнение одному из потоков
-    executorService.execute( new Runnable() {
-        public void run() {
-            System. out .println( "Асинхронная задача" );
-        }
-    });
-    executorService.shutdown();     // остановить неисп потоки, не приним задачи
 
     Виды пулов потоков, creation:
     newSingleThreadExecutor();      // пул в котором только один рабочий поток
@@ -2763,9 +2758,12 @@
 
     Methods:
     execute(Runnable)       // void, отдать задачу в пул потоков
-    shutdown()              // void, останов неисп потоки, больше не приним задачи
+    shutdown()              // void, больше не приним задачи, выполняет текущие,
+                               прекращает работу пула.
     shutdownNow()           // void, послать Interrupt всем потокам, обраб вручную
-    awaitTermination(long)  // -> boolean, подождать пока не выполнятся(типа join)
+    awaitTermination(time)  // -> boolean, поток в котором вызван этот метод
+                               ждет либо завершения пула, либо указ-го времени,
+                               далее возобнов работу. Используют после shutdown() 
     isShutDown()            // -> boolean
     isTerminated()          // -> boolean\
     submit(Runnable)        // -> Future, объект который можно использовать для 
@@ -2791,6 +2789,16 @@
     });
     System. out .println( "future.get() = " + future.get()); // возвращает данные
     executorService.shutdown();
+
+    // 10 рабоч потоков
+    ExecutorService executorService = Executors.newFixedThreadPool ( 10 );
+    // задача, передаваемая на выполнение одному из потоков
+    executorService.execute( new Runnable() {
+        public void run() {
+            System. out .println( "Асинхронная задача" );
+        }
+    });
+    executorService.shutdown();     // остановить неисп потоки, не приним задачи
 
     Фабрика потоков для пулла:
     Подготавливает и настраивает потоки для пулла.
