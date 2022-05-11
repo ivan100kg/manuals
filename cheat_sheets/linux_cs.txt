@@ -1,4 +1,4 @@
-Start using Linux
+--- Start using Linux ---
 who             - show who is logged on
 w               - show who is logged on and what they are doing
 hostname        - show or set the system's host name
@@ -8,7 +8,7 @@ cal             - displays a calendar and the date of Easter
 exit            - cause normal process termination
 poweroff        - power-off or reboot the machine
 
-Directories
+--- Directories ---
 ls              - list directory contents
 mkdir           - make directories
 pwd             - print name of current/working directory
@@ -16,7 +16,7 @@ cd              - change directory
 rmdir           - remove empty directories
 find            - search for files in a directory hierarchy
 
-Files
+--- Files ---
 ls              - list directory contents
 touch           - change file timestamps/new file
 rm              - remove files or directories
@@ -25,7 +25,7 @@ file            - determine file type
 cp              - copy files and directories
 mv              - move (rename) files
 
-File contents
+--- File contents ---
 head            - output the first part of files
 tail            - output the last part of files.
 cat             - concatenate files and print on the standard output
@@ -35,7 +35,7 @@ grep            - print lines that match patterns
 more            - file perusal filter for crt viewing
 echo            - display a line of text
 
-Compression
+--- Compression ---
 gzip            - compress or expand files
 zmore           - file perusal filter for crt viewing of compressed text
 zcat            - compress or expand files
