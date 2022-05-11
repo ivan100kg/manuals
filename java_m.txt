@@ -2785,23 +2785,6 @@
     });
     executorService.shutdown();     // остановить неисп потоки, не приним задачи
 
-    Future/Runnable/Callable:
-    ExecutorService executorService = Executors.newFixedThreadPool(2);
-    Future future = executorService.submit(new Runnable() {
-        public void run () {
-            System.out.println("Асинхронная задача");
-        }
-    });
-    future.get(); // вернет null если задача завершилась корректно
-    Future future = executorService.submit(new Callable<>(){
-        public Object call() throws Exception {
-            System.out.println("Асинхронный вызов");
-        return "Результат из потока" ;
-        }
-    });
-    System. out .println("future.get() = " + future.get()); // возвращает данные
-    executorService.shutdown();
-
     Фабрика потоков для пулла:
     Подготавливает и настраивает потоки для пулла.
     Описываем как для приходящей в пулл задачи выделять новый поток.
@@ -2816,6 +2799,48 @@
         }
     });
     service.execute(() -> System.out.println(1));   // запуск задачи
+
+--- Callable<V> ---
+    Как и Runnable представляет собой опред задание, кот вып-ся потоком.
+    Но имеет return type НЕ void, а также может выбрасывать Exception.
+    @FunctionalInterface
+    public interface Callable<V> {
+        V call() throws Exception;
+    }
+
+    Runnable and Callable are used in ExecutorService.submit()
+    
+    Methods:
+    service.submit()    // принимает либо Runnable, либо Callable,
+                           перед наш task to thread pool, для выполнения его
+                           одним из потоков(как execute()) и возвр объект Future.
+                           Результат в Future будет только после выполнения task.
+    future.get()        // -> результат выполнения нашего task, если не
+                           завершился - то тек поток болокируется до завершения 
+                           task. Поэтому не используется awaitTermination().
+                           При submit(new Runnable) возвращ результат null.
+    future.isDone()     // -> boolean, завершен task или нет?
+    future.cancel()     // отменить task, если не начался.
+
+    Example with submit():
+    // Runnable
+    ExecutorService executorService = Executors.newFixedThreadPool(2);
+    Future future = executorService.submit(new Runnable() {
+        public void run () {
+            System.out.println("Асинхронная задача");
+        }
+    });
+    future.get(); // вернет null если задача завершилась корректно
+
+    // Callable
+    Future future = executorService.submit(new Callable<>(){
+        public Object call() throws Exception {
+            System.out.println("Асинхронный вызов");
+        return "Результат из потока" ;
+        }
+    });
+    System.out.println("future.get() = " + future.get()); // возвращает данные
+    executorService.shutdown();
 
 --- ScheduledExecutorService ---
     Установка расписания на запуск потоков из пула.
