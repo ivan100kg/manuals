@@ -117,6 +117,8 @@ u   Отменяет последнее изменение
 U   Отменяет все изменения на строке
 ^R  Отмена отмены
 ^n 	autocomplete texts that are already written
+za  open/close folding 1 level
+zA  open/close al level folding
 
 For macro:
 press q for starting the recording followed by some character 
