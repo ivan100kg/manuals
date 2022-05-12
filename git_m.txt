@@ -113,6 +113,7 @@ git status -s                   # short version.
 # diff
 git diff						# что изменено но не в индексе.
 git diff --staged				# что в индексе и готовится к коммиту.
+git diff --check                # проверка перед доб в индекс на лиш пробелы
 
 # add
 git add <file> or -A        	# add file to index(подготовка к коммиту)
