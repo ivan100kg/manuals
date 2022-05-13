@@ -3047,21 +3047,27 @@
        очередь пуста - будет ожидать.
     ArrayBlockingQueue<String> arrayBQ = new ArrayBlockingQueue<String>(6);
 
---- CountDownLatch/защелка ---
-    Позволяет потоку ожидать завершения операций, выполняющихся в других потоках.
-    Режим ожидания запускается методом await(). При создании объекта определяется 
-    количество требуемых операций, после чего уменьшается при вызове метода 
-    countDown(). Как только счетчик доходит до нуля, с ожидающего потока 
-    снимается блокировка.
-    Все это для того чтоб не ждать join() каждый поток по отдельности.
-    В await() можно выставить таймаут чтоб не зависнуть.
+--- Synchronizer/Синхронизатор ---
+    Это механизм высокого уровня использующий механизмы параллелизма низкого
+    уровня.
+
+--- CountDownLatch/защелка обратного счетчика ---
+    Это синхронизатор - позволяющий любому кол-ву потоков ждать пока
+    не завершится опред кол-во операций.
+    Конструктор принимает кол-во опреаций, кот должны завершится, чтобы 
+    потоки продолжили свою работу.
+    Защелка закрыта пока счетчик не = 0, потоки ждут.
+
+    CountDownLatch latch = new CountDownLatch(3);   // 3 щелчка и все потоки
+                                                       стартуют
+    await()     // ждать пока счетчик не станет = 0(можно задать таймаут)
+    countDown() // убавить счетчик на 1
 
     Example
     import java.util.concurrent.CountDownLatch;
     public static void main(String[] args) {
         final int THREADS_COUNT = 6;
         final CountDownLatch countDownLatch = new CountDownLatch(THREADS_COUNT);
-
         System.out.println("Start");
         for (int i = 0; i < THREADS_COUNT; i++) {
             final int w = i;
@@ -3069,6 +3075,7 @@
                 try {
                     Thread.sleep(200 + w + (int) (500 + Math.random()));
                     System.out.println("Thread #" + w + " is ready");
+                    // тут потоки будут ждать пока счетчик не = 0
                     countDownLatch.countDown(); // убавляем счетчик на 1
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -3085,29 +3092,36 @@
     }
     
 --- Semaphore ---
+    Это синхронизотор - позволяющий ограничить доступ к какоему-то ресурсу.
+    Конструктор принимает кол-во потоков, которым Semaphore будет разрешать
+    одновременно использовать этот ресурс.
+
     Ограничивает количество потоков при работе с ресурсами. Для этого служит 
     счетчик. Если его значение больше нуля, то потоку разрешается доступ, а 
     значение уменьшается. Если счетчик равен нулю, то текущий поток блокируется 
-    до освобождения ресурса. Для получения доступа используется метод acquire(), 
-    для освобождения – release().
+    до освобождения ресурса. 
+    Semaphore smp = new Semaphore(2);   // 2 threads
+    acquire()   // получение доступа  
+    release()   // освобождение  
 
     Example:
     import java.util.concurrent.Semaphore;
     public static void main(String[] args) {
         Semaphore smp = new Semaphore(2);
         for (int i = 0; i < 5; i++) {
-            final int w = i;
+            final int w = i;    // счетчик потоков
             new Thread(() -> {
                 try {
                     System.out.println("Поток " + w + " перед семафором");
+                    // тут потоки выполняют дальнейший код если счетчик > 0
                     smp.acquire();  // если счетчик не 0, захват и счетчик-=1
-                    System.out.println("Поток " + w + " получил доступ к ресурсу");
+                    System.out.println("Поток " + w + " получ дост к ресурсу");
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
                     System.out.println("Поток " + w + " освободил ресурс");
-                    smp.release();  // увеличить счетчик на 1
+                    smp.release();  // освободить, увеличить счетчик на 1
                 }
             }).start();
         }
