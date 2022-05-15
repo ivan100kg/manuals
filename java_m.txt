@@ -3374,4 +3374,27 @@
     Byte Streams - для работы с байтами(бинарные файлы).
     java.io;    // пакет для работы с этими потоками.
 
+--- Text Files Streams ---
+    FileWriter(path)    // создать стрим на запись(создастся новый файл или
+                           откроется существующий<path>). path - абсолютный
+                           или относительный путь. Также может приним File.
+                           И еще параметр append true/false (дозапись).
+    Methods:
+    write(String/int)   // записать строку/символ в файл, в случае со строкой
+                           запись все равно идет посимвольно
+
+    // Write String to file
+    String rubai = "Hello";
+    try (FileWriter writer = new FileWriter("C:\\rubai.txt")) {
+        for (int i = 0; i < rubai.length(); i++) {
+            writer.write(rubai.charAt(i));  // записать посимвольно вручную
+        }
+        writer.write("\n\n" + rubai);       // посимвольно но автоматом
+        System.out.println("Done!");
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    FileReader()
+
 
