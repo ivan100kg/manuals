@@ -1285,7 +1285,8 @@
 --- try with resourses ---
     Используется с Closeable(интерфейс) объектами(напр FileOutputStream).
     Finnaly как бы используется по умолчанию, в котором файл закрывается.
-    try (FileOutputStream out2 = new FileOutputStream("2.txt")) { // init in ()
+    В скобках через ; можно инициализировать несколько переменных(ресурсы).
+    try (FileOutputStream out2 = new FileOutputStream("2.txt")) { // (resourses)
     } catch (IOException e) {
         e.printStackTrace();
     }   // out2.close() произойдет в любом случае, не надо ничего городить
