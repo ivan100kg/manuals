@@ -3382,9 +3382,12 @@
     Methods:
     write(String/int)   // записать строку/символ в файл, в случае со строкой
                            запись все равно идет посимвольно
+    append(String)      // дозапись
+    close()             // закрыть стрим - без этого записи не будет
 
-    // Write String to file
+    // Example:
     String rubai = "Hello";
+    // try with resourses - automatically closes the file
     try (FileWriter writer = new FileWriter("C:\\rubai.txt")) {
         for (int i = 0; i < rubai.length(); i++) {
             writer.write(rubai.charAt(i));  // записать посимвольно вручную
@@ -3395,6 +3398,21 @@
         e.printStackTrace();
     }
 
-    FileReader()
+    FileReader(path)    // стрим на чтение из файла, path может быть путем
+                           или классом File.
+    Methods:
+    read()              // -> int, reed the symbol, if not symbol return -1
+    close()             // close the file
+    
+    Example:
+    try (FileReader reader = new FileReader(path)) {
+        int character;
+        while ((character = reader.read()) != -1) {
+            System.out.print((char) character);
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
 
 
