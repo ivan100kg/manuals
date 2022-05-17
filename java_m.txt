@@ -3367,7 +3367,7 @@
     Stream<T> s = Stream.of(...);   // с нуля
     s.parallel();
 
---- Files ---
+--- File IO---
     Stream для работы с файлами - упорядоченная последовательность данных.
     Не имеет ничего общего с интерфейсом Stream.
     Character Streams - для работы с символами(текстовые файлы).
@@ -3375,44 +3375,82 @@
     java.io;    // пакет для работы с этими потоками.
 
 --- Text Files Streams ---
-    FileWriter(path)    // создать стрим на запись(создастся новый файл или
-                           откроется существующий<path>). path - абсолютный
-                           или относительный путь. Также может приним File.
-                           И еще параметр append true/false (дозапись).
-    Methods:
+    Чтение/запись текстовых файлов.
+
+    Reading/Чтение:
+    FileReader(path) -  класс для чтения файла - читает посимвольно. 
+                        Созд-ся стрим на чтение из файла, path может быть 
+                        путем или классом File.    Methods:
+    read()              // -> int, reed the symbol, if not symbol return -1
+    close()             // close the file
+    
+    BufferedReader(new FileReader(path)) - класс для чтения использ буферизацию
+                                           более эффективный чем FileReader
+    read()              // -> int, читает посимвольно
+    readline()          // -> String, читает построчно
+
+    
+    Example:
+    try (FileReader reader = new FileReader(path);
+         BufferedReader bReader = new BufferedReader(new FileReader(path)) {
+        int character;
+        while ((character = reader.read()) != -1) { // FileReader
+            System.out.print((char) character);
+        }
+        String line;
+        while ((line = bReader.readLine()) !=null){  // BufferedReader 
+            System.out.print(line);
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    Writing/Запись:
+    FileWriter(path) -  класс для записи символов в текстовый файл
+                        создать стрим на запись(создастся новый файл или
+                        откроется существующий<path>). path - абсолютный
+                        или относительный путь. Также может приним File.
+                        И еще параметр append true/false (дозапись).
     write(String/int)   // записать строку/символ в файл, в случае со строкой
                            запись все равно идет посимвольно
     append(String)      // дозапись
     close()             // закрыть стрим - без этого записи не будет
 
+    BufferedWriter(new FileWriter(path)) - класс для записи исп буфферизацию
+                                           более эффективный чем FileWriter
+    write()             // записывает строки/символы/массивы символов
+
     // Example:
     String rubai = "Hello";
     // try with resourses - automatically closes the file
-    try (FileWriter writer = new FileWriter("C:\\rubai.txt")) {
+    try (FileWriter writer = new FileWriter(path);
+         BufferedWriter bWriter = new BufferedWriter(new FileWriter(path))) {
         for (int i = 0; i < rubai.length(); i++) {
             writer.write(rubai.charAt(i));  // записать посимвольно вручную
         }
         writer.write("\n\n" + rubai);       // посимвольно но автоматом
+        bWriter.write("string");            // BufferedWriter
         System.out.println("Done!");
     } catch (IOException e) {
         e.printStackTrace();
     }
 
-    FileReader(path)    // стрим на чтение из файла, path может быть путем
-                           или классом File.
-    Methods:
-    read()              // -> int, reed the symbol, if not symbol return -1
-    close()             // close the file
-    
-    Example:
-    try (FileReader reader = new FileReader(path)) {
-        int character;
-        while ((character = reader.read()) != -1) {
-            System.out.print((char) character);
+--- Binary Files Streams ---
+    Работа с бинарными файлами. Все тоже самое как и с текстовыми файлами.
+
+    FileInputStream(path)                               // read
+    FileOutputStream(path)                              // write
+    BufferedInputStream(new FileInputStream(path))      // read with buffer
+    BufferedOutputStream(new FileOutputStream(path))    // write with buffer
+
+    Example: copy image
+    try (FileInputStream inputStream = new FileInputStream(path1);
+         FileOutputStream outputStream = new FileOutputStream(path2)) {
+        int i;
+        while ((i = inputStream.read()) != -1) {
+            outputStream.write(i);
         }
-    } catch (IOException e) {
-        e.printStackTrace();
+    } catch (IOException ex) {
+        ex.printStackTrace();
     }
-
-
 
