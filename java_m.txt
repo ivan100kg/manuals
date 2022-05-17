@@ -3367,7 +3367,7 @@
     Stream<T> s = Stream.of(...);   // с нуля
     s.parallel();
 
---- File IO---
+--- File IO ---
     Stream для работы с файлами - упорядоченная последовательность данных.
     Не имеет ничего общего с интерфейсом Stream.
     Character Streams - для работы с символами(текстовые файлы).
@@ -3471,3 +3471,12 @@
     ...
     readDouble()
     readUTF()
+
+--- Serialization ---
+    Сериализация - это процесс преобразования объекта в послед-ть байт.
+    Десериализация - это процесс восстановления объекта из этих байт.
+
+    ObjectOutputStream(new FileOutputStream(path))  // запись
+    writeObject(obj)    // запись объекта в файл
+    ObjectInputStream(new FileInputStream(path)     // чтение
+    readObject()        // -> Object, чтение из файла
