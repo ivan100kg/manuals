@@ -3454,3 +3454,20 @@
         ex.printStackTrace();
     }
 
+--- Primitive data types to file ---
+    Чтение и запись примитивных типов данных в бинарные файлы.
+    DataOutputStream(new FileOutputStream(path))    - запись
+    DataInputStream(new FileInputStream(path))      - чтение
+
+    Methods: записывается люб примитивный тип в файл(бинарный файл)
+    writeBoolean(true)
+    writeByte(5)
+    ...
+    writeDouble(3.14)
+    writeUTF("Hello")
+    ---
+    readBoolean()
+    readByte()
+    ...
+    readDouble()
+    readUTF()
