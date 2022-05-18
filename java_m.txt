@@ -1283,7 +1283,7 @@
     во вложенном блоке, т.к. в этом же блоке поймать нельзя.
 
 --- try with resourses ---
-    Используется с Closeable(интерфейс) объектами(напр FileOutputStream).
+    Используется с AutoCloseable(интерфейс) объектами(напр FileOutputStream).
     Finnaly как бы используется по умолчанию, в котором файл закрывается.
     В скобках через ; можно инициализировать несколько переменных(ресурсы).
     try (FileOutputStream out2 = new FileOutputStream("2.txt")) { // (resourses)
@@ -3437,11 +3437,19 @@
 
 --- Binary Files Streams ---
     Работа с бинарными файлами. Все тоже самое как и с текстовыми файлами.
+    InputStream  - абстрактный класс для чтения имеет различные реализации.
+    OutputStream - абстрактный класс для записи имеет различные реализации.
 
-    FileInputStream(path)                               // read
-    FileOutputStream(path)                              // write
+    FileInputStream(path)                               // read file
+    FileOutputStream(path)                              // write to file
     BufferedInputStream(new FileInputStream(path))      // read with buffer
     BufferedOutputStream(new FileOutputStream(path))    // write with buffer
+    ByteArrayInputStream(byte[])                        // read array of bytes
+    ByteArrayOutputStream()                             // write to bytes's array
+    DataOutputStream(new FileOutputStream(path))        // write primitive
+    DataInputStream(new FileInputStream(path))          // read primitive
+    ObjectInputStream(new FileInputStream(path))        // read object
+    ObjectOutputStream(new FileOutputStream(path))      // write object
 
     Example: copy image
     try (FileInputStream inputStream = new FileInputStream(path1);
@@ -3475,8 +3483,27 @@
 --- Serialization ---
     Сериализация - это процесс преобразования объекта в послед-ть байт.
     Десериализация - это процесс восстановления объекта из этих байт.
+    Для сериализации объекта, класс должен implements Serializable.
 
     ObjectOutputStream(new FileOutputStream(path))  // запись
     writeObject(obj)    // запись объекта в файл
     ObjectInputStream(new FileInputStream(path)     // чтение
     readObject()        // -> Object, чтение из файла
+
+    Example:
+    try (ObjectOutputStream outputStream = new ObjectOutputStream(
+         new FileOutputStream("employees2.bin"))) {
+            outputStream.writeObject(employee1);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    try (ObjectInputStream inputStream = new ObjectInputStream(
+                new FileInputStream("employees2.bin"))) {
+            employee = (Employee) inputStream.readObject();
+            System.out.println(employee);
+    } catch (IOException | ClassNotFoundException e) {
+        e.printStackTrace();
+    }
+
+    
