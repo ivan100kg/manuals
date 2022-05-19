@@ -3513,3 +3513,11 @@
         e.printStackTrace();
     }
 
+--- RandomAccessFile ---
+    Позволяет читать из любого места файла и записывать инфо в люб место файла.
+    RandomAccessFile("test10.txt", "rw")    // create(file, mode)
+    read()              // чтение 1 символа
+    readLine()          // чтение строки
+    writeBytes(String)  // множество вариантов записи чего угодно
+    ...
+    seek(long)          // переместить курсор на позицию
