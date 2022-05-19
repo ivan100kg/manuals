@@ -3521,3 +3521,33 @@
     writeBytes(String)  // множество вариантов записи чего угодно
     ...
     seek(long)          // переместить курсор на позицию
+
+    Example:
+    try (RandomAccessFile file =  new RandomAccessFile(
+            "test10.txt",
+            "rw")) {
+        int a = file.read();
+        System.out.println((char) a);
+        String s1 = file.readLine();
+        System.out.println(s1);
+
+--- File ---
+    Позволяет управлять информацией о файлах и директориях.
+    File file = new File(path);     //  path - file or directory
+
+    Methods:
+    getAbsolutePath()   // -> String, abs path
+    getAbsoluteFile()   // -> File, объект
+    isAbsolute()        // -> boolean, абсолютный путь?
+    exists()            // -> boolean
+    isFile()            // -> boolean
+    isDirectory()       // -> boolean
+    isHidden()          // -> boolean
+    canRead()           // -> boolean
+    canWrite()          // -> boolean
+    canExecute()        // -> boolean
+    mkdir()             // -> boolean, создать директорию на диске
+    createNewFile()     // -> boolean, создать файл на диске
+    length()            // -> long, размер в байтах
+    delete()            // -> boolean, delete
+    listFiles()         // -> File[], array of files in dir
