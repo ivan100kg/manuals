@@ -1,0 +1,11 @@
+American English Accent:
+    Change T to D between two vowels: city, that always, water.
+    Use colored R, r + [^aeiou] -> 'err': first, word, hard.
+    Include 'err' in an ER at the end of words: letter, remember, water.
+    Include 'erry' in an ARY at the end of words: library, secretary.
+    Change double T to D: better, 
+    Stopped T at the end of the word -> '' : right, appreciate, don't.
+    Glottal T in NT TT: internet, important, winter, gotten, button.
+    Silent T: listen 
+    Contractions with will: you'll.
+    Linking "S+vowel" -> Z+vowel: How's it going, cars in.
