@@ -3,9 +3,12 @@ American English Accent:
     Use colored R, r + [^aeiou] -> 'err': first, word, hard.
     Include 'err' in an ER at the end of words: letter, remember, water.
     Include 'erry' in an ARY at the end of words: library, secretary.
-    Change double T to D: better, 
+    Change double T to D: better, bottle, settle.
     Stopped T at the end of the word -> '' : right, appreciate, don't.
-    Glottal T in NT TT: internet, important, winter, gotten, button.
-    Silent T: listen 
+    Glottal T TT:  gotten, button.
+    Silent T in NT between two vowels: internet, important, winter.
+    Silent T in ST PT: listen, cristmas, accept, fasten.
     Contractions with will: you'll.
     Linking "S+vowel" -> Z+vowel: How's it going, cars in.
+    Assimilation, sound blend together: don't you -> doncha, did you - didju
+    Intrusion one word is intruding upon the other: do it -> dowit
