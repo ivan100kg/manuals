@@ -3368,186 +3368,237 @@
     s.parallel();
 
 --- File IO ---
+    Input/Output
     Stream для работы с файлами - упорядоченная последовательность данных.
     Не имеет ничего общего с интерфейсом Stream.
     Character Streams - для работы с символами(текстовые файлы).
     Byte Streams - для работы с байтами(бинарные файлы).
     java.io;    // пакет для работы с этими потоками.
 
---- Text Files Streams ---
-    Чтение/запись текстовых файлов.
+    --- Text Files Streams ---
+        Чтение/запись текстовых файлов.
 
-    Reading/Чтение:
-    FileReader(path) -  класс для чтения файла - читает посимвольно. 
-                        Созд-ся стрим на чтение из файла, path может быть 
-                        путем или классом File.    Methods:
-    read()              // -> int, reed the symbol, if not symbol return -1
-    close()             // close the file
-    
-    BufferedReader(new FileReader(path)) - класс для чтения использ буферизацию
-                                           более эффективный чем FileReader
-    read()              // -> int, читает посимвольно
-    readline()          // -> String, читает построчно
+        Reading/Чтение:
+        FileReader(path) -  класс для чтения файла - читает посимвольно. 
+                            Созд-ся стрим на чтение из файла, path может быть 
+                            путем или классом File.    Methods:
+        read()              // -> int, reed the symbol, if not symbol return -1
+        close()             // close the file
+        
+        BufferedReader(new FileReader(path)) - класс для чтения использ буферизацию
+                                            более эффективный чем FileReader
+        read()              // -> int, читает посимвольно
+        readline()          // -> String, читает построчно
 
-    
-    Example:
-    try (FileReader reader = new FileReader(path);
-         BufferedReader bReader = new BufferedReader(new FileReader(path)) {
-        int character;
-        while ((character = reader.read()) != -1) { // FileReader
-            System.out.print((char) character);
+        
+        Example:
+        try (FileReader reader = new FileReader(path);
+            BufferedReader bReader = new BufferedReader(new FileReader(path)) {
+            int character;
+            while ((character = reader.read()) != -1) { // FileReader
+                System.out.print((char) character);
+            }
+            String line;
+            while ((line = bReader.readLine()) !=null){  // BufferedReader 
+                System.out.print(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        String line;
-        while ((line = bReader.readLine()) !=null){  // BufferedReader 
-            System.out.print(line);
+
+        Writing/Запись:
+        FileWriter(path) -  класс для записи символов в текстовый файл
+                            создать стрим на запись(создастся новый файл или
+                            откроется существующий<path>). path - абсолютный
+                            или относительный путь. Также может приним File.
+                            И еще параметр append true/false (дозапись).
+        write(String/int)   // записать строку/символ в файл, в случае со строкой
+                            запись все равно идет посимвольно
+        append(String)      // дозапись
+        close()             // закрыть стрим - без этого записи не будет
+
+        BufferedWriter(new FileWriter(path)) - класс для записи исп буфферизацию
+                                            более эффективный чем FileWriter
+        write()             // записывает строки/символы/массивы символов
+
+        // Example:
+        String rubai = "Hello";
+        // try with resourses - automatically closes the file
+        try (FileWriter writer = new FileWriter(path);
+            BufferedWriter bWriter = new BufferedWriter(new FileWriter(path))) {
+            for (int i = 0; i < rubai.length(); i++) {
+                writer.write(rubai.charAt(i));  // записать посимвольно вручную
+            }
+            writer.write("\n\n" + rubai);       // посимвольно но автоматом
+            bWriter.write("string");            // BufferedWriter
+            System.out.println("Done!");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
 
-    Writing/Запись:
-    FileWriter(path) -  класс для записи символов в текстовый файл
-                        создать стрим на запись(создастся новый файл или
-                        откроется существующий<path>). path - абсолютный
-                        или относительный путь. Также может приним File.
-                        И еще параметр append true/false (дозапись).
-    write(String/int)   // записать строку/символ в файл, в случае со строкой
-                           запись все равно идет посимвольно
-    append(String)      // дозапись
-    close()             // закрыть стрим - без этого записи не будет
+    --- Binary Files Streams ---
+        Работа с бинарными файлами. Все тоже самое как и с текстовыми файлами.
+        InputStream  - абстрактный класс для чтения имеет различные реализации.
+        OutputStream - абстрактный класс для записи имеет различные реализации.
 
-    BufferedWriter(new FileWriter(path)) - класс для записи исп буфферизацию
-                                           более эффективный чем FileWriter
-    write()             // записывает строки/символы/массивы символов
+        FileInputStream(path)                               // read file
+        FileOutputStream(path)                              // write to file
+        BufferedInputStream(new FileInputStream(path))      // read with buffer
+        BufferedOutputStream(new FileOutputStream(path))    // write with buffer
+        ByteArrayInputStream(byte[])                        // read array of bytes
+        ByteArrayOutputStream()                             // write to bytes's array
+        DataOutputStream(new FileOutputStream(path))        // write primitive
+        DataInputStream(new FileInputStream(path))          // read primitive
+        ObjectInputStream(new FileInputStream(path))        // read object
+        ObjectOutputStream(new FileOutputStream(path))      // write object
 
-    // Example:
-    String rubai = "Hello";
-    // try with resourses - automatically closes the file
-    try (FileWriter writer = new FileWriter(path);
-         BufferedWriter bWriter = new BufferedWriter(new FileWriter(path))) {
-        for (int i = 0; i < rubai.length(); i++) {
-            writer.write(rubai.charAt(i));  // записать посимвольно вручную
+        Example: copy image
+        try (FileInputStream inputStream = new FileInputStream(path1);
+            FileOutputStream outputStream = new FileOutputStream(path2)) {
+            int i;
+            while ((i = inputStream.read()) != -1) {
+                outputStream.write(i);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-        writer.write("\n\n" + rubai);       // посимвольно но автоматом
-        bWriter.write("string");            // BufferedWriter
-        System.out.println("Done!");
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
 
---- Binary Files Streams ---
-    Работа с бинарными файлами. Все тоже самое как и с текстовыми файлами.
-    InputStream  - абстрактный класс для чтения имеет различные реализации.
-    OutputStream - абстрактный класс для записи имеет различные реализации.
+    --- Primitive data types to file ---
+        Чтение и запись примитивных типов данных в бинарные файлы.
+        DataOutputStream(new FileOutputStream(path))    - запись
+        DataInputStream(new FileInputStream(path))      - чтение
 
-    FileInputStream(path)                               // read file
-    FileOutputStream(path)                              // write to file
-    BufferedInputStream(new FileInputStream(path))      // read with buffer
-    BufferedOutputStream(new FileOutputStream(path))    // write with buffer
-    ByteArrayInputStream(byte[])                        // read array of bytes
-    ByteArrayOutputStream()                             // write to bytes's array
-    DataOutputStream(new FileOutputStream(path))        // write primitive
-    DataInputStream(new FileInputStream(path))          // read primitive
-    ObjectInputStream(new FileInputStream(path))        // read object
-    ObjectOutputStream(new FileOutputStream(path))      // write object
+        Methods: записывается люб примитивный тип в файл(бинарный файл)
+        writeBoolean(true)
+        writeByte(5)
+        ...
+        writeDouble(3.14)
+        writeUTF("Hello")
+        ---
+        readBoolean()
+        readByte()
+        ...
+        readDouble()
+        readUTF()
 
-    Example: copy image
-    try (FileInputStream inputStream = new FileInputStream(path1);
-         FileOutputStream outputStream = new FileOutputStream(path2)) {
-        int i;
-        while ((i = inputStream.read()) != -1) {
-            outputStream.write(i);
+    --- Serialization ---
+        Сериализация - это процесс преобразования объекта в послед-ть байт.
+        Десериализация - это процесс восстановления объекта из этих байт.
+        Для сериализации объекта, класс должен implements Serializable.
+        Защита от сериализации полей которые должны быть скрыты:
+        trnsient double salary; // поле которое не будет сериализовано(только
+                                будет сериализовано значение по умолчанию)
+        static final serialVersionUID = 2;  // можно указать версию класса
+                                            для того чтобы при сериализации/
+                                            десериализации использовалась
+                                            одна версия класса(не измененная)
+
+        ObjectOutputStream(new FileOutputStream(path))  // запись
+        writeObject(obj)    // запись объекта в файл
+        ObjectInputStream(new FileInputStream(path)     // чтение
+        readObject()        // -> Object, чтение из файла
+
+        Example:
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(
+            new FileOutputStream("employees2.bin"))) {
+                outputStream.writeObject(employee1);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    } catch (IOException ex) {
-        ex.printStackTrace();
-    }
 
---- Primitive data types to file ---
-    Чтение и запись примитивных типов данных в бинарные файлы.
-    DataOutputStream(new FileOutputStream(path))    - запись
-    DataInputStream(new FileInputStream(path))      - чтение
+        try (ObjectInputStream inputStream = new ObjectInputStream(
+                    new FileInputStream("employees2.bin"))) {
+                employee = (Employee) inputStream.readObject();
+                System.out.println(employee);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-    Methods: записывается люб примитивный тип в файл(бинарный файл)
-    writeBoolean(true)
-    writeByte(5)
-    ...
-    writeDouble(3.14)
-    writeUTF("Hello")
-    ---
-    readBoolean()
-    readByte()
-    ...
-    readDouble()
-    readUTF()
+    --- RandomAccessFile ---
+        Позволяет читать из любого места файла и записывать инфо в люб место файла.
+        RandomAccessFile("test10.txt", "rw")    // create(file, mode)
+        read()              // чтение 1 символа
+        readLine()          // чтение строки
+        writeBytes(String)  // множество вариантов записи чего угодно
+        ...
+        seek(long)          // переместить курсор на позицию
 
---- Serialization ---
-    Сериализация - это процесс преобразования объекта в послед-ть байт.
-    Десериализация - это процесс восстановления объекта из этих байт.
-    Для сериализации объекта, класс должен implements Serializable.
-    Защита от сериализации полей которые должны быть скрыты:
-    trnsient double salary; // поле которое не будет сериализовано(только
-                               будет сериализовано значение по умолчанию)
-    static final serialVersionUID = 2;  // можно указать версию класса
-                                           для того чтобы при сериализации/
-                                           десериализации использовалась
-                                           одна версия класса(не измененная)
+        Example:
+        try (RandomAccessFile file =  new RandomAccessFile(
+                "test10.txt",
+                "rw")) {
+            int a = file.read();
+            System.out.println((char) a);
+            String s1 = file.readLine();
+            System.out.println(s1);
 
-    ObjectOutputStream(new FileOutputStream(path))  // запись
-    writeObject(obj)    // запись объекта в файл
-    ObjectInputStream(new FileInputStream(path)     // чтение
-    readObject()        // -> Object, чтение из файла
+    --- File ---
+        Позволяет управлять информацией о файлах и директориях.
+        File file = new File(path);     //  path - file or directory
 
-    Example:
-    try (ObjectOutputStream outputStream = new ObjectOutputStream(
-         new FileOutputStream("employees2.bin"))) {
-            outputStream.writeObject(employee1);
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
+        Methods:
+        getAbsolutePath()   // -> String, abs path
+        getAbsoluteFile()   // -> File, объект
+        isAbsolute()        // -> boolean, абсолютный путь?
+        exists()            // -> boolean
+        isFile()            // -> boolean
+        isDirectory()       // -> boolean
+        isHidden()          // -> boolean
+        canRead()           // -> boolean
+        canWrite()          // -> boolean
+        canExecute()        // -> boolean
+        mkdir()             // -> boolean, создать директорию на диске
+        createNewFile()     // -> boolean, создать файл на диске
+        length()            // -> long, размер в байтах
+        delete()            // -> boolean, delete
+        listFiles()         // -> File[], array of files in dir
 
-    try (ObjectInputStream inputStream = new ObjectInputStream(
-                new FileInputStream("employees2.bin"))) {
-            employee = (Employee) inputStream.readObject();
-            System.out.println(employee);
-    } catch (IOException | ClassNotFoundException e) {
-        e.printStackTrace();
-    }
+--- File NIO ---
+    New Input/Output
 
---- RandomAccessFile ---
-    Позволяет читать из любого места файла и записывать инфо в люб место файла.
-    RandomAccessFile("test10.txt", "rw")    // create(file, mode)
-    read()              // чтение 1 символа
-    readLine()          // чтение строки
-    writeBytes(String)  // множество вариантов записи чего угодно
-    ...
-    seek(long)          // переместить курсор на позицию
+    Принцип работы:
+    Работа идет между программой, буфером, каналом и файлом(и не только) 
+    program <==> Buffer <==> Channel <==> file?
+    Buffer - блок памяти в кот можно записывать/читать информацию.
+    Channel - канал, может читать и записывать файлы(одновременно).
+    Чтение - Channel читает инфо из файла и записывает в Buffer.
+    Запись - Channel читает инфо из Buffer и записывает в файл.
 
-    Example:
-    try (RandomAccessFile file =  new RandomAccessFile(
-            "test10.txt",
-            "rw")) {
-        int a = file.read();
-        System.out.println((char) a);
-        String s1 = file.readLine();
-        System.out.println(s1);
+    RandomAccessFile file = new RandomAccessFile("test10.txt", "rw") // file
+    FileChannel channel = file.getChannel();        // create channel
+    read(Buffer)    // -> int, читать из файла в буфер (сколько влезет)
 
---- File ---
-    Позволяет управлять информацией о файлах и директориях.
-    File file = new File(path);     //  path - file or directory
-
+    ByteBuffer buffer = ByteBuffer.allocate(25);    // crerate buffer with
+                                                       capacity 25 bytes.
+    capacity    - емкость(размер) буферизацию
+    position    - позиция курсора, на каком байте стоит курсор [0:capacity)
+    limit       - оставшееся место, зависит от размера и позиции курсора
     Methods:
-    getAbsolutePath()   // -> String, abs path
-    getAbsoluteFile()   // -> File, объект
-    isAbsolute()        // -> boolean, абсолютный путь?
-    exists()            // -> boolean
-    isFile()            // -> boolean
-    isDirectory()       // -> boolean
-    isHidden()          // -> boolean
-    canRead()           // -> boolean
-    canWrite()          // -> boolean
-    canExecute()        // -> boolean
-    mkdir()             // -> boolean, создать директорию на диске
-    createNewFile()     // -> boolean, создать файл на диске
-    length()            // -> long, размер в байтах
-    delete()            // -> boolean, delete
-    listFiles()         // -> File[], array of files in dir
+    flip()          // меняет режим запись -> чтение, 
+                       position меняет значение на 0
+                       limit станет равным максимальному (capacity-1)
+    clear()         // меняет позицию курсора на ноль, при последущей
+                       записи идет перезапись старых байт.
+    hasRemaining()  // осталось ли еще что-то в буфере
+    get()           // -> byte, прочитать 1 байт из буфера, сдвинуть position
+                       на +1 байт, limit сократить на -1 byte
+
+    Example (read from file):
+    try (RandomAccessFile file = new RandomAccessFile("test10.txt", "rw");
+            FileChannel channel = file.getChannel()) {
+        ByteBuffer buffer = ByteBuffer.allocate(25);
+        StringBuilder text = new StringBuilder();
+        int byteRead = channel.read(buffer);
+        while (byteRead > 0) {  // что-то прчитали?
+            System.out.println("Read " + byteRead);
+            buffer.flip();      // режим чтения
+            while (buffer.hasRemaining()) {
+                text.append((char) buffer.get());
+            }
+            buffer.clear();
+            byteRead = channel.read(buffer);
+        }
+        System.out.println(text);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
