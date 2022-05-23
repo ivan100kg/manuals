@@ -3613,7 +3613,7 @@
     Объект типа Path - это путь к файлу/директрории
     Path path = Paths.get("text.txt");  // create
     Path  - интерфейс
-    Files - класс со статик медотами оперирующий файлами и дииректориями
+    Files - класс со статик медотами оперирующий Path
     Paths - класс со статик медотами возвращ объект типа Path
 
     Methods:
@@ -3624,7 +3624,20 @@
     toAbsolute()        // -> Path, в абсолютный путь
     resolve(Path)       // -> Path, результирующий путь
     rerelativize(Path)  // -> Path, относительный путь параметра к this path
-    
+
+    Files methods:
+    exists(Path)        // -> boolean, exists?
+    createFile(Path)    // -> Path, создать файл на диске
+    createDirectory(P)  // -> Path, создать dir на диске
+    isReadable(Path)    // -> boolean, r
+    isWritable(Path)    // -> boolean, w
+    isExecutable(Path)  // -> boolean, x
+    isSameFile(P1, P2)  // -> boolean, is the same path?
+    size(Path)          // -> long, size of file in bytes
+    getAttribute(P, A)  // -> Object, A - аттрибут в виде строки например:
+                              "creationTime", "size"
+    readAttributes(P,"*")  -> Map<String, Object>, все аттрибуты
+
 
 
 
