@@ -3608,3 +3608,24 @@
     } catch (IOException e) {
         e.printStackTrace();
     }
+
+    --- Path ---
+    Объект типа Path - это путь к файлу/директрории
+    Path path = Paths.get("text.txt");  // create
+    Path  - интерфейс
+    Files - класс со статик медотами оперирующий файлами и дииректориями
+    Paths - класс со статик медотами возвращ объект типа Path
+
+    Methods:
+    getFileName()       // -> Path, name
+    getParent()         // -> Path, parent
+    getRoot()           // -> Path, root
+    isAbsolute()        // -> boolean, абсолютный или относительный путь
+    toAbsolute()        // -> Path, в абсолютный путь
+    resolve(Path)       // -> Path, результирующий путь
+    rerelativize(Path)  // -> Path, относительный путь параметра к this path
+    
+
+
+
+
