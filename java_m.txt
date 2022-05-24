@@ -3645,6 +3645,24 @@
     write(Path, byte[]) // -> Path, записать в файл
     readLine(Path)      // -> List<String>, прочитать файл
     
+    Method Files.walkFileTree:
+    walkFileTree(Path start, FileVisitor v) 
+    Используется для обхода дерева файлов. Логика обхода файлов
+    заключается в классе имплементирующем интерфейс FileVisitor.
+    Переопределяемые методы интерфейса FileVisitor:
+    preVisitorDirectory     // срабатывает перед обращением к эл папки
+    visitFile               // при обращении к файлу
+    postVisitorDirectory    // после обращения ко всем эл папки
+    visitFileFailed         // срабатывает когда файл недоступен
+    Все эти методы возвращают объект enum FileVisitResult.
+    Значения FileVisitResult:
+    CONTINUE        - продолжать обход 
+    TERMINATE       - прекратить обход
+    SKIP_SUBTREE    - не входить в эту дир
+    SKIP_SIBLINGS   - в данной дир не продолжать обход
+
+    
+    
 
 
 
