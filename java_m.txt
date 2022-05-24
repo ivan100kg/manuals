@@ -3616,13 +3616,13 @@
     Files - класс со статик медотами оперирующий Path
     Paths - класс со статик медотами возвращ объект типа Path
 
-    Methods:
+    Path Methods:
     getFileName()       // -> Path, name
     getParent()         // -> Path, parent
     getRoot()           // -> Path, root
     isAbsolute()        // -> boolean, абсолютный или относительный путь
     toAbsolute()        // -> Path, в абсолютный путь
-    resolve(Path)       // -> Path, результирующий путь
+    resolve(Path)       // -> Path, результирующий путь this+path2
     rerelativize(Path)  // -> Path, относительный путь параметра к this path
 
     Files methods:
@@ -3637,6 +3637,14 @@
     getAttribute(P, A)  // -> Object, A - аттрибут в виде строки например:
                               "creationTime", "size"
     readAttributes(P,"*")  -> Map<String, Object>, все аттрибуты
+    copy(P1, P2)        // -> Path, копировать P1->P2, также можно добавить
+                              опции: StandardCopyOption.REPLACE_EXISTING (если
+                              есть файл - перезаписать)
+    move(P1, P2)        // -> Path, переместить/переименовать P1->P2
+    delete(Path)        // -> void, delete file/empty dir
+    write(Path, byte[]) // -> Path, записать в файл
+    readLine(Path)      // -> List<String>, прочитать файл
+    
 
 
 
