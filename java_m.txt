@@ -497,6 +497,7 @@
     equalsIgnoreCase// -> boolean?, comparsion with ignore case
     matches(regex)  // -> boolean, принимает рег выр, точное совпадение
     split(regex)    // -> String[], принимает рег выр, делит по разделителю
+    replaceAll(r,a) // -> String, замена всех a(String) на r(regex)
     
     Кодировка/Локаль
     "s".toLowerCase(Locale.ROOT);           // во избеж багов лучшая локаль
@@ -3734,7 +3735,7 @@
     Matcher matcher = pattern.matcher(string);  // рез-т поиска шабл в строке
     while (matcher.find()) {                    // есть совпадение?
         System.out.print(matcher.start() + " ") // номер позиции
-        System.out.println(matcher.group());    // вывести на экран
+        System.out.println(matcher.group());    // вывести на экран(все группы)
     }
 
     Regex:
@@ -3773,7 +3774,12 @@
     Example IPv4:
     "\\b((25[0-5]|2[0-4]\\d|[01]?\\d?\\d)(\\.)){3}(25[0-5]|2[0-4]\\d|[01]?\\d?\\d)\\b"
 
-
+    Groups:
+    "1234567890"        example string
+    "(\\d{4})(\\d{2})"  regex, группы идут по порядку с 1 в скобках()
+        $1      $2      groups
+    matcher.replaceAll("$2-($4)")   // -> String, "56-(1234)", манип с группами
+    matcher.group(1)                // -> String, "1234" -вывести 1-ую группу
 
 
 
