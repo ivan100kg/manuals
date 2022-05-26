@@ -3727,7 +3727,7 @@
 
     import java.util.regex.*;
     String string = "Some text";                // строка
-    String regex = "text";                      // рег выражение
+    String regex = "t.xt$";                     // рег выражение
     Pattern pattern = Pattern.compile(regex);   // создать шаблон из рег выр
     Matcher matcher = pattern.matcher(string);  // рез-т поиска шабл в строке
     while (matcher.find()) {                    // есть совпадение?
@@ -3737,7 +3737,7 @@
 
     Regex:
     a           символ a
-    .           любой символ
+    .           любой символ кроме нов строки
     abc         идущие последовательно abc 
     [xyz]       один из этих символов
     [a-z]       один из символов диапазона
@@ -3759,12 +3759,13 @@
     \b          граница слова/числа
     \B          НЕ граница слова/числа
 
-    reg?
-    reg*
-    reg+
-    reg{n}
-    reg{m,n}
-    reg{n,}
+    reg?        1 или 0 повторений
+    reg*        0 или более повторений
+    reg+        1 или более повторений
+    reg{n}      n повторений
+    reg{m,n}    от m до n повторений 
+    reg{m,}     от m и больше повторений
+    reg{,n}     n и меньше повторений
 
     
 
