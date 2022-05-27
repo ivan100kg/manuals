@@ -3775,11 +3775,32 @@
     "\\b((25[0-5]|2[0-4]\\d|[01]?\\d?\\d)(\\.)){3}(25[0-5]|2[0-4]\\d|[01]?\\d?\\d)\\b"
 
     Groups:
-    "1234567890"        example string
-    "(\\d{4})(\\d{2})"  regex, группы идут по порядку с 1 в скобках()
-        $1      $2      groups
+    "1234567890"        # example string
+    "(\\d{4})(\\d{2})"  # regex, группы идут по порядку с 1 в скобках()
+        $1      $2      # groups
+    (не забываем создать Pattern and Matcher)
     matcher.replaceAll("$2-($4)")   // -> String, "56-(1234)", манип с группами
     matcher.group(1)                // -> String, "1234" -вывести 1-ую группу
+
+--- Methods printf() and format() ---
+    String s = String.format(This PI: "%f", 3.14);  // создать строку с исп шаб
+    System.out.printf("This PI: %f", 3.14);         // вывод сразу в printf
+    %[flags][width][.precision]datatype_specifier   // шаблон для format()
+    %       - обяз специф
+    flags       - символ для какого-то преобраз текста
+                  - # выравнивание по лев краю  
+                  0 # добавление нулей перед числом(для чисел)
+                  , # разделитель разрядов в числах
+    width       - мин кол символов()
+    precision   - точность, цифр после запятой
+    specifier   - тип данных который обрабатывается
+                  b # boolean
+                  c # char
+                  s # String
+                  d # int
+                  f # double
+    Example:
+    System.out.printf("%03d\t%-7s\t%,.2f\n", 1, "Hi", 3.14); // 001	Hi 	3,14
 
 
 
