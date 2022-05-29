@@ -1672,14 +1672,16 @@
 --- enum ---
     перечисление — это список именованных однотипных констант, определяющих
     новый тип данных, в объектах которого могут храниться только значения
-     из этого списка. 
+    из этого списка. 
+    Enum это класс и может содержать поля, методы, конструкторы(private).
+
     // самый простой случай
     public enum Fruit {
         ORANGE , APPLE , BANANA , CHERRY
     }
 
     public static void main(String[] args) {
-        Fruit fruit = Fruit.APPLE;
+        Fruit fruit = Fruit.APPLE;      // create obj of enum WITHOUT new
         System.out.println(fruit);
         if (fruit == Fruit.APPLE) {
             System.out.println( "fruit действительно является яблоком" );
@@ -1702,7 +1704,8 @@
         }
         System.out.println( "Поиск по названию: " + Fruit.valueOf( "BANANA" ));
     }
-    // немного касомизированный случай
+
+    // немного кастомизированный случай с констнуктором
     public enum Month {
     JAN(1), FEB(2), MAR(3), APR(4), MAY(5), JUN(6), JUL(7), AUG(8), SEP(9), OCT(10), NOV(11), DEC(12);
 
@@ -1712,12 +1715,16 @@
         return number;
     }
 
-    Month(int number) {
+    private Month(int number) {
         this.number = number;
     }
     }
     Использование:
-    Month month = Month.JAN;    // может принимать только значения enum
+    Month month = Month.JAN;    // create without new
+
+    Methods:
+    valueOf("some_enum")    // -> enum, из строки в перечисление
+    values()                // -> enum[], все значения of enum
 
 --- Nested classes ---
     Нужны для тесной привязки одного класса к другому.
