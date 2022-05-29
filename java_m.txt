@@ -3728,6 +3728,28 @@
         }
     }
 
+--- Scanner ---
+    Scanner scanner = new Scanner(System.in);   // create, Sysytem.in - ввод в 
+                                                   консоль. т.е читает с консоли
+    // также можно читать файлы
+    Scanner scanner = new Scanner(new FileReader(new File("test10.txt")));
+    scanner.useDelimiter("\\W");    // разделитель - не буква, не цифра
+    while (scanner.hasNext()) {
+        set.add(scanner.next());
+    }
+    set.forEach(System.out::println);
+    scanner.close()
+
+    Methods:
+    nextInt()       // -> int, читает и сохраняет в инт
+    nextLine()      // -> String, читает до нов строки и сохр в String
+    next()          // -> String, читает до первого пробельного символа
+    nextLong()      // -> long, double, boolean, char читает все типы данных
+    hasNextLine()   // -> boolean, есть еще строка?
+    hasNextInt()    // -> boolean, есть еще int? - такие методы есть для всех
+    hasNext()       // -> boolean, есть слово?
+    close()         // close Scanner
+
 --- RegEx/Регулярные выражения ---
     Рег выражения необходимы для создания шаблонов, спом кот производят
     поиск, сравнение, замену.
