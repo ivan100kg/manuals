@@ -12,4 +12,13 @@
     Репозитории и зависимости.
 
 Work in terminal
-mvn archetype:generate  // generate the project
+    mvn archetype:generate  // generate the project
+    mvn compile
+    mvn test
+    mvn test-compile
+    mvn package
+    mvn install
+    mvn site
+    mvn clean
+    mvn process-resources
+    mvn verify
