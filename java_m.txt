@@ -3831,5 +3831,43 @@
     Example:
     System.out.printf("%03d\t%-7s\t%,.2f\n", 1, "Hi", 3.14); // 001	Hi 	3,14
 
+--- Reflection ---
+    Рефлексия - механизм исслед данныхо прог-ме во время вып-я.
+    Рефлексия позволяет исслед инфо о полях, методах, констркукторах
+    и других составляющих классов.
+
+    Class<>     // сод в кач объектов примитивные типы данных, классы, интерфейсы.
+    Field       // инфо и управление полем
+    Method      // инфо и управление методом
+    Constructor //
+    Annotation  // 
+    Type        // 
+    Package     // 
+
+    Creation:
+    Class employee1 = Class.forName("my_package.Employee"); // с пом String
+    Class employee2 = Employee.class;                       // с пом класса
+    Class employee3 = new Employee().getClass();            // с пом объекта
+    // либо с обобщ типом(то же самое)
+    Class<?> employee1 = Class.forName("my_package.Employee");
+    Class<Employee> employee2 = Employee.class;
+    Class<? extends Employee> employee3 = Employee.class;
+
+    Class methods:
+    getField(String)        // -> Field, получить объект поле по "имени"
+    getFields()             // -> Field[], доступные поля
+    getDeclaredFields()     // -> Field[], все поля(private too)
+    getMethod(String, par)  // -> Method, получ объект метод по "имени" + param
+
+    Field methods:
+    getName()               // -> String, get name
+    getType()               // -> Class<?>, get Class(type)
+
+    Method methods:
+    getName()               // -> String, get name
+    getReturnType()         // -> Class<?>, get return type
+    getParameterTypes()     // -> Class<?>[], все параметры метода
+
+
 
 
