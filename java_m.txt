@@ -3843,6 +3843,8 @@
     Annotation  // 
     Type        // 
     Package     // 
+    Parameters  // параметры метода/конструктора
+    Modifier    // инфо и упрвление modifiers, static methods
 
     Creation:
     Class employee1 = Class.forName("my_package.Employee"); // с пом String
@@ -3858,6 +3860,13 @@
     getFields()             // -> Field[], доступные поля
     getDeclaredFields()     // -> Field[], все поля(private too)
     getMethod(String, par)  // -> Method, получ объект метод по "имени" + param
+                               (param - класс, типа double.class, int.class)
+    getMethods()            // -> Method[], доступные методы + унаследованные
+    getDeclaredMethods()    // -> Method[], только свои методы + приватные
+    getConstructor()        // -> Constructor<T>, конструктор(без парам)
+    getConstructor(par)     // -> Constructor<T>, с пар (double.class, int.class..)
+    getConstructors()       // -> Constructor<T>[], все конструкторы
+    getDeclaredConstructors // -> Constructor<T>[], все конструкторы + приватные
 
     Field methods:
     getName()               // -> String, get name
@@ -3867,6 +3876,15 @@
     getName()               // -> String, get name
     getReturnType()         // -> Class<?>, get return type
     getParameterTypes()     // -> Class<?>[], все параметры метода
+    getModifiers()          // -> int, модификаторы
+
+    Modifier methods:
+    isFinal(int)            // -> boolean, int - method.getModifiers() модиф-ры
+    isPublic(int)           // -> boolean, на все модиф есть свой метод
+
+    Constructor methods:
+    getParameterCount()     // -> int, кол-во параметров
+    getParameterTypes()     // -> Class<?>[], все параметры конструктора
 
 
 
