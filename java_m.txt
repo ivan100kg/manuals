@@ -3899,4 +3899,49 @@
     Constructor<Employee> c = empClass.getConstructor();    // ok
     Employee emp1 = constructor.newInstance();              // create obj
 
+--- Annotation ---
+    Аннотации - спец комментарии/метки/метаданные, которые нужные
+    для предачи определенной информации.
+    Метаданные - данные о данных.
 
+    В аннотациях используются след параметры:
+
+    @Target - показ область кода, к которой аннотация может быть применима.
+    Использует в параметре:
+    enum ElementType {TYPE,FIELD,METHOD,PARAMETER,LOCAL_VARIABLE...} 
+    Самые распространенные области кода:
+        TYPE        - class, interface, enum;
+        FIELD       - field of class;
+        METHOD      - method of class;
+        PARAMETER   - parameters of method/constructor
+    @Target(ElementType.METHOD)                     // можно исп на методах
+    @Target({ElementType.METHOD,ElementType.FIELD}) // методы + поля
+
+    @Retention - описывает жизненный цикл аннотации, до какого момента
+    программы будет видна аннотация.
+    Использует в параметре:
+    enum RetentionPolicy {SOURCE, CLASS, RUNTIME}:
+        SOURCE  - аннотация видна в source коде, отбрасывается
+                  компилятором и уже в byte коде не видна;
+        CLASS   - видна в byte коде, отбрасывается JVM во время выполнения;
+        RUNTIME - аннотация видна во время выполнения программы, можно
+                  использовать в рефлексии для передач/получ данных.
+
+    // Create Annotation @SmartPhone:
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface SmartPhone {
+        String OS();                // так указываются поля(как методы)
+        int year() default 2000;    // default value
+    }                               // ссылочные типы не поддерживаюся
+
+    // пример класс с нашей аннотацией
+    @SmartPhone(OS = "Android", year = 2010)    // небх заполнить данные, для
+    class Xiaomi {}                             // тех у кого default необяз
+
+    // Как вытащить инфо из аннотаций(только в режиме RUNTIME)
+    Class<Xiaomi> xi = Xiaomi.class;   // Class
+    Annotation annotation1 = xi.getAnnotation(SmartPhone.class);    // аннотац
+    SmartPhone sm1 = (SmartPhone) annotation1;                      // casting
+    System.out.println(sm1.OS());       // достаем поля
+    System.out.println(sm1.year());
