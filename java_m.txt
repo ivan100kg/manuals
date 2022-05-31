@@ -332,11 +332,12 @@
         code;
     }
 
---- Copmarsion/Сравнения ---
+--- Сomparing/Сравнения ---
     int a = 5;
     double b = 5.0;
     a == b          // true, у примитивных сравнивается значение
-    obj1 == obj2    // false у ссылочных сравниваются адреса(String - искючение)
+    obj1 == obj2    // false у ссылочных сравниваются адреса
+    obj1.equals(o2) // так правильно
 
 --- equals ---
     все классы по умолч имеют метод equals()
@@ -461,7 +462,7 @@
     Объекты созданные с пом new всегда будут с разными адресами
     Объекты созданные по другому - могут ссылаться на один и тот же адрес.
 
-    Comparsion:
+    Сomparing:
     == !=   // сравнивает адреса у объектов
     equals  // сравнивает именно содержимое строки
 
@@ -494,7 +495,7 @@
     toLowerCase()   // -> String, all letters convert to lower case
     toUpperCase()   // -> String, all letters convert to Upper case
     contains(s)     // -> boolean, does our String contains 's'?
-    equalsIgnoreCase// -> boolean?, comparsion with ignore case
+    equalsIgnoreCase// -> boolean?, Сomparing with ignore case
     matches(regex)  // -> boolean, принимает рег выр, точное совпадение
     split(regex)    // -> String[], принимает рег выр, делит по разделителю
     replaceAll(r,a) // -> String, замена всех a(String) на r(regex)
@@ -560,12 +561,12 @@
     replace(i,j,s)  // -> StringBuilder, вместо строки от i до j встав строку s
     capcity()       // -> int, количество места в массиве
 
-    Comparsion:
+    Сomparing:
     StringBuilder sb3 = new StringBuilder("123");
     StringBuilder sb4 = new StringBuilder("123");
     System.out.println(sb3==sb4);           // false
     System.out.println(sb3.equals(sb4));    // false, метод сравнивает адреса,
-                                               не перезаписан как в String
+                                               не работает как в String
 
     StringBuffer:
     очень поохож но используется в многопоточных программах
@@ -642,7 +643,7 @@
     с примитивными типами данных    // хранит собственно данные
     с ссылочными типами данных      // хранит ссылки на адреса объектов
 
-    Comparsion:
+    Comparing:
     ==, equals()    // сравнивают адреса массивов
 
     Arrays - класс для различных манипуляций с массивами:
@@ -3857,10 +3858,12 @@
 
     Class methods:
     getField(String)        // -> Field, получить объект поле по "имени"
+    getDeclaredField(String)// -> Field, +private
     getFields()             // -> Field[], доступные поля
     getDeclaredFields()     // -> Field[], все поля(private too)
     getMethod(String, par)  // -> Method, получ объект метод по "имени" + param
                                (param - класс, типа double.class, int.class)
+    getDeclaredMethod(Str)  // -> Method, private method too
     getMethods()            // -> Method[], доступные методы + унаследованные
     getDeclaredMethods()    // -> Method[], только свои методы + приватные
     getConstructor()        // -> Constructor<T>, конструктор(без парам)
@@ -3871,12 +3874,16 @@
     Field methods:
     getName()               // -> String, get name
     getType()               // -> Class<?>, get Class(type)
+    setAccessible(true)     // дать доступ ко всем полям
+    get(obj)                // -> Object, получить значение поля у obj
+    set(obj, value)         // присвоить новое значение поля у obj
 
     Method methods:
     getName()               // -> String, get name
     getReturnType()         // -> Class<?>, get return type
     getParameterTypes()     // -> Class<?>[], все параметры метода
     getModifiers()          // -> int, модификаторы
+    invoke(obj, args)       // -> Object, вызвать метод у obj with args
 
     Modifier methods:
     isFinal(int)            // -> boolean, int - method.getModifiers() модиф-ры
@@ -3886,6 +3893,10 @@
     getParameterCount()     // -> int, кол-во параметров
     getParameterTypes()     // -> Class<?>[], все параметры конструктора
 
-
+    Create objects of any class from Class:
+    Class<Employee> empClass = Employee.class;
+    Object o = (Employee)empClass.newInstance();            // old Java
+    Constructor<Employee> c = empClass.getConstructor();    // ok
+    Employee emp1 = constructor.newInstance();              // create obj
 
 
