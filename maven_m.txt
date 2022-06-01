@@ -8,11 +8,34 @@
 
 Ключевые понятия
     Описание проекта - pom.xml
-    Группа проектаб артефакт, версия.
+    Группа проекта, артефакт, версия.
     Репозитории и зависимости.
 
-Work in terminal
-    mvn archetype:generate  // generate the project
+Create Project:
+    mvn archetype:generate [n]  // generate the project, n - вид каркаса
+                                   оставляем по умолчанию без параметров.
+    groupId     // название организации  - io.github.ivan100kg
+    artifactId  // уник название проекта - myProject
+    version     // оставляем по умолч    - 1.0-SNAPSHOT
+    Структура of Default Project archetype, плюс создали директории resources:
+        .
+        ├── pom.xml
+        └── src
+            ├── main
+            │   ├── java
+            │   │   └── io
+            │   │       └── github
+            │   │           └── ivan100kg       // your classes
+            │   │               └── App.java
+            │   └── resources                   // resources for your apps
+            └── test
+                ├── java
+                │   └── io
+                │       └── github
+                │           └── ivan100kg       // your tests
+                │               └── AppTest.java
+                └── resources                   // resources for your tests
+    
     mvn compile
     mvn test
     mvn test-compile
