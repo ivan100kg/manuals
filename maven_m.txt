@@ -36,6 +36,26 @@ Create Project:
                 │               └── AppTest.java
                 └── resources                   // resources for your tests
     
+Project Object Model:
+    pom.xml -   детальное описание проекта, инфо о различных свойствах,
+                настройка сборки(плагины, цели, профили), наследуемость.
+                Наследуется от Parent pom и переопределяет разл. настройки.
+
+    Parent POM -родительский для всех pom.xml, аналог Object Java.
+                Содержит все настройки по умолчанию.
+
+    Простейшая сруктура:
+    <?xml version="1.0" encoding="UTF-8"?>                  // xml tag
+    <project xmlns="http://maven.apache.org/POM/4.0.0"      // main tag project с аттриб (правила xml)
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        <modelVersion>4.0.0</modelVersion>
+
+        <groupId>io.github.ivan100kg</groupId>
+        <artifactId>myProject</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </project> 
+
     mvn compile
     mvn test
     mvn test-compile
