@@ -6,3 +6,59 @@
     Создан: 2004.
     Последняя версия: Spring 5
     site: www.spring.io
+
+--- Inversion of Control ---
+    Spring Container    - создание и хранение объектов
+    config file         - описывает объекты кот будет создавать Container
+    MyClass             - обращается к Container для получ объекта, а 
+                          не создает их самостоятельно.
+
+    MyClass <=====> Spring Container <--- config file
+                                         /     |     \
+                                       Dog    Cat    ...
+
+    Основные функции Spring Container:
+    IoC     - Inversion of Control, инверсия управления.
+              Создание и управление объектами.
+    DI      - Dependency Injection, внедрение зависимостей.
+
+    IoC - аутсортинг создания и управления объектами. Т.е. передача нами
+    прав на создание и управление объектами нами to Spring.
+
+    Способы конфигурации Spring Container:
+    XML file (устаревший способ)
+    Annotations + XML file (современный способ)
+    Java code (современный способ)
+
+    Spring Bean (или просто bean/бин) - объект, который создается и 
+    управляется Spring Container.
+   
+    Способ #1 через xml file:
+    // создаем файл в директории resources(root) "applicationContext.xml"
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+        <bean id = "myPet"  // id используется при создании бина
+            class = "io.github.ivan100kg.spring_intro.Dog"> // full classname
+        </bean>
+    </beans>
+
+    Создать Spring Container:
+    ApplicationContext - это и есть Spring Container.
+    // для способа 1, с пом xml, Pet - interface for Dog,Cat..
+    ClassPathXmlApplicationContext context =        // get context
+            new ClassPathXmlApplicationContext("applicationContext.xml");
+    Pet pet = context.getBean("myPet", Pet.class);  // get bean (id, Class)
+    pet.say();                                      // call Dog method
+    context.close();                                // close context
+    
+    Теперь мы можем получать и управлять объектом Dog через 
+    Spring Container, вызывая его по id - это и есть бин, чтобы 
+    изменить напр Dog на Cat, нужно просто заменить в applicationContext.xml
+    аттрибут class на io.github.ivan100kg.spring_intro.Cat
