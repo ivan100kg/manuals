@@ -79,8 +79,8 @@ Commands:
     mvn compile             - compile applications, download all the plugins
                               and related dependencies. 
                               target/ - dir with compiled classes.
-    mvn test                
-    mvn test-compile
+    mvn test                - compile Test classes and run tests       
+    mvn test-compile        - compile your test sources without running after
     mvn package
     mvn install
     mvn site
