@@ -81,9 +81,9 @@ Commands:
                               target/ - dir with compiled classes.
     mvn test                - compile Test classes and run tests       
     mvn test-compile        - compile your test sources without running after
-    mvn package
-    mvn install
-    mvn site
-    mvn clean
+    mvn package             - make a JAR file
+    mvn install             - install artifact(JAR) in your local repository 
+    mvn site                - make a web pages(site) for your project
+    mvn clean               - remove the target dir with all the build data
     mvn process-resources
     mvn verify
