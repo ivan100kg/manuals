@@ -6,45 +6,45 @@
     Управляет зависимостями как внутри проекта, так и импорта сторонних
     библиотек из огромного репозитория.
 
-Ключевые понятия
-    Описание проекта - pom.xml
-    Группа проекта, артефакт, версия.
-    Репозитории и зависимости.
-
-Create Project:
+Structure of Project:
+    Create a Project:
     mvn archetype:generate [n]  // generate the project, n - вид каркаса
                                    оставляем по умолчанию без параметров.
-    groupId     // название организации  - io.github.ivan100kg
-    artifactId  // уник название проекта - myProject
-    version     // оставляем по умолч    - 1.0-SNAPSHOT
+        groupId     // название организации  - io.github.ivan100kg
+        artifactId  // уник название проекта - myProject
+        version     // оставляем по умолч    - 1.0-SNAPSHOT (SNAPSHOT - в разраб)
+    
     Структура of Default Project archetype, плюс создали директории resources:
-        .
-        ├── pom.xml
+        my-app
+        ├── pom.xml                             // pom.xml file
         └── src
             ├── main
-            │   ├── java
+            │   ├── java                        // sourses rooot
             │   │   └── io
             │   │       └── github
             │   │           └── ivan100kg       // your classes
             │   │               └── App.java
-            │   └── resources                   // resources for your apps
+            │   └── resources                   // resources root
             └── test
-                ├── java
+                ├── java                        // sourse dir for tests
                 │   └── io
                 │       └── github
-                │           └── ivan100kg       // your tests
+                │           └── ivan100kg       // tests sourses root
                 │               └── AppTest.java
                 └── resources                   // resources for your tests
     
 Project Object Model:
-    pom.xml -   детальное описание проекта, инфо о различных свойствах,
-                настройка сборки(плагины, цели, профили), наследуемость.
-                Наследуется от Parent pom и переопределяет разл. настройки.
+    pom.xml -       детальное описание проекта, инфо о различных свойствах,
+                    настройка сборки(плагины, цели, профили), наследуемость.
+                    Наследуется от Parent pom и переопределяет разл. настройки.
+                    Указано лишь то что переопределяется. (размер малый)
 
-    Parent POM -родительский для всех pom.xml, аналог Object Java.
-                Содержит все настройки по умолчанию.
+    Parent POM -    родительский для всех pom.xml, аналог Object Java.
+                    Содержит все настройки по умолчанию. (размер средний)
 
-    Простейшая сруктура:
+    effectiv-pom -  огромный размер, все зависимости всех зависимостей расписаны
+
+    // pom.xml
     <?xml version="1.0" encoding="UTF-8"?>                  
     <project xmlns="http://maven.apache.org/POM/4.0.0"      
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -54,14 +54,39 @@ Project Object Model:
         <groupId>io.github.ivan100kg</groupId>
         <artifactId>myProject</artifactId>
         <version>1.0-SNAPSHOT</version>
+
+        <name>my-app</name>
+        <url>http://www.example.com</url>
+
+        <properties>    // свойства
+            <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+            <maven.compiler.source>1.7</maven.compiler.source>
+            <maven.compiler.target>1.7</maven.compiler.target>
+        </properties>
+
+        <dependencies>  // зависимости 
+            <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+            </dependency>
+        </dependencies>
+        
+        <build>         // плагины
+            <pluginManagement><!-- lock down plugins versions to avoid using 
+            Maven defaults (may be moved to parent pom) -->
+            ... lots of helpful plugins
+            </pluginManagement>
+        </build>
     </project> 
     
-    <xml>           - тэг xml, тип документа
+    <?xml>          - тэг xml, тип документа
     <project>       - главный тэг для всех, аттрибуты - всякие правила для xml
     <modelVersion>  - версия POM, не меняется после создания
     <groupId>       - название организации - io.github.ivan100kg
     <artifactId>    - уник название проекта - myProject
-    <version>       - номер нашей версии проекта - 1.0-SNAPSHOT
+    <version>       - номер нашей версии проекта - 5.0-RELEASE
 
     project         - the top-level element in all Maven pom.xml files.
     modelVersion    - version of the object model this POM is using. 
@@ -83,7 +108,7 @@ Commands:
     mvn test-compile        - compile your test sources without running after
     mvn package             - make a JAR file
     mvn install             - install artifact(JAR) in your local repository 
-    mvn site                - make a web pages(site) for your project
+    mvn site                - create javadoc for your project
     mvn clean               - remove the target dir with all the build data
     mvn process-resources
     mvn verify
