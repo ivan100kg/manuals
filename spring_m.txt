@@ -8,6 +8,9 @@
     site: www.spring.io
 
 --- Inversion of Control ---
+    IoC - аутсорсинг создания и управления объектами. Т.е. передача нами
+    прав на создание и управление объектами нами to Spring.
+
     Spring Container    - создание и хранение объектов
     config file         - описывает объекты кот будет создавать Container
     MyClass             - обращается к Container для получ объекта, а 
@@ -21,9 +24,6 @@
     IoC     - Inversion of Control, инверсия управления.
               Создание и управление объектами.
     DI      - Dependency Injection, внедрение зависимостей.
-
-    IoC - аутсортинг создания и управления объектами. Т.е. передача нами
-    прав на создание и управление объектами нами to Spring.
 
     Способы конфигурации Spring Container:
     XML file (устаревший способ)
@@ -62,3 +62,46 @@
     Spring Container, вызывая его по id - это и есть бин, чтобы 
     изменить напр Dog на Cat, нужно просто заменить в applicationContext.xml
     аттрибут class на io.github.ivan100kg.spring_intro.Cat
+
+--- Dependency Injection ---
+    DI - аутсорсинг добавления/внедрения зависимостей.
+    DI делает объекты нашего приложения слабо зависимыми друг от друга.
+    Зависимо
+
+    Способы внедрения зависимостей:
+    с помощью конструктора
+    с помощью сеттеров
+    Autowiring
+    
+    Способ #1 - с помощью конструктора:
+    Допустим есть класс Person, который has an another class inside(Pet):
+        public Person(Pet pet) {    // конструктор принимает об другого класса
+            this.pet = pet;
+        }
+    Допишем зависимость в наш applicationContext.xml:
+        <bean id="myPet"
+            class="io.github.ivan100kg.spring_intro.Dog">
+        </bean>
+
+        <bean id="myPerson"
+            class="io.github.ivan100kg.spring_intro.Person">
+            <constructor-arg ref="myPet"/>  // constructor-arg - арг костр
+        </bean>                             // ref - ссылка bean id
+    Далее можно не создавая класс Dog/Cat создать Person:
+        Person person = context.getBean("myPerson", Person.class);
+        person.callYourPet();   // some method of Person
+        context.close();
+
+    Способ #2 - с помощью setter:
+    Добавим метод setPet to Person:
+        public void setPet(Pet pet) {
+            this.pet = pet;
+        }
+    Изменим applicationContext.xml:
+        <bean id="myPerson"
+            class="io.github.ivan100kg.spring_intro.Person">
+            <property name="pet" ref="myPet"/>  // свойство pet -> метод setPet
+        </bean>                                 // перв буква стан заглав -> Pet
+                                                // внач добав set + Pet = setPet()
+    Работает все также, код менять не надо - просто др способ.
+
