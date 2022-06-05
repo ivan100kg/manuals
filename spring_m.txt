@@ -178,6 +178,50 @@
         Dog dog2 = context.getBean("myPet", Dog.class);
         System.out.println(dog1 == dog2);   // false
     Подходеит для stateful объектов.(хранящих состояние, например поле имя)
-        
-        
+
+--- Life Cycle of bean ---
+    Запуск      -->  Начало работы     -->  Создание  -->  DI - внедряются
+    приложения       Spring Container       бина           зависимости
+                                                                  |
+    Конец работы  <--  Использование  <--  Бин готов для  <--  init-method
+    Spring Container  нами этого бина     использования
+          |
+    destroy-method  -->  Остановка
+                         приложения
+
+    init-method используется для открытия или настройки каких-либо
+    ресурсов(базы данных, стримы ...). Вызывается автоматически, можно
+    использовать для запуска нашего кода при создании бина.
     
+    destroy-method используется для закрытия этих ресурсов. Тут пишется
+    логика после окончания работы с бином, перед его уничтожением. Также 
+    вызывается автоматически. Если scope=prototype то destroy НЕ вызывается.
+
+    Использование своего кода при init-method destroy-method:
+    // добавим методы в наш класс Dog(такие названия не обязательно),
+    модификаторы могут быть любыми
+    return-type может быть любым, но так как не исп-ся - используют void
+    параметров быть не должно.
+        private void init() {
+            System.out.println("class Dog: init method");
+        }
+        private void destroy() {
+            System.out.println("class Dog: destroy method");
+        }
+    // свяжем их в applicationContext.xml
+        <bean id="myPet"
+            class="io.github.ivan100kg.spring_intro.Dog"
+            init-method="init"          // методы можно называть как угодно
+            destroy-method="destroy">
+        </bean>
+    // теперь при создании и закрытии бина
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+                    "applicationContext2.xml"
+        );
+        // тут авто вызовется init() если scope НЕ prototype
+        Dog dog = context.getBean("myPet", Dog.class);
+        // тут авто вызовется init() для кажд бина если scope=prototype
+        dog.say();
+        context.close();
+        // тут авто вызовется destroy() если scope НЕ prototype
+
