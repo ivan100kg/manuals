@@ -66,7 +66,6 @@
 --- Dependency Injection ---
     DI - аутсорсинг добавления/внедрения зависимостей.
     DI делает объекты нашего приложения слабо зависимыми друг от друга.
-    Зависимо
 
     Способы внедрения зависимостей:
     с помощью конструктора
@@ -136,3 +135,49 @@
         
 
     }
+
+--- Bean scope ---
+    Scope - область видимости, определяет:
+        жизненный цикл бина
+        возможное кол-во создаваемых бинов
+    Разновидности bean scope:
+        singletone      // default, если не указан scope, 1 общий бин
+        prototype       // бины создаются каждый раз при обращении getBean()
+        request
+        session
+        global-session
+    
+    Singletone
+        <bean id="myPet"
+          class="io.github.ivan100kg.spring_intro.Dog"
+          scope="singleton">    // можно не указывать
+        </bean>
+    Этот бин создается сразу после прочтния контейнером конфиг файла.
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+                "applicationContext2.xml"
+        );
+        bean сдесь уже создан один и для всех.
+    Является общим для всех, кто запросит его у контейнера.
+        // получаем ссылки на бин
+        Dog dog1 = context.getBean("myPet", Dog.class);
+        Dog dog2 = context.getBean("myPet", Dog.class);
+        System.out.println(dog1 == dog2);   // true
+    Подходит для stateless объектов.(не хранящих состояния)
+
+    Prototype
+        <bean id="myPet"
+          class="io.github.ivan100kg.spring_intro.Dog"
+          scope="prototype">    // scope
+        </bean>
+    Такой бин создается только после обращения к контейнеру с пом getBean()
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+                    "applicationContext2.xml"
+        );
+        Dog dog1 = context.getBean("myPet", Dog.class); // создание
+    При каждом обращении создается новый бин.
+        Dog dog2 = context.getBean("myPet", Dog.class);
+        System.out.println(dog1 == dog2);   // false
+    Подходеит для stateful объектов.(хранящих состояние, например поле имя)
+        
+        
+    
