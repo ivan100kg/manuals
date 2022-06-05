@@ -105,3 +105,34 @@
                                                 // внач добав set + Pet = setPet()
     Работает все также, код менять не надо - просто др способ.
 
+    Внедрение других значений через методы(сеттеры):
+    Например в классе есть 2 поля не иниц через конструктор, но нужно вызвать
+    их сеттеры:
+        // поля
+        private String surname;
+        private int age;
+        // сеттеры
+        public void setSurname(String surname) { this.surname = surname; }
+        public void setSurname(int age) { this.age = age; }
+    // как вызвать с пом applicationContext.xml 
+    // способ #1 прямо в файле applicationContext.xml 
+    <bean id="myPerson"
+            class="io.github.ivan100kg.spring_intro.Person">
+        <property name="pet" ref="myPet"/>
+        <property name="surname" value="Bond"/> // value - передать значение
+        <property name="age" value="39"/>       // name - св-во age->setAge()
+    </bean>
+    // способ #2 с пом др файла myFile.properties:
+        person.surname = Bond   // создадим файл resources/myFile.properties
+        person.age = 39         // добавим эти строки в myFile.properties
+    // добавим эту строку перед всеми бинами
+        <context:property-placeholder location="classpath:myApp.properties"/>
+        classpath - местонахождение пользовательских классов(resources там же)
+    // изменим applicationContext.xml 
+        <property name="surname" value="${person.surname}"/>    // подставим
+        <property name="age" value="${person.age}"/>
+    Вызов значений из др файла ${name}, name может быть любым, но
+    парвильнее и более понятно уточнять типа person.age
+        
+
+    }
