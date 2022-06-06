@@ -1,0 +1,70 @@
+--- JDBC ---
+    Java Database Connectivity
+    Работа Java с различными СУБД.
+
+    Driver - сущность(класс) необходимая для соединения Java с БД,
+    для разный СУБД свой драйвер.
+    // драйвер(например postgres) можно загрузить с пом maven pom.xml:
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.3.6</version>
+    </dependency>
+    // далее загрузим этот класс в JVM с пом загрузчика:
+    Class.forName("org.postgres.Driver");           // загрузка класса загрузчиком
+    Class.forName(className, true, currentLoader);  // эквивалент того что выше
+
+    Connection      - класс для настройки подключения к БД
+    DriverManager   - the basic service for managing a set of JDBC drivers.
+    Connection conn = DriverManager.getConnection(
+                "jdbc:postgresql://192.168.0.104:5432/mydb",    // url
+                "user",                                         // user
+                "password");                                    // password
+    
+    Statement       - объект с пом которого выполняются запросы к БД
+    ResultSet       - результат запроса из БД
+    Statement stmt = conn.createStatement();   // получить obj Statement
+    ResultSet res = stmt.executeQuery("SELECT * FROM my_table;");   // sql query
+    // вывод результата
+    while (resultSet.next()) {  // похож на Iterator
+        String name = resultSet.getString("name");  // выбираем поля
+        int size = resultSet.getInt("size");
+        String country = resultSet.getString("country");
+        System.out.printf("%s\t%d\t%s", name, size, country);
+    }
+
+    // закрываем все по порядку
+    stmt.close();
+    conn.close();
+
+    Example:
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            Connection conn = DriverManager.getConnection(
+                    "jdbc:postgresql://localhost:5432/mydb",
+                    "postgres",
+                    "399");
+
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT name, 
+                size, country FROM celebs ORDER BY size LIMIT 10;");
+            while (resultSet.next()) {
+                String name = resultSet.getString("name");
+                int size = resultSet.getInt("size");
+                String country = resultSet.getString("country");
+                System.out.printf("%s\t%d\t%s", name, size, country);
+            }
+            statement.close();
+            conn.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    
+
+
