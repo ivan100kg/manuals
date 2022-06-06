@@ -22,9 +22,13 @@
                 "password");                                    // password
     
     Statement       - объект с пом которого выполняются запросы к БД
-    ResultSet       - результат запроса из БД
+    ResultSet       - результат запроса из БД (AutoCloseable)
     Statement stmt = conn.createStatement();   // получить obj Statement
-    ResultSet res = stmt.executeQuery("SELECT * FROM my_table;");   // sql query
+    // SELECT
+    ResultSet res = stmt.executeQuery("SELECT * FROM my_table;");
+    // DML:INSERT/UPDATE/DELETE; DDL:CREATE/ALTER/DROP
+    stmt.executeUpdate("INSERT INTO my_table (name, score) VALUES ('Lisa', 35);");
+
     // вывод результата
     while (resultSet.next()) {  // похож на Iterator
         String name = resultSet.getString("name");  // выбираем поля
@@ -41,28 +45,22 @@
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
-        try {
-            Connection conn = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/mydb",
-                    "postgres",
-                    "399");
-
-            Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT name, 
-                size, country FROM celebs ORDER BY size LIMIT 10;");
-            while (resultSet.next()) {
-                String name = resultSet.getString("name");
-                int size = resultSet.getInt("size");
-                String country = resultSet.getString("country");
-                System.out.printf("%s\t%d\t%s", name, size, country);
+        try (Connection connection = DriverManager.getConnection(
+                "jdbc:postgresql://localhost:5432/mydb", 
+                "myuser",                                    
+                "password"); 
+            Statement statement = connection.createStatement()) {
+            ResultSet set = statement.executeQuery("SELECT name, size FROM celebrities;");
+            while (set.next()) {
+                System.out.println(set.getString("name") + set.getInt("size"));
             }
             statement.close();
-            conn.close();
+            connection.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
     
