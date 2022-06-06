@@ -227,12 +227,13 @@ CREATE TABLE progress
 );
 
 -- Создать таблицу
-CREATE TABLE aircrafts      -- создать таблицу 'aircrafts'
-( aircraft_code char( 3 ) NOT NULL,
-  model text NOT NULL,
-  range integer NOT NULL,
-  CHECK ( range > 0 ),
-  PRIMARY KEY ( aircraft_code )
+CREATE TABLE accounts (
+	user_id serial PRIMARY KEY,
+	username VARCHAR ( 50 ) UNIQUE NOT NULL,
+	password VARCHAR ( 50 ) NOT NULL,
+	email VARCHAR ( 255 ) UNIQUE NOT NULL,
+	created_on TIMESTAMP NOT NULL,
+    last_login TIMESTAMP 
 );
 
 -- удалить таблицу
