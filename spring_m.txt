@@ -191,7 +191,8 @@
 
     init-method используется для открытия или настройки каких-либо
     ресурсов(базы данных, стримы ...). Вызывается автоматически, можно
-    использовать для запуска нашего кода при создании бина.
+    использовать для запуска нашего кода при создании бина. Для scope = 
+    prototype - init будет вызываться для кажд создания бина.
     
     destroy-method используется для закрытия этих ресурсов. Тут пишется
     логика после окончания работы с бином, перед его уничтожением. Также 
@@ -356,3 +357,33 @@
         @Value("${person.age}")
         private int age;
     
+--- Bean scope with annotations ---
+    Те же правила, но создаются так:
+
+    @Component              @Component  
+    @Scope("singleton")     @Scope("prototype")
+    public class Dog        public class Cat 
+
+--- Life Cycle of bean with annotations ---
+    Правила теже, создаются с пом аннотаций.
+    @PostConstruct
+    @PreDestroy
+
+    Эти методы были выведены в Java 9, поэтому добавим зависимость в pom.xml
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+
+    // применение
+    @PostConstruct
+    private void init() {   // после создания бина
+        System.out.println("class Dog: init method");
+    }
+
+    @PreDestroy
+    private void destroy() {    // перед уничтожением(НЕ для prototype)
+        System.out.println("class Dog: destroy method");
+    }
+
