@@ -41,6 +41,24 @@
     stmt.close();
     conn.close();
 
+    PreparedStatement   - подготовленный запрос, подходит если есть параметры,
+    происх прекомпилляция запроса.
+    Statement: используется для простых случаев запроса без параметров.
+    PreparedStatement: предварительно компилирует запрос, который может содержать
+    входные параметры и выполняться несколько раз с разным набором этих параметров.
+    При повторном использовании с одним или несколькими наборами параметров 
+    позволяет получить преимущества заранее прекомпилированного и кэшированного 
+    запроса, помогая при этом избежать SQL Injection.
+    // создание
+    PreparedStatement preparedStatement;
+    preparedStatement = connection.prepareStatement(
+                "INSERT INTO students (name, score) VALUES (?, ?);");
+    // использование с нашими параметрами
+    preparedStatement.setString(1, "Bob");
+    preparedStatement.setInt(2, 50);
+    preparedStatement.setObject(3, obj) // если тип неизвестен
+    preparedStatement.executeUpdate();  // добавить в БД
+
     Example:
         try {
             Class.forName("org.postgresql.Driver");
