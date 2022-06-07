@@ -245,7 +245,7 @@
         }
     }
 
-    // Создадим ApplicationContext и бин
+    // Создадим ApplicationContext и вытянем бин
     ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
                 "applicationContext.xml"
     );
@@ -386,4 +386,43 @@
     private void destroy() {    // перед уничтожением(НЕ для prototype)
         System.out.println("class Dog: destroy method");
     }
+
+--- ApplicationContext config without xml ---
+    способ #1
+    @Configuration                  // класс является конфигурацией
+    @ComponentScan("spring_intro")  // пакет для скана бинов и разл аннотаций
+    public class MyConfig {}        // имя класса любое
+
+    // создать ApplicationContext, отличается от xml способа, указываем
+       наш @Configuration класс. 
+    AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(MyConfig.class);
+    Person person = context.getBean("personBean", Person.class);
+    // Dependency Injection выполняется примерно так-же
+    person.callYourPet();
+    context.close();
+
+    способ #2
+    Сканирование не идет, поэтому убираем в конфиг-классе @ComponentScan
+    Убираем все аннотации @Component @Autowired @Qualifier в классах
+    
+    @Configuration
+    public class MyConfig {
+        @Bean                   // @Bean регулирует создание и обращ к бину
+        @Scope("singleton")     // можно указ scope - только 1 объект(как обычн)
+        public Cat catBean() {  // id будет как наз-е метода "catBean"
+            return new Cat();   
+        }
+        
+        @Bean
+        public Person personBean() {
+            return new Person(catBean());   // DI прописываем зависимость
+        }
+    }
+    // все работает также
+    AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(MyConfig.class);
+    Person person = context.getBean("personBean", Person.class);
+    person.callYourPet();
+    context.close();
 
