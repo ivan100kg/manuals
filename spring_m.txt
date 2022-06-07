@@ -256,8 +256,11 @@
     Для внедрения зависимостей с помощью аннотаций исп @Autowired.
     Может использоваться:
         конструктор
-        сеттер
+        method
         поле
+    Использовать можно любой тип, но желательно придерж одного стиля.
+    
+    Использование с конструктором:
     // добустим есть class Person, конструктор приним об др класса Pet,
     пометим аннотацией 2 класса, тем самым создадим бины(если scope не prototype).
     @Component("personBean")
@@ -267,13 +270,10 @@
             System.out.println("Person bean is created");
             this.pet = pet;
         }
-    }
 
-    @Component("catBean")
-    public class Cat {}
-
-    //
+    // use
     Person person = context.getBean("personBean", Person.class);    // correct
+    person.callYourPet();
     Как произошло внедрение:
         После сканирования нашлось 2 бина (personBean, catBean)
         далее нашлась аннотация @Autowired (На конструкторе Person)
@@ -283,3 +283,37 @@
 
         если не найдется подходящий бин - exception
         если найдется более 1 подходящего бина(например dogBean) - exception
+
+    Использование с методом:
+    @Component("personBean")
+    class Person {
+        @Autowired      // пометим метод аннотацией
+        public void setPet(Pet pet) {
+            this.pet = pet;
+            System.out.println("Pet was set in Person");
+        }
+    
+    // use
+    Person person = context.getBean("personBean", Person.class);    // correct
+    person.callYourPet();
+    Как произошло внедрение:
+        все также как и при конструкторе происходит внедрение
+
+    Использование с полем:
+    @Component("personBean")
+    public class Person {
+        @Autowired
+        private Pet pet;
+    
+    // use
+    Person person = context.getBean("personBean", Person.class);
+    person.callYourPet();
+    Как произошло внедрение:
+        все также находятся бины, @Autowired, идет подстановка,
+        сдесь под капотом исп-ся Reflecnion. 
+
+    
+
+
+    
+    
