@@ -59,6 +59,22 @@
     preparedStatement.setObject(3, obj) // если тип неизвестен
     preparedStatement.executeUpdate();  // добавить в БД
 
+    Транзакции
+    Скорость вставки нескольких значений,
+    если автокоммит не отключить то на каждую вставку строки - одна транзакция,
+    выходит во много раз дольше. 80000мс против 44мс
+    connection.setAutoCommit(false);    // отключить автокоммит
+    for (int i = 0; i < 10000; i++) {
+        preparedStatement.setString(1, "Bob" + i);
+        preparedStatement.setInt(2, 50 + i % 10);
+        preparedStatement.executeUpdate();
+    }
+    connection.commit();                // завершение транзакции
+
+    Savepoint - точка сохранения состояния базы, позволяет откатиться к этой точке.
+    Savepoint sp1 = connection.setSavepoint();  // create
+    connection.rollback(sp1);                   // откат
+
     Example:
         try {
             Class.forName("org.postgresql.Driver");
