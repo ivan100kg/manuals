@@ -3883,7 +3883,9 @@
     getReturnType()         // -> Class<?>, get return type
     getParameterTypes()     // -> Class<?>[], все параметры метода
     getModifiers()          // -> int, модификаторы
+    setAccessible(true)     // дать доступ to methods
     invoke(obj, args)       // -> Object, вызвать метод у obj with args
+    invoke(null, args)      // -> Object, for static methods
 
     Modifier methods:
     isFinal(int)            // -> boolean, int - method.getModifiers() модиф-ры
@@ -3945,3 +3947,4 @@
     SmartPhone sm1 = (SmartPhone) annotation1;                      // casting
     System.out.println(sm1.OS());       // достаем поля
     System.out.println(sm1.year());
+    Class.getAnnotation(class).method() // так в общем виде
