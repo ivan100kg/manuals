@@ -426,3 +426,16 @@
     person.callYourPet();
     context.close();
 
+    Использование @Value из конфиг файла (для 2-ух способов):
+    Для того чтобы исп аннотацию @Value и подставлять наши значения из 
+    конфиг файла нужно исп аннотацию @PropertySource
+
+    // в классе Person
+    @Value("${person.surname}") // значения берутся из кофиг файла
+    private String surname;
+
+    @Configuration
+    //@ComponentScan("io.github.ivan100kg.spring_intro")
+    @PropertySource("classpath:myApp.properties")   // наш конфиг файл
+    public class MyConfig {
+
