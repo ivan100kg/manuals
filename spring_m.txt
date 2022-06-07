@@ -33,7 +33,7 @@
     Spring Bean (или просто bean/бин) - объект, который создается и 
     управляется Spring Container.
    
---- Способ #1 через xml file ---
+--- ApplicationContext config with .xml file ---
     // создаем файл в директории resources(root) "applicationContext.xml"
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
@@ -63,7 +63,7 @@
     изменить напр Dog на Cat, нужно просто заменить в applicationContext.xml
     аттрибут class на io.github.ivan100kg.spring_intro.Cat
 
---- Dependency Injection ---
+--- Dependency Injection xml ---
     DI - аутсорсинг добавления/внедрения зависимостей.
     DI делает объекты нашего приложения слабо зависимыми друг от друга.
 
@@ -136,7 +136,7 @@
 
     }
 
---- Bean scope ---
+--- Bean scope xml ---
     Scope - область видимости, определяет:
         жизненный цикл бина
         возможное кол-во создаваемых бинов
@@ -179,7 +179,7 @@
         System.out.println(dog1 == dog2);   // false
     Подходеит для stateful объектов.(хранящих состояние, например поле имя)
 
---- Life Cycle of bean ---
+--- Life Cycle of bean xml ---
     Запуск      -->  Начало работы     -->  Создание  -->  DI - внедряются
     приложения       Spring Container       бина           зависимости
                                                                   |
@@ -225,7 +225,7 @@
         context.close();
         // тут авто вызовется destroy() если scope НЕ prototype
 
---- Способ #2 - с помощью аннотаций ---
+--- ApplicationContext config with annotations ---
     Это более короткий и быстрый способ.
     Процесс в 2 этапа:
         сканирование классов и поиск аннотаций @Component
@@ -248,9 +248,38 @@
     ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
                 "applicationContext.xml"
     );
-    Cat cat = context.getBean("catBean", Cat.class);
+    Cat cat = context.getBean("catBean", Cat.class);    // получим бин 
     cat.say();
     context.close();
 
+--- Dependency Injection с пом аннотации @Autowired ---
+    Для внедрения зависимостей с помощью аннотаций исп @Autowired.
+    Может использоваться:
+        конструктор
+        сеттер
+        поле
+    // добустим есть class Person, конструктор приним об др класса Pet,
+    пометим аннотацией 2 класса, тем самым создадим бины(если scope не prototype).
+    @Component("personBean")
+    class Person {
+        @Autowired      // пометим конструктор аннотацией @Autowired
+        public Person(Pet pet) {
+            System.out.println("Person bean is created");
+            this.pet = pet;
+        }
+    }
 
+    @Component("catBean")
+    public class Cat {}
 
+    //
+    Person person = context.getBean("personBean", Person.class);    // correct
+    Как произошло внедрение:
+        После сканирования нашлось 2 бина (personBean, catBean)
+        далее нашлась аннотация @Autowired (На конструкторе Person)
+        начался поиск бина с типом Pet(тот что в параметрах конструктора)
+        нашелся подходящий бин - catBean
+        внедрение зависимости
+
+        если не найдется подходящий бин - exception
+        если найдется более 1 подходящего бина(например dogBean) - exception
