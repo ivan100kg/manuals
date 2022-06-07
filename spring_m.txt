@@ -33,7 +33,7 @@
     Spring Bean (или просто bean/бин) - объект, который создается и 
     управляется Spring Container.
    
-    Способ #1 через xml file:
+--- Способ #1 через xml file ---
     // создаем файл в директории resources(root) "applicationContext.xml"
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
@@ -224,4 +224,33 @@
         dog.say();
         context.close();
         // тут авто вызовется destroy() если scope НЕ prototype
+
+--- Способ #2 - с помощью аннотаций ---
+    Это более короткий и быстрый способ.
+    Процесс в 2 этапа:
+        сканирование классов и поиск аннотаций @Component
+        создание(регистрация) бина в Spring Container
+    
+    // Для сканирования необходимо указать в applicationContext.xml где сканировать:
+        <context:component-scan base-package="io.github.ivan100kg"/>
+        Указываем эту строку и наш главный пакет с классами.
+
+    // Теперь пометим наш класс аннотацией @Component
+    @Component("catBean")   // сдесь задаем люб имя бина, либо по дефолту будет cat
+    public class Cat implements Pet{
+        @Override
+        public void say() {
+            System.out.println("Meow-Meow");
+        }
+    }
+
+    // Создадим ApplicationContext и бин
+    ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+                "applicationContext.xml"
+    );
+    Cat cat = context.getBean("catBean", Cat.class);
+    cat.say();
+    context.close();
+
+
 
