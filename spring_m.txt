@@ -521,6 +521,30 @@
     > beforeGetBookAdvice: trying to get the book   // наш Advice
     > We are getting the book                       // основной метод
 
+--- Pointcut ---
+    Это выражение, описывающее где ложен быть применен Advice.
+    Spring AOP использует AspectJ Pointcut expression language, т.е.
+    определенные правила в написании выражений для создания Pointcut.
+    
+    @Before("execution(void getBook())")
+             -------------------------  // эта часть - pointcut
+    Общее правило, шаблон по которому ищется основной метод:
+    execution(modifiers? return-type method-class? method-name(params) throws?)
+    ? - необязательный параметр
+
+    Пример с указанием полного имени класса, для случаев если есть такие
+    же методы в других бинах(классах):
+    execution(void mypackage.Myclass.myMethod())
+
+    Use with Wildcards:
+    execution(void get*())      - методы начин-ся на get
+    (* getBook())               - методы getBook с любым return type
+    (* *)                       - метод без параметров с люб именем, mod, ret
+    (void getBook(String))      - void method getBook with 1 String param
+    (void *(*))                 - any void method with 1 any type param
+    (* *(..))                   - люб метод, любое кол-во любых параметров
+    (void get*(mypackage.Book)) - параметр пользовательский класс 
+    (* *(mypackage.Book, ..))   - первый парам - Book, далее 0 или более люб пар
 
 
 
