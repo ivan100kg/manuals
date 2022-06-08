@@ -466,9 +466,61 @@
     Сквозной ф-л сосредоточен в 1-м или неск классах - легко менять.
     Благодаря конфигурации аспектов легко добавлять новый сквозные работы.
     Бизнес-код(основной) избавляется от сквозного кода - чистый код.
-    Spring берет на себя сам обязанности по AOP, все легко настраивается.
+    Spring берет на себя сам обязанности по устройству AOP.
 
     AOP frameworks:
         Spring AOP  - прост в использовании, самая распространенная функ-ть
         AspectJ     - сложный, вся фукциональность AOP
+
+--- Aspect class ---
+    Aspect - это Proxy класс отвечающий за сквозную функциональность.
+    // Пометим наш конфиг класс (здесь используется конфиг без xml)
+    @Configuration
+    @ComponentScan("mypacakge")
+    @EnableAspectJAutoProxy     // за кулисами используется Spring AOP Proxy
+    public class MyConfig {}
+
+    // Создадим класс Aspect, он будет отвечать за сквозную ф-ть
+    // Скачаем jar AspectJ Weaver с Maven repository и подключим к проекту
+    // добавим зависимость в pom
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.9.1</version>
+            <scope>runtime</scope>
+        </dependency>
+    // Aspect класс для логов, имя любое
+    @Component
+    @Aspect                     // пометим наш класс @Aspect
+    public class LoggingAspect {
+        @Before("execution(public void getBook())") // ниже описано
+        public void beforeGetBookAdvice() {         // название любое
+            System.out.println("beforeGetBookAdvice: trying to get the book");
+        }
+    }
+    Advice - термин AOP, метод внутри Aspect класса, который определяет 
+    что и когда должно произойти при вызове основного метода (у нас getBook)
+    Pointcut - выражение, опис где должен быть применен Advice.
+    Advice типы:
+    Before - выполняется до метода с осеновной логикой(getBook).
+    After returning - вып-ся после нормального окончания основного метода.
+    After throwing - вып-ся после основного метода если было исключение.
+    After/After finnaly - вып-ся после метода с основной логикой.
+    Around - вып-ся до и после метода с основной логикой.
+    // реализация, помечаем @Annotation("execution(method())")
+    @Before("execution(public void getBook())") - читается как: должно быть 
+    выполнено ДО выполнения медота getBook(), это и есть Pointcut.
+
+    // use
+    AnnotationConfigApplicationContext context =
+            new AnnotationConfigApplicationContext(MyConfig.class);
+    Library library = context.getBean("library", Library.class);
+    library.getBook();
+    context.close();
+    > beforeGetBookAdvice: trying to get the book   // наш Advice
+    > We are getting the book                       // основной метод
+
+
+
 
