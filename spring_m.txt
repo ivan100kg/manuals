@@ -676,3 +676,12 @@
         System.out.println("afterThrowingGetStudentsLoggingAdvice: throws " + myEx);
     }
 
+    @After
+    Вып-ся после оконч метода с основ логикой, в любом случае(с исключ или без).
+    // невозможно получить доступ к исключению, если выбросилось
+    // невозможно получить доступ к return параметру
+    @After("execution(* getStudents())")
+    public void afterGetStudentsLoggingAdvice(){
+        System.out.println("afterGetStudentsLoggingAdvice: log #12");
+    } 
+
