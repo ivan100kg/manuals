@@ -551,6 +551,9 @@
     можно объявить Pointcut, затем использовать его на Advice много раз.
     @Pointcut("pointcut_expression")    // выражение типа execution(void get*())
     private void pointcut_ref(){}       // метод-ссылка без парам и тела
+    Если необходимо один и тот же pointcut использовать в разных
+    классах - можно вынести объявление в отдельный класс, а метод сделать public,
+    использовать такой pointcut можно по полному имени.
 
     Использование на Advice:
     @Before("pointcut_ref()")           // указываем тот метод-ссылку тут
@@ -592,4 +595,29 @@
         System.out.println("beforeAllMethodsExceptReturnMagazineAdvice: Log #4");
     }
 
+    Порядок выполнения pointcut:
+    Если один метод обрабатывают несколько Advice то порядок обработки
+    может быть разным в разное время.
+    Если важен порядок обработки метода - необходимо раскидать Advice по 
+    разным Aspect классам и пометить классы @Order(int) - порядок, 1 в приоритете
+    если @Order одинаковый - то что выпонится быстрее - рандом.
 
+    // вынесем объявление pointcut в отдельный класс, чтобы добраться до нашего
+    // другим классам - нужно будет указать полное имя
+    public class MyPointcuts {
+        @Pointcut("execution(* get*())")
+        public void allGetMethods() {
+        }
+    }
+
+    // создадим отдельные Aspect-классы для Advice обрабатывающих одинак методы
+    // рассмотрим один Asp будет похож на этот
+    @Component
+    @Aspect
+    @Order(1)   // меньше число - больше приоритет
+    public class SecurityAspect {
+        @Before("io.github.ivan100kg.aop.aspects.MyPointcuts.allGetMethods()")
+        public void beforeGetSecurityAdvice() {
+            System.out.println("beforeGetSecurityAdvice: check rights");
+        }
+    } 
