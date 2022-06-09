@@ -449,6 +449,7 @@
         обработка транзакций
         обработка исключений
         кэширование
+    Бизнес логика - это основные/target методы.
     
     // пример Aspect класса в методах которого - сквозная логика
         // aspect class             // основной функционал
@@ -476,7 +477,7 @@
     Aspect - это Proxy класс отвечающий за сквозную функциональность.
     // Пометим наш конфиг класс (здесь используется конфиг без xml)
     @Configuration
-    @ComponentScan("mypacakge")
+    @ComponentScan("mypacakge") // где сканировать бины
     @EnableAspectJAutoProxy     // за кулисами используется Spring AOP Proxy
     public class MyConfig {}
 
@@ -640,5 +641,27 @@
         Object[] arguments = joinPoint.getArgs();   // аргументы
         System.out.println(Arrays.toString(arguments));
 
+--- Advice Types ---
+    @Before
+    Выполняется до метода с основной логикой.
+    @Before("execution(* getStudents())")
+    public void beforeGetStudentsLoggingAdvice() {
+        System.out.println("beforeGetStudentsLoggingAdvice: log #2");
+    }
+
+    @AfterReturning
+    Вып-ся после нормального окончания основного метода, но до возврата 
+    значения из него, поэтому можно изменять возвращаемый результат.
+    // добавим в @AfterReturning через запятую именованные параметры
+    // pointcut = "execution(* getStudents())" - просто именованный pointcut
+    // returning = "students" - это то что возвращает основной метод
+    // добавим параметр в Advice List<Student> students - то что возвращ осн метод
+    // "students" должен совпадать с параметром Advice (students)
+    @AfterReturning(pointcut = "execution(* getStudents())", returning = "students")
+    public void afterReturningGetStudentsLoggingAdvice(List<Student> students) {
+        students.remove(0); // делаем любые манипуляции с возвращаемым obj
+                               после манипуляций будет возврат из основного мет
+                               уже измененного объекта.
+        System.out.println("afterReturningGetStudentsLoggingAdvice: log #10");
 
 
