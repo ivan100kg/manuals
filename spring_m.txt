@@ -621,3 +621,24 @@
             System.out.println("beforeGetSecurityAdvice: check rights");
         }
     } 
+
+--- Join Point ---
+    Это точка/момент в выполняемой программе когда следует применять Advice.
+    Это точка переплетения метода с бизнес-логикой и метода со служебным ф-м.
+    Прописав Join Point в параметре метода Advice, мы получаем доступ к 
+    информации о сигнатуре и параметрах метода с бизнес-логикой.
+
+    // получить всю инфу об основном методе
+    @Before("io.github.ivan100kg.aop.aspects.MyPointcuts.allAddMethods()")
+    public void beforeAddLoggingAdvice(JoinPoint joinPoint) {
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        System.out.println("mS: " + mS);
+        System.out.println("mS.getName(): " + mS.getName());
+        System.out.println("mS.getMethod(): " + mS.getMethod());
+        System.out.println("mS.getParameterTypes(): " + Arrays.toString(mS.getParameterTypes()));
+        System.out.println("mS.getReturnType(): " + mS.getReturnType());
+        Object[] arguments = joinPoint.getArgs();   // аргументы
+        System.out.println(Arrays.toString(arguments));
+
+
+
