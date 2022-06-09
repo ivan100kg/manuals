@@ -663,5 +663,16 @@
                                после манипуляций будет возврат из основного мет
                                уже измененного объекта.
         System.out.println("afterReturningGetStudentsLoggingAdvice: log #10");
+    // если необходимо можно включать JoinPoint первым параметром
 
+    @AfterThrowing
+    Вып-ся после основного метода если возникло исключение.
+    // throwing = "myEx" ловим искл, должно совпадать с параметром Advice
+    // метод будет прерван, исключение будет проброшено выше, мы ничего
+    // не сможем предотвратить, но можем например залогировать.
+    // можем первым параметром включать JoinPoint
+    @AfterThrowing(pointcut = "execution(* getStudents())", throwing = "myEx")
+    public void afterThrowingGetStudentsLoggingAdvice(Throwable myEx){
+        System.out.println("afterThrowingGetStudentsLoggingAdvice: throws " + myEx);
+    }
 
