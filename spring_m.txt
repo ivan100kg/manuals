@@ -683,5 +683,44 @@
     @After("execution(* getStudents())")
     public void afterGetStudentsLoggingAdvice(){
         System.out.println("afterGetStudentsLoggingAdvice: log #12");
-    } 
+    }
+
+    @Around
+    Вып-ся до и после метода с основной логикой. Можно провести след действия:
+        -произвести какие-либо действия до работы target метода
+        -произвести какие-либо действия после работы target метода
+        -получить/изменить результат работы target метода
+        -предпринять какие-либо действия, если из target выбрас исключение
+    // добавим в параметры метода ProceedingJoinPoint - это связь с target методом
+    // ProceedingJoinPoint обладает тем же ф-м что и JoinPoint
+    // изменим return type на Object который явл результатом point.proceed()
+    @Around("execution(String returnBook())")
+    public Object aroundLoggingAdvice(ProceedingJoinPoint point) throws Throwable {
+        System.out.println("Before target method");
+        Object targetResult = point.proceed();      // вызов target метода
+        System.out.println("After target method");
+        return targetResult;                        // результат
+    }
+    // можно изменить результат перед возвратом на любой
+    // например можно засечь время выполнения target метода с пом @Around
+        System.out.println("Before target method");
+        long start = System.currentTimeMillis();
+        Object targetResult = point.proceed();
+        System.out.println("After target method");
+        System.out.println("time: " + (System.currentTimeMillis() - start));
+        return targetResult;
+    При выбрасывании исключения в target методе можно делать следующее:
+        -ничего не предпринимать
+        -обработать исключение, завернуть point.proceed() в try-catch
+        -проброс исключения дальше/выше:
+        System.out.println("Before target method");
+        Object targetResult = null;
+        try {
+            targetResult = point.proceed();
+        } catch (IllegalStateException ex) {
+            System.out.println("Caught: " + ex.getMessage());
+            throw ex;   // проброс/rethrowing
+        }
+        System.out.println("After target method");
+        return targetResult;
 
