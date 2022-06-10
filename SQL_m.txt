@@ -243,11 +243,14 @@ CREATE TABLE progress
 ALTER TABLE students			# ADD, DROP, RENAME, ALTER, ENABLE...
 ADD COLUMN name INT NOT NULL;
 ADD CHECK (score > 100);
+ALTER TABLE prog RENAME TO progress;
 ALTER COLUMN mark DROP UNIQUE;
 ALTER COLUMN mark ADD CONSTRAINT PRIMARY KEY (id);
 ALTER COLUMN mark DROP CONSTRAINT name_of_constraint;
 ALTER COLUMN mark SET DATA TYPE REAL;
 ADD FOREIGN KEY (student_id) REFERENCES table2 (id);
+ALTER TABLE students ADD UNIQUE(series, number);
+ALTER TABLE progress ALTER COLUMN student TYPE integer USING (student::integer);
 ALTER TABLE students ALTER COLUMN mark SET DATA TYPE integer USING 
 ( CASE WHEN mark = 'A' THEN 5 WHEN mark = 'B' THEN 3 ELSE 2 END );
 
@@ -281,11 +284,20 @@ CREATE MATERIALIZED VIEW 	# тоже представление, но еще и 
 REFRESH MATERIALIZED VIEW view	# обновить
 
 -- Транзакции
-BEGIN;
-UPDATE accounts SET balance = balance - 100.00
-    WHERE name = 'Alice';
--- ...
-COMMIT;
+BEGIN;		# начать транзакцию								        <---+
+UPDATE accounts SET balance = balance - 100.00	# работаем ...			|
+    WHERE name = 'Alice';												|
+			# еще какие-то действия										|
+COMMIT;		# подтвердить изменения										|
+ROLLBACK;	# отменить изменения, вернуть все как до начала транзакции -+
+
+Уровни транзакций:
+BEGIN TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;		# 
+BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED;		# default, пока нет 
+														  коммита - изменений
+														  никто не видит
+BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;		# 
+BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;			# 
 
 -- CASE expression(if-else)
 CASE 
@@ -484,13 +496,6 @@ ORDER BY column1;
 			SELECT AVG(amount) 
 			FROM book 
 			GROUP BY author);
-
--- Транзакции - последов-сть ком-д кот должны быть выполнены все или не одной
-START TRANSACTION;
-UPDATE.. # послед-сть команд
-UPDATE..
-...
-COMMIT; - принять или ROLLBACK; - откатить
 
 -- Индексы - структура данных в базе для быстрого поиска
 -- СУБД автоматически решает использовать их или нет
