@@ -86,6 +86,7 @@ psql --help \? \h       # help for everything
 \dt         # show all tables in db
 \d table_n  # show table 'table_name'
 \i sqr.sql  # чтение команд из файла
+\timing on	# включить замер времени выполнения команд
 
 -- Создать бд
 sudo -u postgres createdb mydb   # создать бд из консоли linux
@@ -244,6 +245,7 @@ ALTER TABLE students			# ADD, DROP, RENAME, ALTER, ENABLE...
 ADD COLUMN name INT NOT NULL;
 ADD CHECK (score > 100);
 ALTER TABLE prog RENAME TO progress;
+ALTER TABLE progress RENAME COLUMN student TO student_id;
 ALTER COLUMN mark DROP UNIQUE;
 ALTER COLUMN mark ADD CONSTRAINT PRIMARY KEY (id);
 ALTER COLUMN mark DROP CONSTRAINT name_of_constraint;
@@ -267,6 +269,10 @@ INSERT INTO aircrafts
 SELECT * FROM weather w JOIN cities c ON w.city = c.name;   # псевдонимы  
         ...LEFT OUTER JOIN  # табл в лев части - все строки, справа - совпавш
         также есть правые внешние, полные
+-- сразу 3 таблицы
+SELECT s.name, su.name, p.mark FROM progress AS p 
+INNER JOIN students AS s ON p.student_id = s.id 
+INNER JOIN subjects AS su ON p.subject_id = su.id;
 
 -- Агрегатные ф-ии
 SELECT max(temp_lo) FROM weather;                       # max
@@ -299,6 +305,21 @@ BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED;		# default, пока нет
 BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;		# 
 BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;			# 
 
+1. Read Uncommitted. Это самый низкий уровень изоляции. Согласно стандарту SQL 
+на этом уровне допускается чтение «грязных» (незафиксированных) данных. Однако 
+в PostgreSQL требования, предъявляемые к этому уровню, более строгие, чем в
+стандарте: чтение «грязных» данных на этом уровне не допускается.
+2. Read Committed. Не допускается чтение «грязных» (незафиксированных) данных. 
+Таким образом, в PostgreSQL уровень Read Uncommitted совпадает с уровнем Read 
+Committed. Транзакция может видеть только те незафиксированные изменения 
+данных, которые произведены в ходе выполнения ее самой.
+3. Repeatable Read. Не допускается чтение «грязных» (незафиксированных) данных 
+и неповторяющееся чтение. В PostgreSQL на этом уровне не допускается также 
+фантомное чтение. Таким образом, реализация этого уровня является более 
+строгой, чем того требует стандарт SQL. Это не противоречит стандарту.
+4. Serializable. Не допускается ни один из феноменов, перечисленных выше, 
+в том числе и аномалии сериализации.
+
 -- CASE expression(if-else)
 CASE 
       WHEN condition_1  THEN result_1
@@ -312,6 +333,10 @@ SELECT name, score,
 		WHEN score > 80 THEN 'A' ELSE 'F'
 	END AS grade 
 FROM students;
+
+-- INDEX
+CREATE INDEX name_ind ON table (field);
+DROP INDEX name_ind;
 
 ================================================================================
 
