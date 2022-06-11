@@ -498,7 +498,7 @@
     equalsIgnoreCase// -> boolean?, Сomparing with ignore case
     matches(regex)  // -> boolean, принимает рег выр, точное совпадение
     split(regex)    // -> String[], принимает рег выр, делит по разделителю
-    replaceAll(r,a) // -> String, замена всех a(String) на r(regex)
+    replaceAll(r,a) // -> String, замена всех r(regex) на a(String)
     
     Кодировка/Локаль
     "s".toLowerCase(Locale.ROOT);           // во избеж багов лучшая локаль
@@ -3767,6 +3767,9 @@
         System.out.print(matcher.start() + " ") // номер позиции
         System.out.println(matcher.group());    // вывести на экран(все группы)
     }
+
+    Example:
+    str.replaceAll("[aAeEuUiIoO]", "");         // удаление гласных
 
     Regex:
     ----------+-------------------------------------
