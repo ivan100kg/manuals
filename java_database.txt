@@ -98,7 +98,66 @@
         }
 
 --- Hibernate ---
+    Hibernate - это framework, коткоторый осуществляет CRUD между Java obj и DB.
+    Использует для работы с БД JDBC.
+        Java App <===> Hibernate <===> JDBC <===> Database
+
+    CRUD
+    CRERATE - INSERT
+    READ    - SELECT
+    UPDATE  - UPDATE
+    DELETE  - DELETE
     
-    
+    Плюсы Hibernate:
+    Предоставление технологии ORM(Object-to-Relational Mapping) - преобразование
+    объекта в строку в таблице и обратное преобразование.
+        class Animal {                              animal(table)
+            int id;         <==> Hibernate <==>     INTEGER id
+            String name;                            VARCHAR(..) name
+            int age;                                INTEGER age
+            ...                                     ...
+        }
+    Регулирование SQL-запросами. Нет нужды писать SQL-запросы.
+        save() --> Hibernate --> INSERT INTO table ...;
+        get()  <-- Hibernate <-- SELECT ...; возвращает объект Java;
+    Меньшее кол-во кода по сравнению JDBC.
+
+    Подключить Hibernate with Maven:
+    <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>6.1.0.Final</version>
+      <type>pom</type>
+    </dependency>
+
+    Подключить JDBC драйвер(например postgres) пом maven pom.xml:
+    <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.4.0</version>
+    </dependency>
+
+    Создать файл(если не создался) в ресурсах hibernate.cfg.xml
+    <!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+            <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+            <property name="hibernate.connection.username">bestuser</property>
+            <property name="hibernate.connection.password">bestuser</property>
+            <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/my_db</property>
+
+            <property name="current_session_context_class">thread</property>
+            <property name="show_sql">true</property>
+    <!--        <property name="hibernate.dialect">org.hibernate.dialect</property>-->
+
+        </session-factory>
+    </hibernate-configuration>
+
+        
 
 
