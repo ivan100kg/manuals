@@ -238,6 +238,12 @@
         }
     }
 
-    HQL (Hibernate Query Language) используется для вз-я с БД.
-    List<Employee> employees = session.createQuery("from Employee").getResultList();
+--- HQL (Hibernate Query Language) ---
+    Используется для получения данных из БД.
+    // SELECT * FROM employees;
+    List<Employee> employees = session.createQuery("FROM Employee").getResultList();
     "from Employee" // Employee - название класса привяз к таблице
+    // SELECT * FROM employees WHERE name = 'Inna';
+    "FROM Employee WHERE = 'Inna'"
+    // SELECT * FROM employees WHERE  salary > 100 ORDER BY salary DESC;
+    "FROM Employee WHERE salary > 100 ORDER BY salary DESC"
