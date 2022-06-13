@@ -97,10 +97,10 @@
             e.printStackTrace();
         }
 
---- Hibernate ---
+--- Hibernate basic ---
     Hibernate - это framework, коткоторый осуществляет CRUD между Java obj и DB.
     Hibernate - реализация спецификации JPA плюс свои фишки.
-    Использует для работы с БД JDBC.
+    Использует для работы с БД под капотом JDBC.
         Java App <===> Hibernate <===> JDBC <===> Database
 
     CRUD
@@ -123,6 +123,7 @@
         get()  <-- Hibernate <-- SELECT ...; возвращает объект Java;
     Меньшее кол-во кода по сравнению JDBC.
 
+--- Include Hibernate with Maven ---
     Подключить Hibernate with Maven:
     <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
     <dependency>
@@ -131,13 +132,7 @@
       <version>6.1.0.Final</version>
       <type>pom</type>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-annotations -->
-    <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-annotations</artifactId>
-        <version>3.5.6-Final</version>
-    </dependency>
-
+    
     Подключить JDBC драйвер(например postgres) пом maven pom.xml:
     <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
     <dependency>
@@ -167,7 +162,8 @@
     Конфиг связи между классом и таблицей:
         с пом XML - устаревший способ
         с пом Java аннотаций
-
+    
+--- Entity class ---
     Entity class - Java class, который отображает инфо определенной таблицы в БД.
     Entity class - POJO class, в кот исп-ся опред Hibernate аннотации для связии 
     класса с БД.
@@ -179,17 +175,69 @@
 
     JPA(Java Persistence API) - стандартная спецификация, которая описывает систему
     для уравления сохранением Java объектов в таблицы БД.   
-    javax.persistence.* -       // пакет для всех аннотаций
+    javax.persistence.*         // пакет для всех аннотаций
+    jakarta.persistence.*       // тоже работает(если верхний не пашет)
 
     @Entity                     // класс имеет отображение в БД
     @Table(name="employees")    // имя таблицы БД, если совпадает можно опустить
     public class Employee {
         @Id                     // Primary Key
         @Column(name = "id")    // имя столбца в БД(если такое же можно опустить)
-        private int id;
+        @GeneratedValue(strategy = GenerationType.IDENTITY) // автоинкремент по 
+        private int id;                                     // правилам БД
 
         @Column()
         private String name;
+
+        ...
+
+        public Employee() {     // без параметров
+        }
+
+        public Employee(String name, String surname, String department, int salary) {
+            this.name = name;
+            this.surname = surname;
+            this.department = department;
+            this.salary = salary;
+            // id будет генерироваться автоматически
+        }
+
+        ... 
+        // далее все геттеры, сеттеры на все поля
+    }
+    GenerationType.IDENTITY     // автоинкремент по правилам БД (лучший выбор)
+    GenerationType.SEQUENCE     // полагается на работу Sequence, созданного в БД
+    GenerationType.TABLE        // полагается на знач столбца таблицы БД(плох выбор)
+    GenerationType.AUTO         // автовыбор - лучше не ставить.
+
+--- CRUD with Hibernate ---
+    Первое что необходимо - создать сессию:
+    SessionFactory - фабрика по производству сессий.
+    SessionFactory читает файл hibernate.cfg.xml для создания опред-х сессий.
+    SessionFactory достаточно указать 1 раз - потом переиспользовать.
+    Session/сессия - обертка вокруг JDBC для подключ к базе.
+    Session/сессия - основа для работы с БД.
+    Жизненный цикл сессии небольшой - получаем сессию, делаем операции, закрываем.
+
+    public static void main(String[] args) {
+        SessionFactory factory = new Configuration()
+                .configure("hibernate.cfg.xml")
+                .addAnnotatedClass(Employee.class)
+                .buildSessionFactory();
+        try{
+            Session session = factory.getCurrentSession();
+            Employee emp = new Employee("Ivan", "Bond", "IT", 500); // без id
+            session.beginTransaction();         // BEGIN открыть транзакцию(обяз)
+            
+            session.save(emp);                  // INSERT (вставляем наш класс))
+            session.get(Employee.class, 2);     // SELECT * FROM ... WHERE id=2;
+
+            session.getTransaction().commit();  // COMMIT(обязательно) закр сессию
+        } finally {
+            factory.close() // закрыть фабрику
+        }
     }
 
-
+    HQL (Hibernate Query Language) используется для вз-я с БД.
+    List<Employee> employees = session.createQuery("from Employee").getResultList();
+    "from Employee" // Employee - название класса привяз к таблице

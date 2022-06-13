@@ -1,4 +1,4 @@
-// Java 
+// Java Core 8,11,17
 
 --- Java editions---
     Java Standart Edition(SE)   // стандартная редакция, для станд прил-ий
