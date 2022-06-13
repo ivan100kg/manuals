@@ -99,6 +99,7 @@
 
 --- Hibernate ---
     Hibernate - это framework, коткоторый осуществляет CRUD между Java obj и DB.
+    Hibernate - реализация спецификации JPA плюс свои фишки.
     Использует для работы с БД JDBC.
         Java App <===> Hibernate <===> JDBC <===> Database
 
@@ -137,7 +138,6 @@
         <version>3.5.6-Final</version>
     </dependency>
 
-
     Подключить JDBC драйвер(например postgres) пом maven pom.xml:
     <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
     <dependency>
@@ -167,6 +167,29 @@
     Конфиг связи между классом и таблицей:
         с пом XML - устаревший способ
         с пом Java аннотаций
-    
+
+    Entity class - Java class, который отображает инфо определенной таблицы в БД.
+    Entity class - POJO class, в кот исп-ся опред Hibernate аннотации для связии 
+    класса с БД.
+    POJO (Plain Old Java Object) - класс удовлетв условиям:
+        private поля 
+        getters
+        setters
+        Constructor without args
+
+    JPA(Java Persistence API) - стандартная спецификация, которая описывает систему
+    для уравления сохранением Java объектов в таблицы БД.   
+    javax.persistence.* -       // пакет для всех аннотаций
+
+    @Entity                     // класс имеет отображение в БД
+    @Table(name="employees")    // имя таблицы БД, если совпадает можно опустить
+    public class Employee {
+        @Id                     // Primary Key
+        @Column(name = "id")    // имя столбца в БД(если такое же можно опустить)
+        private int id;
+
+        @Column()
+        private String name;
+    }
 
 
