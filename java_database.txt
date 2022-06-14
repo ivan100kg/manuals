@@ -224,8 +224,9 @@
         try(SessionFactory factory = new Configuration()
                 .configure("hibernate.cfg.xml")
                 .addAnnotatedClass(Employee.class)
-                .buildSessionFactory()) {
-            Session session = factory.getCurrentSession();
+                .buildSessionFactory()); 
+            Session session = factory.getCurrentSession() {
+            
             // открытие и закрытие транзакции - обязательны
             session.beginTransaction();                     // BEGIN transaction
             session.save(emp);                              // INSERT
@@ -255,4 +256,45 @@
     session.createQuery("DELETE Employee WHERE name='Inna'")
             .executeUpdate();   // удалить несколько записей
     
-    
+--- One-to-One ---
+    Uni-directional associations - отношения когда одна сторона не знает о них.
+    Bi-directional associations - обе стороны имеют ссылки друг на друга.
+
+    Uni
+    Employee --> Details(детали не знают о существовании Employee)
+
+    // Поле 'details_id' в табл employees которое является внешним ключем на
+       поле 'id' таблицы details.
+    // Добавим в класс Employee поле - внешний ключ на Detail(табл details)
+    // Естесственно в БД должны быть соотв таблицы и настроенный связи.
+    @OneToOne(cascade = CascadeType.ALL)// тип отношений, cascade -типа как в БД
+                                        // при del/upd в связ таблице тоже удал
+    @JoinColumn(name = "details_id")    // столбец кот осущ связь с др таблицей
+    private Detail empDetail;           // тип - класс кот связан с др таблицей
+
+    public static void main(String[] args) {
+        try(SessionFactory factory = new Configuration()
+                .configure("hibernate.cfg.xml")
+                .addAnnotatedClass(Employee.class)
+                .addAnnotatedClass(Detail.class)    // добавим еще класс
+                .buildSessionFactory()); 
+            Session session = factory.getCurrentSession() {
+            
+            Employee emp = new Employee("Ivan", "Bond", "IT", 750);
+            Detail detail = new Detail("Samara", "+70096", "ivan@gmail.com");
+            emp.setEmpDetail(detail);
+            session.beginTransaction();
+
+            // в итоге транзакции создадутся записи как в employees так и 
+               запись в details автоматом(из за cascade = CascadeType.ALL)
+            session.save(emp);
+            // так можно получить запись из таблицы через др таблицу         
+            session.get(Employee.class, 9).getEmpDetail()
+            // так удалятся данные работника + автоматом детали
+            Employee emp = session.get(Employee.class, 10);
+            session.delete(emp);
+
+            session.getTransaction().commit();
+        }
+    }
+
