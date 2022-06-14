@@ -298,3 +298,42 @@
         }
     }
 
+    Bi
+    Employee <==> Detail, оба класса знают друг о друге.
+    // добавим в Detail поле 
+    @OneToOne(mappedBy = "empDetail",   // указыаем уже готовую связь one-to-one
+              cascade = CascadeType.ALL)// также делаем зависимости 
+    private Employee employee;     
+
+    public static void main(String[] args) {
+        try(SessionFactory factory = new Configuration()
+                .configure("hibernate.cfg.xml")
+                .addAnnotatedClass(Employee.class)
+                .addAnnotatedClass(Detail.class)
+                .buildSessionFactory();
+            Session session = factory.getCurrentSession()) {
+            Employee emp = new Employee("Petr", "Pacman", "Security", 260);
+            Detail detail = new Detail("Samara", "+79172076", "oleg@gmail.com");
+
+            emp.setEmpDetail(detail);
+            detail.setEmployee(emp);
+
+            session.beginTransaction();
+            session.save(detail);   // создается записи в 2-х таблицах
+            session.getTransaction().commit();
+
+            // удаление и получение данных как и в Uni, только можно работать
+               с обоими классами, так как они связаны как Bi.
+        }
+    }
+
+    Если необходимо удалить только записи в одной таблице, но не удалять
+    автоматом запись из другой:
+    @OneToOne(mappedBy = "empDetail",   // меняем CascadeType
+              cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    // далее получаем детали, получаем работкника и обнуляем ссылку на детали
+    detail detail = session.get(Detail.class, 1);
+    detail.getEmployee().setEmpDetail(null);    // обнуляем ссылку на Detail
+    session.delete(detail); 
+
+
