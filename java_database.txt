@@ -220,30 +220,39 @@
     Жизненный цикл сессии небольшой - получаем сессию, делаем операции, закрываем.
 
     public static void main(String[] args) {
-        SessionFactory factory = new Configuration()
+        Employee emp = new Employee("Igor", "Bob", "IT", 450);
+        try(SessionFactory factory = new Configuration()
                 .configure("hibernate.cfg.xml")
                 .addAnnotatedClass(Employee.class)
-                .buildSessionFactory();
-        try{
+                .buildSessionFactory()) {
             Session session = factory.getCurrentSession();
-            Employee emp = new Employee("Ivan", "Bond", "IT", 500); // без id
-            session.beginTransaction();         // BEGIN открыть транзакцию(обяз)
-            
-            session.save(emp);                  // INSERT (вставляем наш класс))
-            session.get(Employee.class, 2);     // SELECT * FROM ... WHERE id=2;
-
-            session.getTransaction().commit();  // COMMIT(обязательно) закр сессию
-        } finally {
-            factory.close() // закрыть фабрику
+            // открытие и закрытие транзакции - обязательны
+            session.beginTransaction();                     // BEGIN transaction
+            session.save(emp);                              // INSERT
+            Employee emp2 = session.get(Employee.class, 3); // SELECT id=3;
+            emp.setSalary(750);                             // UPDATE 1 поле
+            session.delete(emp);                            // DELETE 1 запись
+            session.getTransaction().commit();              // COMMIT
         }
     }
 
---- HQL (Hibernate Query Language) ---
-    Используется для получения данных из БД.
+--- HQL (Hibernate Query Language) CRUD ---
+    Используется для вз-ия с БД.
     // SELECT * FROM employees;
-    List<Employee> employees = session.createQuery("FROM Employee").getResultList();
+    List<Employee> employees = session.createQuery("FROM Employee")
+            .getResultList();   // получить список объектов Employee из БД
     "from Employee" // Employee - название класса привяз к таблице
     // SELECT * FROM employees WHERE name = 'Inna';
     "FROM Employee WHERE = 'Inna'"
     // SELECT * FROM employees WHERE  salary > 100 ORDER BY salary DESC;
     "FROM Employee WHERE salary > 100 ORDER BY salary DESC"
+
+    // UPDATE employees SET SET salary=salary+10 WHERE name LIKE '%nn%';
+    session.createQuery("UPDATE Employee SET salary=100 WHERE name LIKE '%nn%'")
+            .executeUpdate();   // изменить несколько полей
+
+    // DELETE employees WHERE name='Inna';
+    session.createQuery("DELETE Employee WHERE name='Inna'")
+            .executeUpdate();   // удалить несколько записей
+    
+    
