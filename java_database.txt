@@ -260,6 +260,14 @@
     Uni-directional associations - отношения когда одна сторона не знает о них.
     Bi-directional associations - обе стороны имеют ссылки друг на друга.
 
+    public enum CascadeType {   // виды каскадов
+        ALL,
+        PERSIST,
+        MERGE,
+        REMOVE,
+        REFRESH,
+        DETACH
+
     Uni
     Employee --> Details(детали не знают о существовании Employee)
 
@@ -329,11 +337,81 @@
 
     Если необходимо удалить только записи в одной таблице, но не удалять
     автоматом запись из другой:
-    @OneToOne(mappedBy = "empDetail",   // меняем CascadeType
-              cascade = {CascadeType.PERSIST, CascadeType.REFRESH})
+    @OneToOne(mappedBy = "empDetail",   // меняем CascadeType с ALL на неск-ко
+              cascade = {CascadeType.PERSIST, CascadeType.REFRESH}) 
     // далее получаем детали, получаем работкника и обнуляем ссылку на детали
     detail detail = session.get(Detail.class, 1);
     detail.getEmployee().setEmpDetail(null);    // обнуляем ссылку на Detail
     session.delete(detail); 
 
+--- One-to-Many ---
+    Bi-directional
+    Employee <==> Department
+    Работников много к 1 департаменту
+    // Employee, внешний ключ на 1 Department(departments table)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "department_id")
+    private Department department;
+
+    // Department, может иметь список работников
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "department")
+    private List<Employee> employees;
+    // плюс создадим метод для добавления работника в департамент
+    // и установка у этого работника выбранного департамента
+    public void addEmployeeToDepartment(Employee employee) {
+        if (employees == null) {
+            employees = new ArrayList<>();
+        }
+        getEmployees().add(employee);
+        employee.setDepartment(this);
+    }
+
+    public static void main(String[] args) {
+        try(SessionFactory factory = new Configuration()
+                .configure("hibernate.cfg.xml")
+                .addAnnotatedClass(Employee.class)
+                .addAnnotatedClass(Department.class)
+                .buildSessionFactory();
+            Session session = factory.getCurrentSession()) {
+            session.beginTransaction();
+            // создадим департамент
+            Department department1 = new Department("IT",1500, 300);
+            // созд работников
+            Employee employee1 = new Employee("Ivan", "Bond", 1300);
+            Employee employee2 = new Employee("Efim", "Bird", 980);
+            // добавим в департамент
+            department1.addEmployeeToDepartment(employee1);
+            department1.addEmployeeToDepartment(employee2);
+            
+            // сохраняем департамент и он и работники авто добавятся в БД
+            session.save(department1);
+
+            // также можно получить связ записи одной таблицы через другую
+            // причем в обе стороны так как Bi
+            Department department = session.get(Department.class, 1);
+            System.out.println(department);
+            System.out.println(department.getEmployees());
+            Employee employee = session.get(Employee.class, 12);
+            System.out.println(employee.getDepartment());
+
+            // удалятся запись работника, департамента и всех работников деп
+            session.delete(employee);
+            // перенастроим каскады(уберем REMOVE)
+            @ManyToOne(cascade = {CascadeType.PERSIST,
+            CascadeType.DETACH,
+            CascadeType.REFRESH,
+            CascadeType.MERGE})
+            @JoinColumn(name = "department_id")
+            private Department department;
+
+            @OneToMany(cascade = {CascadeType.PERSIST,
+            CascadeType.DETACH,
+            CascadeType.REFRESH,
+            CascadeType.MERGE}, mappedBy = "department")
+            private List<Employee> employees;
+
+
+            session.getTransaction().commit();
+        }
+    }
 
