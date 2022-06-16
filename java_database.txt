@@ -346,7 +346,9 @@
 
 --- One-to-Many ---
     Bi-directional
-    Employee <==> Department
+    Employee1 <=\ 
+    Employee2 <==> Department
+    Employee3 <=/ 
     Работников много к 1 департаменту
     Двусторонняя связь, можно получать департамент через работников, так и
     работников через департамент, при удалении/изменении можно настроить
@@ -420,7 +422,9 @@
     }
 
     Uni-directional
-    Employee <-- Department
+    Employee1 <-\ 
+    Employee2 <-- Department
+    Employee3 <-/
     Работников много к 1 департаменту
     Через работников нельзя получить данные департамента, также при удалениии
     работника - в табл departments ничего не произойдет. 
@@ -437,6 +441,93 @@
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "department_id") // ссылка на поле в таблице employees
     private List<Employee> employees;
+
+--- Many-to-One ---
+    // все в примере One-to-Many выше
+    // в ManyToOne располагается внешний ключ на связ таблицу
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "department_id")
+    private Department department;
+
+--- Many-to-Many ---
+    Кружок1 \  / Ребенок1
+    Кружок2 <==> Ребенок2
+    Кружок3 /  \ Ребенок3
+
+    Join Table - 3-я таблица, отображающая связь между строками 2-х таблиц.
+    Столбцы Join Table - это Foreign Key, которые ссылаются на Primary Key
+    связываемых таблиц.
+
+    Создадим 3 таблицы в БД: children, section, child_section
+
+    // class Child, поле - внешний ключ, список секций
+    @ManyToMany(cascade = {CascadeType.PERSIST,
+            CascadeType.DETACH,
+            CascadeType.REFRESH,
+            CascadeType.MERGE})
+    @JoinTable(name = "child_section",  // имя 3-й связной таблицы/Join Table
+            joinColumns = @JoinColumn(name = "child_id"),   // sourse PK 
+            inverseJoinColumns = @JoinColumn(name = "section_id") // target PK
+    )
+    private List<Section> sections;
+
+    // class Section, список детей, все то же, но поменять колонки местами
+    @ManyToMany(cascade = {CascadeType.PERSIST,
+            CascadeType.DETACH,
+            CascadeType.REFRESH,
+            CascadeType.MERGE})
+    @JoinTable(name = "child_section",
+            joinColumns = @JoinColumn(name = "section_id"),         // <=+
+            inverseJoinColumns = @JoinColumn(name = "child_id")     // <=+
+    )
+    private List<Child> children;
+
+    // Example
+    public static void main(String[] args) {
+        try (
+                SessionFactory factory = new Configuration()
+                        .configure("hibernate.cfg.xml")
+                        .addAnnotatedClass(Child.class)
+                        .addAnnotatedClass(Section.class)
+                        .buildSessionFactory();
+                Session session = factory.getCurrentSession()) {
+            session.beginTransaction();
+
+            // добавление детей и секций по секции
+            Section section = new Section("Football");
+            Child child1 = new Child("Ivan", 6);
+            Child child2 = new Child("Egor", 9);
+            Child child3 = new Child("Olga", 7);
+            section.addChildToSection(child1);
+            section.addChildToSection(child2);
+            section.addChildToSection(child3);
+            session.persist(section);   // если CascadeType не вкл REMOVE
+                                           persist - каскадное сохранение
+            // добавление детей и секций по ребенку
+            Section section1 = new Section("Math");
+            Section section2 = new Section("Chess");
+            Section section3 = new Section("Dance");
+            Child child = new Child("Inna", 5);
+            child.addSectionToChild(section1);
+            child.addSectionToChild(section2);
+            child.addSectionToChild(section3);
+            session.persist(child);     // если CascadeType не вкл REMOVE
+                                           persist - каскадное сохранение
+            // получение детей/секций через секцию/ребенка
+            Section section = session.get(Section.class, 1);
+            section.getChildren().forEach(System.out::println);
+            Child child = session.get(Child.class, 4);
+            child.getSections().forEach(System.out::println);
+
+            // удалить ребенка и связ с ним записи
+            Child child = session.get(Child.class, 4);
+            child.getSections().forEach(System.out::println);
+            session.remove(child);      // каскадное удаление
+
+            session.getTransaction().commit();
+            System.out.println("Done!");
+        }
+    }
 
 --- Eager/Lazy ---
     Типы выборки данных:
@@ -461,4 +552,6 @@
             mappedBy = "department",
             fetch = FetchType.EAGER)    // так менять тип выборки
     private List<Employee> employees;
+
+
 
