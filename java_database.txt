@@ -348,6 +348,10 @@
     Bi-directional
     Employee <==> Department
     Работников много к 1 департаменту
+    Двусторонняя связь, можно получать департамент через работников, так и
+    работников через департамент, при удалении/изменении можно настроить
+    по разному - как угодно.
+
     // Employee, внешний ключ на 1 Department(departments table)
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "department_id")
@@ -414,4 +418,21 @@
             session.getTransaction().commit();
         }
     }
+
+    Uni-directional
+    Employee <-- Department
+    Работников много к 1 департаменту
+    Через работников нельзя получить данные департамента, также при удалениии
+    работника - в табл departments ничего не произойдет. 
+    Через департамент можно получить работников, при удалении департамента
+    каскадом удаляются все его работники.
+
+    // Employee - убираем поле(внешний ключ на departsments) department
+       в самой таблице ничего не переделываем - department_id остается
+
+    // Department - добавляем @JoinColumn с внешн ключом с таблицы из которой
+    // ссылаются на эту таблицу(из employees), т.е. "department_id" 
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "department_id") // ссылка на поле в таблице employees
+    private List<Employee> employees;
 
