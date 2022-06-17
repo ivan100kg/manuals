@@ -167,6 +167,7 @@
     Entity class - POJO class, в кот исп-ся опред Hibernate аннотации для связии 
     класса с БД.
     POJO (Plain Old Java Object) - класс должен удовлетв след условиям:
+        @Id поле                    *                        
         private поля                *
         all getters/setters         *
         Constructor() without args  *
@@ -217,6 +218,8 @@
     После связи можно апдейтить прямо сам класс с пом сеттеров obj.setNum="10"
     Удалять объект из БД - remove(obj), delete(obj)
     Отвязать можно так detach(obj)
+    Обновить БД, если кто-то из вне изменил БД - refresh(obj)
+    Откатить удаление до закр транзакции - merge(obj)
 
 --- CRUD with Hibernate ---
     Первое что необходимо - создать сессию:
@@ -560,6 +563,3 @@
             mappedBy = "department",
             fetch = FetchType.EAGER)    // так менять тип выборки
     private List<Employee> employees;
-
-
-
