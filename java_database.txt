@@ -130,7 +130,6 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>6.1.0.Final</version>
-      <type>pom</type>
     </dependency>
     
     Подключить JDBC драйвер(например postgres) пом maven pom.xml:
@@ -167,11 +166,12 @@
     Entity class - Java class, который отображает инфо определенной таблицы в БД.
     Entity class - POJO class, в кот исп-ся опред Hibernate аннотации для связии 
     класса с БД.
-    POJO (Plain Old Java Object) - класс удовлетв условиям:
-        private поля 
-        getters
-        setters
-        Constructor without args
+    POJO (Plain Old Java Object) - класс должен удовлетв след условиям:
+        private поля                *
+        all getters/setters         *
+        Constructor() without args  *
+        Constructor with args (exclude PK 'id') - для создания записей
+        toString                                - для удобства
 
     JPA(Java Persistence API) - стандартная спецификация, которая описывает систему
     для уравления сохранением Java объектов в таблицы БД.   
@@ -210,6 +210,14 @@
     GenerationType.TABLE        // полагается на знач столбца таблицы БД(плох выбор)
     GenerationType.AUTO         // автовыбор - лучше не ставить.
 
+    Состояния POJO классов:
+    Все взаимодействия делаются с пом Session, после откр транзакции.
+    Чтобы связать объект с БД нужно его сохранить - save(obj), persist(obj)
+    Чтобы вытащить объект из БД  - get(obj.getClass(), id)
+    После связи можно апдейтить прямо сам класс с пом сеттеров obj.setNum="10"
+    Удалять объект из БД - remove(obj), delete(obj)
+    Отвязать можно так detach(obj)
+
 --- CRUD with Hibernate ---
     Первое что необходимо - создать сессию:
     SessionFactory - фабрика по производству сессий.
@@ -217,15 +225,15 @@
     SessionFactory достаточно указать 1 раз - потом переиспользовать.
     Session/сессия - обертка вокруг JDBC для подключ к базе.
     Session/сессия - основа для работы с БД.
-    Жизненный цикл сессии небольшой - получаем сессию, делаем операции, закрываем.
+    Жизненный цикл сессии небольшой - получаем сессию, делаем операции, закрыв.
 
     public static void main(String[] args) {
         Employee emp = new Employee("Igor", "Bob", "IT", 450);
         try(SessionFactory factory = new Configuration()
                 .configure("hibernate.cfg.xml")
-                .addAnnotatedClass(Employee.class)
-                .buildSessionFactory()); 
-            Session session = factory.getCurrentSession() {
+                .addAnnotatedClass(Employee.class)  // 1 или неск Entity
+                .buildSessionFactory(); 
+            Session session = factory.getCurrentSession()) {
             
             // открытие и закрытие транзакции - обязательны
             session.beginTransaction();                     // BEGIN transaction
