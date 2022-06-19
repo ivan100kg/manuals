@@ -262,6 +262,10 @@
     Session/сессия - основа для работы с БД.
     Жизненный цикл сессии небольшой - получаем сессию, делаем операции, закрыв.
 
+    Добавить Entity в SessionFactory можно либо через конфиг в коде как
+    ниже, либо можно добавить классы в hibernate.cfg.xml в <session-factory>
+    <mapping class="my_package.MyEntity"/>
+
     public static void main(String[] args) {
         Employee emp = new Employee("Igor", "Bob", "IT", 450);
         try(SessionFactory factory = new Configuration()
