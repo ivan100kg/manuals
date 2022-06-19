@@ -253,6 +253,11 @@
 
     @UpdateTimestamp                    // обновляемая отметка времени
 
+    Валидаторы, можно создавать свои - @Constraint
+    @Email
+    @NotNull
+    @Size(min=1, max=9)
+
 --- CRUD with Hibernate ---
     Первое что необходимо - создать сессию:
     SessionFactory - фабрика по производству сессий.
