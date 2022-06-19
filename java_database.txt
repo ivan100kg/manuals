@@ -266,6 +266,12 @@
     // DELETE employees WHERE name='Inna';
     session.createQuery("DELETE Employee WHERE name='Inna'")
             .executeUpdate();   // удалить несколько записей
+
+    // подставить свои значения
+    String name = "Inna";
+    session.createQuery("DELETE Employee WHERE name = :name")       <-+
+            .setParameter("name", name) // подставим свое знач name --+
+            .executeUpdate();           // удалить несколько записей
     
 --- One-to-One ---
     Uni-directional associations - отношения когда одна сторона не знает о них.
