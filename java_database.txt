@@ -221,6 +221,38 @@
     Обновить БД, если кто-то из вне изменил БД - refresh(obj)
     Откатить удаление до закр транзакции - merge(obj)
 
+--- Entity Annotations ---
+    Индексы
+    @Table (name = "demo_annotated" , indexes = {
+    @Index (name = "name_idx" , columnList = "name" ),          // индекс
+    @Index (name = "id_name_idx" , columnList = "id, name" ),   // 2 столбца
+    @Index (name = "unique_name_idx" , columnList = "name" , unique = true )
+    })
+
+    @Column 
+    Отвечает за настройки столбца в таблице. С помощью параметра 
+    name указывается имя столбца в которое будет записано значение поля. 
+    Для "ручного" формирования запроса с помощью которого будет построен 
+    столбец можно воспользоваться параметром columnDefinition.
+    Здесь же можно указать ограничение NOT NULL (n ullable = false). 
+    Чтобы запретить изменение значение какого-либо столбца updatable = false.
+    @Column (name = "manual_def_str" , columnDefinition = "VARCHAR(50) NOT NULL
+    UNIQUE CHECK (NOT substring(lower(manual_def_str), 0, 5) = 'admin')" )
+    String manualDefinedString ;
+    @Column (name = "short_str" , nullable = false , length = 10 ) // varchar(10)
+    String shortString ;
+    @Column (name = "created_at" , updatable = false )
+    LocalDateTime createdAt ;
+
+    @Formula("SELECT AVG(cost)...")     // поле кот авто считается при get запис
+
+    @Temporal(TemporalType.TIMESTAMP)   // поле для хан времени(DATE, TIME, ...)
+    @CreationTimestamp                  // созд при созд записи
+    @Column(name="created",             // не обновляемое
+            updatable=false)    
+
+    @UpdateTimestamp                    // обновляемая отметка времени
+
 --- CRUD with Hibernate ---
     Первое что необходимо - создать сессию:
     SessionFactory - фабрика по производству сессий.
