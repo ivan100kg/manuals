@@ -7,6 +7,24 @@
     Последняя версия: Spring 5
     site: www.spring.io
 
+    Maven pom.xml:
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>5.3.21</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>5.3.21</version>
+    </dependency>
+
+    ApplicationContext  - контейнер/хранилище объектов(бинов).
+    Bean                - сущность/объект Java класса, создаваемая, хранимая 
+                          в контейнере, которую можно получить из него.
+
 --- Inversion of Control ---
     IoC - аутсорсинг создания и управления объектами. Т.е. передача нами
     прав на создание и управление объектами нами to Spring.
