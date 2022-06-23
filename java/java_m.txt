@@ -1,0 +1,3950 @@
+// Java Core 8,11,17
+
+--- Java editions---
+    Java Standart Edition(SE)   // стандартная редакция, для станд прил-ий
+    Java Enterprise Edition(EE) // редакция для прил масштаба предприятия
+    Java Micro Edition(ME)      // редакция для прил микрокомп-в (напр смартфон)
+
+--- Java versions (LTS) ---
+    version     release     support until 
+    --------------------------------
+    Java SE 8   Mar 2014    Dec 2030
+    Java SE 11 	Sep 2018    Sep 2026
+    Java SE 17  Sep 2021    Sep 2029
+    Java SE 21  Sep 2023    Sep 2031
+
+--- How it works ---
+    "Write Once, Run Anywhere"
+    human.java  // сохраненный файл с исх кодом с расширением .java
+      |
+    javac       // компилятор javaс
+      |
+    human.class // на выходе byte code в файле .class
+      |
+    JVM         // виртуальная машина Java(интерпретатор) - вып машинный код
+    Запускается независимо от ОС.
+
+--- Jshell ---
+    The Java Shell tool (JShell) is an interactive tool for learning 
+    the Java programming language and prototyping Java code.
+    jshell      // запуск Java9+
+    exit        // выход, Ctrl+D
+
+--- Comments ---
+    // comment
+    /*
+        multiline comment
+    */
+    /**
+       JavaDoc comments
+    */
+
+--- Literals ---
+    10          // int
+    100L        // long
+    3.14f       // float
+    2.72        // double
+    'a'         // char
+    "hi"        // String
+    NaN         // not a Number 0.0/0
+    Infinity    // 10.0/0
+    -Infinity   // -10.0/0
+
+--- Primitive data types ---
+    types       size        range
+    ------------------------------------------------------------------
+    byte        8 bit       [-128;127] 
+    short       16 bit      [-32768;32767]
+    int         32 bit      [-2147483648;2147483647]
+    long        64 bit      [-9223372036854775808;9223372036854775807]
+    float       32 bit      [3.4e-38;3.4e+38]
+    double      64 bit      [1.7e-308;1.7e+308]
+    char        16 bit      [0;65535]
+    bool        strictly    {true, false}
+                undefined
+
+--- Reference data types ---
+    Ссылочных типов данных бесконечное множество.
+    Test tObj = new Test(); // объект класса, создаются с new
+    Объекты хранятся в куче(heap).
+    
+--- Default values ---
+    byte/short/int/long     // 0
+    float/double            // 0.0
+    char                    // 0 or '\u0000'
+    boolean                 // false
+    reference               // null
+
+--- Variables ---
+    long l1 = 10000000000L; // на конце ставим L/l для long, иначе получ-cя int
+    float f1 = 47.23F;      // для float на конце ставим F/f, иначе double.
+    char c3 = 300;          // помимо символов - номер символа Юникода
+    char c4 = '\u0500';     // 16-рич система
+    int a7 = 1_000_000;     // использование для удобства _
+
+    int a, b=10,c;          // обьявить 3 перем типа int и 1 иниц-ть.
+
+--- Системы исчисления ---
+    int a = 0b1000;         // двоичная система - число 8
+    int a = 074;            // восьмеричная си
+    int a = 0x3C;           // 16-ричная
+
+--- Operators ---
+    + - * / % ++ --         // arithmetic
+    = += -= *= /= %=        // assignment
+    > < >= <= == !=         // relational(compare)
+    && || ! & |             // locical
+                               & и | - проверяет все части условия
+                               && || - не проверяют вторую чатсть когда и так ясно
+    & | ^                   // bit ^ - true, если одна пременная true, остальные false
+
+--- Приоритеты операций ---
+    1   ++ -- !
+    2   * / %
+    3   + - 
+    4   < <= > >=
+    5   == !=
+    6   && ||
+    7   = += -= *= /= %=
+
+--- Structure of files .java ---
+    package mypackage;      // пакет
+    import java.util.*;     // импорт
+    public class Lesson3 {} // наш класс(fields, methods, constructors)
+                               public название_класса == название файла
+                               только 1 public class может быть в файле или
+                               не быть вообще, тогда имя файла должно == хоть
+                               какому-ниб классу в файле
+    class Test {            // еще 1 класс в файле
+        int id=0;           // аттрибуты класса, изменить знач по умолчанию
+        String name;        // объекты этого класса можно создавать в других
+        double balance;        классах, в функции main
+    {
+
+    public static void main(String[] args)  // точка входа в программу
+                                               должна присутствовать для запуска
+                                               программы. Может находится в люб
+                                               классе.
+        
+--- Methods ---
+    public static void main(String[] args) {// code;}
+    public  // access modifier
+    static  // non-access modifier(s)
+    void    // retun type
+    main    // name
+    ()      // params
+    {}      // body
+
+--- Constructor ---
+    Car car1 = new Car();   // Car() - constructor, the same name as class
+                               car1 - Car object
+    Car(){}                 // default constructor
+    Car(vars){code;}        // custom constructor(перегруженный)
+                            // конструктор ничего не возвращает
+
+--- Overloading ---
+    Методы с одинак названиями, но разные параметры(типы/количество/порядок)
+    return type может быть одинаковым или различным
+    access modifier может быть одинаковым или различным(public/private/prot.)
+    void show(int i1){
+        System.out.println(i1);
+    }
+    void show(boolean b1){
+        System.out.println(b1);
+    }
+
+--- Constructor overloading ---
+    // все то же самое что и для методов
+    Employee(String surname, int age){
+        this(surname);  // делегирование -+ чтобы не писать больше кода
+        this.age = age; //                | всегда на первой строке
+    }                   //                |
+                        //                |
+    Employee(String surname){   // <------+
+        this.surname = surname;
+    }
+    // более лучший способ, все конструкторы вызывают главный конструктор
+    Employee(String surname, int age){  // главный конструктор с большим кол
+        this.age = age;                    параметров, в этом конструкторе
+        this.surname = surname;            объявляем все поля
+    }              
+    Employee(String surname){
+        this(surname, 0);   // вызов главного конструктора, передаем на неиз-
+    }                          вестные переменные дефолтные значения
+
+--- Package/Пакет ---
+    Пакет/Папка/Директория - место где хранятся классы .java(файлы)
+
+    Основные цели пакета
+    Защита доступа:
+    В пакетах можно ограничить/открыть доступ к своим элементам из других
+    пакетов с пом модификаторов доступа.
+
+    Управление набором возможных имен(namespace management):
+    Разделение пакетов по пространству имен. Допустим классы с одинаковыми
+    названиями не могут быть в одном пакете, зато в разных пакетах это норм.
+    Пакеты могут вкладываться в др пакеты.
+
+    pack1       pack2
+    class A     class C
+    class B
+    К классам в др пакетах обращаться так: пакет.класс, доступ должен быть
+    открыт(public).
+    К вложенным пакетам pack1.pack2.pack3...packn.MyClacc
+    Всегда пишем полный путь, относительный не катит!
+    
+    pakage pack1; 
+    public class A {
+    public static void main(String[] args) {
+        B obj1 = new B();    // обращение к классу который в том же пакете
+        pack2.C obj2 = new pack2.C();   // в другом пакете
+    
+    Хранение связанных классов в одном месте:
+    для удобства раскидываем связ классы по пакетам
+
+    Свои пакеты
+    Свои пакеты принято называть так:
+        -маленькие буквы
+        -обратное доменное имя автора/компании
+        -не использовать java. javax.
+    Example:
+        com.github.ivan100kg.project
+        io.github.ivan100kg.project     // https://ivan100kg.github.io/ git pages
+
+--- Access modifier/Контроллер доступа ---
+    От строгого:
+    private -> default -> protected -> public
+    
+    Видимость: 
+                класс файл пакет др.пакет наследники
+    public      +     +    +     +        +
+    private     +     -    -     -        -
+    default     +     +    +     -        -
+    protected   +     +    +     -        +
+    
+    protected видна также в классах-наследниках в любых пакетах.
+    default class не виден в других пакетахб собственно и все его элементы.
+    default constructor of class has the same access modifier as class.
+
+    Для каких структур какие есть модификаторы:
+                public private default protected
+    class       +      -       +       -
+    constructor +      +       +       +
+    field       +      +       +       +
+    method      +      +       +       +
+
+--- Non-access modifiers ---
+    final   // может относится к переменной/методу/классу
+               vars:
+               readonly(const) не изменяется, должна быть объявлена сразу
+               или в каждом конструкторе.
+               reference vars:
+               final Car car = new Car(); - адрес не может быть изменен
+    static  // может относится к переменной/методу
+               принадл классу, можно вызвать через класс Class.var или
+               через объект obj.var. В статик методах нельзя использовать
+               не статические переменные. Но в не статик методах - можно 
+               использовать статик переменные. Если final static - 
+               определяется только сразу.
+    abstract// 
+
+--- Scope of variables ---
+    local       // локальные, видны только в одном блоке, после объявления
+    param       // параметр функции виден во всем теле ф-ии
+    instance    // переменная объекта, видна в классе и его не статик методах
+    static      // видна везде в классе + в статик методах.
+
+--- this ---
+    this()      - вызов конструктора
+    this.some   - обращение через экземпляр к его полям/методам
+    указывает на текущий экземпляр(объект) класса, используется в классе
+    в non-static методах/конструкторах для обращения к переменным и методам.
+
+--- Идентификаторы ---
+    Начинается с буквы _ $
+    int __$__;
+    int $kjbcks;
+    int _ljncds;
+
+--- Зарезервированные слова ---
+    abstract assert boolean break byte case catch class const continue
+    default do double else enum extends false final float for goto if
+    implements import instanceof int interface long native new null package
+    private protected public return short static strictfp super switch 
+    synchronized this throw throws transient true try void volatile while
+
+--- Соглашения ---
+    классы      - с большой буквы, сущ, Car
+    переменные  - с маленькой буквы, сущ, color
+    методы      - camel case глагол, что делать, goAhead
+    final       - константы, все большие буквы, WHEIGHT
+
+--- garbage collector ---
+    объекты существуют в памяти пока на них есть ссылки
+    obj = null; // оборвать связь вручную
+    После того как память осталась без ссылки ее убирает Garbage Collector
+    Управление GC находится под управлением JVM.
+    Можно знать какие объекты могут быть удалены, но когда это будет сделано
+    gc решает самостоятельно.
+    System.gc() // совет коллектору удалить obj
+    finalize()  // вызывается колектором для удаления obj
+
+--- import ---
+    импорт по полн имени        с исп import    comment
+    ----------------------------------------------------------------------
+    pack p1;                    pack p2;        current package
+                                import p1.A;    import
+    class A{                    class B{        class definition
+    p2.B b = new p2.B();        A a = new A();  создание экз из друг пак
+    }                           } 
+
+    import examples:
+    import Lessons.Lesson1.Car; // импорт класса кар из пакета Lesson1,
+                                   вложенного в пакет Lessons
+    import Lessons.Lesson1.*;   // импорт всех public классов из пакета
+                                   при конфликтах имен - нужно указать 
+                                   полный путь к классу пакет.класс.
+                                   Не импортирует классы из влож пакетов.
+    import java.lang.*;         // дефолтный пакет, импортируемый по умолч.
+                                   включает имена System, String...
+    import static pak.Klas.var; // импорт статик переменной/метода отдельно
+    import static pak.Klas.*;   // all статик перем/методы отдельно
+
+    Example
+        // 3 способа задать String
+        java.lang.String s1 = new java.lang.String("a");    
+        String s2 = new String("b");
+        String s3 = "c";
+
+--- Arguments/аргументы методов ---
+    Примитивные типы данных - передаются по значению(копируются).
+    Ссылочные типы данных - передаются копии ссылок на объекты.
+
+--- if-else ---
+    // внутри if (boolean)
+    if (true && !false){
+        code;
+    }
+    else if(!false || true){
+        code;
+    }
+    else {
+        code;
+    }
+
+--- Сomparing/Сравнения ---
+    int a = 5;
+    double b = 5.0;
+    a == b          // true, у примитивных сравнивается значение
+    obj1 == obj2    // false у ссылочных сравниваются адреса
+    obj1.equals(o2) // так правильно
+
+--- equals ---
+    все классы по умолч имеют метод equals()
+    переопределяется самостоятельно в классах для сравнения объектов
+    String s1 = "Hello";
+    String s2 = "Hello";
+    s1 == s2;       // так не стоит, сравнение адресов
+    s1.equals(s2);  // правильное сравнение объектов
+
+--- Ternary operator ---
+    (boolean expression) ? (if true) : (if false);
+
+    int a = 4;
+    int b = 5;
+    System.out.println(a < 4 ? "true" : "false");   // sout -> false
+    int c = a < 4 ? a++ : a--;                      // c=4, a=3
+
+    nested:
+    exp1 ? exp2 ? 10 : 5 : 0
+        exp1 true  -> выполняем то что между крайне левым '?'
+                      и крайне правым ':' -> (exp2 ? 10 : 5)
+             false -> выполняем то что справа от крайнего : -> 0
+    
+--- switch ---
+    switch (expression) {   // типы используемые в выражении
+        case val1:             int byte short char String Enum
+            code; 
+            break;
+        case val2: 
+            code;   
+            break;
+        case val2: 
+            code; 
+            break;
+        case default:   // выполняется в посл очередь, может быть вставлен выше
+            code; 
+    }
+
+    Для Enum, если все варианты перечислены - default не нужен.
+
+--- enchanced switch ---
+    int a = 10;
+    switch (a) {
+        case 2, 5 -> System.out.println("2 5");
+        case 3 -> System.out.println(3);
+        case 10 -> System.out.println(10);
+        default -> System.out.println("unknown");
+    }
+
+--- loops ---
+    Unreachable statement
+    действует на циклы
+    недостижимое состояние - условие всегда должно быть достижимым по 
+    правилам Java
+    while (false)   // недостижимое состояние - компилятор не пропустит
+
+    Loop statements
+    break;      // выход из цикла/тела/блока
+    continue;   // след итерация
+
+--- for ---
+    for(initialization;condition;update){   // (;;) могут не заполняться
+        code;
+        break;      // выход из цикла
+        continue;   // след итерация
+    }
+    initialization  // (int i = 10, j = 20, ... , n = 100;) либо пустое
+    condition       // (;i<0 && j>8 || !false;) либо пустое
+    update          // (;j++, i++, square(i,j),...) либо пустое
+
+    Nested loops:
+    for (int hour=0; hour<24;hour++){
+         for(int min=0; min<60;min++){
+              for(int sec=0;sec<60;sec++){
+                 System.out.println(hour+":"+min+":"+sec);
+              }
+         }
+    }
+
+    Labels of loops:
+    Циклы можно именовать, чтобы управлять внешними из внутренних циклов
+    OUTER: for(int min=0; min<60;min++){
+        INNER: for(int sec=0;sec<60;sec++){
+            System.out.println(hour+":"+min+":"+sec);
+            if (sec == 20) {
+                break OUTER;    // выход из цикла по имени
+            }
+        }
+    }
+
+--- while/do while ---
+    while (condition){  // condition - boolean
+        code;
+    }
+    
+    do while заходит в цикл минимум 1 раз
+    do{
+        code;
+    } while(condition);
+
+    Labels for loops
+    the same as "for" loop
+    OUTER:while(true){}
+
+--- String ---
+    Package:
+    java.lang.*
+
+    Creation:
+    String s1 = new String("Hi");   // всегда нов объект с unique address
+    String s2 = "Hi";               // помещ в String pool(если его еще не было)
+    System.out.print("Hi");         // также берется или помещается в StringPool
+                                       если уже есть такой объект - то получим
+                                       еще 1 ссылку на него.
+
+    String pool:
+    Место в памяти в котором содерж разные объекты класса String.
+    Новый объект класса String создается в String Pool только,
+    если там еще нет подобного объекта.
+
+    Difference:
+    Объекты созданные с пом new всегда будут с разными адресами
+    Объекты созданные по другому - могут ссылаться на один и тот же адрес.
+
+    Сomparing:
+    == !=   // сравнивает адреса у объектов
+    equals  // сравнивает именно содержимое строки
+
+    Char massive:
+    private final char {'h','e','l','l','o'};   // так String хранит значение
+
+    String is immutable:
+    String хранит свое значение в private final char массиве, с фиксированной 
+    длиной. Ни один из методов класса String не изменяет индивидуальные
+    элем массива char.
+
+    String methods:
+    lenght()        // -> int, symbols' count
+    charAt(i)       // -> char, what char at index 'i'
+    indexOf(c)      // -> int, position of char 'c'
+    indexOf(s)      // -> int, position of String 's'
+    indexOf(c,i)    // -> int, position of char 'c' after index 'i'
+    indexOf(s,i)    // -> int, position of String 's' after index 'i'
+                       -> -1, if not match
+    startsWith(s)   // -> boolean, start with String 's' or no
+    startsWith(s,i) // -> boolean, start with String 's' from ind 'i' or no
+    endsWith(s)     // -> boolean, end with String 's' or no
+    subString(i)    // -> String, what string from index 'i' to end
+    subString(i,j)  // -> String, slice i:j from i(included) to j(not included)
+    trim()          // -> String, delete all whitespaces from end and beginning
+                          result - new String.
+    replace(c1,c2)  // -> char, replace old char 'c1' to new 'c2'
+    replace(s1,s2)  // -> String, replace old String 's1' to new 's2'
+    concat(s)       // -> String, concatenation, the same as  s1 + s2
+    toLowerCase()   // -> String, all letters convert to lower case
+    toUpperCase()   // -> String, all letters convert to Upper case
+    contains(s)     // -> boolean, does our String contains 's'?
+    equalsIgnoreCase// -> boolean?, Сomparing with ignore case
+    matches(regex)  // -> boolean, принимает рег выр, точное совпадение
+    split(regex)    // -> String[], принимает рег выр, делит по разделителю
+    replaceAll(r,a) // -> String, замена всех r(regex) на a(String)
+    
+    Кодировка/Локаль
+    "s".toLowerCase(Locale.ROOT);           // во избеж багов лучшая локаль
+    "s".getBytes(StandardCharsets.UTF_8);   // байты Юникода
+
+    Конкатенация, неявное приведение типов
+    i1, i2  - int
+    s       - String
+    String + int = String
+    System.out.println(i1 + i2 + s);        // 11ok
+    System.out.println("" + i1 + i2 + s);   // 56ok
+    Если первым операндом стоит стринг, то все типы дальнейшие типы приводятся
+    к стрингу.
+    даже так:
+        System.out.println("" + null + false);  // nullfalse
+        String s1 = null;
+        System.out.println(s1 += "ok");         // nullok
+
+    Chaining methods:
+    много методов идут один за одним, выполняются слева направо
+    s1.concat(s2).trim().replace("Yah", "Wow").substring(6, 10);
+
+--- StringBuilder ---
+    В отличие от String может менять свое значение, нет необходимости создавать
+    много объектов, меньше работы для garbage collector.
+
+    package:
+    java.lang
+
+    Creation:
+    capacity - вместилище для символов объекта StringBuilder всегда может
+    увеличиваться, по дефолту 16 символов. 
+    Конструкторы:
+    StringBuilder sb1 = new StringBuilder();            // пустой(16 симв по ум)
+    StringBuilder sb2 = new StringBuilder("Good day");  // кол-во символов: 8(
+                                                           Good day) + 16 = 24
+    StringBuilder sb3 = new StringBuilder(50);          // вместимость 50 симв
+    StringBuilder sb4 = new StringBuilder(sb2);         // из другого объекта
+                                                           копия, др адрес
+    StringBuilder sb5 = sb2;                            // тот же obj
+    String s = new String(sb1);                         // String можно делать
+                                                           из StringBuilder
+    String s = new String(new char[]{'h','i'})          // из массива char
+
+    Methods:
+    length()        // -> int, длина(кол-во) симв
+    charAt(i)       // -> char, char at index 'i'
+    indexOf(s)      // -> int, index of String 's', -1 if not match
+    indexOf(s,i)    // -> int, index of String 's', from index 'i', -1 if not m
+    substring(i)    // -> String, from index 'i' to end
+    substring(i1,i2)// -> String, from index 'i1' to 'i2'
+
+    subsequence(i,j)// -> CharSequence, from 'i' to 'j', the same as above
+    append(type)    // -> StringBuilder, добавляет в конец люб тип данных,
+                          меняет сам объект, также при вызове еще и возвращ себя
+    insert(i,type)  // -> StringBuilder, также как выше, но в любую позицию
+    delete(i,j)     // -> StringBuilder, удаляет символы от [i до j)
+    deleteCharAt(i) // -> StringBuilder, удаляет символ в индексе 'i'
+    reverse()       // -> StringBuilder, переворачивает текст
+    replace(i,j,s)  // -> StringBuilder, вместо строки от i до j встав строку s
+    capcity()       // -> int, количество места в массиве
+
+    Сomparing:
+    StringBuilder sb3 = new StringBuilder("123");
+    StringBuilder sb4 = new StringBuilder("123");
+    System.out.println(sb3==sb4);           // false
+    System.out.println(sb3.equals(sb4));    // false, метод сравнивает адреса,
+                                               не работает как в String
+
+    StringBuffer:
+    очень поохож но используется в многопоточных программах
+    String s = new String(sb1); // String можно делать из StringBuffer
+
+--- Array/Массив ---
+    Массив - ссылочный тип данных, которых хранит коллекции элементов одинакового
+    типа, которые пронумерованы от 0.
+    Массив содержит заголовок, длину массива.
+    Двумерный массив - массив ссылок на одномерные массивы.
+
+    Creation:
+    // declaration
+    int[] arr;                          // declaration/объявление, этот массив
+    int arr[];                             ссылается на null.
+
+    // declaration(допустимые)
+    int[] arr[];                        // 2-ый массив - скобки можно ставить
+                                           где угодно
+    int[] arr, arr2;                    // 2 одномерных массива
+    int arr[], var;                     // arr - массив, var - переменная int
+    int[] arr, arr2[]                   // arr - 1-мер, arr2 - 2-мерный
+
+    // allocation
+    arr = new int[5];                   // allocation/выделение, выделить память
+                                           для 5-ти объектов типа int. Массив
+                                           уже должен быть объявлен! Элементы
+                                           массива заполн знач-ми типа по умолч
+
+    // initialization(static, dynamic)
+    // static
+    arr[0] = 1;
+    arr[1] = 5;
+    arr[2] = -80;
+    // dynamic
+    for (int i = 0; i < arr1.length; i++) { // дин иниц 2-мерного массива
+        for (int j = 0; j < arr1[i].length; j++) {
+            arr1[i][j] = i + j;
+        }
+    }
+
+    // declaration+allocation
+    double[][] arr = new double[10][12];// 10 массивов, в кот массивы из 12 элем
+    double[][] arr = new double[3][];   // 3 мaссива в которых содерж массивы
+                                           разн длины, должны быть позже alloc
+                                           arr[0] = new double[5];
+                                           arr[1] = new double[2];
+                                           arr[2] = new double[7];
+
+    // allocation+initialization
+    arr = new int[]{1,2,3};             // если int[] arr; был уже объявлен.
+
+    // declaration+allocation+initialization
+    // длина массива вычисляется автоматически
+    int[] arr0 = new int[]{5,0};        // new int[] - не обязательно.
+    int[] arr1 = {1,5,0,-3,5};          // массив из 5 элементов типа int
+    String[] arr2 = {"hi","1","\n"};    // массив ссылок на адр String объектов
+    int[][] arr3 = {{0,1,2},{3,4,5}};   // двумерный int массив
+    char[][]...[] = {{{{{...}}}}};      // n-мерный массив
+
+    Indices/индексы:
+    arr1[0]         // 1-ый эл
+    arr3[1][0]      // 1-ый эл, второго массива
+    arr[1+1] = 2    // в [] можно производить арифм опреации
+    a[a.length-1]   // the last element
+
+    Methods:
+    arr.toString()  // выводит в консоль инфо(можно переопределить)
+
+    Attributes:
+    arr.length;     // это аттр класса - длина(кол-во эл) массива
+
+    Виды массивов:
+    с примитивными типами данных    // хранит собственно данные
+    с ссылочными типами данных      // хранит ссылки на адреса объектов
+
+    Comparing:
+    ==, equals()    // сравнивают адреса массивов
+
+    Arrays - класс для различных манипуляций с массивами:
+    sort(arr)               // void, сортирует массив
+    binarySearch(arr,val)   // -> type, приним сорт массив и нужное значение,
+                               возвращ индекс найденного эл, иначе отриц число
+    fill(arr,val)           // void, наполнить массив значениями val
+    equals(arr1,arr2);      // -> boolean, сравнивает массивы 
+    toString(arr)           // -> String, удобно читаемое представ массива
+
+    Копия массива/части массива
+    System.arraycopy(a, 0, b, 0, a.lenght/2);   // копировать половину
+
+--- Компиляция и запуск из консоли ---
+    javac MyClass.java  // compile
+    java MyClass args   // execute with arguments args to main String[] args
+    java MyClass.java   // for java 10+
+
+--- varargs ---
+    variable arguments
+    varargs == *args python, принимает от 0 до бесконечночти
+    static void sum(int ... a)  // функция принимает любое кол-во эл
+                                   sum(1, 9, -3);
+    static void sum2(int[] a)   // аналогичная функция, но менее удобная при
+                                   вызове sum2(new int[]{1, 9,- 3});
+    varaargs может быть только 1, но параметров может быть сколько угодно
+    varargs должен распологаться в самом конце списка параметров
+    (String s, int ... a)
+    public void abc (int[]...a) // при вызове метода можно либо ничего не
+                                   передавать, либо передавать 1+ массивов инт
+
+--- Enhanced for/foreach ---
+    Используется для обхода массивов и коллекций
+    
+    for (int i : array) {                       // enhanced for, i - перемен-я 
+        System.out.print(i + " ");                 принимающая поочер знач
+    }                                              массива. В случ примитивных
+                                                   типов и строк - это копия.
+                                                   Остальные ссылочные -
+                                                   можно поменять значение. 
+    Метки, влож циклы также можно использовать.
+
+    for (int i = 0; i < array.length; i++) {    // the same traditional for
+        System.out.print(array[i] + " ");
+    }
+
+--- Encapsulation/Инкапсуляция ---
+    Getters-Setters
+    Скрыть реализацию данных при необходимости можно с помощью private
+    переменных и геттеров-сеттеров.
+    Геттеры и сеттеры имеют доступ к закрытым переменным, проверяют какие-либо
+    условия.
+    private boolean clever;
+    public boolean isClever() {
+        return clever;
+    }
+    public void setClever(boolean clever) {
+        this.clever = clever;
+    }
+    private StringBuilder name;
+    public StringBuilder getName() {
+        StringBuilder sb = new StringBuilder(name); // чтобы не было возможности
+        return name;                                   изменить знач через get
+    }
+        public void setName(StringBuilder name) {
+        this.name = name;
+    }
+    Если return type метода get это mutable тип данных(напр StringBuilder),
+    то лучше возвращать его копию.
+
+--- Inheritance/Наследование ---
+    Родитель(Super/Parent/Base) может иметь множество детей.
+    Дите(Child/extended/subclass/derived) может иметь только одного родителя!
+    class Parent {}                 // родитель
+    class Child extends Parent {}   // ребенок, extends - расширяет родителя
+
+    Зачем нужно наследование.
+    Короткое написание классов
+    Легкость в изменении/добавлении новых классов.
+    Exensibility (исп-е дочерних классов в функциях где ожидается родитель).
+    Более легкое тестирование классов.
+    Группировка классов под общим типом.
+
+    Самый страрший родитель - Object
+    class Parent extends java.lang.Object {}    // все наследуются по умолчанию
+
+    Отношения между классами:
+    "Is-a" relationship
+        class Animal{}
+        class Mouse extends Animal{}
+        // Mouse is Animal
+    "Has-a" relationship
+        class Window{}
+        class House{
+        Window w = new Window();}
+        // House has Window
+
+    Что наследуется классом:
+    public
+    default(без указания modif), если подкласс в том же пакете
+    private не наследуются, но можно работать через getter-setter
+    protected в том же пакете и во всех сабклассах
+    Конструкторы не наследуются
+    Если в другом пакете сабкласс унаследовал protected метод, то он конечно
+    может его использовать, но если в этом пакете будет создан объект суперкласса
+    то этот объект не сможет обращаться к protected методам своего класса из
+    другого пакета.
+
+    Кострукторы:
+    При создании объекта сабкласса, вызывается его конструктор, в конструкторе
+    выз-ся метод super() который вызывает конструктор родителя ... так до
+    класса Object, далее обратный ход, последним заканчивает работу констуктор
+	сабкласса.
+    super() - компилятор по дефолту добавляет в конструкторы.
+    super(a,b) - можно вызывать определенные конструкторы родителя из 
+    конструкторов наследников, для передачи параметров.
+	Первая строка конструктора это:
+		this()	// обращение к др конструктору своего класса
+		super()	// обращение к конструктору родителя
+	Вызываем сначала конструкторы своего класса, затем из базового конструктора
+	(того в котором больше всех параметров и который все остальные конструкторы
+	с нехваткой параметров вызывают с помощью this()) вызываем родительский
+	конструктор(тот который подходит) с помощью super(). После констр-ра Object
+	все вызовы возвращаются назад.
+
+--- Polymorphysm/Полимофизм ---
+        Employee        # base class
+    |      |
+    Doctor Teacher  # extendent classes
+
+    Doctor d = new Doctor();    # переменная определенного типа может ссылаться на
+                                объект того же типа
+    Employee e = new Doctor();  # переменная базового класса может сссылаться на
+                                любой объект сабкласса и саб сабклассов и т.д...
+                                Другими словами Doctor это Employee(Рабочий).
+    Object obj = new Doctor();  # переменная супер класса может ссылаться на люб obj
+    Doctor d != new Employee(); # Нельзя. Рабочий - не обязательно водитель.
+
+    Переменные суперклассов хоть и ссылаются на объекты сабклассов, но все же могут
+    обращаться только к унаследованным аттрибутам супер(своего же) класса!
+    Если метод был overriden - произойдет вызов overriden метода сабкласса, несмотря
+    на то что это переменная типа суперкласса.
+
+    Функция возвращающая любой объект
+    public Object abc() {
+        return new StringBuilder("hey");
+    }
+
+--- Overriding ---
+    Это изменение non-static, non-final метода в sub классе, который он 
+    унаследовал от parent класса.
+    Private методы не наследуются, поэтому их нельзя перезаписать.
+    Final методы не могут быть перезаписаны
+    @Override   # аннотация для пересзаписываемого метода
+    Overriden methods:
+    Имя в сабклассе такое же как в суперклассе.
+    Список аргументов совпадает, иначе будет overloaded.
+    Return types совпадают или return тип у overriden метода это подкласс
+        return типа у метода супер класса (ковариантные return types)
+    Access modifier в сабклассе тако же или менее строгий, чем в parent классе.
+        private > default > protected > public (от строгого к менее строгому).
+    Метод в сабклассе должен быть non-static.
+
+--- Binding ---
+    Определение вызываемого метода, основываясь на объекте, который производит 
+    вызов или типе данных reference variable.
+    2 типа binding:
+    Compile time binding    // осуществляется во время компиляции
+        private methods        эти методы не могут быть перезаписаны
+        static methods         поэтому компилятор знает из какого класса их выз.
+        final methods          Все типы переменных также опред здесь.
+        variables
+    Run time binding        // во время выполнения
+        other methods          в остальных случаях определение из какого
+                               класса вызвать метод происх во время выполнения.
+
+--- Hiding ---
+    Перекрытие static метода суперкласса static методом сабкласса.
+    Private методы и переменные не наследуются, поэтому их нельзя скрыть.
+    Final static нельзя скрыть.
+    Hidden methods:
+        Имя методов одинаковое.
+        Список аргументов одинаковый.
+        Return type одинаковый, либо ковариантные return types(см. выше).
+        Access modifier такой же или менее строгий чем в parent классе.
+        Если в супер классе это static - то и в сабклассе static.
+    hidden variables:
+        Переменная с таким же именем скрывает переменную в супер классе,
+        модификаторы и типы могут быть любые, все равно скроет.
+
+--- Final ---
+    Final class - класс не может иметь потомков.
+    методы нельзя перезаписать или скрыть
+    переменные также нельзя скрыть
+    конструкторы final несуществует
+
+--- super ---
+    super()     # вызов конструктора суперкласса
+    super.var   # обращение из подкласса к атрибутам суперкласса
+                  super - как бы объект суперкласса
+    Правила схожи с this
+    Нельзя исп в статических методах и переменных(присваивание через объект).
+    super может обращаться только к видимым из сабкласса атрибутам суперкласса.
+    super в отличие от super() не обязателен на 1-ой строке тела метода.
+
+--- Abstract method ---
+    abstract void per();    // нет тела
+    Недопустимо:
+        final abstract      // так как дол быть перезаписан
+        private abstract    // так как дол быть унаследован
+        static abstract     // так как дол быть перезаписан
+
+--- Abstract class ---
+    Нельзя создать объект класса.
+    Если в классе присутствует абстрактный метод - то класс дол быть abstract.
+    Abstract class может содержать, а может и не содержать абстрактные методы.
+    Сабкласс должен перезаписать все абс методы либо тоже быть абстрактным.
+    Можно исп ref vars типа abstract класса чтобы ссылаться на объект сабкласса
+    который не является абстрактным.
+    Не может быть final (можно сказать противоположные понятия).
+    Переменные не могут быть абстрактными.
+    Может иметь конструкторы.
+    Любой перезаписываемый метод может быть как абстракт так и не абстракт.
+    Конкретный класс - сабкласс кот перезаписал все абс методы.
+	AbsParent p = new Child();	// такое разрешено
+
+--- Interface ---
+    Java 7
+    Интерфейс это не класс это как бы протокол который можно имплементировать
+	классом.
+    Имплементируя интерфейс - выполняется контракт на переопределение всех
+    методов + выполнение требований в описании javadoc.
+	Интерфейс может быть public(1 в файле с таким же именем) либо default.
+	abstract interface Help{}	// создать интерфейс, abstract можно опустить
+	Интерфейс не может быть final.
+    Все методы в интерфейсах - public abstract, словa public abstract можно
+    опустить - компилятор их поставит авто.
+	Методы интерфейса не могут быть final.
+    class Teacher extends Employee implements Help  // осуществить интерфейс
+    class Teacher implements Help   // (без extends) осуществить интерфейс
+    class T extends E implements Help, Swim, ...    // many interfaces
+    Внутри класса осуществляюго интерфейс необходимо перезаписать абс методы
+    или сделать класс абстрактным(все как с абстрактными классами)	
+    Интерфейсы могут содержать константы - public final static int A = 10;
+	Если класс имплементирует интнрфейс то он гарантированно будет иметь
+	все методы интерфейса.
+	Интерфейсы описывают что должно быть сделано, но как это будет сделано
+	определяется в классах имплементирующих этот интерфейс.
+	InterParent p = new Child();	// такое разрешено, но опять же переменная
+	                     			   интерфейса может обращаться к перезап-м
+									   методам интерфейса классом Child.
+	Нельзя создать объект.
+	Не имеют конструкторов.
+	interface i2 extends i1{}		// Интерфейсы могут наследовать другие 
+									   интерфейсы
+    abstract class implements i1	// абстрактный класс может имп интерфейс
+									   может оверрайдить все или часть или ни
+									   одного метода, по желанию.
+
+    new in Java 8
+	Методы в интерфейсах возможно объявить default(это не access modifier),
+	а дефолтная реализация public метода.
+	Такие методы могут быть исп только в интерфейсах.
+	Не может быть final, static, abstract.
+	interface I1{
+    public default void def(){	// всегда имеет реализацию, можно не override
+        System.out.println("def method");
+    }	// перезаписывается с acess modifier public void def(){}
+	Можно использовать public static методы.
+	Они не наследуются и обращаться к ним можно только через имя интерфейса,
+	даже если не имплементировать сам интерфейс.
+	I1 Ret(){return new Zz(I1 i1);}	// можно использовать в return types,
+									   в параметрах метода, подставлять классы
+									   импл этот интерфейс.
+    Фабричный метод
+    Можно создать экземпляр класса через static method интерфейса.
+    interface Vector {
+        static Vector of(double x, double y, double z) {
+            if(x==0 && y==0 & z==0) {
+                return ZeroVector.INSTANCE;
+            }
+            return new ArrayVector(x,y,z);
+        }
+    }
+	
+--- class vs interface ---
+	Class can extends 0 or 1 class.
+	Class can implements 0 or more interfaces.
+	Interface can't implements or extends class.
+	Interface can extends 0 or more interfaces.
+
+--- Polymorphism ---
+    Способность объекта принимать несколько форм.
+    Полиморфный объект имеет несколько форм IS-A.
+    Полиморфизм - способность метода вести себя по разному в зависимости от
+    вызывающего объекта.
+    Самый частый случай это создание Parent переменной ссылающейся на 
+    объект сабкласса.
+    Перезаписанный методы - это полиморфные методы.
+
+--- instanceof ---
+    Проверяет есть ли между объектом и классом/интерфейсом связь IS-A.
+    Car c = new Car();
+    System.out.println(c instanceof Car);       // true
+    System.out.println(c instanceof Object);    // true
+
+--- Casting(приведение типов) ---
+    Reference types:
+    Процесс когда вы заставляете ппеременную одного типа вести себя как 
+    переменную другого типа данных.
+    Кастинг возможен только когда между классами/интерфейсами есть связь IS-A.
+    Делаая кастинг тип данных объекта не меняется, вы заставляете его
+    чувствовать как объект другого типа.
+    В двух словах, исп-ся в случае необходимости использовать методы или
+    переменные сабклассов с пом переменной суперкласса.
+
+    Upcasting:
+        когда переменную сабкласса заст себя вести как перем суперкласса.
+        Employee e = new Driver();  // автокастинг
+    Downcasting:
+        когда переменную суперкласса заставляют себя вести как перем сабкласса
+        Driver d = (Driver) e;      // не автоматический кастинг
+
+    if (e instanceof Driver)    // проверка во избежание CastingException
+        ((Doctor) emp).attr;    // emp - перем суперкласса Employee, компил-ру
+                                явно указ-ся вести себя как пер сабкласса Doctor.
+   
+    Перебор объектов Employee в цикле с обязательной проверкой
+    Employee[] arr = {emp1,emp2,emp3,emp};  // объекты разных сабклассов
+    for (Employee e : arr){
+        if (e instanceof Driver) {          // проверяем на innstanceof и
+            ((Driver) e).drive();              применяем кастинг.
+        }
+    }
+    Example2:
+    String[] arr1 = {"Hello", "Bye"};
+    Object[] arr2 = arr1;                   // upcasting
+    String[] arr3 = (String[]) arr2;        // downcasting
+
+    Primitive types:
+    Widening/расширение - переход из меньшего типа данных в больший
+                         char
+                          |
+                          v
+        byte -> short -> int -> long -> float -> double
+    Example:
+        double d = 'a'; // char to double
+        long l = b;     // byte var b to long        
+    
+    Narrowing/сужение - переход в меньшие типы данных.
+    Без кастинга 3 условия:
+        - int приводится к byte,short,char:             byte b = 10;
+        - знач int это константа(final или литерал):    short s = 2;
+        - значение int помещается в соотв тип данных:   byte b = 127;
+    В остальных случаях:
+    Любой более большой тип данных можно преобразовать к меньшему с помощью
+    кастинга/приведения (type).
+    b = (byte) 12.45;   // приведение к целочисленным типам данных дробная часть
+                           усекается
+    byte b = (byte)999; // если больше вместимости то будет переполнение        
+
+    Numeric promotion:
+    Конвертация меньшего численного типа в больший.
+    Условия когда происходит:
+        - если есть 2 значения разных типов - ковертируется в больший
+        - если одно дробное а второе целое получ дробное(т.к. оно числ больше)
+        - если byte, short, char участв в арифм операц - то они перед этим
+          конвертируются в int. Исключение -  унарные операторы ++ --
+        - результирующее значение принимает тип операнды.
+
+--- equals ---
+    Метод класса Object.
+    Перезаписать метод equals() у своего класса.
+    @Override
+    public boolean equals(Object obj) { // используем параметр Object
+        if (obj instanceof Car) {
+            Car c2 = (Car) obj;         // приводим тип/casting
+            return color.equals(c2.color) && engine.equals(c2.engine);
+        }
+        else {
+            return false;
+        }
+    }
+    Правила перезаписи:
+    Симметричность 
+        для non-null ссылочных переменных a и b
+        a.equals(b) возвращ true тогда и только тогда когда 
+        b.equals(a) тоже возвращ true.
+    Рефлективность  
+        for non-null ссылочной переменной a.equals(a)
+        всегда должно возвращать true.
+    Транзитивность 
+        для non-null ссылочных переменных a,b,c - если
+        (a.equals(b) and b.equals(c)) == true --> то a.equals(c) дол быть true.
+    Постоянство
+        для non-null ссыл перем a, b неоднократный вызов
+        a.equals(b) должно возвращ или только true или только false.
+        Для non-null ссыл перем a, a.equals(null) дол возвр всегда false
+
+--- Objects ---
+    Этот класс состоит из статических служебных методов для работы с объектами 
+    или проверки определенных условий перед операцией.
+    Objects.equals();   // сравнивает 2 объекта, null обрабатывает корректно.
+
+--- toString ---
+    Метод класса Object.
+    Возвращает строковое представление объекта. 
+    По дефолту --> class_name@hashcode  // имя класса + @ + рез-т метода
+                                           hashcode().
+    System.out.print(obj) по умолчанию приводят obj к стоковому
+    представлению с помощью toString()
+    Перезапись:
+    @Override
+    public String toString(){
+        return color + " car with " + engine;
+    }
+
+--- hashCode ---
+    Метод класса Object
+    Задача метода - взять объект и преобразовать к числу.
+    Обычно перезаписывают вместе с equals, так как если equals
+    возвращает true, то hash code должен быть одинаковым, применяется
+    в коллекциях начинающихся с 'Hash'. В стандартных классах все 
+    переопределено как надо.
+
+    Правила перезаписи:
+    Если переопределяется equals -> переопределить hashCode.
+    Результат hashCode() для одного и того же объекта должен быть одинаков.
+    Если obj1.equals(obj2) == true -> hashCode должен быть одинаковый.
+    Если obj1.equals(obj2) == false-> hashCode НЕ обяз должен быть разным.
+
+    Коллизия - одинак hashCode но разные по equals.
+    В коллекциях при возникновении коллизий всегда проверяется equals.
+
+    Хэширование - преобразование объекта к int с помощью hashCode()
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName);
+    }
+
+    Hash code generating:
+    Double.hashCode(double)     // get hash code from Double/Integer/Long,...
+    Arrays.hashCode(arr)        // get hash code from an array
+    Objects.hash(var1,var2,…)   // get hash code from anything(Lazy method)
+
+--- Wrapper classes ---
+    Классы оборачивающие какие-то данные.
+    Позволяют примитивные типы данных использовать как классы.
+        primitive   wrapper
+        -----------------
+        byte        Byte
+        short       Short
+        int         Integer
+        long        Long
+        float       Float
+        double      Double
+        char        Char
+        boolean     Boolean
+    Autoboxing  - конвертирование соотв прим типа в класс.
+                  Integer i = 50;
+    Unboxing    - конвертирование объекта типа wrapper class to primitive.
+                  int a = i; (тот что выше)
+    class Number    // предок всех wrapper классов.
+    Methods:
+        parse(s)    // --> type, конвертация подходящего значения типа данных
+                       String(s) в соответствующий примитивный тип данных.
+                       int i1 = Integer.parseInt("50");
+        valueOf(x)  // --> wrapper, создать об wrapper класса того типа,
+                       на котором данный метод был вызван.
+                       Integer i3 = Integer.valueOf(10);    // в итоге 10
+                       Integer i4 = Integer.valueOf("10");
+
+--- Overloading, приоритетность методов ---
+    Если при вызове метода его параметр лист соотв-т нескольким парам-листам
+    овер методов, то приоритет таков:
+        1. точное совпадение типов.
+        2. большие типы данных для примитивных и super классы для ссылочных.
+        3. autoboxed types (wrapper классы).
+        4. varargs
+    Конвертация типов данных для соответствия списку параметров не может
+    происходить в 2 этапа, максимум 1 конвертация.
+
+--- Non-static and static initializers ---
+    Блок кода внутри класса, но не внутри метода. Может иметь любую реализацию
+    не имеет return type и не приним параметры.
+
+    Initializer block срабатывает при создании нового об соотв класса,
+    выполняется перед выполнением конструктора этого класса, но после конс-в
+    суперклассов и static initializers.
+    Может быть 0 или больше таких блоков.
+    {           // initializer block 
+        System.out.println("Hello");    
+    }
+    Зачем нужеж:
+        срабатывает независимо от конструктора
+        их исользуют анонимные классы
+
+    Static initializer block срабатывает 1 раз при загрузки класса в память,
+    еще до вызова метода main.
+    Может инициализировать final static переменные.
+    Не может обращаться к не статическим переменным.
+    static {    // static initializer block 
+        System.out.println("Static block 1");
+    }
+
+--- Порядок выполнения ---
+    1. static blocks и static переменные родительского класса.
+    2. static blocks и static переменные дочернего класса.
+    3. non-static blocks и non-static переменные родительского класса.
+    4. constructor родительского класса.
+    5. non-static blocks и non-static переменные дочернего класса.
+    6. constructor дочернего класса.
+    
+    Инициализация пунктов 3-6 происходит только и при каждом создании объекта.
+    Равнозначные init блоки выполняются в той последовательности в которой
+    они описаны в классе.
+
+--- Non-access modifiers ---
+    transient       // такие переменные класса не сериализуются
+    native          // методы реализованы не на Java а на C. Не имеют тела;
+    synchronized    // методы могут быть исп в одно время только 1-м потоком.
+    volatile        // переменный могут быть изменены разными потоками и 
+                       данные изменения будут видны во всех потоках.
+    strictfp        // в методах и классах огранич точность вычислений float
+                       и double по стандарту IEEE.
+
+--- java.io ---
+    Пакет с классами и итнтерфейсами ввода/вывода.
+    File("path")            // абстрактная репрезентация пути к файлу.
+    FileInputStream         // создать поток, для чтения из источника
+    FileOutputStream        // создать поток, для записи в источник.
+    FileNotFoundException   // исключение, файл не найден, может выбрасываться
+                               двумя классами выше.
+    IOExeption              // могут выбрасываться методами write и read,
+                               классами выше, не читается/записывается.
+                               
+--- Исключения ---
+    Hierarchy(часть):
+                       Throwable
+                /                    \
+        Error                           Exception   — InterruptedException
+    StackOverFlowError               /             \
+    OutOfMemoryError      RuntimeException            IOException
+    LinkageError        IndexOutOfBoundExceptoin    FileNotFoundException
+                        IllegalArgumentException    SocketException
+                        NumberFormatException
+                        ArithmeticException
+    
+    Сабклассы RuntimeException:
+    Unchecked exceptions, Java не заставляет их проверять.
+    Ткие исключения возникают по вине программиста.
+    Можно не объявлять(throws) и не обрабатывать(try-catch).
+    Компилятор не в состоянии проверить возможность выброса этих исключений.
+    Например NullPointerException - невозможно предугадать, ловить эти
+    исключения можно, но не обязательно.
+
+    Сабклассы Exception
+    Cheked исключения указ на часть кода, который находится за пределами
+    непосредственного контроля программой и который может явл причиной 
+    выброса исключений, как правило это работа с внешними источниками - 
+    файлы, бд, сеть. Компилятор всегда проверяет возможность выброса искл.
+    Эти искл должны быть обязат или объявлены(throws) и/или обработаны(try).
+
+    Если метод 'a' использует внутри себя метод 'b', который может внутри себя
+    выбросить checked exception то метод должен:
+        1. Или заключить вызов метода b в try/catch блоки
+        2. Или/и объявить, что он может выбросить это checked исключение
+           или super класс этого исключения - например Exception.
+    
+    Examples:
+    IllegalArgumentException    // можно выбрасывать в своем коде где идет
+                                   проверка аргументов
+    NumberFormatException       // наследник того что выше
+    IllegalStateException       // метод вызывается в неподходящее время.
+
+    Overriding and overloading
+    Если класс перезаписывает метод суперкласса или имплементирует метод из
+    интерфейса - нельзя добавлять в его сигнатуру (+throws) новые checked exc.
+    В сигнатуре метода можно исп только искл из перезаписанного метода
+    суперкласса или дочерние классы данных исключений - это для checked, а
+    uncheked(Runtime) можно выбр любые.
+    Перегруженные методы могут использовать любые выбросы исключений.
+
+    Constructor
+    Конструктор может выбрасывать исключения. В своей сигнатуре он должен 
+    описвать все checked исключения(или суперклассы этих искюч) конструктора
+    суперкласса, а также добав новые исключ. Runtime можно не описывать.
+
+    Если указать исключение в сигнатуре метода, но оно не будет выбрасываться -
+    не считается ошибкой.
+    Ловить метод на checked исключения, если они не указ в сигнатуре - нельзя.
+
+    Исключения при выбрасывании показывают время когда было оно 
+    создано(new Exception), а не когда было выброшено throw.
+
+--- try/catch/finnaly ---
+    Обработка исключений:
+    try {                   // try - 1 block
+        code;
+    } catch (Exception e) { // перехват исключения, может быть many catch
+        code;
+    } finally {             // выполняется всегда - 1 block
+        code;
+    }
+    e - оbject типа исключения
+    e.getMessage()          // сообщение исключения
+    e.getCause()            // причина исключения
+    e.printStackTrace(      // вывод стэка ошибки
+
+    catch(FileNotFoundException | NullPointerException e) // 2 исключ в 1 c.
+
+    Порядок перехвата исключений от наследников к базовым, если поставить
+    базовый класс Throwable на первый catch - остальные никогда не обработ. 
+    catch (FileNotFoundException e) {
+        System.out.println("Caught exc 1");
+    } catch (Exception e) {
+        System.out.println("Caught exc 2");
+    } catch (Throwable e) {
+        System.out.println("Caught exc 3");
+    }
+    После возникновения исключения что в блоке try, что в другом блоке - 
+    оставшаяся часть кода блока уже не обрабатывается.
+    После выброса исключения виден стек трейс для всех задействованных 
+    в этом методах.
+    Конструктор объекта исключения может принимать строку или ничего не прин.
+    Если в блоках try и catch присутствует return, то блок finally срабатывает
+    до return. И если организ return в finally то сработает он в люб исходе.
+    Если при return из try/catch возвращается примитивный тип данных то он
+    как бы копируется в return и уже после в finally значение переменной 
+    изменить нельзя, ссылочный объект(mu) конечно можно.
+    Finally не срабатывает только если в блоках try catch организ System.exit
+    или при крушении JVM/OS.
+    Исключение может быть перевыброшено. Т.е. в блоке catch можно снова
+    перевыбросить (throw) исключение, его обраб занимается вызывающая ф-ия.
+    Поддерживаются вложенные(nested) try-catch.
+    Если исключения выбрасываются в catch блоке оно дол быть обработано
+    во вложенном блоке, т.к. в этом же блоке поймать нельзя.
+
+--- try with resourses ---
+    Используется с AutoCloseable(интерфейс) объектами(напр FileOutputStream).
+    Finnaly как бы используется по умолчанию, в котором файл закрывается.
+    В скобках через ; можно инициализировать несколько переменных(ресурсы).
+    try (FileOutputStream out2 = new FileOutputStream("2.txt")) { // (resourses)
+    } catch (IOException e) {
+        e.printStackTrace();
+    }   // out2.close() произойдет в любом случае, не надо ничего городить
+    Пожожа на open with в Python.
+
+--- throws ---
+    Выброс исключений
+    void abc() throws Exception {}  // говорит компилятору что может 
+                                       выбрасываться исключение и что можно
+                                       не обрабытывать его обязательно в коде
+                                       (для Checked). Через запятую можно
+                                       указать несколько исключений.
+    throw e;    // выбросить исключение e(объект класса исключения).
+                   если исключение checked - не забудь в методе throws.
+    Example:
+    static void def(){
+        throw new NullPointerException("Bla-bla");  // выброс RuntimeException
+    }
+    static void foo() throws IOException {          // выброс checked, указываем
+        throw new FileNotFoundException("Bla");        в throws исключение, либо
+    }                                                  его суперкласс как тут.
+
+--- Error ---
+    Не стоит обрабатывать или объявлять - считается глупой затеей.
+    Как и runtime exceptions считаются unchecked.
+    ExceptionInInitializerError // выбрасывается в статич элементах, когда при
+                                   их использовании выбрас runtime exception.
+    
+--- Date/Time ---
+    java.time       // package
+    LocalDate       // date: год, месяц, день
+    LocalTime       // time: час, минута, секунда, наносекунда
+    LocalDateTime   // date + time
+    now()           // метод этих классов - показыывает дату/время сейчас
+    Period          // класс период можно передавать в метод plus()/minus()
+                       может принимать любые периоды в годах...днях
+                       используется с LocalDate, LocalDateTime.
+    Duration        // класс длительность, используется с LocalTime и 
+                       LocalDateTime, как Period но меньше - дни..наносек.
+    Эти классы имеют private конструкторы, мы не можем создать объекты с 
+    помощью конструкторов. Но есть статический метод of, который возвращает
+    объект соотв-го класса.
+    Объекты данных классов - immutable.(неизменяемые)
+    Все их методы возвращают нов объекты.
+        
+    of: // создание объектов с пом статич метода of()
+    LocalDate ld = LocalDate.of(1983,1,23);             // date 1 вариант
+    LocalDate ld = LocalDate.of(1983,Month.JAN,23);     // date 2 вариант
+    LocalTime lt = LocalTime.of(hour,min[,сек,msec])    // time
+    LocalDateTime.of(year,mon,day,hour,min,sec,nanosec) // datetime
+    LocalDateTime ldt = LocalDateTime.of(ld,lt)         // из date и time
+    Period p = Period.ofWeeks(2);                       // период=2 недели
+                                                           year - days
+    Duration d = Duration.ofHours(1);                   // длительность = 1 час
+                                                           days - nanosec
+
+    Засечь время:
+    long start = System.currentTimeMillis();
+    long finish = System.currentTimeMillis() - start;
+
+    Exceptions:
+    DateTimeExceptions  // исключение если неправильная дата/время
+
+    LocalDate methods:
+    plusDays(long t)                // --> LocalDate, добавить дни
+    minusDays(long t)               // --> LocalDate, отбавить дни
+    plus/minus                      // the same: Months, Weeks, Years
+    plus(Period p)                  // --> LocalDate прибавляет на период
+    minus(Period p)                 // --> LocalDate убавляет на период
+    getDayOfWeek()                  // --> DayOfWeek
+    getDayOfMonth()                 // --> int
+    getDayOfYear()                  // --> int, сначала года
+    getMonth()                      // --> Month
+    getYear()                       // --> int
+    
+    LocalTme methods:
+    plusHours(long hours)           // --> LocalTime, добавить часы
+    ...                             // Minutes, Seconds, Nanos
+    minusNanos(long nsec)           // --> LocalTime, отбавить наносекунды
+    plus(Duration d)                // --> LocalTime прибавляет на длительность
+    minus(Duration d)               // --> LocalTime убавляет на дрительность
+    getHour()                       // --> int... 
+    minute second
+    getNano()                       // --> int 
+    
+    LocalDateTime methods:           
+    ...                             // охватывает все методы выше
+
+    До и после(сравнивать только одинак классы):
+    isAfter(t)                      // --> boolean, после этого?
+    isBefore(t)                     // --> boolean, до этого?
+
+    DateTimeFormatter
+    Класс работающий с временными классами - удобный формат вывода.
+    Нужно брать только ту инфу, которую включают классы.
+     
+    java.time.format.               // package 
+    // create with const vars
+    DateTimeFormatter d1 = DateTimeFormatter.ISO_LOCAL_DATE;    // стд вывод
+    DateTimeFormatter d2 = DateTimeFormatter.ISO_WEEK_DATE;     // 2022-W09-4
+    DateTimeFormatter t1 = DateTimeFormatter.ISO_LOCAL_TIME;
+    DateTimeFormatter dt1 = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    // create with methods
+    DateTimeFormatter sht = 
+        DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);   // 03.03.22 
+                                         (FormatStyle.FULL);    // full
+                                         (FormatStyle.MEDIUM);  // 03.03.2022
+        DateTimeFormatter.ofLocalizedTime()                     // similar
+        DateTimeFormatter.ofLocalizedDateTime()                 // similar
+    // use
+    System.out.println(d.format(d1));   // форматирование вывода для LocalDate
+    System.out.println(d1.format(d));   // the same,в Formatter тоже есть format
+    // свой формат
+    DateTimeFormatter f = DateTimeFormatter.ofPattern("MMMM dd, yyyy, hh:mm");
+        // марта 03, 2022, 07:29
+           y    2014    year
+           yy   14
+           yyyy 2014
+           M    3       month
+           MM   03      
+           MMM  мар
+           MMMM марта
+           w    1       week
+           ww   01      
+           d    9       day
+           dd   09
+           h    7       hour
+           hh   07
+           m    8       minute
+           mm   08      
+           s    30      second
+           ss   30
+           n    5555    nanoseconds
+           nnnnn    0555
+
+    parse()
+    Переводит дату/время из строки в объект времени, строка должна
+    соответствовать формату.
+    DateTimeFormatter f1 = DateTimeFormatter.ofPattern("yyyy.MM.dd");
+    LocalDate ld = LocalDate.parse("1983.01.23", f1);
+    System.out.println(ld); // 1983-01-23 - default format.
+    LocalDate ld = LocalDate.parse("1983-01-23");   // если строка в таком виде,
+                                                       то можно без форматтера.
+
+--- Random ---
+    (int) ((Math.random() * (max - min)) + min);    // генератор инт [min, max)
+
+--- Lambda exspressions ---
+    Анонимный метод(без имени).
+    Переопред метода инт-йса без создания класса имплементирующуго этот инт-йс.
+    ->  // оператор в лямда выр - разделяет список параметров и тело метода.
+    interface I { void foo(); } // функциональный интерефейс(1 метод)
+    bar(() -> {code;})          // переопределение метода
+    public class A { // класс в методе которого используется интерфейс
+        // метод, один из параметров которого интерфейс I
+        static void foo(double b, I i, int a) {
+            // в методе класса идет вызов метода интерфейса i.bar(param)
+            // для наглядности используются доп параметры
+            System.out.println(a + " Hi " + i.bar(" bla-bla ") + b);
+        }
+        public static void main(String[] args) {
+            // вызываем метод класса и переопределяем метод интерфейса на месте.
+            foo(2.72, (String s) -> {   // здесь идет переопределение метода
+                return "everyone" + s;  // интерфейса, без создания доп класса.
+            }, 12);                     // (String s) мож просто (s) - параметр
+        }                               // {return "everyone" + s;} - тело
+                                        // 2.72 и 12 - доп параметры для нагляд
+    }
+    
+    // чтобы использовать lambda выражения в интерфейсе дол быть только 1 метод
+    // Функциональный интерфейс - интерфейс с 1 абстрактным методом
+    @FunctionalInterface        // необязательная аннотация
+    interface I {               // Функциональный интерфейс 
+        String bar(String s);   // метод который должен быть переопределен
+    }
+
+    Способы написания lambda:
+    (int i, int j) -> {         // неск папам, несколько инструкций.
+        i += 10;
+        return i;
+    }
+    (int i) -> {return i+10;}   // полный вариант
+    i -> i+10                   // короткий вариант типы парам можно не указ
+    () -> 5                     // нет параметров, возврат int
+    () -> {}                    // нет параметров и тела
+
+--- Method reference ---
+    Вместо лямбды можно применять method reference.
+    синтаксис: 
+    # статический метод класса - исп class::staticMethod
+    IntBinaryOperator sum = Integer::sum;   // В интерфейсе IntBinaryOperator
+                                               переопр applyAsInt(int a, int b)
+                                               с пом метода Integer.sum(a,b)
+    IntBinaryOperator sum = (a,b)-> a+b;    // аналогично
+
+    # Нестатический метод класса - исп class::method
+
+    Example: 
+    list.forEach(el -> System.out.println(el));
+    list.forEach(System.out::println);
+
+--- interface Predicate<T> ---
+    Predicate/предикат - это утверждение, высказанное об объекте.
+    Принимает объект.
+    Возвращает true/false на некий запрос об объекте.
+    
+    @FunctionalInterface
+    public interface Predicate<T> {
+        boolean test(T t);
+    }
+
+    Example:
+    // метод с параметром Predicate
+    void testStudents(ArrayList<Student> arrayList, Predicate<Student> predicate) {
+        for (Student st : arrayList) {
+            if (predicate.test(st))
+                System.out.println(st);
+        }
+    }
+    // use
+    si.testStudents(students, st -> st.avgGrade > 7);   // lambda
+
+    Использование в методе коллекций removeIf()
+    arrayList.removeIf(s -> s.length() < 5);    // удалить строки длиной < 5
+
+    Объединение предикатов (И ИЛИ)
+    Predicate<String> p1 = s -> s.lenght() < 5; // создать предикат
+    Predicate<String> p2 = s -> s.lenght() > 3;    
+    arrayList.removeIf(p1.and(p2));             // И
+    arrayList.removeIf(p1.or(p2));              // ИЛИ
+    arrayList.removeIf(p1.negate());            // НЕ
+
+--- interface Supplier<T> ---
+    Supplier/Поставщик - Представляет поставщика результатов.
+    Ничего не принимает.
+    Поставляет объекты когда его метод вызывается.
+      
+    @FunctionalInterface
+    public interface Supplier<T> {
+        T get();
+    }
+
+    Example:
+    // method with Supplier
+    public static void MySup(Supplier<String> stringSupplier) {
+        System.out.println(stringSupplier.get());
+    }
+    // use
+    MySup(() -> "Hello");   // lambda
+
+--- interface Consumer<T> ---
+    Consumer/Потребитель - потребляет и что-то делает с объектом.
+    Принимает объект.
+    Ничего не возвращает.
+
+    @FunctionalInterface
+    public interface Consumer<T> {
+        void accept(T t);
+    }
+
+    Example:
+    // method
+    public static void changeCar(Car car, Consumer<Car> carConsumer) {
+        carConsumer.accept(car);
+    }
+    // use
+    changeCar(arrayList.get(0), car -> car.engine *= 0.2);  // изменяем  
+
+    // использование в коллекциях forEach
+    List<String> list = List.of("Hello", "ok", "Bye");
+    list.forEach(s -> System.out.println(s));   // lambda
+    list.forEach(System.out::println);          // method reference
+
+--- interface Function<T, R> ---
+    Представляет функцию, которая принимает один аргумент и выдает результат.
+    Принимает объект T.
+    Возвращает объект R.
+    Типы могут совпадать.
+
+    @FunctionalInterface
+    public interface Function<T, R> {
+        R apply(T t);
+    }
+
+    Example:
+    Function<Student, Double> f = student -> student.avgGrade;  // create
+    System.out.println(f.apply(students.get(0)));               // use
+
+--- interface Comparable<T> ---
+    Интерфейс для сравнения объектов одинакового типа. 
+    Осуществляя интерфейс Comparable, можно будет сортировать массивы и коллекции
+    объектов этого класса с помощью Arrays.sort и Collections.sort.
+    Если объекты равны - рекомендуется чтобы equals() так же были равны.
+    
+    public interface Comparable<T> {    // интерфейс
+        public int compareTo(T o);
+    }
+
+    При сравнении возвращать:
+        int>0   если this > o
+        int<0   если this < o
+        0       если this == o
+
+    Example:
+    class MyClass implements Comparable<MyClass> {
+        private int id;
+        MyClass(int id) {
+            this.id = id;
+        }
+        @Override
+        public int compareTo(MyClass o) {
+            return this.id - o.id;
+        }
+
+        public static void main(String[] args) {
+            MyClass[] arr = {new MyClass(1), new MyClass(6), new MyClass(3)};
+            Arrays.sort(arr);
+            List<MyClass> list = new ArrayList<>(Arrays.asList(arr));
+            Collections.sort(list);
+
+        }
+    }
+
+    // встроенный функционал reference классов
+    Integer.compare(2, 5);  // -1
+    "123".compareTo("234"); // -1   
+    Boolean.compare(b1, b2) // true      
+
+--- interface Comparator<T> ---
+    интерефейс, Функция сравнения, которая налагает полный порядок на некоторую 
+    коллекцию объектов. Компараторы могут быть переданы в метод сортировки 
+    (например, Arrays.sort или Collections.sort), чтобы обеспечить точный 
+    контроль над порядком сортировки. В отличие от Comparable метод compare
+    принимает 2 объекта. 
+    Можно делать много коппораторов для нужной сортировки по нужным полям.
+    Класс в котором нужно организовать сортировку не обязательно должен 
+    имплементить Comparable, если организовать для него Comparator. Просто
+    будет вместо Array.sort(arr) ==> Arrays.sort(arr, comporator), также
+    с коллекциями Collections.sort(list) ==> Collections.sort(list, comporator),
+    или у всех коллекций есть уже метод sort, еще проще list.sort(comporator).
+    Можно Comporator прям на месте определить через Lambda/anonymous.
+    Если объекты равны - рекомендуется чтобы equals() так же были равны. 
+
+
+    public interface Comparator<T> {    // interface
+         int compare(T o1, T o2);
+    }    
+
+    Example
+    public class IdComparator implements Comparator<MyClass> {
+        @Override
+        public int compare(MyClass o1, MyClass o2) {
+            if (o1.getId() == o2.getId()) {
+                return 0;
+            } else if (o1.getId() < o2.getId()) {
+                return -1;
+            } else
+                return 1;
+        }
+
+        public static void main(String[] args) {
+            MyClass m1 = new MyClass(8);
+            MyClass m2 = new MyClass(79);
+            MyClass[] arr = {new MyClass(1), new MyClass(6), new MyClass(3)};
+            List<MyClass> list = new ArrayList<>(Arrays.asList(arr));
+            IdComparator ic = new IdComparator();
+            System.out.println(ic.compare(m1, m2));
+            list.sort(ic);
+            Collections.sort(list, ic);
+
+        }
+    }
+
+--- of ---
+    // создание объектов класса с пом статич метода of()
+    // конструкторы как правило делают недоступными
+    Example:
+    LocalDate ld = LocalDate.of(1983,1,23);
+
+--- enum ---
+    перечисление — это список именованных однотипных констант, определяющих
+    новый тип данных, в объектах которого могут храниться только значения
+    из этого списка. 
+    Enum это класс и может содержать поля, методы, конструкторы(private).
+
+    // самый простой случай
+    public enum Fruit {
+        ORANGE , APPLE , BANANA , CHERRY
+    }
+
+    public static void main(String[] args) {
+        Fruit fruit = Fruit.APPLE;      // create obj of enum WITHOUT new
+        System.out.println(fruit);
+        if (fruit == Fruit.APPLE) {
+            System.out.println( "fruit действительно является яблоком" );
+        }
+        switch (fruit ) {
+            case APPLE:
+                System.out.println( "fruit - яблоко" );
+                break ;
+            case ORANGE:
+                System.out.println( "fruit - апельсин" );
+                break ;
+            case CHERRY:
+                System.out.println( "fruit - вишня" );
+                break ;
+        }
+
+        System.out.println( "Все элементы перечисления:" );
+        for (Fruit fruit : Fruit.values()) {
+            System.out.println(fruit);
+        }
+        System.out.println( "Поиск по названию: " + Fruit.valueOf( "BANANA" ));
+    }
+
+    // немного кастомизированный случай с констнуктором
+    public enum Month {
+    JAN(1), FEB(2), MAR(3), APR(4), MAY(5), JUN(6), JUL(7), AUG(8), SEP(9), OCT(10), NOV(11), DEC(12);
+
+    private int number;
+
+    public int getNumber() {
+        return number;
+    }
+
+    private Month(int number) {
+        this.number = number;
+    }
+    }
+    Использование:
+    Month month = Month.JAN;    // create without new
+
+    Methods:
+    valueOf("some_enum")    // -> enum, из строки в перечисление
+    values()                // -> enum[], все значения of enum
+
+--- Nested classes ---
+    Нужны для тесной привязки одного класса к другому.
+    
+    public class Outer {        // outer class
+        static class Static {}  // static class
+        class Inner {}          // inner class 
+        void method() {         // some method    
+            class Local {}      // local class
+        }
+    }
+
+    Static class
+    Похож на обыйчный класс но находится внутри другого класса.
+    Outer.Static oS = new Outer.Static();   // create
+    Создавать можно и в других классах используя внешний класс в теле
+    которого он располагается: new Outer.InnerStatic();
+    Могут быть private, final, abstract, может extends, implements.
+    Статик класс может содержать статик и обычные переменные.
+    Статик класс может обращаться даже к private static эл внеш класса,
+    но к обычным не статик элементам доступа нет.
+    Внешний класс может обращаться к статик элементам статик класса
+    через имя класса IneerStatic.staticValue;
+    Внешний класс может иметь доступ к не статик переменным, просто нужно
+    обращаться к ним чере созданный объект статик класса.
+
+    Ineer class
+    При создании объекта внутреннего класса всегда задействован объект
+    внешнего класса, объект inner всегда ассоциируется с объектом outer.
+    Ведете себя как обычный instance элемент.
+    Класс не может содержать static элементы, но может final static.
+    Inner класс может обращаться к любым переменным outer класса и к private.
+    Внешний класс создав об внутр класса может обращаться к private эл.
+    this.new Inner();                               // create in constructor
+    Outer outer = new Outer();                      // outer class object
+    Outer.Inner inner = outer.new Inner();          // create in other class
+    Outer.Inner inner = new Outer().new Inner();    // create in other class
+
+    Local class
+    Это класс объявленный в теле метода/конструктора.
+    Нужен в основном для группировки данных только в данном методе.
+    Не виден вне метода в котором он создается, не может быть static.
+    Local class может обращаться даже к private эл внешнего класса.
+    Local class может обращаться к final/effectively final(не меняются в коде)
+    переменным блока в котором он создан.
+
+--- Anonimous inner local class ---
+    Не имеет имени. Это одновременное объявление класса и создание объекта.
+    Класс создается на месте без имени и сразу используется. 
+    Может обращаться даже к приват эл внеш класса.
+    Используются если такой класс нужен только в одном месте программы
+    и больше нигде не переисрпользуются, например обработчик кнопки.
+    Такой класс базируется на интерфейсе или абстракт классе.
+    Понятия анонимный интерыейс не существует.
+
+    button3.addActionListener(new ActionListener() {    // anonymous
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println(3);
+        }
+    });
+    // the same with lambda
+    button3.addActionListener(e -> System.out.println(3));  // anonymous
+                                                               lambda
+    class MainApp {
+        public static void main(String[] args) {
+            // анонимный класс из интерфейса
+            Flyable flyable = new Flyable() {
+                @Override
+                public void fly() {}
+            };
+            System.out.println(flyable.getClass().getName()); // MainApp$1
+            // анонимный класс из абстрактного класса
+            Animal animal = new Animal() {
+                @Override
+                void run() {}
+            };
+            System.out.println(animal.getClass().getName()); // MainApp$2
+        }
+    }
+
+    Еще пример анонимного класса:
+    public class AnonymousClass {
+        public static void main(String[] args) {
+            Math2 m = new Math2() {
+                @Override
+                public int doOperation(int a, int b) {
+                    return a + b;
+                }
+            };
+            Math2 m = (a, b) -> a + b;  // the same - lambda
+            Math2 m = Integer::sum;     // the same - method reference
+        }
+    }
+    
+--- Generics/дженерики/обобщения ---
+    Дженерики - это синтаксический сахар для создания классов и не более.
+    Компиллятор в итоге создает обычные классы без взяких <>.
+    Вместо допустим <T> подставляется Object
+
+    // обобщенный класс
+    public class MyClass<T, M, ...> // один или несколько обобщ типов.
+    Буквы обычно: T-type, V-value, K-key, E-element 
+    Внутри обобщ классов нельзя создавать объекты этого типа в методах,
+    также нельзя создавать статические поля и методы с исп T.
+    <> - diamond
+
+    // List<Object> list и new ArrayList<String>() не имеют насл связи,
+       привычное наследование у дженериков так не работает.
+    Class<Object> != Class<String>;             // нет системы надтип подтип
+    List<Object> l1 = new ArrayList<String>();  // неверно - только Object
+    List<?> 12 = new ArrayList<String>();       // верно - любой тип, но
+                                                   добавить в такой список 
+                                                   ничего нельзя, т.к тип неизв
+
+    // Переменная типа указывается:
+    Обьявление дженерик класса:
+    class GenBox<T>                     // любой тип
+    GenBox<K, V>                        // 2 любых типа
+    GenBox<T extends Cat>               // Cat + subclasses
+    GenBox<T extends Cat & Runnable>    // Cat+subclasses+implements Runnable
+    GenBox<T extends I1 & I2>           // classes implements I1+I2
+    Объявление джененрик метода:
+    T foo(T val){return val;}           // использование далее
+    Объявление джененрик конструктора:
+    GenBox(T val){this.val=val}         // использование далее
+    Объявление интерфейса:
+    public interface Comparable<T>{     // 
+        public int compareTo(T o) }     // использование
+    
+    // Использование generics, wildcard <?>
+    List<Number> l1 = new ArrayList<>();                    // Number only
+    List<?> l2 = new ArrayList<String>();                   // any type
+    List<? super Integer> l3 = new ArrayList<Number>();     // Integer+parents
+    List<? extends Number> l4 = new ArrayList<Double>();    // Number+subclasses
+
+    public class GenBox<T> {    // это обобщение, обобщенный класс
+        T obj;                  // тип T определяется при первом создании объекта
+                                   исп только ссылочные типы данных
+        public GenBox(T obj) {      // Constructor
+            this.obj = obj;
+        }
+        public T getObj() {         // Getter
+            return obj;
+        }
+        public void setObj(T obj) { // Setter
+            this.obj = obj;
+        }
+    }
+
+    // производители, потребители, использование ? extends или super
+    PECS Pruducer-extends, Consumer-super
+
+    // создание объектов
+    GenBox<String>  strBox = new GenBox<>("Java");  // Тут внутри все строки
+    GenBox<Integer> intBox = new GenBox<>(100);     // а тут все Integer
+    int sum = intBox1.getObj() + intBox2.getObj();  // сумма
+
+    // пример класса считающего сриднее для чисел
+    public class BoxWithNumbers<N extends Number> { // ограничиваем создание
+        private N[] array;                             объекты - только нас-
+                                                       ледники Number
+        public BoxWithNumbers(N ... array) {        // Constructor
+            this.array = array;
+        }
+
+        public double average() {                   // calculate average
+            double avg = 0.0;
+            for (int i = 0; i > array.length; i++) {
+                avg += array[i].doubleValue();      // приводим любой тип
+            }                                          Number к Double(double)
+            return avg/array.length;
+        }
+
+        // метод сравнения двух средних
+        // <?> - означает любой тип, чтобы обойтись без приведения типов
+        // <? extends Number> - необязательно тут, так как по конструктору
+           итак пройдет только тип Number.
+        public boolean compareAverage(BoxWithNumbers<?> another) {
+            return Math.abs(this.average()) - another.average() < 0.0001;
+    }
+    }
+    // использование
+    Благодаря varargs можно подать как массив так и просто цифры
+    В зависимости от типа коробки можно подавать любые числа, даже смешанные
+    BoxWithNumbers<Integer> intBox = new BoxWithNumbers<>(new Integer[]{1,2,3,4});
+    BoxWithNumbers<Number> numBox = new BoxWithNumbers<>(1.2, 30, 3.14f);
+
+    // обобщенный метод
+    Также к T можно добавлять ограничения extends.
+    public static <T> T getFirstElement(List<T> list) {...}
+    public static <T> ArrayList<T> toArrayList(T[] array) {...}
+    public static <T> void change(List<T> list, int i1, int i2) {...}
+
+    // обобщенный интерфейс
+    Comparable<> обобщенный интерефейс, в него помещаем нужный тип,
+    далее реализуем сравнение в методе compareTo().
+    Это упращает сравнение, не нужно сверять типы, проверять на null.
+    public class Box implements Comparable<Box> {
+        private int size;
+
+        public Box(int size) {
+            this.size = size;
+        }
+
+        @Override
+        public int compareTo(Box o) {
+            return this.size - o.size;
+        }
+    }
+
+--- Collections/Коллекции ---
+    Collections - класс для манипуляций с коллекциями
+    Методы
+    sort()
+    binarySearch()
+    reverse()
+    shuffle()
+
+    ● Collection - является “корневый” элементом иерархии коллекций. 
+    Коллекция представляет собой группу объектов, называемых элементами. 
+    Интерфейс описывает функционал присущий абсолютно всем коллекциям.
+    ● Set - коллекция, представляющая собой множество элементов, которое 
+    не может содержать дубликаты.
+    ● List - коллекция, содержащая в себе последовательность элементов. 
+    В этом типе коллекций дубликаты разрешены. List позволяет обращаться к 
+    своим элементам по индексу, добавлять/изменять/удалять элементы.
+    ● Queue - коллекция, позволяющая управлять процессом обработки элементов. 
+    Как правило, работает в режиме FIFO (first-in, first-out, первый вошел - 
+    первый вышел, например, очередь в кабинет). В таком случае элементы 
+    добавляются в хвост, а забираются с головы.
+    ● Deque - коллекция, позволяющая управлять процессом обработки элементов.
+    Deque может использоваться как в режиме FIFO , так и в режиме LIFO 
+    (last-in, first-out, последний вошел - первый вышел, например, в стопку 
+    бумаг кладут сверху листы, и оттуда же их забирают). Deque позволяет 
+    добавлять/изменять/удалять элементы как в голове, так и в хвосте коллекции.    
+    ● Map, коллекция которая отображает ключ, к его значению. Map не может 
+    содержать дублирующиеся ключи.
+    ● SortedSet и SortedMap представляют собой упорядоченные в порядке 
+    возрастания версии коллекций Set (сортировка идет по элементам) и 
+    Map (сортировка производится по ключам).
+
+    Hierarchy:
+                  Iterable
+                     |
+                 Collection
+           /         |         \
+      List        Queue           Set             Map
+    ArrayList   PriorityQueue   HashSet         HashMap
+    LinkedList<-Deque           LinkedHashSet   LinkedHashMap
+    Vector      ArrayDeque      SortedSet       HashTable
+    Stack                       TreeSet         SortedMap
+                                                TreeMap
+
+    Не надо использовать
+    Enumeration -> Iterator
+    Vector      -> ArrayList
+    Stack       -> ArrayDeque
+    Dictionary  -> Map
+    HashTable   -> HashMap
+    LinkedList  -> ArrayList/ArrayDeque
+
+--- ArrayList ---
+
+    package java.util, произошел от List
+    Это обертка над массивом.
+    Скорость чтения O(1)
+    Скорость вставки O(n)
+    Может менять длину.
+    ArrayList по умолчанию включает в себя массив объектов класса Object.
+    Т.е. элементами массва могут быть любые ссылочные типы данных, так как 
+    все они произошли от Object.
+    Примитивные типы данных не могут содержаться в ArrayList.
+
+    // capacity
+    capacity = 10; по умолчанию, растет автоматически.
+    list.ensureCapacity(1000000);   // увеличить емкость сразу на миллион.
+    list.trimToSize();              // убрать лишнюю емкость
+    
+    // creation
+    ArrayList list = new ArrayList();                   // ListArray Object
+    ArrayList<Object> list = new ArrayList<>();         // the same as above
+    ArrayList<Object> list = new ArrayList<Object>();   // the same as above
+    ArrayList<String> l1 = new ArrayList<>();   // только String objects
+    ArrayList<String> l2 = new ArrayList<>(8);  // capacity = 8, может увелич-ся
+    ArrayList<String> l3 = new ArrayList<>(l1); // из другого листа(разн адреса)
+    ArrayList<String> l4 = new ArrayList<>(Arrays.asList("a","b","c")); // так
+
+    Methods
+    size()                  // -> int, размер списка(кол-во эл-ов)
+    add(DataType el)        // -> boolean, добавить в конец списка
+    add(nt i, DataType el)  // -> boolean, добавить в индекс 'i', остальные сдвиг
+    addAll(ArrayList a)     // -> boolean, добавить в конец элементы
+    addAll(int, ArrayList a)// -> boolean, добавить элементы в индекс 'i'
+    get(int index)          // -> DataType, элемент под индексом 'i'
+    indexOf(Object el)      // -> int, 1-ый индекс запрашиваемого элелента, else -1
+    lastIndexOf(Object el)  // -> int, посл индекс запрашиваемого элелента, else -1
+    set(int i, DataType el) // -> DataType, заменяет элемент под индексом 'i'
+    remove(Object el)       // -> boolean, удаляет элемент ссылка на кот в параметре
+    remove(int index)       // -> DataType, удалить элем по индексу 'index'
+    removeAll(Collection c) // -> boolean, удалить все элем равные элем в коллекц 
+    retainAll(Collection c) // -> boolean, удалить все элем не равные элем в коллек
+    clear()                 // -> void, удалить все элементы
+    isEmpty()               // -> boolean, пустой?
+    contains(Object el)     // -> boolean, есть ли объект в листе?
+    toString()              // -> String, возвращ строковое предст об
+    clone()                 // -> Object, сам массив получ нов адрес, но эл-ты те же
+    toArray()               // -> Object, в Object массив
+    toArray(DataType[] arr) // -> DataType, массив выбранного типа.
+    equals(ArrayList l)     // -> boolean, равны если элементы и их порядок одинак
+
+    Array from list:
+    String[] sArray = aList.toArray(new String[0]); // пишем 0 - авто размер
+    
+    // обход листа + действие
+    l4.forEach(new Consumer<String>() { // с помощью аноним класса Consumer
+            @Override
+            public void accept(String s) {
+                System.out.println(s.length());
+            }
+        });
+    forEach((s)-> System.out.println(s.length());   // -> void, тоже самое(лямбда)
+
+    // сортировка
+    Collections.sort(list)              // -> void, как по словарю
+    l4.sort(new Comparator<String>() {  // -> void, с помощью анонимного класса
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.length() - o2.length();   // тут своя реализация
+            }
+        });
+    l4.sort((o1, o2) -> o1.length() - o2.length()); // то же самое но в лямбда
+
+    while(list.remove("a"));            // удалить все символы 'a' из списка
+    list.removeIf(s -> s.equals("a"));  // то же самое
+
+    Iterator
+    Iterator<String> it = list.iterator();
+    while(it.hasNext()){        // приимущество перед foreach, можно удалять эл
+        System.out.println(it.next());
+    }
+    for (String s : list) {     // the same
+        System.out.println(s);
+    }
+
+--- LinkedList ---
+    Связанный список.
+    Не содержат массивов. Каждые элемент имеет ссылку на предыдущий и
+    последующий элемент. У первого и последнего 1 из ссылок - null.
+    При запросе элемента по индеку - пробегает максимум половину списка.
+    Скорость чтения O(n)
+    Скорость вставки O(1)
+    Подходит для создания структуры FIFO LIFO
+
+    Specific methods:
+    peek()              //
+    peekFirst()         // --> DataType, first элем or null if empty list
+    peekLast()          // --> DataType, last элем or null if empty list
+    pop()               // --> DataType, Удалить first элем == removeFirst()
+    push()              // void, вставить элем в начало списка ==  addFirst()
+    poll()              //
+    pollFirst()         // --> DataType, Удалить first элем or null if empty list
+    pollLast()          // --> DataType, Удалить last элем or null if empty list
+    offerFirst(el)      // --> boolean, вставить в начало
+    offer()             //
+    offerLast(el)       // --> boolean, вставить в конец
+
+--- Vector ---
+    Устаревший synchronized class. В основе содержит массив Object.
+    Используется в многопоточности - но есть методы получше.
+    List<Integer> vList = new Vector<>();   
+    Vector<Integer> vList = new Vector<>(); 
+    
+    Methods:
+    add()
+    get()
+    remove()
+
+--- Stack ---
+    Устаревший synchronized class. Использует принцип LIFO.
+    List<Integer> sList = new Stack<>();
+    Stack<Integer> sList = new Stack<>();
+
+    Methods:
+    push()  // добавить в стек
+    pop()   // изъять из стека
+    peek()  // посмотреть верхний элемент
+
+--- HashMap ---
+    Структура ключ-значение. Содержит внутреннюю таблицу с индексами от 0 до
+    максимальной емкости HashMap, иными словами 0 - capacity-1
+    
+    HashMap<k, v>   # два типа: k-ключ, v-значение (Допустим Integer, String)    
+    Map<Integer, String> dict = new HashMap<>(16, 0.75f);   # create
+    
+    В ячейках таблицы лежат объекты Node<K,V>, объединенные в LinkedList,
+    которые содержат поля:
+        final int hash; # хэшкод 
+        final K key;    # ключ
+        V value;        # значение
+        Node<K,V> next; # ссылка на след Node если есть или null    
+    
+    capacity=16     # по умолчанию 16, др. можно указать при создании
+                      емкость должна соответствовать числу = степени двойки
+    loadFactor=0.75 # загруженность таблицы: 16*0.75=12 элементов максимум,
+                      если кладем больше - емкость увеличивается вдвое,
+                      происходит перекэширование и записи расклад по новому
+    
+    dict.put(1, "Russia");  # положить по ключу 1 значение "Russia"    
+    При добавлении 1-го ключа+значение из ключа берется его hashcode и как-то
+    совмещается с размером capacity и генерится число от 0 до capacity-1,
+    получается индекс внутренней таблицы HashMap. И наша пара ключ-значение
+    хранится во внутренней таблице под этим индексом, например 4.
+
+    Если следующая пара ключ-значение получают такой же индекс, то проверяется
+    хэшкоды объектов под этим индексом, напр 4, если они разные - то последнему
+    объекту уже лежащему под этим индексом в значение next присваивается
+    новое значение нового объекта - теперь эта ячейка имеет два объекта Node 
+    первый имеет ссылку на другой, а последний в next имеет null.
+
+    Если следующая пара ключ-значение получают такой же индекс и имеют такой
+    же hashCode, то идет сравнение по equals с объектами с таким же хешкодом,
+    если по equals false -> нода опять добавляется в конец ячейки, путем
+    добавления в next последнего там объекта.
+
+    Если следующая пара ключ-значение получают такой же индекс и имеют такой
+    же hashCode и к тому же совпал equals с каким либо объектом - то происходит
+    перезапись прежднего объекта Node на новый.
+
+    LinkedList<Node> - вот что лежит в ячейках таблицы HashMap, часто
+    называют backet или корзина. 
+
+    dict.get(1)             # получить значение по ключу
+    При запросе опять же берется hashcode ключа, совмещается с емкостью,
+    генерится индекс, и по индексу находим нашу пару, забираем значение,
+    если в индексе несколько пар - тут уже ищется по хэшкоду, если нашелся
+    такой hashCode - то смотрим по equals - равен - возвращаем - нет - ищем
+    дальше если есть еще элементы.
+
+    Methods:
+    get(k)              // -> v, get value
+    getOrDefault(k, d)  // -> v, if not -> d
+    put(k, v)           // -> void, put key->value
+    putAll(Map)         // -> void, put another Map
+    putIfAbsent(k, v)   // -> void, put k->v if key absent
+    clear()             // all delete
+    clone()             // 
+    containsKey(k)      // -> boolean
+    containsValue(v)    // -> boolean
+    isEmpty()           // -> boolean
+    remove(k)           // -> val, remove k:v
+    size()              // -> int, count of k:v
+    keySet()            // -> Set of key
+    values()            // -> Set of values
+    entrySet()          // -> Set of (key, values)
+
+    Обход HashMap:
+    map.forEach((s1,s2)-> System.out.println(s1+":"+s2));   // BiConsumer
+    for (Map.Entry<String, String> o : map.entrySet()) {    // for
+        o.getKey()
+        o.getValue()
+    }
+
+--- TreeMap ---
+    Элементы TreeMap сортированные по ключу. В основе лежит красно-черное
+    дерево. Работает быстро, но не так быстро как HashMap.
+    Ключи должны быть Comparable либо при создании указать Comparator.
+
+    Map<String, Integer> tMap = new TreeMap<>();
+    // стандартые методы
+    tMap.put("Ivan", 39);   
+    tMap.get("Ivan");
+    tMap.remove("Ivan");
+    Methods:
+    desendingMap()      // -> TreeMap, reverse
+    headMap(toKey)      // -> TreeMap, объекты сначала до ключа, срез [:toKey]
+    tailMap(fromKey)    // -> TreeMap, объекты начиная с ключа и до конца [fromKey:]
+    subMap(from,to)     // -> TreeMap, срез от и до [from:to]
+    вернуть/удалить-вернуть 1-ый/последний keys/values/EntrySet
+
+--- LinkedHashMap ---
+    Наследник HashMap, хранит информацию о порядке добавления элементов(по умолч)
+    или порядке их использования(put, get..) включить эту опцию тут написав true-+
+    Производительность ниже HashMap.                                        v----+  
+    LinkedHashMap<String, Integer> lhMap = new LinkedHashMap<>(16, 0.75f,false);
+    lhMap.put("Ivan", 39);
+    lhMap.put("Igor", 42);
+    lhMap.put("Ilya", 34);
+    System.out.println(lhMap);
+
+--- HashTable ---
+    Устаревший класс, работает по тем же принципам что и HashMap, но
+    является synchronized. Но для многопоточности следует использовать
+    ConcurrentHashMap.
+    Ни ключ ни значение не могут быть null.
+    Hashtable<String, Integer> htMap = new Hashtable<>();
+    htMap.put("Ivan", 39);
+    htMap.put("Igor", 42);
+    htMap.put("Ilya", 34);
+    System.out.println(htMap.contains(42));
+    System.out.println(htMap);
+
+--- HashSet ---
+    Множество. Хранит уникальные значения.
+    В основе Set лежит Map, при добавлении в HashSet нового значения, на самом
+    деле доб ключ в HashMap и какая-то константа-заглушка в кач значения.
+    Нет порядка элементов.
+
+    Set<String> set = new HashSet<>();  // create
+
+    Methods:
+    add(s)              // -> boolean, add val if not exists
+    addAll(Map)         // -> void, put Collection
+    remove(s)           // -> boolean, remove
+    size()              // -> int, count of val
+    clear()             // -> void, all delete
+    contains(el)        // -> boolean
+    isEmpty()           // -> boolean
+
+    Операции над множествами:
+    set1.addAll(set2)       // U Объединение множеств
+    set1.retainAll(set2)    // ∩ пересечение множеств
+    set1.removeAll(set2)    // \ разность множеств
+
+    // обход + удаление с условием
+    set.removeIf(s -> s.equals("b"));
+
+--- TreeSet ---
+    Хранит элементы в отсортированном по возрастанию порядке.
+    В основе лежит TreeMap: ключи - это элементы TreeSet, значения - заглушка.
+    В основе красно-черное дерево.
+    Элементы должны быть Comparable либо при создании указать Comparator.
+
+    // пример - свой компаратор
+    TreeSet<String> tSet = new TreeSet<>();
+    tSet.add("Ivan");
+    tSet.add("Igor");
+    tSet.add("Ilya");
+    System.out.println(tSet);   // [Igor, Ilya, Ivan]
+
+    Methods:
+    descendingSet()     // -> TreeSet, reverse
+    headSet(toKey)      // -> TreeSet, срез [:toKey]
+    tailSet(fromKey)    // -> TreeSet, срез [fromKey:]
+    subSet(from,to)     // -> TreeSet, срез от и до [from:to]
+
+--- LinkedHashSet ---
+    Наследник HashSet, хранит информацию о порядке добавления элементов.
+    Производительность ниже чем HashSet.
+    В основе лежит HashMap: ключи - элементы LinkedHashSet, значения - заглушка.
+
+    LinkedHashSet<String> lhSet = new LinkedHashSet<>();
+    lhSet.add("Ivan");
+    lhSet.add("Igor");
+    lhSet.add("Ilya");
+    System.out.println(lhSet);  // [Ivan, Igor, Ilya]
+
+    Methods:
+    contains(el)    // -> boolean
+
+--- Queue and LinkedList ---
+    Коллекция хранящая последовательность элементов. Добавляется элемент в 
+    конец очереди, используется из начала очереди.
+    FIFO - first in first out.
+    LinkedList используетя для создания очереди, он имплементирует интерфейсы
+    Queue и Deque(еще одна очередь - двусторонняя).
+
+    Queue<String> queue = new LinkedList<>();   // create
+    queue.add("Ivan")       // -> boolean, доб в кон очер если нет места - исключ
+    queue.offer("Ivan")     // -> boolean, доб в кон очер если есть место
+    queue.remove();         // -> type, удалить 1-ый elem, если нет - исключ
+    queue.poll();           // -> type, удалить 1-ый elem, если нет -> null 
+    queue.element();        // -> 1ый элем, если нет - исключ 
+    queue.peek();           // -> 1ый элем, если нет -> null 
+
+--- PriorityQueue ---
+    Это специальный вид очереди, вкотором используется натуральная сортировка
+    или та которую мы описываем с помощью Comparable или Comparator.
+    Используется тот элемент из очереди, чей приоритет выше, основана на 
+    структуре данных куча. 
+
+    PriorityQueue<Integer> pQueue = new PriorityQueue<>();
+    pQueue.add(42);
+    pQueue.add(5);
+    pQueue.offer(13);
+    pQueue.peek();              // return 5
+    pQueue.remove();            // remove 5
+
+--- Deque and ArrayDeque ---
+    Double ended queue(двунаправленная очередь).
+    Элементы могут использоваться с обоих концов.
+    FIFO and LIFO.
+    В качестве Deque может выступать LinkedList или ArrayDeque.
+
+    ArrayDeque<Integer> deque = new ArrayDeque<>();
+    deque.addFirst(5);      // добавить в начало очереди(исключ если места нет)
+    deque.addLast(13);      // добавить в конец очереди(исключ если места нет)
+    deque.offerFirst(42);   // добавить в начало очереди(если есть место)
+    deque.offerLast(31);    // добавить в конец очереди(если есть место)
+    deque.removeFirst();    // удалить сначала/ичключ
+    deque.removeLast();     // удалить сконца/исключ
+    deque.pollFirst();      // удалить сначала/false
+    deque.pollLast();       // удалить сконца/false
+    deque.getFirst();       // вывести 1-ый эл/исключ
+    deque.getLast();        // вывести посл эл/исключ
+    deque.peekFirst();      // вывести 1-ый эл/null
+    deque.peekLast();       // вывести посл эл/null
+
+--- Iterator ---
+    Обход + модификация коллекции(например удаление)
+    list.iterator() // for List(list - уже сущ объект списка)
+    set.iterator()  // for Set(set - уже сущ объект множества)
+
+    Iterator<String> it = aList.listIterator();
+    while (it.hasNext()) {                      // есть след элемент?
+        if(it.next().equals("a"))               // получить элемент
+            it.remove();                        // удаление элемента
+    }
+    aList.removeIf(s -> s.equals("a"));         // тоже самое удаление
+
+    listIterator() - имеет больше методов чем iterator()
+    ● hasPrevious() - проверка есть ли элемент слева;
+    ● previous() - переход на левый элемент и возврат ссылки на него;
+    ● nextIndex() - получение индекса следующего элемента;
+    ● previousIndex() - получение индекса предыдущего элемента;
+    ● add() - добавить новый элемент на то место, на кот указ итератор;
+    ● set() - изменить элемент, на который указывает итератор.
+
+--- Многопоточность ---
+    Многопоточность - принцип построения программы, при котором несколько
+    блоков кода могут выполнятся одновремено.
+
+    Состояние потоков
+    New -> Runnable -> Terminated
+            /     \
+        ready -> running
+    main - главный поток запуск - public static void main(String[] args)
+    Остальные создаваемые потоки работают параллельно main.
+    
+    Потоки бывают обычные и потоки-демоны. 
+    Приложение работает пока хоть 1 обычный поток не завершился.
+    Демонов никто не ждет, программа закроется если все обычные завершены,
+    а демоны могут еще не завершится и хрен с ними.
+    Для каждого потока создается свой stack.
+    Потоки могут заглядывать друг к другу в heap.
+    
+    concurrency - согласованность, вып неск задач потоками(возможно на 1 ядре)
+    parallelism - вып задач одновременно за счет многоядерного процессора 
+    синхронный  - вып задач последовательно друг за другом
+    асинхронный - вып задач не последовательно, переключаясь с одного на др,
+                  на многоядерном процессоре - параллельно.
+
+    Создание потоков: (предпочтительно вариант2/3)        
+    # вариант 1 - унаследоваться от Thread, переопределить run()
+    public class ThreadExampleClass extends Thread {   
+        @Override
+        public void run() {                         // этот метод запустится в 
+            for (int i = 0; i < 10; i++) {             || потоке при вызове 
+                System.out.println("thread-" + i);     метода obj.start().
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public static void main(String[] args) {
+            Thread t = new ThreadExampleClass();
+            t.start();                              // запуск в отдельном потоке
+            // код продолжается выполняться дальше параллельно
+        }
+    }
+
+    # вариант 2 - использовать интерфейс Runnable, переопределить run()
+    public class RunnableExampleClass implements Runnable{
+        @Override
+        public void run() {                         // переопределяем метод
+            for (int i = 0; i < 10; i++) {
+                System.out.println("thread-" + i);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public static void main(String[] args) {
+            Thread t = new RunnableExampleClass();
+            t.start();                              // запуск в отдельном потоке
+            // код продолжается выполняться дальше
+        }
+    }
+
+    # вариант 3 - анонимный класс/lambda, переопределяем run()
+    public class AnonymousExampleClass {
+        public static void main(String[] args) {
+            Thread t = new Thread(new Runnable() {  // переопределяем на месте
+                @Override                              можно завернуть в lambda
+                public void run() {
+                    for (int i = 0; i < 10; i++) {
+                        System.out.println("thread-" + i);
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+
+            t.start();
+            // код продолжается выполняться дальше
+        }
+    }
+
+    # вариант 3.1 - анонимный поток(самое короткое написание)
+    public static void main(String[] args) {
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                System.out.println("1: " + i);
+            }
+        }).start();
+     }
+
+--- tread.join - дождаться выполнения потока ---
+    t.start();                              // запуск потока
+    try {
+        t.join();                           // ждать завершения потока
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    System.out.println("END");              // продолжить после заверш потока
+
+    // два join подряд работают последовательно
+    t1.join();  // дожидаемся окончания, переходим дальше
+    t2.join();  // если не завершился ждем, иначе проскакиваем
+
+--- Daemon/демон ---
+    Фоновые потоки, выполняют фоновые задачи.
+    Поток завершения которого программа не ждет. Когда все user потоки
+    завершатся - то и программа завершится не дождавшись демонов.
+    Сделать поток демоном невозможно после .start()
+    new Thread().setDaemon()    // create Daemon
+    daemon.isDaemon()           // is it daemon?
+    
+    public class DaemonExample {
+        public static void main(String[] args) {
+            Thread tTimer = new Thread(() -> {
+                for (int i = 0; i < 10; i++) {
+                    System.out.println("thread-" + i);
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            tTimer.setDaemon(true);         // исп поток как демон
+            tTimer.start();
+            System.out.println("main -> sleep");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("main: -> end");
+        }
+    }
+
+--- Thread methods ---
+    Thread.currentThread(); // -> Thread, тек поток
+    Thread.sleep(Long ms);  // -> void, заснуть на ms millisecs
+    start()                 // void, запуск потока
+    interrupt()             // -> void, прервать поток, с пом проверки 
+                               Thread.currentThread().isInterrupted() в
+                               определении тела потока. 
+    run()                   // -> void, запуск задачи не в новом потоке
+    join()                  // -> void, ожидание завершения потока
+    join(msec)              // -> void, ожидание заверш потока макс 'm' msec
+    setDaemon(true)         // -> void, преобразовать в поток-демон
+    isDaemon()              // -> boolean, поток - демон?
+    isAlive()               // -> boolean, поток выполняется?
+    isInterrupted()         // -> boolean, поток прерван?
+    setName(String)         // -> void, set name of thread
+    getName()               // -> String, get name of thread
+    getState()              // -> enum State, состояние потока
+    setPriority(i)          // -> void, задать приоритет int [0-10]
+    getPriority()           // -> int, текущий приоритет потока
+    getStacTrace()          // -> StackTraceElement, инфо
+
+--- Thread interruption/Прерывание потоков ---
+    interrupt()     // прервать
+    isInterrupted() // прерван?
+    
+    public class InterruptionEx {
+        public static void main(String[] args) throws InterruptedException {
+            System.out.println("main starts");
+            InterruptedThread thread = new InterruptedThread();
+            thread.start();
+            Thread.sleep(2);
+            thread.interrupt();                     // send signal
+            thread.join();
+            System.out.println("main ends");
+        }
+    }
+
+    class InterruptedThread extends Thread {
+        private double sqrt_sum = 0;
+
+        @Override
+        public void run() {
+            for (int i = 1; i < 1000000000; i++) {
+                if (isInterrupted()) {              // check signal
+                    System.out.println(getName() + " is interrupted");
+                    break;                          // process
+                }
+                sqrt_sum += Math.sqrt(i);
+            }
+            System.out.println(sqrt_sum);
+        }
+    }
+
+    Прервать спящий поток:
+    try {
+            sleep(100);
+        } catch (InterruptedException e) {  // при получении сигнала сработает
+            System.out.println("They want to interrupt " + getName());
+            return;
+        }
+
+--- Ordering/очередность ---
+    // Нет гарантии в очередности потоков, может быть по разному
+    new Thread(() -> System.out.println(1)).start();
+    new Thread(() -> System.out.println(2)).start();
+    new Thread(() -> System.out.println(3)).start();
+
+--- Monitor ---
+    Спец механизм с пом кот вып-ся корректная синхронизация.
+    У каждого объекта/класса есть привяз к нему сущность - монитор.
+    2 статуса монитора: свободен/занят.
+    Используется при использовании synchronized.
+    Когда 1 поток заходит в synchronized блок - монитор становится занятым.
+    В одно и то же время монитор мож быть занят только одним потоком.
+    Остальные потоки будут ждать пока монитор занят, а потом какой-то
+    1 из потоков снова займет монитор зайдя в synchronized block.
+    Любая блокировка с пом синхр-ии идет на объекте/классе, у методов
+    нет никакого монитора.
+
+    Монитор - это объект, используемый в качестве взаимоисключающей 
+    блокировки. Только один поток исполнения может в одно и то же время
+    владеть монитором. Когда поток исполнения запрашивает блокировку, 
+    то говорят, что он входит в монитор. Все другие потоки исполнения, 
+    пытающиеся войти в заблокированный монитор, будут приостановлены
+    до тех пор, пока первый поток не выйдет из монитора. Обо всех прочих
+    потоках говорят, что они ожидают монитор. Поток, владеющий монитором,
+    может, если пожелает, повторно войти в него.
+    Монитор - это тот объект у которого был вызван synchronized метод.
+
+    Конструкторы синхронизировать нельзя.
+
+--- Race(Гонка), synchronized methods---
+    Data Race - потоки пытаются модифицировать одну и ту же переменную
+    возможны расхождения в ожидаемых результатах. Для предотвращения
+    таких ситуаций используют synchronyzed methods.
+    Synchronized methods под капотом используют monitor obj/class, если
+    метод не статичный - то это по умолчанию объект this, если статик
+    метод - monitor класса.
+
+    class C {
+        volatile static int c;                      // volatile
+        public synchronized static void inc() {     // static synchronized
+            c++;
+        }
+    }
+
+    public class Counter implements Runnable {      
+        public void inc() { C.c++; }                // not synchronized
+    }
+    
+    public class SyncCounter implements Runnable {
+        public synchronized void inc() { C.c++; }   // synchronized
+    }
+
+    synchronized - доступ к методам осуществ потоками по очереди,
+    при чем все методы одновременно, т.е. если поток работае с inc()
+    то другой поток будет ждать чтобы использовать inc()
+
+--- Synchronized block ---
+    Работают как synchronized методы, только синхронизируют не весь 
+    код в методе(хотя можно и весь), а лишь его часть, размещается в методе.
+    Снтаксис: synchronized (object) { синхр код; }
+    static final Object lock = new Object();    // obj в кач монитора
+    public void someMethod() {                  // какой-то метод
+        // some code ...
+        synchronized (lock) {                   // sync block
+            Counter.count++;
+            System.out.println(Counter.count);
+        }
+        // some code ...
+    }
+
+    Этот способ подойдет для работы с разными полями класса, на каждое
+    поле свой монитор - чтобы синхронизировать не все методы, а только те
+    которые модифицируют одни и те же данные.
+    Если 2 потока синхронизируются по одному объекту, 
+    то если один занял монитор, второй будет ждать.
+
+    Несколько мониторов:
+    public class SyncMonitorApp {
+        private Object monitor1 = new Object(); // любой объект в кач монитора
+        private Object monitor2 = new Object();
+        private int c1 = 0;
+        private int c2 = 0;
+        public void inc1() { synchronized (monitor1) { с1++; } }
+        public void inc2() { synchronized (monitor2) { с2++; } }
+        public void dec1() { synchronized (monitor1) { с1--; } }
+        public void dec2() { synchronized (monitor2) { с2--  } }
+    }
+
+    Статические sync методы также перехватывают монитор и сам класс
+    не дает обращаться к другим статик методам когда монитор занят.
+    Монитор статик методов - это класс: запись SomeClass.class
+    public synchronized static void def(){}                     // method
+    public static void def(){ synchronized (MyClass.class) }    // block
+
+    Разница
+    synchronized void method(){} == void method(){synchronized (this){}}
+
+--- DeadLock ---
+    DeadLock - ситуация когда 2 или более потоков залочены навсегда, 
+    ожидают друг друга и ничего не делают.
+    
+    LiveLock - ситуация когда 2 или более потоков залочены навсегда, 
+    ожидают друг друга, но проделывают работу без какого-то прогресса.
+
+    Lock starvation - ситуация когда менее приор потоки ждут долгое 
+    время или всегда более приор потоков.
+
+    взаимной блокировкой, которая происходит в том случае,
+    когда потоки исполнения имеют циклическую зависимость от пары 
+    синхронизированных объектов. Допустим, что один поток исполнения входит 
+    в монитор объекта Х, а другой - в монитор объекта У. Если поток исполнения 
+    в объекте Х попытается вызвать любой синхронизированный метод для объекта У, 
+    он будет блокирован, как и предполагалось. Но если поток исполнения в объекте
+    У, в свою очередь, попытается вызвать любой синхронизированный метод для 
+    объекта Х, то этот поток будет ожидать вечно, поскольку для получ доступа к 
+    объекту Х он должен снять свою блокировку с объекта У, чтобы первый поток 
+    исполнения мог завершиться.
+
+--- volatile ---
+    запрещает кэширование переменной внутри процессора, 
+    хранить и сп переменную только в памяти. Использовать
+    когда неcколько потоков работают с одной переменной. Причем
+    когда только 1 поток может изменять перем, остальные - читать.
+    Использовать совместно с synchronized блоками если изменять
+    нужно более чем одному потоку.
+    volatile boolean b = true;  // create
+
+--- wait notify ---
+    Механихм с пом которого потоки извещают друг друга.
+    вызываются на объекте держащим монитор:
+    wait        - освобождает монитор и переводит вызывающий поток в состояние 
+                  ожидания до тех пор, пока другой поток не вызовет метод 
+                  notify()/notifyAll();
+    wait(1000)  - ждать 1 секунду, после снова станет активным потоком
+    notify      - продолжает работу потока, у кот ранее был вызван метод wait(),
+                  НЕ освобождает монитор, продолжает быть активным.
+    notifyAll   - возобн работу всех потоков, у кот был вызван метод wait(),
+                  НЕ освобождает монитор, продолжает быть активным.
+
+    По рекомендации JavaDoc - wait() используется в циклах а не в if,
+    так как поток может пробудиться сам по себе и условие снова не проверит.
+   
+    public class WaitNotifyApp {
+        private final Object mon = new Object();
+        private volatile char currentLatter = 'A';
+  
+        public static void main(String[] args) {
+            WaitNotifyApp waitNotifyApp = new WaitNotifyApp();
+            new Thread(() -> {
+                waitNotifyApp.printA();
+            }).start();
+            new Thread(() -> {
+                waitNotifyApp.printB();
+            }).start();
+
+        }
+
+        public void printA() {
+            synchronized (mon) {
+                try {
+                    for (int i = 0; i<5; i++){
+                        while (currentLatter != 'A'){
+                            mon.wait();
+                        }
+                        System.out.print("A");
+                        currentLatter = 'B';
+                        mon.notifyAll();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public void printB() {
+            synchronized (mon) {
+                try {
+                    for (int i = 0; i<5; i++){
+                        while (currentLatter != 'B'){
+                            mon.wait();
+                        }
+                        System.out.print("B");
+                        currentLatter = 'A';
+                        mon.notifyAll();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+--- ExecutorService/пуллы потоков ---
+    Thread pool - множество потоков, каждый из которых предназначен для
+    выполнения той или иной задачи.
+    Принцип работы: в thread pool закидываются задачи и уже внутри регулир
+    кто какую задачу какой поток будет выполнять.
+    Executor - интерфейс с помощью которого идет работа с thread pool.
+    ExecutorService - интерфейс, одна из реализаций Executor.
+    Executors - класс с множеством static methods для создания пулов.
+    java.util.concurrent;   // package
+
+    Виды пулов потоков, creation:
+    newSingleThreadExecutor();  // пул в котором только один рабочий поток
+    newFixedThreadPool( 10 );   // пул с фиксированным количеством потоков
+    newCachedThreadPool();      // пул, кот может автоматически расширяться
+
+    Methods:
+    execute(Runnable)       // void, отдать задачу в пул потоков
+    shutdown()              // void, больше не приним задачи, выполняет текущие,
+                               прекращает работу пула.
+    shutdownNow()           // void, послать Interrupt всем потокам, обраб вручную
+    awaitTermination(time)  // -> boolean, поток в котором вызван этот метод
+                               ждет либо завершения пула, либо указ-го времени,
+                               далее возобнов работу. Используют после shutdown() 
+    isShutDown()            // -> boolean
+    isTerminated()          // -> boolean\
+    submit(Runnable)        // -> Future, объект который можно использовать для 
+                               проверки завершенности выполнения задачи.
+    submit(Callable)        // -> Future, в отличие от Runnable, его метод call()
+                               может возвращать результат
+    invokeAll(Collection)   // -> List<Future>, отдать неск задач на выполнение
+    invokeAny(Collection)   // -> List<Future>, отдать неск задач, выполнить 
+                               хотя бы одну, остальные нет.
+    
+    Example:
+    // 10 рабоч потоков
+    ExecutorService executorService = Executors.newFixedThreadPool(10);
+    // задача, передаваемая на выполнение одному из потоков
+    executorService.execute(new Runnable() {
+        public void run() {
+            System.out.println("Асинхронная задача");
+        }
+    });
+    executorService.shutdown();     // остановить неисп потоки, не приним задачи
+
+    Фабрика потоков для пулла:
+    Подготавливает и настраивает потоки для пулла.
+    Описываем как для приходящей в пулл задачи выделять новый поток.
+    ExecutorService service = Executors.newFixedThreadPool(2, new ThreadFactory() {
+        @Override
+        public Thread newThread(Runnable r) {   // описываем как созд-ся поток
+            Thread t = new Thread(r);   
+            t.setPriority(10);
+            t.setName("abc");
+            System.out.println("created");
+            return t;
+        }
+    });
+    service.execute(() -> System.out.println(1));   // запуск задачи
+
+--- Callable<V> ---
+    Как и Runnable представляет собой опред задание, кот вып-ся потоком.
+    Но имеет return type НЕ void, а также может выбрасывать Exception.
+    @FunctionalInterface
+    public interface Callable<V> {
+        V call() throws Exception;
+    }
+
+    Runnable and Callable are used in ExecutorService.submit()
+    
+    Methods:
+    service.submit()    // принимает либо Runnable, либо Callable,
+                           перед наш task to thread pool, для выполнения его
+                           одним из потоков(как execute()) и возвр объект Future.
+                           Результат в Future будет только после выполнения task.
+    future.get()        // -> результат выполнения нашего task, если не
+                           завершился - то тек поток болокируется до завершения 
+                           task. Поэтому не используется awaitTermination().
+                           При submit(new Runnable) возвращ результат null.
+    future.isDone()     // -> boolean, завершен task или нет?
+    future.cancel()     // отменить task, если не начался.
+
+    Example with submit():
+    // Runnable
+    ExecutorService executorService = Executors.newFixedThreadPool(2);
+    Future future = executorService.submit(new Runnable() {
+        public void run () {
+            System.out.println("Асинхронная задача");
+        }
+    });
+    future.get(); // вернет null если задача завершилась корректно
+
+    // Callable
+    Future future = executorService.submit(new Callable<>(){
+        public Object call() throws Exception {
+            System.out.println("Асинхронный вызов");
+        return "Результат из потока" ;
+        }
+    });
+    System.out.println("future.get() = " + future.get()); // возвращает данные
+    executorService.shutdown();
+
+--- ScheduledExecutorService ---
+    Установка расписания на запуск потоков из пула.
+    Create:
+    ScheduledExecutorService s = Executors.newScheduledThreadPool(2);
+    Methods:
+    schedule(Runnable, time)    // -> ScheduledFuture, запуск задачи спустя время
+    shutdown()                  // void, больше не приним задачи, вып текущие,
+                                   прекращает работу пула.
+    scheduleAtFixedRate(R,t,p)  // -> ScheduledFuture, запуск задачи спустя время
+                                   периодически снова запускать через время 'p'.
+                                   обычно после такого вызова в тек потоке делают
+                                   sleep() + shutdown() - иначе бесконеч вып-ие.
+    scheduleWithFixedDelay(..)  // -> ScheduledFuture, запуск задачи через время,
+                                   промежутки между концом работы одной задачи и
+                                   начала работы другой - время в парам.
+
+    Examples:
+    schedule(() -> System.out.println("Hi"), 3, TimeUnit.SECONDS);
+    scheduleAtFixedRate(() -> System.out.println("Ok"), 3, 1, TimeUnit.SECONDS);
+    scheduleWithFixedDelay(() -> System.out.println("go"), 2, 1, TimeUnit.SECONDS);
+    
+--- Lock/замок ---
+    Lock - interface. 
+    ReeentrantLock - class that implements Lock.
+    Также как ключ слово synchronized нужен для синхронизации потоков.
+
+    package java.util.concurrent;   # различные утилиты по работе с многопоточ.
+    Интерфейс Lock из пакета java.util.concurrent – это продвинутый механизм 
+    синхронизации потоков. По гибкости он выигрывает в сравнении с блоками 
+    синхронизации. Для работы с этим интерфейсом необходимо создать объект 
+    одной из его реализаций:
+
+    Lock lock = new ReentrantLock();
+    lock.lock();
+    // критическая секция
+    lock.unlock();
+    Создаем объект типа Lock и вызываем у него метод lock() – он захватывается. 
+    Если другой поток попытается вызвать этот метод у того же объекта – он будет
+    блокирован до тех пор, пока поток, удерживающий объект lock, не освободит 
+    его через метод unlock(). Тогда этот объект смогут захватить другие потоки.
+
+    Основные отличия между Lock и синхронизированными блоками:
+        ● Синхронизированные блоки не гарантируют, что сохранится порядок 
+          обращения потоков к критической секции;
+        ● Нельзя выйти из синхронизированного блока по времени ожидания (timeout);
+        ● Синхронизированные блоки должны полностью содержаться в одном методе. 
+          Lock может быть захвачен в одном методе, а освобожден в другом.
+
+    Методы интерфейса Lock:
+    lock()      Блокирует объект типа Lock, если это возможно. Если объект уже был
+                заблокирован др потоком -  то поток, вызвавший метод lock(), 
+                блокируется до вызова unlock() тем потоком который захватил lock.
+    tryLock()   Метод пытается заблокировать объект типа Lock, если это возможно. 
+                При удачном блокировании вернет «true». Если же Lock уже был 
+                заблокирован – то «false», и поток, вызвавший tryLock() , 
+                не будет заблокирован.
+    tryLock(long timeout,TimeUnit timeUnit)
+                Похож на tryLock(), но в течение заданного времени пытается 
+                захватить объект Lock. Если нет - то нет.
+    unlock()    Разблокирует объект Lock. Вызывается только потоком, который 
+                владеет блокировкой Lock. При попытке других потоков обратиться 
+                к этому методу будет выдано исключение RuntimeException.
+    lockInterruptibly()
+                Если где-то у потока вызвать interrupt, то в коде где
+                произходит захват lock.lockInterruptibly() - произойдет
+                выброс InterruptedException - где уже можно его обработать
+                вручную и освободить Lock.
+    Example:
+     // lock/unlock делаем в try/finally
+    public static void main(String[] args) {
+        final Lock lock = new ReentrantLock();          // Lock obj
+        new Thread(() -> {                              // 1-st Thread
+            System.out.println("T-BEFORE-LOCK-1");
+            lock.lock();                                // lock()
+            System.out.println("T-GET-LOCK-1");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                System.out.println("T-END-1");
+                lock.unlock();                          // unlock()
+            }
+        }).start();
+        new Thread(() -> {                              // 2-nd Thread
+            System.out.println("T-BEFORE-LOCK-2");
+            try {
+                if (lock.tryLock(1, TimeUnit.HOURS)) {
+                    lock.lock();
+                    System.out.println("T-GET-LOCK-2");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        System.out.println("T-END-2");
+                        lock.unlock();
+                    }
+                } else {
+                    System.out.println("T-2-TRY-FALSE-WAITING 1 HOUR");
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+--- ReadWriteLock ---
+    Интерфейс java.util.concurrent.locks.ReadWriteLock – это продвинутый 
+    механизм для блокировки потоков. Он позволяет множеству потоков одновременно
+    читать данные, или только одному потоку – их записывать. Ресурс открыт для 
+    чтения множеству потоков без риска ошибок. Проблемный момент – если несколько
+    потоков одновременно читают и записывают данные.
+    
+    Read Lock   Если нет потоков, которые захватили объект этого типа для записи, 
+                то множество потоков могут захватить его для чтения.
+    Write Lock  Если нет потоков, которые захватили этот объект для записи или 
+                чтения, то только один поток может захватить его для записи.
+        
+    ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    
+    readWriteLock.readLock().lock();
+    // множество читателей может зайти в эту секцию,
+    // если нет записывающих потоков
+    readWriteLock.readLock().unlock();
+    
+    readWriteLock.writeLock().lock();
+    // только один поток-писатель может зайти в эту секцию,
+    // при условии, что ни один из потоков не занимается чтением
+    readWriteLock.writeLock().unlock();
+
+    Example:
+    public static void main(String[] args) {
+        ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+        // read
+        new Thread(() -> {
+            rwl.readLock().lock();
+            try {
+                System.out.println("1-thread-start-reading");
+                Thread.sleep(3000);
+                System.out.println("1-thread-end-reading");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                rwl.readLock().unlock();
+            }
+        }).start();
+
+        new Thread(() -> {
+            rwl.readLock().lock();
+            try {
+                System.out.println("2-thread-start-reading");
+                Thread.sleep(3000);
+                System.out.println("2-thread-end-reading");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                rwl.readLock().unlock();
+            }
+        }).start();
+
+        // write
+        new Thread(() -> {
+            rwl.writeLock().lock();
+            try {
+                System.out.println("3-thread-start-writing");
+                Thread.sleep(3000);
+                System.out.println("3-thread-end-writing");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                rwl.writeLock().unlock();
+            }
+        }).start();
+
+        new Thread(() -> {
+            rwl.writeLock().lock();
+            try {
+                System.out.println("4-thread-start-writing");
+                Thread.sleep(3000);
+                System.out.println("4-thread-end-writing");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                rwl.writeLock().unlock();
+            }
+        }).start();
+    }
+
+--- Коллекции для многопоточности ---
+    // синхронизированные коллекции
+    Vector<String> list = new Vector<>();
+    ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>(); 
+
+    // каждую обычную коллекцию можно преобразовать в синхронизированную
+    Map<String,String> map = new HashMap<>();
+    map = Collections.synchronizedMap(map);
+
+    // Если поток работ со списком, а другой меняет этот список, то созд копия
+    CopyOnWriteArrayList<Integer> copyList = new CopyOnWriteArrayList<>();
+
+    // блокирующая очередь, позволяет потоку входить в режим ожидания если
+       места в очереди нет, также с потоком который извлекает данные, если
+       очередь пуста - будет ожидать.
+    ArrayBlockingQueue<String> arrayBQ = new ArrayBlockingQueue<String>(6);
+
+--- Synchronizer/Синхронизатор ---
+    Это механизм высокого уровня использующий механизмы параллелизма низкого
+    уровня.
+
+--- CountDownLatch/защелка обратного счетчика ---
+    Это синхронизатор - позволяющий любому кол-ву потоков ждать пока
+    не завершится опред кол-во операций.
+    Конструктор принимает кол-во опреаций, кот должны завершится, чтобы 
+    потоки продолжили свою работу.
+    Защелка закрыта пока счетчик не = 0, потоки ждут.
+
+    CountDownLatch latch = new CountDownLatch(3);   // 3 щелчка и все потоки
+                                                       стартуют
+    await()     // ждать пока счетчик не станет = 0(можно задать таймаут)
+    countDown() // убавить счетчик на 1
+
+    Example
+    import java.util.concurrent.CountDownLatch;
+    public static void main(String[] args) {
+        final int THREADS_COUNT = 6;
+        final CountDownLatch countDownLatch = new CountDownLatch(THREADS_COUNT);
+        System.out.println("Start");
+        for (int i = 0; i < THREADS_COUNT; i++) {
+            final int w = i;
+            new Thread(() -> {
+                try {
+                    Thread.sleep(200 + w + (int) (500 + Math.random()));
+                    System.out.println("Thread #" + w + " is ready");
+                    // тут потоки будут ждать пока счетчик не = 0
+                    countDownLatch.countDown(); // убавляем счетчик на 1
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+
+        try {
+            countDownLatch.await();             // поток main ждет завершения 
+        } catch (InterruptedException e) {      // всех потоков(когда счетчик=0)   
+            e.printStackTrace();
+        }
+        System.out.println("Work is completed");
+    }
+    
+--- Semaphore ---
+    Это синхронизотор - позволяющий ограничить доступ к какоему-то ресурсу.
+    Конструктор принимает кол-во потоков, которым Semaphore будет разрешать
+    одновременно использовать этот ресурс.
+
+    Ограничивает количество потоков при работе с ресурсами. Для этого служит 
+    счетчик. Если его значение больше нуля, то потоку разрешается доступ, а 
+    значение уменьшается. Если счетчик равен нулю, то текущий поток блокируется 
+    до освобождения ресурса. 
+    Semaphore smp = new Semaphore(2);   // 2 threads
+    acquire()   // получение доступа  
+    release()   // освобождение  
+
+    Example:
+    import java.util.concurrent.Semaphore;
+    public static void main(String[] args) {
+        Semaphore smp = new Semaphore(2);
+        for (int i = 0; i < 5; i++) {
+            final int w = i;    // счетчик потоков
+            new Thread(() -> {
+                try {
+                    System.out.println("Поток " + w + " перед семафором");
+                    // тут потоки выполняют дальнейший код если счетчик > 0
+                    smp.acquire();  // если счетчик не 0, захват и счетчик-=1
+                    System.out.println("Поток " + w + " получ дост к ресурсу");
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    System.out.println("Поток " + w + " освободил ресурс");
+                    smp.release();  // освободить, увеличить счетчик на 1
+                }
+            }).start();
+        }
+    }
+
+--- CyclicBarrier ---
+    Основной поток создает 6 потоков и ждет, пока каждый из них не закончит 
+    приготовление к работе. CyclicBarrier выполняет синхронизацию заданного 
+    количества потоков в одной точке. Как только заданное количество потоков 
+    заблокировалось (вызовами метода await()) , с них одновременно снимается 
+    блокировка.
+    Старт разом заданного кол-ва потоков.
+    Далее CyclicBarrier снова принимает начальное значение и все по кругу.
+
+    Example:
+    import java.util.concurrent.CyclicBarrier;
+    public static void main(String[] args) {
+        CyclicBarrier cb = new CyclicBarrier(3);
+        for (int i = 0; i < 3; i++) {
+            final int w = i;
+            new Thread(() -> {
+                try {
+                    System.out.println("Поток " + w + " готовится");
+                    Thread.sleep(100 + (int) (3000 * Math.random()));
+                    System.out.println("Поток " + w + " готов");
+                    cb.await();     // убавить счетчик на 1, если 0 - старт все
+                    System.out.println("Поток " + w + " запустился");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+    }
+
+--- Exchanger ---
+    Это синхронизатор, позволяющий обмениваться данными между 2-мя потоками.
+    Получение информации происх одновременно, информация дол быть одного типа
+    данных.
+    Exchanger<T> exchanger = new Exchanger<>(); // создать
+    exchange(T)     // обмен
+
+--- Atomic types ---
+    Для избавления от race condition чтобы к одним данным был одновременный
+    доступ помиио synchronized get set можно использовать атомарные типы данных.
+    import java.util.concurrent.atomic*;    # атомарные типы данных
+    Все операции этих типов - атомарные, т.е. выполняются в один момент времени
+    одним потоком.
+    
+    Example:
+    AtomicInteger ai = new AtomicInteger(10);
+    ai.getAndAdd(2);
+    ai.addAndGet(3);
+    ai.decrementAndGet();
+    ai.incrementAndGet();
+    ai.getAndSet(4);
+
+--- Stream API ---
+    Stream - это последовательность элементов, поддерживающих последовательные
+    и параллельные операции над ними.
+    Stream - интерфейс позволяющий сократить код при работе с коллекциями,
+    массивами а именно операции фильтрации, сортировки.
+    Грубо говоря это поток данных содержащихся в коллекции или массиве.
+    В методах стрима используются lambda.
+    Методы стримма позволяют писать быстрый код для раб с коллекциями.
+    Stream это не поток в программе и не поток чтения/записи файла.
+    Любой поток можно преобразовать в любую коллекцию или массив.
+    Методы stream не меняют саму коллекцию или массив от которой был создан
+    поток.
+
+    Методы stream.
+    Intermediate methods(lazy) на вход получают stream и возвращают stream,
+    не работают пока не вызовется Terminal method. Lazy - не сработает
+    пока что-то не произойдет.
+    Terminal method(eager) - возвращает что-то оличное от stream. Eager - 
+    действующий сразу, нетерпеливый.
+    После использования на потоке terminal method, стрим нельзя переиспользовать.
+
+    // create stream/stream source
+    Stream.empty()          // empty stream
+    Stream.of(elems);       // stream of elements
+    Stream.ofNullable(el);  // stream of 1 obj or empty if obj==null
+    collection.stream();    // stream from collection
+    Arrays.stream(arr);     // stream from array(int/long/double/Object)
+    
+    Stream.generate(Supplier<T>);   // бесконеч генератор, напр Math::random 
+    IntStream.iterate(s, Function); // s - нач значение, x->x+1 - функция
+                                       след = пред+1
+    IntStream.iterate(s, Predicate, Function);  // то же но с условием
+    String.chars()          // -> IntStream, поток массива int из строки 
+    Pattern.splitAsStream() // stream from regex
+    Stream.concat(stream2, stream3) // -> Stream, concat streams
+
+    // работа с коллекциями
+    List<String> list = new ArrayList<>();      // List
+    list.stream();                              // Поток всех элементов списка
+    list.stream().map(el -> el.length());       // новый поток с результами
+    list.stream().collect(Collectors.toSet())   // list -> set
+    set.stream().collect(Collectors.toList())   // set -> list
+
+    // создаем поток из коллекции, применяем метод, 
+    // полученный поток преобразуем в коллекцию
+    list.stream().map(el -> el.length()).collect(Collectors.toList());  // toList
+    list.stream().map(el -> el.length()).toList();                      // Java16
+
+    // работа с массивами
+    int[] array = {1,6,3,0,5};
+    Arrays.stream(array);                   // получить поток из массива
+    Arrays.stream(array).map(el -> el*el);  // новый поток с результами
+    Arrays.stream(array).map(el -> el * el).toArray();  // новый массив
+
+    
+    // работа с файлами
+    Files.lines(Paths.get("1.txt")) // получаем поток и вертим им как хотим
+            .map(s -> s.toUpperCase(Locale.ROOT))
+            .forEach(System.out::println);
+
+    Specialized streams
+    Содержат доп спец методы (sum, max, min, count, range, rangeClosed)
+    IntStream()     // int
+    DoubleStream()  // double
+    LongStream()    // long
+    Example: generator
+    IntStream.range(0,10).forEach(System.out::println);         // [0;10)
+    IntStream.rangeClosed(0,10).forEach(System.out::println);   // [0;10]
+
+ --- Optional<T> ---
+    класс - контейнер-обертка над типом данных.
+    Хранит либо значение(не null), либо его отсутствие.
+    Optional.of(obj);           // create, if null - exception
+    Optional.ofNullable(obj)    // если null - пустой Optional
+    Methods:    
+    isPresent()                 // -> boolean, проверка на null.
+    ifPresent(Consumer<T>)      // -> void, если не пустой вып accept()
+    get()                       // -> Type, возвращает объект типа.
+    orElse(val)                 // -> val, если коробка пуста вернуть val.
+    Example:
+    Optional<Integer> optional = list.stream().reduce((acc, el) -> acc * el);
+    if (optional.isPresent()) System.out.println(optional.get());   // get
+    optional.ifPresent(System.out::println);                        // the same
+
+--- Stream Methods ---
+    i - intermediate method(lazy)
+    t - terminal method(eager)
+    map(Function<T,R>)      // -> Stream, применяет Function к каждому эл.  (i)
+    filter(Predicate<E>)    // -> Stream, фильтрует данные из набора        (i)
+    forEach(Consumer<T>)    // -> void, обход элементов                     (t)
+    
+    reduce() агрегатная функция - производит операции над элементами,
+    вычисляет одно общее значение и возвращает его в виде Optional.
+    Example: reduce((acc, el) -> acc * el)
+        acc - общ знач кот вычисл и потом возвращ, изначально = 1-му эл
+        el  - каждый элемент коллекции/массива, изнач = 2-му эл
+        по нашей lambda значение acc увеличивается на произведение на сл эл
+        acc *= el
+        в результате после прохождения всей коллекции возвращается acc.
+    reduce(BinaryOperator<T>)       // -> Optional, возвращ аккумулир знач  (t)
+    reduce(T i, BinaryOperator<T>)  // -> Type, acc=i, el=1-й эл            (t)
+    
+    sorted()                // -> Stream, сортир поток Comparable эл        (i)
+    sorted(Comparator)      // -> Stream, сортир поток                      (i)
+    distinct()              // -> Stream, uniq elements                     (i)
+    peek(Consumer<T>)       // -> Stream, обход элем (подглядеть/отладка)   (i)
+    limit(long n)           // -> Stream, limit(n) of elements              (i)
+    skip(long n)            // -> Stream, skip n-first elements             (i)
+    takeWhile(Predicate<T>) // -> Stream, пока условие верно доб в поток    (i)
+    dropWhile(Predicate<T>) // -> Stream, пока true не доб, после доб отал  (i)
+    boxed()                 // -> IntStrem -> Stream<Integer> напр          (i)
+    
+    // Сборка коллекций, других типов с пом collect()
+    collect()               // -> Collection, собирает коллекции            (t)
+                                  Collectors.toMap()/toList()/toSet()
+    collect(Collectors.groupingBy(Function<T,R>))   // -> Map, group by     (t)
+                                                       map с группами
+    collect(Collectors.partitioningBy(Predicate<T>) // -> Map, separ by     (t)
+                                                       map из 2-х эл t|f
+    collect(Collectors.joining(delimeter,pre,suf))  // -> String, 0,1,3 par (t)
+
+    allMatch(Predicate<T>)  // -> boolean, все ли эл соотв условию          (t)
+    anyMatch(Predicate<T>)  // -> boolean, хоть 1 эл соотв условию          (t)
+    noneMatch(Predicate<T>) // -> boolean, не 1 эл не соотв условию         (t)
+    count()                 // -> long, count of elements                   (t)
+    findAny().ifPresent()   // -> Optional, первый попавшийся элемент       (t)
+    findFirst()             // -> Optional, first element of stream         (t)
+    min(Comparator<T>)      // -> Type, min element                         (t)
+    max(Comparator<T>)      // -> Type, max element                         (t)
+        
+    Преобразование к спец потокам как map:
+    mapToInt(Function<>)    // -> IntStream, stream of Integers             (i)
+                               IntStream может исп sum, avg, min .. methods
+    mapToDouble(Function<>) // -> DoubleStream, stream to DoubleStream      (i)    
+    mapToLong(Function<>)   // -> LongStream, stream to LongStream          (i)  
+    
+    Поток из потоков вложенных коллекций:
+    flatMap(Function<T>, Stream<R>) // -> Stream, стрим стримов влож кол-й  (i)
+    flatMapToInt()                  // -> Stream of int                     (i)
+    flatMapToDouble()               // -> Stream of double                  (i)
+    flatMapToLong()                 // -> Stream of long                    (i)
+
+    Examples:
+    list.stream().map(element -> element.length()).toList();
+    students.stream().filter(student -> student.sex == 'w').toList();
+    Arrays.stream(array).forEach(value -> System.out.print(value * 2));
+    int i = list.stream().reduce(1, (acc, el) -> acc * el);
+    String s = strings.stream().reduce((acc, el) -> acc + " " + el).get();
+    Stream.concat(stream2, stream3);
+    System.out.println(stream5.distinct().toList());
+    System.out.println(stream1.distinct().count());
+    System.out.println(stream5.distinct().peek(System.out::println).count());
+    facultyList.stream().flatMap(faculty -> faculty.getStudents().stream())
+            .forEach(System.out::println);
+    Map<Character, List<Student>> map1 =  students.stream()
+            .collect(Collectors.groupingBy(student -> student.getSex()));
+    Map<Boolean, List<Student>> map2 =  students.stream()
+            .collect(Collectors.partitioningBy(el->el.getAvgGrade()>7));
+    List<Integer> courses = students.stream()
+            .mapToInt(el->el.getAge())
+            .boxed()    // boxing вручную
+            .collect(Collectors.toList());
+    int sum = students.stream().mapToInt(el -> el.age).sum();   // сумма!
+    int max = students.stream().mapToInt(el -> el.age).max().getAsInt();
+
+--- Stream Chaining ---
+    Из методов можно делать цепочки - передавая поток с одного в другой.
+    Source(колл/массив) -> intermediate methods(lazy) -> Terminal method(eager)   
+    Example:                     
+    Arrays.stream(array)                                
+            .filter(e -> e % 2 != 0)                    // intermediate method
+            .map(e ->                                   // intermediate method
+            {
+                if (e % 3 == 0) e = -1;
+                return e;
+            })
+            .sorted()                                   // intermediate method
+            .forEach(el -> System.out.print(el + " ")); // terminal method
+
+--- Parallel stream  ---
+    Возможность исп неск ядер процессора при вып операций со stream.
+    Целесообразно для большого количества элементов.
+    Коллекция делится и выполняются нужные операции, потом результаты 
+    между собой. Деление не подходит - здесь важен порядок.    
+    create:
+    list.parallelStream();          // из коллекций/массивов
+    Stream<T> s = Stream.of(...);   // с нуля
+    s.parallel();
+
+--- File IO ---
+    Input/Output
+    Stream для работы с файлами - упорядоченная последовательность данных.
+    Не имеет ничего общего с интерфейсом Stream.
+    Character Streams - для работы с символами(текстовые файлы).
+    Byte Streams - для работы с байтами(бинарные файлы).
+    java.io;    // пакет для работы с этими потоками.
+
+    --- Text Files Streams ---
+        Чтение/запись текстовых файлов.
+
+        Reading/Чтение:
+        FileReader(path) -  класс для чтения файла - читает посимвольно. 
+                            Созд-ся стрим на чтение из файла, path может быть 
+                            путем или классом File.    Methods:
+        read()              // -> int, reed the symbol, if not symbol return -1
+        close()             // close the file
+        
+        BufferedReader(new FileReader(path)) - класс для чтения использ буферизацию
+                                            более эффективный чем FileReader
+        read()              // -> int, читает посимвольно
+        readline()          // -> String, читает построчно
+
+        
+        Example:
+        try (FileReader reader = new FileReader(path);
+            BufferedReader bReader = new BufferedReader(new FileReader(path)) {
+            int character;
+            while ((character = reader.read()) != -1) { // FileReader
+                System.out.print((char) character);
+            }
+            String line;
+            while ((line = bReader.readLine()) !=null){  // BufferedReader 
+                System.out.print(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Writing/Запись:
+        FileWriter(path) -  класс для записи символов в текстовый файл
+                            создать стрим на запись(создастся новый файл или
+                            откроется существующий<path>). path - абсолютный
+                            или относительный путь. Также может приним File.
+                            И еще параметр append true/false (дозапись).
+        write(String/int)   // записать строку/символ в файл, в случае со строкой
+                            запись все равно идет посимвольно
+        append(String)      // дозапись
+        close()             // закрыть стрим - без этого записи не будет
+
+        BufferedWriter(new FileWriter(path)) - класс для записи исп буфферизацию
+                                            более эффективный чем FileWriter
+        write()             // записывает строки/символы/массивы символов
+
+        // Example:
+        String rubai = "Hello";
+        // try with resourses - automatically closes the file
+        try (FileWriter writer = new FileWriter(path);
+            BufferedWriter bWriter = new BufferedWriter(new FileWriter(path))) {
+            for (int i = 0; i < rubai.length(); i++) {
+                writer.write(rubai.charAt(i));  // записать посимвольно вручную
+            }
+            writer.write("\n\n" + rubai);       // посимвольно но автоматом
+            bWriter.write("string");            // BufferedWriter
+            System.out.println("Done!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    --- Binary Files Streams ---
+        Работа с бинарными файлами. Все тоже самое как и с текстовыми файлами.
+        InputStream  - абстрактный класс для чтения имеет различные реализации.
+        OutputStream - абстрактный класс для записи имеет различные реализации.
+
+        FileInputStream(path)                               // read file
+        FileOutputStream(path)                              // write to file
+        BufferedInputStream(new FileInputStream(path))      // read with buffer
+        BufferedOutputStream(new FileOutputStream(path))    // write with buffer
+        ByteArrayInputStream(byte[])                        // read array of bytes
+        ByteArrayOutputStream()                             // write to bytes's array
+        DataOutputStream(new FileOutputStream(path))        // write primitive
+        DataInputStream(new FileInputStream(path))          // read primitive
+        ObjectInputStream(new FileInputStream(path))        // read object
+        ObjectOutputStream(new FileOutputStream(path))      // write object
+
+        Example: copy image
+        try (FileInputStream inputStream = new FileInputStream(path1);
+            FileOutputStream outputStream = new FileOutputStream(path2)) {
+            int i;
+            while ((i = inputStream.read()) != -1) {
+                outputStream.write(i);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+    --- Primitive data types to file ---
+        Чтение и запись примитивных типов данных в бинарные файлы.
+        DataOutputStream(new FileOutputStream(path))    - запись
+        DataInputStream(new FileInputStream(path))      - чтение
+
+        Methods: записывается люб примитивный тип в файл(бинарный файл)
+        writeBoolean(true)
+        writeByte(5)
+        ...
+        writeDouble(3.14)
+        writeUTF("Hello")
+        ---
+        readBoolean()
+        readByte()
+        ...
+        readDouble()
+        readUTF()
+
+    --- Serialization ---
+        Сериализация - это процесс преобразования объекта в послед-ть байт.
+        Десериализация - это процесс восстановления объекта из этих байт.
+        Для сериализации объекта, класс должен implements Serializable.
+        Защита от сериализации полей которые должны быть скрыты:
+        trnsient double salary; // поле которое не будет сериализовано(только
+                                будет сериализовано значение по умолчанию)
+        static final serialVersionUID = 2;  // можно указать версию класса
+                                            для того чтобы при сериализации/
+                                            десериализации использовалась
+                                            одна версия класса(не измененная)
+
+        ObjectOutputStream(new FileOutputStream(path))  // запись
+        writeObject(obj)    // запись объекта в файл
+        ObjectInputStream(new FileInputStream(path)     // чтение
+        readObject()        // -> Object, чтение из файла
+
+        Example:
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(
+            new FileOutputStream("employees2.bin"))) {
+                outputStream.writeObject(employee1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (ObjectInputStream inputStream = new ObjectInputStream(
+                    new FileInputStream("employees2.bin"))) {
+                employee = (Employee) inputStream.readObject();
+                System.out.println(employee);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    --- RandomAccessFile ---
+        Позволяет читать из любого места файла и записывать инфо в люб место файла.
+        RandomAccessFile("test10.txt", "rw")    // create(file, mode)
+        read()              // чтение 1 символа
+        readLine()          // чтение строки
+        writeBytes(String)  // множество вариантов записи чего угодно
+        ...
+        seek(long)          // переместить курсор на позицию
+
+        Example:
+        try (RandomAccessFile file =  new RandomAccessFile(
+                "test10.txt",
+                "rw")) {
+            int a = file.read();
+            System.out.println((char) a);
+            String s1 = file.readLine();
+            System.out.println(s1);
+
+    --- File ---
+        Позволяет управлять информацией о файлах и директориях.
+        File file = new File(path);     //  path - file or directory
+
+        Methods:
+        getAbsolutePath()   // -> String, abs path
+        getAbsoluteFile()   // -> File, объект
+        isAbsolute()        // -> boolean, абсолютный путь?
+        exists()            // -> boolean
+        isFile()            // -> boolean
+        isDirectory()       // -> boolean
+        isHidden()          // -> boolean
+        canRead()           // -> boolean
+        canWrite()          // -> boolean
+        canExecute()        // -> boolean
+        mkdir()             // -> boolean, создать директорию на диске
+        createNewFile()     // -> boolean, создать файл на диске
+        length()            // -> long, размер в байтах
+        delete()            // -> boolean, delete
+        listFiles()         // -> File[], array of files in dir
+
+--- File NIO ---
+    New Input/Output
+    java.nio;   // пакет
+
+    Принцип работы:
+    Работа идет между программой, буфером, каналом и файлом(и не только) 
+    program <==> Buffer <==> Channel <==> file?
+    Buffer - блок памяти в кот можно записывать/читать информацию.
+    Channel - канал, может читать и записывать файлы(одновременно).
+    Чтение - Channel читает инфо из файла и записывает в Buffer.
+    Запись - Channel читает инфо из Buffer и записывает в файл.
+
+    RandomAccessFile file = new RandomAccessFile("test10.txt", "rw") // file
+    FileChannel channel = file.getChannel();        // create channel
+    read(Buffer)    // -> int, читать из файла в буфер (сколько влезет)
+
+    ByteBuffer buffer = ByteBuffer.allocate(25);    // crerate buffer with
+                                                       capacity 25 bytes.
+    capacity    - емкость(размер) буферизацию
+    position    - позиция курсора, на каком байте стоит курсор [0:capacity)
+    limit       - оставшееся место, зависит от размера и позиции курсора
+    Methods:
+    flip()          // меняет режим запись -> чтение, 
+                       position меняет значение на 0
+                       limit станет равным максимальному (capacity-1)
+    clear()         // меняет позицию курсора на ноль, для записи, прочитать
+                       после ничего не получится.
+    compact()       // меняет позицию на ячейку идущую за непрочитанными
+                       байтами, далее идет запись в буфер
+    hasRemaining()  // осталось ли еще что-то в буфере
+    get()           // -> byte, прочитать 1 байт из буфера, сдвинуть position
+                       на +1 байт, limit сократить на -1 byte
+    rewind()        // переместить position на 0 элемент при чтении
+    mark()          // пометить позицию, чтоб потом вернуться к некий
+    reset()         // поставить курсор на позицию кот была помечена
+
+    Example (read from file):
+    try (RandomAccessFile file = new RandomAccessFile("test10.txt", "rw");
+            FileChannel channel = file.getChannel()) {
+        ByteBuffer buffer = ByteBuffer.allocate(25);
+        StringBuilder text = new StringBuilder();
+        int byteRead = channel.read(buffer);
+        while (byteRead > 0) {  // что-то прчитали?
+            System.out.println("Read " + byteRead);
+            buffer.flip();      // режим чтения
+            while (buffer.hasRemaining()) {
+                text.append((char) buffer.get());
+            }
+            buffer.clear();
+            byteRead = channel.read(buffer);
+        }
+        System.out.println(text);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+    --- Path ---
+    Объект типа Path - это путь к файлу/директрории
+    Path path = Paths.get("text.txt");  // create
+    Path  - интерфейс
+    Files - класс со статик медотами оперирующий Path
+    Paths - класс со статик медотами возвращ объект типа Path
+
+    Path Methods:
+    getFileName()       // -> Path, name
+    getParent()         // -> Path, parent
+    getRoot()           // -> Path, root
+    isAbsolute()        // -> boolean, абсолютный или относительный путь
+    toAbsolute()        // -> Path, в абсолютный путь
+    resolve(Path)       // -> Path, результирующий путь this+path2
+    rerelativize(Path)  // -> Path, относительный путь параметра к this path
+
+    Files methods:
+    exists(Path)        // -> boolean, exists?
+    createFile(Path)    // -> Path, создать файл на диске
+    createDirectory(P)  // -> Path, создать dir на диске
+    isReadable(Path)    // -> boolean, r
+    isWritable(Path)    // -> boolean, w
+    isExecutable(Path)  // -> boolean, x
+    isSameFile(P1, P2)  // -> boolean, is the same path?
+    size(Path)          // -> long, size of file in bytes
+    getAttribute(P, A)  // -> Object, A - аттрибут в виде строки например:
+                              "creationTime", "size"
+    readAttributes(P,"*")  -> Map<String, Object>, все аттрибуты
+    copy(P1, P2)        // -> Path, копировать P1->P2, также можно добавить
+                              опции: StandardCopyOption.REPLACE_EXISTING (если
+                              есть файл - перезаписать)
+    move(P1, P2)        // -> Path, переместить/переименовать P1->P2
+    delete(Path)        // -> void, delete file/empty dir
+    write(Path, byte[]) // -> Path, записать в файл
+    readLine(Path)      // -> List<String>, прочитать файл
+    
+    Method Files.walkFileTree:
+    walkFileTree(Path start, FileVisitor v) 
+    Используется для обхода дерева файлов. Логика обхода файлов
+    заключается в классе имплементирующем интерфейс FileVisitor.
+    Переопределяемые методы интерфейса FileVisitor:
+    preVisitorDirectory     // срабатывает перед обращением к эл папки
+    visitFile               // при обращении к файлу
+    postVisitorDirectory    // после обращения ко всем эл папки
+    visitFileFailed         // срабатывает когда файл недоступен
+    Все эти методы возвращают объект enum FileVisitResult.
+    Значения FileVisitResult:
+    CONTINUE        - продолжать обход 
+    TERMINATE       - прекратить обход
+    SKIP_SUBTREE    - не входить в эту дир
+    SKIP_SIBLINGS   - в данной дир не продолжать обход
+
+    Example deep copy with walkFileTree:
+    public class CopyFileTree {
+        public static void main(String[] args) throws IOException {
+            Path source = Paths.get("C:\\Users\\ivan1\\Desktop\\M");
+            Path destination = Paths.get("C:\\Users\\ivan1\\Desktop\\M\\A");
+            Files.walkFileTree(source, new MyFileVisitor2(source, destination));
+        }
+    }
+
+    class MyFileVisitor2 extends SimpleFileVisitor<Path> {
+        Path source;
+        Path destination;
+
+        public MyFileVisitor2(Path source, Path destination) {
+            this.source = source;
+            this.destination = destination;
+        }
+
+        @Override
+        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+            Path newDestination = destination.resolve(source.relativize(dir));
+            Files.copy(dir, newDestination, StandardCopyOption.REPLACE_EXISTING);
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            Path newDestination = destination.resolve(source.relativize(file));
+            Files.copy(file, newDestination, StandardCopyOption.REPLACE_EXISTING);
+            return FileVisitResult.CONTINUE;
+        }
+    }
+
+    Example delete not empty dir:
+    public class DeleteEx {
+        public static void main(String[] args) throws IOException {
+            Path destination = Paths.get("C:\\Users\\ivan1\\Desktop\\M\\A");
+            Files.walkFileTree(destination, new MyFileVisitor3());
+        }
+    }
+
+    class MyFileVisitor3 extends SimpleFileVisitor<Path> {
+        @Override
+        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+            System.out.println("DEl dir: " + dir);
+            Files.delete(dir);
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            System.out.println("Del file: " + file.getFileName());
+            Files.delete(file);
+            return FileVisitResult.CONTINUE;
+        }
+    }
+
+--- Scanner ---
+    Scanner scanner = new Scanner(System.in);   // create, Sysytem.in - ввод в 
+                                                   консоль. т.е читает с консоли
+    // также можно читать файлы
+    Scanner scanner = new Scanner(new FileReader(new File("test10.txt")));
+    scanner.useDelimiter("\\W");    // разделитель - не буква, не цифра
+    while (scanner.hasNext()) {
+        set.add(scanner.next());
+    }
+    set.forEach(System.out::println);
+    scanner.close()
+
+    Methods:
+    nextInt()       // -> int, читает и сохраняет в инт
+    nextLine()      // -> String, читает до нов строки и сохр в String
+    next()          // -> String, читает до первого пробельного символа
+    nextLong()      // -> long, double, boolean, char читает все типы данных
+    hasNextLine()   // -> boolean, есть еще строка?
+    hasNextInt()    // -> boolean, есть еще int? - такие методы есть для всех
+    hasNext()       // -> boolean, есть слово?
+    close()         // close Scanner
+
+--- RegEx/Регулярные выражения ---
+    Рег выражения необходимы для создания шаблонов, спом кот производят
+    поиск, сравнение, замену.
+    Рег выражения - совокупность символов, некот из которых специальные - 
+    метасимволы, обладающие особым функционалом.
+    Производительность выше чем у подоьных методов у String.
+
+    import java.util.regex.*;
+    String string = "Some text";                // строка
+    String regex = "t.xt$";                     // рег выражение
+    Pattern pattern = Pattern.compile(regex);   // создать шаблон из рег выр
+    Matcher matcher = pattern.matcher(string);  // рез-т поиска шабл в строке
+    while (matcher.find()) {                    // есть совпадение?
+        System.out.print(matcher.start() + " ") // номер позиции
+        System.out.println(matcher.group());    // вывести на экран(все группы)
+    }
+
+    Example:
+    str.replaceAll("[aAeEuUiIoO]", "");         // удаление гласных
+
+    Regex:
+    ----------+-------------------------------------
+    a         | символ a
+    .         | любой символ кроме нов строки
+    abc       | идущие последовательно abc 
+    [xyz]     | один из этих символов
+    [a-z]     | один из символов диапазона
+    [2-9]     | одна из цифр диапазона
+    [a-d2-5]  | либо цифра из диапазона, либо буква
+    (a|b)     | либо a, либо b
+    [^d-j]    | любой символ НЕ из диапазона   
+    ^         | начало строки
+    $         | конец строки
+    
+    \d        | цифра
+    \D        | НЕ цифра
+    \w        | буква, цифра, _
+    \W        | НЕ буква, цифра, _
+    \s        | пробельный символ
+    \S        | НЕ пробельный символ
+    \A        | начало String
+    \Z        | конец String
+    \b        | граница слова/числа
+    \B        | НЕ граница слова/числа
+
+    reg?      | 1 или 0 повторений
+    reg*      | 0 или более повторений
+    reg+      | 1 или более повторений
+    reg{n}    | n повторений
+    reg{m,n}  | от m до n повторений 
+    reg{m,}   | от m и больше повторений
+    ----------+-------------------------------------
+
+    Example IPv4:
+    "\\b((25[0-5]|2[0-4]\\d|[01]?\\d?\\d)(\\.)){3}(25[0-5]|2[0-4]\\d|[01]?\\d?\\d)\\b"
+
+    Groups:
+    "1234567890"        # example string
+    "(\\d{4})(\\d{2})"  # regex, группы идут по порядку с 1 в скобках()
+        $1      $2      # groups
+    (не забываем создать Pattern and Matcher)
+    matcher.replaceAll("$2-($4)")   // -> String, "56-(1234)", манип с группами
+    matcher.group(1)                // -> String, "1234" -вывести 1-ую группу
+
+--- Methods printf() and format() ---
+    String s = String.format(This PI: "%f", 3.14);  // создать строку с исп шаб
+    System.out.printf("This PI: %f", 3.14);         // вывод сразу в printf
+    %[flags][width][.precision]datatype_specifier   // шаблон для format()
+    %       - обяз специф
+    flags       - символ для какого-то преобраз текста
+                  - # выравнивание по лев краю  
+                  0 # добавление нулей перед числом(для чисел)
+                  , # разделитель разрядов в числах
+    width       - мин кол символов()
+    precision   - точность, цифр после запятой
+    specifier   - тип данных который обрабатывается
+                  b # boolean
+                  c # char
+                  s # String
+                  d # int
+                  f # double
+    Example:
+    System.out.printf("%03d\t%-7s\t%,.2f\n", 1, "Hi", 3.14); // 001	Hi 	3,14
+
+--- Reflection ---
+    Рефлексия - механизм исслед данныхо прог-ме во время вып-я.
+    Рефлексия позволяет исслед инфо о полях, методах, констркукторах
+    и других составляющих классов.
+
+    Class<>     // сод в кач объектов примитивные типы данных, классы, интерфейсы.
+    Field       // инфо и управление полем
+    Method      // инфо и управление методом
+    Constructor //
+    Annotation  // 
+    Type        // 
+    Package     // 
+    Parameters  // параметры метода/конструктора
+    Modifier    // инфо и упрвление modifiers, static methods
+
+    Creation:
+    Class employee1 = Class.forName("my_package.Employee"); // с пом String
+    Class employee2 = Employee.class;                       // с пом класса
+    Class employee3 = new Employee().getClass();            // с пом объекта
+    // либо с обобщ типом(то же самое)
+    Class<?> employee1 = Class.forName("my_package.Employee");
+    Class<Employee> employee2 = Employee.class;
+    Class<? extends Employee> employee3 = Employee.class;
+
+    Class methods:
+    getField(String)        // -> Field, получить объект поле по "имени"
+    getDeclaredField(String)// -> Field, +private
+    getFields()             // -> Field[], доступные поля
+    getDeclaredFields()     // -> Field[], все поля(private too)
+    getMethod(String, par)  // -> Method, получ объект метод по "имени" + param
+                               (param - класс, типа double.class, int.class)
+    getDeclaredMethod(Str)  // -> Method, private method too
+    getMethods()            // -> Method[], доступные методы + унаследованные
+    getDeclaredMethods()    // -> Method[], только свои методы + приватные
+    getConstructor()        // -> Constructor<T>, конструктор(без парам)
+    getConstructor(par)     // -> Constructor<T>, с пар (double.class, int.class..)
+    getConstructors()       // -> Constructor<T>[], все конструкторы
+    getDeclaredConstructors // -> Constructor<T>[], все конструкторы + приватные
+
+    Field methods:
+    getName()               // -> String, get name
+    getType()               // -> Class<?>, get Class(type)
+    setAccessible(true)     // дать доступ ко всем полям
+    get(obj)                // -> Object, получить значение поля у obj
+    set(obj, value)         // присвоить новое значение поля у obj
+
+    Method methods:
+    getName()               // -> String, get name
+    getReturnType()         // -> Class<?>, get return type
+    getParameterTypes()     // -> Class<?>[], все параметры метода
+    getModifiers()          // -> int, модификаторы
+    setAccessible(true)     // дать доступ to methods
+    invoke(obj, args)       // -> Object, вызвать метод у obj with args
+    invoke(null, args)      // -> Object, for static methods
+
+    Modifier methods:
+    isFinal(int)            // -> boolean, int - method.getModifiers() модиф-ры
+    isPublic(int)           // -> boolean, на все модиф есть свой метод
+
+    Constructor methods:
+    getParameterCount()     // -> int, кол-во параметров
+    getParameterTypes()     // -> Class<?>[], все параметры конструктора
+
+    Create objects of any class from Class:
+    Class<Employee> empClass = Employee.class;
+    Object o = (Employee)empClass.newInstance();            // old Java
+    Constructor<Employee> c = empClass.getConstructor();    // ok
+    Employee emp1 = constructor.newInstance();              // create obj
+
+--- Annotation ---
+    Аннотации - спец комментарии/метки/метаданные, которые нужные
+    для предачи определенной информации.
+    Метаданные - данные о данных.
+
+    В аннотациях используются след параметры:
+
+    @Target - показ область кода, к которой аннотация может быть применима.
+    Использует в параметре:
+    enum ElementType {TYPE,FIELD,METHOD,PARAMETER,LOCAL_VARIABLE...} 
+    Самые распространенные области кода:
+        TYPE        - class, interface, enum;
+        FIELD       - field of class;
+        METHOD      - method of class;
+        PARAMETER   - parameters of method/constructor
+    @Target(ElementType.METHOD)                     // можно исп на методах
+    @Target({ElementType.METHOD,ElementType.FIELD}) // методы + поля
+
+    @Retention - описывает жизненный цикл аннотации, до какого момента
+    программы будет видна аннотация.
+    Использует в параметре:
+    enum RetentionPolicy {SOURCE, CLASS, RUNTIME}:
+        SOURCE  - аннотация видна в source коде, отбрасывается
+                  компилятором и уже в byte коде не видна;
+        CLASS   - видна в byte коде, отбрасывается JVM во время выполнения;
+        RUNTIME - аннотация видна во время выполнения программы, можно
+                  использовать в рефлексии для передач/получ данных.
+
+    // Create Annotation @SmartPhone:
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface SmartPhone {
+        String OS();                // так указываются поля(как методы)
+        int year() default 2000;    // default value
+    }                               // ссылочные типы не поддерживаюся
+
+    // пример класс с нашей аннотацией
+    @SmartPhone(OS = "Android", year = 2010)    // небх заполнить данные, для
+    class Xiaomi {}                             // тех у кого default необяз
+
+    // Как вытащить инфо из аннотаций(только в режиме RUNTIME)
+    Class<Xiaomi> xi = Xiaomi.class;   // Class
+    Annotation annotation1 = xi.getAnnotation(SmartPhone.class);    // аннотац
+    SmartPhone sm1 = (SmartPhone) annotation1;                      // casting
+    System.out.println(sm1.OS());       // достаем поля
+    System.out.println(sm1.year());
+    Class.getAnnotation(class).method() // так в общем виде
