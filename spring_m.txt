@@ -449,12 +449,13 @@
     конфиг файла нужно исп аннотацию @PropertySource
 
     // в классе Person
-    @Value("${person.surname}") // значения берутся из кофиг файла
-    private String surname;
-
-    @Configuration
-    //@ComponentScan("io.github.ivan100kg.spring_intro")
-    @PropertySource("classpath:myApp.properties")   // наш конфиг файл
+    @Value("${person.surname}") // значения берутся из кофиг файла <--------+
+    private String surname;                                                 |
+                                                                            |
+    // Config.java                                                          |
+    @Configuration                                                          |
+    @ComponentScan("io.github.ivan100kg.spring_intro")                      |
+    @PropertySource("classpath:myApp.properties")   // наш конфиг файл  ----+
     public class MyConfig {
 
 --- AOP Aspect Oriented Programming ---
