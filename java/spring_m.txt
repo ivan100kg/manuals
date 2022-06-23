@@ -780,3 +780,87 @@ Spring MVC
         Конфигурация Spring(обычная xml/annotations/java code)
         Описание Spring бинов(+доп аннотации)
         Web страницы
+
+--- Configuration ---
+    1. Create Maven project with archetype: "maven-archetype-webapp"
+    2. Add dependencies to pom.xml [Spring Context,
+                                    Spring Core, 
+                                    Spring Beans,
+                                    Spring Web MVC,
+                                    JSTL(где больше usages)]
+    3. Download Tomcat, разархивируем архив. Добавим в Idea 
+       -> run -> Edit Configurations -> + -> Tomcat Server Local ->
+       -> configure -> выбираем dir где tomkat -> ok -> ok -> fix ->
+       -> exploded -> apply -> ok 
+       запускаем: run -> run 'tomkat'
+    4. Add dirs/packages
+       sourse root: main/java
+       my packages: main/java/io.github.ivan100kg
+       my views:    webapp/WEB-INF/view
+    5. Configure webapp/WEB-INF/web.xml
+    6. Create+Configure webapp/WEB-INF/applicationContext.xml
+
+    # web.xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+            xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+            id="WebApp_ID" version="3.1">
+
+    <display-name>spring-cource-mvc</display-name>
+
+    <absolute-ordering />
+
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    </web-app>
+
+    Все стандартно кроме param-value - пишем свой конфиг файл,
+                         url-pattern - / значит что сервлет будет обрабатывать
+                                       запросы на корневой адрес
+
+    # applicationContext.xml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:mvc="http://www.springframework.org/schema/mvc"
+        xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+        <context:component-scan base-package="io.github.ivan100kg" />
+
+        <mvc:annotation-driven/>
+
+        <bean
+                class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+            <property name="prefix" value="/WEB-INF/view/" />
+            <property name="suffix" value=".jsp" />
+        </bean>
+
+    </beans>
+    
+    Бин тут для простоты обращения к своим view, которые будут созданы 
+    в /WEB-INF/view/. Например /WEB-INF/view/myView.jsp можно будет
+    использовать как myView - префикс и суффикс допишется авто.
+    
+
+
