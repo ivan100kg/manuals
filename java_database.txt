@@ -1,3 +1,4 @@
+JDBC
 --- JDBC ---
     Java Database Connectivity
     Работа Java с различными СУБД.
@@ -97,6 +98,7 @@
             e.printStackTrace();
         }
 
+Hibernate
 --- Hibernate basic ---
     Hibernate - это framework, коткоторый осуществляет CRUD между Java obj и DB.
     Hibernate - реализация спецификации JPA плюс свои фишки.

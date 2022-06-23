@@ -1,6 +1,5 @@
-# Spring
-
---- Spring ---
+Spring Core
+--- About ---
     Это фреймворк, предназначенный для более быстрого и простого
     построения Java приложений.
     Создан: 2004.
@@ -458,6 +457,7 @@
     @PropertySource("classpath:myApp.properties")   // наш конфиг файл  ----+
     public class MyConfig {
 
+Spring AOP
 --- AOP Aspect Oriented Programming ---
     Это парадигма программирования, основанная на идее разделения основного
     и служебного функционала. Служебный ф-л записывается в Aspect-классы.
@@ -742,4 +742,5 @@
         }
         System.out.println("After target method");
         return targetResult;
+
 
