@@ -743,4 +743,40 @@ Spring AOP
         System.out.println("After target method");
         return targetResult;
 
+Spring MVC
+--- MVC ---
+    Model View Controller - шаблон проектирования web приложений.
+    Model       - данные приложения и работа с ними(чаще в БД)
+    View        - внешний вид отображение данных, взаимод с пользователем
+    Controller  - связь между View и Model. Бизнес логика приложения.
 
+    Spring MVC  - фреймворк для создания web-app на Java, на базе MVC.
+    Можно использовать основной ф-л Spring: IoC, DI.
+
+    Схема работы Spring MVC:
+    Б  request                delegate req                handle req
+    Р ---------> |Front     | -------------> |Controller| ----------> |Backend|
+    А <--------- |Controller| <--model------ |__________| <---------- |_______|
+    у  responce    ^    |   delegate rendering  
+    З              |    |
+    Е              |    |           render responce
+    Р              |    +---model--> |View    |
+                   +---------------- |Template|
+                                    return control
+    
+    Front Controller(DispatcherServlet) - явл частью Spring, делегирует 
+    HTTP-запросы обычным контроллерам(может быть 1+ контроллеров).
+    Controller - центр управленияб моззг Spring MVC приложения.
+    Model - контейнер для хранения данных.
+    View - web страница, кот можно создать с пом HTML, JSP, Thymeleaf и т.д.,
+    часто при отображении View используют данные из Model.
+
+    Для создания web-страниц можно использовать:
+    JSP (Java Server Page) - спецификация: HTML + Java code.
+    JSTL (Java Server Pages Standart Tag Library) - расширение спец-ии JSP.
+    JSP конвертируется в обычный HTML при отправки ответа.
+
+    Состав Spring MVC приложения:
+        Конфигурация Spring(обычная xml/annotations/java code)
+        Описание Spring бинов(+доп аннотации)
+        Web страницы
