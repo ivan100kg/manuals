@@ -861,6 +861,14 @@ Spring MVC
     Бин тут для простоты обращения к своим view, которые будут созданы 
     в /WEB-INF/view/. Например /WEB-INF/view/myView.jsp можно будет
     использовать как myView - префикс и суффикс допишется авто.
-    
+
+--- Controller ---
+    @Controller                         // класс - контроллер (это @Component)
+    public class MyController {
+        @RequestMapping("/")            // набрав в браузере / - возврат --+
+        public String showFirstView(){  // люб назв                        |
+            return "first-view";        // возврат webapp/WEB-INF/first-view.jsp
+        }
+    }
 
 
