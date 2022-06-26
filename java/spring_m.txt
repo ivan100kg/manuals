@@ -790,6 +790,7 @@ Spring MVC
     2. Add dependencies to pom.xml [Spring Context,
                                     Spring Core, 
                                     Spring Beans,
+                                    Spring Web,
                                     Spring Web MVC,
                                     JSTL(где больше usages)]
     3. Download Tomcat, разархивируем архив. Добавим в Idea 
@@ -868,10 +869,56 @@ Spring MVC
 --- Controller ---
     @Controller                         // класс - контроллер (это @Component)
     public class MyController {
-        @RequestMapping("/")            // набрав в браузере / - возврат --+
-        public String showFirstView(){  // люб назв                        |
-            return "first-view";        // возврат webapp/WEB-INF/first-view.jsp
+        @RequestMapping("/")            // связывает URL '/' c  -->--------+
+        public String showFirstView(){  // люб назв, мог быть парам-ры     |
+            return "first-view";        // webapp/WEB-INF/first-view.jsp <-+
         }
     }
 
+    При обращении на сервер на корневую страницу отобразится след файл:
+    # WEB-INF/view/first-view.jsp
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Title</title>
+    </head>
+    <body>
+        <h2>I wish you luck in Spring MVC learning</h2>
+    </body>
+    </html>
 
+--- Using data in views ---
+    Чтение данных из формы:
+       GET url: /askDetails      C
+    Б -------------------------> O
+    Р                            N 
+    А <------ view/page1.jsp --- T
+    У                            R
+    З  POST url: /showDetails    O
+    Е -------------------------> L
+    Р                            L              
+      <------view/page12.jsp --- E
+                                 R
+
+    # MyController.java - добавим 2 обработчика
+    @RequestMapping("/askDetails")          // url
+    public String askDetails() {            // 
+        return "ask-emp-details-view";      // view
+    }
+
+    @RequestMapping("/showDetails")
+    public String showDetails() {
+        return "show-emp-details-view";
+    }
+
+    # view/ask-emp-details.jsp(теги html,body.. не показаны)
+    <h2>Dear Employee, Please enter your details</h2>
+    <form action="showDetails" method="get">                // action go to url
+        <label for="n1">Your name:</label> <br>
+        <input type="text" id="n1" name="employeeName">     // employeeName -+
+        <input type="submit"/>                                               |
+    </form>                                                                  |
+                                                                             |
+    # view/show-emp-details.jsp(теги html,body.. не показаны)                |
+    <h2>Dear Employee, you are WELCOME!!!</h2>                               |
+    <p>Your name: ${param.employeeName}</p>                 // из формы <----+
