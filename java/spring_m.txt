@@ -792,6 +792,7 @@ Spring MVC
                                     Spring Beans,
                                     Spring Web,
                                     Spring Web MVC,
+                                    JavaServlet(TM) Specification,
                                     JSTL(где больше usages)]
     3. Download Tomcat, разархивируем архив. Добавим в Idea 
        -> run -> Edit Configurations -> + -> Tomcat Server Local ->
@@ -922,3 +923,20 @@ Spring MVC
     # view/show-emp-details.jsp(теги html,body.. не показаны)                |
     <h2>Dear Employee, you are WELCOME!!!</h2>                               |
     <p>Your name: ${param.employeeName}</p>                 // из формы <----+
+
+--- Add/extract data to/from Model ---
+    @RequestMapping("/showDetails")
+    public String showDetails(HttpServletRequest request, Model model) {
+        String empName = request.getParameter("employeeName");  // параметр из 
+        empName = "Mister " + empName;                             view
+        model.addAttribute("nameAttr", empName);                // добавим данн
+        return "show-emp-details-view";                            в модель(ключ
+    }                                                              -значение)
+    HttpServletRequest request  - для работы с запросом, много полезных ф-ий
+    Model model                 - модель, можно добавлять различные ключи-знач
+                                  ключ - String, значение - Object(люб тип)
+
+    # view/show-emp-details.jsp
+    <h2>Dear Employee, you are WELCOME!!!</h2>
+    <p>Your name: ${nameAttr}</p>   // изъять данные по ключу из модели
+
