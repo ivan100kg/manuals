@@ -80,6 +80,10 @@ Spring Core
     изменить напр Dog на Cat, нужно просто заменить в applicationContext.xml
     аттрибут class на io.github.ivan100kg.spring_intro.Cat
 
+    Создание бинов через фабрику:
+    <factory-method> - указываем метод и нов объект будет создаваться
+    не через конструктор, а через статик метод - синглтон остается синглтон
+
 --- Dependency Injection xml ---
     DI - аутсорсинг добавления/внедрения зависимостей.
     DI делает объекты нашего приложения слабо зависимыми друг от друга.
@@ -829,8 +833,7 @@ Spring MVC
     </web-app>
 
     Все стандартно кроме param-value - пишем свой конфиг файл,
-                         url-pattern - / значит что сервлет будет обрабатывать
-                                       запросы на корневой адрес
+                         url-pattern - / (любой url)
 
     # applicationContext.xml
     <?xml version="1.0" encoding="UTF-8"?>
