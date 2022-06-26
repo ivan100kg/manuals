@@ -1434,6 +1434,7 @@
 
 --- Random ---
     (int) ((Math.random() * (max - min)) + min);    // генератор инт [min, max)
+    new Random().nextInt(3);                        // [0,3)
 
 --- Lambda exspressions ---
     Анонимный метод(без имени).
