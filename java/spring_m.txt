@@ -1017,16 +1017,12 @@ Spring MVC
 --- Select Form ---
     # 1 способ - указать значения прямо в jsp файле    
     <form:form action="showDetails" modelAttribute="employee">
-        name <form:input path="name"/> <br>
-        surname <form:input path="surname"/> <br>
-        salary <form:input path="salary"/> <br>
-
+        ...
         department <form:select path="department">
             <form:option value="Information Technology" label="IT"/>
             <form:option value="Human Resources" label="HR"/>
             <form:option value="Sales" label="Sales"/>
         </form:select> <br>
-
         <input type="submit" value="Ok">
     </form:form>
 
@@ -1048,16 +1044,39 @@ Spring MVC
 
     Отображение:
     <form:form action="showDetails" modelAttribute="employee">
-        name <form:input path="name"/> <br>
-        surname <form:input path="surname"/> <br>
-        salary <form:input path="salary"/> <br>
-
+        ...
         department <form:select path="department">
             <form:options items="${employee.departments}"/>
         </form:select> <br>
-
         <input type="submit" value="Ok">
     </form:form>
 
+    path="department"               - поле которому присваивается значение
     form:options                    - принимает мап
-    items="${employee.departments}" - указать мап
+    items="${employee.departments}" - указать мап(выбор варианта)
+
+--- Radiobutton Form ---
+    # 1 способ хардокдый - Создадим 3 кнопки в form:form:
+    ...
+    BMW <form:radiobutton path="carBrand" value="BMW"/>
+    Audi <form:radiobutton path="carBrand" value="Audi"/>
+    Toyota <form:radiobutton path="carBrand" value="Toyota"/>
+    ...
+    При отправке формы вызывается сеттер.
+
+    # 2 способ - создадим Мап в Employee и иниц ее своими значениями:
+    carBrands = new HashMap<>();
+    {   // можно в иниц блоке
+        carBrands.put("BMW", "BMW");
+        carBrands.put("Audi", "Audi");
+        carBrands.put("Toyota", "Toyota");
+        carBrands.put("Ford", "Ford");
+    }
+    ...
+    <form:radiobuttons path="carBrand" items="${employee.carBrands}"/>
+    ...
+
+    При отправки формы вызывается сеттер для поля Employee (path="carBrand")
+    и присваивается значение из вариантов в employee.carBrands(мэпка).
+
+
