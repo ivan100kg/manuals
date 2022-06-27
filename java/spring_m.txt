@@ -925,6 +925,7 @@ Spring MVC
     <p>Your name: ${param.employeeName}</p>                 // из формы <----+
 
 --- Add/extract data to/from Model ---
+    # 1 способ с пом HttpServletRequest
     @RequestMapping("/showDetails")
     public String showDetails(HttpServletRequest request, Model model) {
         String empName = request.getParameter("employeeName");  // параметр из 
@@ -936,7 +937,24 @@ Spring MVC
     Model model                 - модель, можно добавлять различные ключи-знач
                                   ключ - String, значение - Object(люб тип)
 
-    # view/show-emp-details.jsp
-    <h2>Dear Employee, you are WELCOME!!!</h2>
-    <p>Your name: ${nameAttr}</p>   // изъять данные по ключу из модели
+    # 2 способ с пом @RequestParam
+    @RequestMapping("/showDetails")     // URL '/showDetails'
+    public String showDetails(@RequestParam("employeeName") String s, Model m) {
+        s = "Mister " + s;                          |
+        m.addAttribute("nameAttr", s); -->----------+-----------------------+
+        return "show-emp-details-view";             |                       |
+    }                                               |                       |
+                                                    |                       |
+    # view/ask-emp-details.jsp                      |                       |
+    <form action="showDetails" method="get">        ^                       |
+        <label for="name">Your name:</label> <br>   |                       |
+        <input type="text" id="name" name="employeeName">                   |
+        <input type="submit"/>                                              |
+    </form>                                                                 |
+                                                                            |
+    # view/show-emp-details.jsp                                             |
+    <h2>Dear Employee, you are WELCOME!!!</h2>                              |
+    <p>Your name: ${nameAttr}</p>   // изъять данные по ключу из модели <---+
 
+    @RequestParam("employeeName") - связывает поле формы(name="employeeName")
+    с параметром метода из Controller(showDetails).
