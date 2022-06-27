@@ -893,7 +893,6 @@ Spring MVC
     @Controller
     @RequestMapping("/emp") // корень, будет приписываться ко всем url методов 
 
-
 --- Using data in views ---
     Чтение данных из формы:
        GET url: /askDetails      C
@@ -964,3 +963,54 @@ Spring MVC
 
     @RequestParam("employeeName") - связывает поле формы(name="employeeName")
     с параметром метода из Controller(showDetails).
+
+--- Spring MVC Forms ---
+    form:form   - основная форма-контейнер (форма с другими формами)
+    form:input  - форма для текста, используется 1 строка
+
+    Для использования форм в jsp/html файлах необходимо добавить в файл:
+    <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
+    Создаем класс Employee с полями, no-args constructor, getters-setters.
+    public class Employee {
+        private String name;
+        private String surname;
+        private int salary; 
+
+    Далее добавляем в модель наш класс Employee под ключем 'employee',
+    можно уже тут задать значения каким то полям - либо будут по умолчанию,
+    просто в модель можно добавить уже готовый Employee а не новый:
+    @RequestMapping("/askDetails")
+    public String askDetails(Model model) {
+        model.addAttribute("employee", new Employee()); ---------+
+        return "ask-emp-details-view";                           |
+    }                                                            |
+                                                                 |
+    Создаем форму ask-emp-details.jsp:                                               |
+    <form:form action="showDetails" modelAttribute="employee"> <-+
+        name <form:input path="name"/> <br>         // поля класса Employee
+        surname <form:input path="surname"/> <br>   // ..
+        salary <form:input path="salary"/> <br>     // ..
+        <input type="submit" value="Ok">            // отправить данные
+    </form:form>
+    При отображении формы вызываются Employee getters.
+    После ввода данных и нажатия 'Ok' - вызываются Employee setters, 
+    идет перенаправление на action="showDetails" - др метод Контроллера.
+
+    Для работы с моделью, а именно с одним из ее аттрибутов(ключ-знач),
+    добавим аннотац @ModelAttribute("employee") в параметры. Теперь можно
+    использовать модель во view ниже. Также тут можно менять значения
+    emp перед отправкой как угодно.
+    @RequestMapping("/showDetails")
+    public String showDetails(@ModelAttribute("employee") Employee emp) {
+        emp.salary += 200;  // изменяю как хочу
+        return "show-emp-details-view";
+
+    Отображение данных из модели(ключ 'employee') show-emp-details.jsp:
+    <p>
+        Your name: ${employee.name}<br>         // обращение к полям Employee
+        Your surname: ${employee.surname}<br>      через ключ 'employee' модели
+        Your salary: ${employee.salary}
+    </p>
+
+
