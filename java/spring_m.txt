@@ -888,6 +888,12 @@ Spring MVC
     </body>
     </html>
 
+    Можно использовать @RequestMapping на самом Контроллере(Controller-mapping)
+    Удобен для создания нескольких контроллеров, каждый под свой URL.
+    @Controller
+    @RequestMapping("/emp") // корень, будет приписываться ко всем url методов 
+
+
 --- Using data in views ---
     Чтение данных из формы:
        GET url: /askDetails      C
