@@ -967,6 +967,7 @@ Spring MVC
 --- Spring MVC Forms ---
     form:form   - основная форма-контейнер (форма с другими формами)
     form:input  - форма для текста, используется 1 строка
+    form:select - выпадающий список
 
     Для использования форм в jsp/html файлах необходимо добавить в файл:
     <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -1013,4 +1014,50 @@ Spring MVC
         Your salary: ${employee.salary}
     </p>
 
+--- Select Form ---
+    # 1 способ - указать значения прямо в jsp файле    
+    <form:form action="showDetails" modelAttribute="employee">
+        name <form:input path="name"/> <br>
+        surname <form:input path="surname"/> <br>
+        salary <form:input path="salary"/> <br>
 
+        department <form:select path="department">
+            <form:option value="Information Technology" label="IT"/>
+            <form:option value="Human Resources" label="HR"/>
+            <form:option value="Sales" label="Sales"/>
+        </form:select> <br>
+
+        <input type="submit" value="Ok">
+    </form:form>
+
+    form:option - один из вариантов выпадающего списка
+    value       - значение поля
+    label       - отображение в выпадающем списке
+
+    # 2 способ - создать Map в классе Employee
+    Инициализируем своими значениями в иниц блоке/конструкторе
+    В итоге ключи Map - это value, значения - label в форме.
+    private Map<String, String> departments;
+    {
+        departments = new HashMap<>();
+        departments.put("IT", "Information Technology");
+        departments.put("HR", "Human Resources");
+        departments.put("Sales", "Sales");
+        departments.put("Cleaning", "Cleaning");
+    }
+
+    Отображение:
+    <form:form action="showDetails" modelAttribute="employee">
+        name <form:input path="name"/> <br>
+        surname <form:input path="surname"/> <br>
+        salary <form:input path="salary"/> <br>
+
+        department <form:select path="department">
+            <form:options items="${employee.departments}"/>
+        </form:select> <br>
+
+        <input type="submit" value="Ok">
+    </form:form>
+
+    form:options                    - принимает мап
+    items="${employee.departments}" - указать мап
