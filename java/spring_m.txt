@@ -1079,4 +1079,33 @@ Spring MVC
     При отправки формы вызывается сеттер для поля Employee (path="carBrand")
     и присваивается значение из вариантов в employee.carBrands(мэпка).
 
+--- Checkbox Form ---
+    Объявить в Employee массив строк languages.
+
+    # 1 способ - все чекбоксы объявляем в jsp в form:form:
+    ...
+    ENG <form:checkbox path="languages" value="English"/>
+    FRA <form:checkbox path="languages" value="France"/>
+    JPN <form:checkbox path="languages" value="Japan"/>
+    ...
+    path="languages"    - массив Employee / параметр сеттера для масива
+    value="English"     - 1 значение в массиве
+
+    Отобразить элементы массива в show-...jsp:
+    <c:forEach var="lang" items="${employee.languages}">    // forEach
+        <li>${lang}</li>                                    // по всем эл
+    </c:forEach>
+
+    # 2 способ - создадим Map и иниц ее в кострукторе/блоке:
+    myLanguages = new HashMap<>();
+    myLanguages.put("EN", "English");
+    myLanguages.put("FR", "France");
+    myLanguages.put("DE", "German");
+
+    В ask-...jsp прописываем в form:form:
+    ...
+    <form:checkboxes path="languages" items="${employee.myLanguages}"/>
+    ...
+    items="${employee.myLanguages}" - наш хэшмэп
+    остальное также как выше
 
