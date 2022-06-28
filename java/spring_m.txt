@@ -1156,3 +1156,17 @@ Spring MVC
 
     @NotNull    - не null поле
     @NotBlank   - не null, не пустое, не состоит из одних пробелов
+
+    Min        - числовое значение >= параметра
+    Max        - числовое значение <= параметра
+    @Min(value = 200, message = "must be greater than 199")
+    @Max(value = 900, message = "must be less than 901")
+    private int salary;
+    Добавить отображение в форму
+    salary <form:input path="salary"/>
+    <form:errors path="salary"/><br>
+
+    Валидация строки по шаблону с исп рег выражения
+    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "use yyyy-mm-dd")    
+
+
