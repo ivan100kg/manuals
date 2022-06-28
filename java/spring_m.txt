@@ -1207,3 +1207,18 @@ Spring MVC
     // отображение если все норм
     Your email: ${employee.email}
 
+Spring MVC + Hibernate + AOP
+--- Configuration ---
+    1. Create Maven project with archetype: "maven-archetype-webapp"
+    2. Set Database and Tables
+    3. Add dependencies into pom.xml
+        Spring Web MVC(Spring Core Context Beans are included)
+        JSTL
+        Hibernate Core Relocation
+        PostgreSQL JDBC Driver
+        C3P0
+        Spring Object/Relational Mapping
+
+    4. Add Tomkat
+    5. Configure web.xml
+    6. configure applicationContext.xml
