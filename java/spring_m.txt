@@ -1169,4 +1169,41 @@ Spring MVC
     Валидация строки по шаблону с исп рег выражения
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "use yyyy-mm-dd")    
 
+--- Own validator ---
+    // Создать аннотацию
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Constraint(validatedBy = CheckEmailValidator.class)
+    public @interface CheckEmail {
+        public String value() default "xyz.com";
+        public String message() default "not valid email";
+        public Class<?>[] groups() default {};
+        public Class<? extends Payload> [] payload() default {};
+    }
+
+    // Создать класс
+    public class CheckEmailValidator 
+                implements ConstraintValidator<CheckEmail, String> {
+        private String endOfEmail;
+        @Override
+        public void initialize(CheckEmail checkEmail) {
+            endOfEmail = checkEmail.value();
+        }
+        @Override
+        public boolean isValid(String enteredValue, 
+                    ConstraintValidatorContext constraintValidatorContext) {
+            return enteredValue.endsWith(endOfEmail);
+        }
+    }
+
+    // пропишем в Employee(можно переопределить default знач value, message)
+    @CheckEmail
+    private String email;
+
+    // валидация в форме
+    Email <form:input path="email" />
+    <form:errors path="email"/> <br>
+
+    // отображение если все норм
+    Your email: ${employee.email}
 
