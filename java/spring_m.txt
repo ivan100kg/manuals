@@ -1109,3 +1109,50 @@ Spring MVC
     items="${employee.myLanguages}" - наш хэшмэп
     остальное также как выше
 
+--- Valid Forms ---
+    Java Standart Bean Validation API - спецификация, которая описывает
+    правила валидации.
+    Hibernate Validator - реализация правил этой спецификации.
+
+    Добавим зависимости в pom.xml
+    <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+    <dependency>
+        <groupId>org.hibernate.validator</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>6.2.0.Final</version>
+    </dependency>
+
+    Size - кол-во символов
+    Добавим в Employee над полями:
+    @Size(min = 2, max = 15, message = "wrong length")
+    private String name;
+    min     - минимальная длина текста
+    max     - максимальная длина текста
+    message - сообщ если неправ --------+ (есть вариант по умолч)
+                                        |
+    Добавим в ask...jsp в форму         |
+    <form:input path="name"/>           |
+    <form:errors path="name"/>   <------+ отображение сообщ об ошибке
+    поле ввода и сообщение об ошибке привязываются к аттр path="name"
+
+    Добавим аннотацию @Valid и BindingResult в метод контроллера:
+    @RequestMapping("/showDetails")
+    public String showDetails(@Valid @ModelAttribute("employee") Employee emp,
+                              BindingResult bindingResult) {
+        if (bindingResult.hasErrors())      // если валидация не прошла
+            return "ask-emp-details-view";  // вернуть ту же страницу
+        else
+            return "show-emp-details-view"; // если все гуд вернуть другую
+    }
+    Параметр BindingResult должен идти после аттрибута модели, в случае
+    если параметров много.
+
+    NotEmpty - не null и не должно быть пустым
+    @NotEmpty(message = "surname is required field")
+    private String surname;
+    Также добавляем во view отображение этой проверки
+    surname <form:input path="surname"/>
+    <form:errors path="surname"/> <br>
+
+    @NotNull    - не null поле
+    @NotBlank   - не null, не пустое, не состоит из одних пробелов
