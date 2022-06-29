@@ -1218,7 +1218,99 @@ Spring MVC + Hibernate + AOP
         PostgreSQL JDBC Driver
         C3P0
         Spring Object/Relational Mapping
-
     4. Add Tomkat
     5. Configure web.xml
     6. configure applicationContext.xml
+
+    Note: dialect появляется не сразу, надо перезагрузить/потанцевать 
+
+    # web.xml --------------------------------------------------------
+    <?xml version="1.0" encoding="UTF-8"?>
+    <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+            xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+            id="WebApp_ID" version="3.1">
+
+    <display-name>spring-cource-mvc-hibernate-aop</display-name>
+
+    <absolute-ordering />
+
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    </web-app>
+
+    # applicationContext.xml ---------------------------------------------
+    <?xml version="1.0" encoding="UTF-8"?>
+    <beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:mvc="http://www.springframework.org/schema/mvc"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xsi:schemaLocation="
+            http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc.xsd
+            http://www.springframework.org/schema/tx
+            http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+        <context:component-scan base-package="io.github.ivan100kg.spring.mvc_hibernate_aop" />
+
+        <mvc:annotation-driven/>
+
+        <bean
+                class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+            <property name="prefix" value="/WEB-INF/views/" />
+            <property name="suffix" value=".jsp" />
+        </bean>
+
+        <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+            destroy-method="close">
+            <property name="driverClass" value="org.postgresql.Driver" />
+            <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/my_db" />
+            <property name="user" value="bestuser" />
+            <property name="password" value="bestuser" />
+        </bean>
+
+        <bean id="sessionFactory"
+            class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+            <property name="dataSource" ref="dataSource" />
+            <property name="packagesToScan" value="io.github.ivan100kg.spring.mvc_hibernate_aop.entity" />
+            <property name="hibernateProperties">
+                <props>
+                    <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+                    <prop key="hibernate.show_sql">true</prop>
+                </props>
+            </property>
+        </bean>
+
+        <bean id="transactionManager"
+            class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+            <property name="sessionFactory" ref="sessionFactory"/>
+        </bean>
+
+        <tx:annotation-driven transaction-manager="transactionManager" />
+
+    </beans>
+
+
+
+
+
+
+
