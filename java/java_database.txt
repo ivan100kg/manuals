@@ -295,8 +295,11 @@ Hibernate
 
 --- HQL (Hibernate Query Language) CRUD ---
     Используется для вз-ия с БД.
+    Общий синтаксис:
+    session.createQuery("Query", Class); // запрос + класс нашего Entity
+
     // SELECT * FROM employees;
-    List<Employee> employees = session.createQuery("FROM Employee")
+    List<Employee> emps = session.createQuery("FROM Employee", Employee.class)
             .getResultList();   // получить список объектов Employee из БД
     "from Employee" // Employee - название класса привяз к таблице
     // SELECT * FROM employees WHERE name = 'Inna';
@@ -305,11 +308,12 @@ Hibernate
     "FROM Employee WHERE salary > 100 ORDER BY salary DESC"
 
     // UPDATE employees SET SET salary=salary+10 WHERE name LIKE '%nn%';
-    session.createQuery("UPDATE Employee SET salary=100 WHERE name LIKE '%nn%'")
+    session.createQuery("UPDATE Employee SET salary=100 WHERE name LIKE '%nn%'",
+            Employee.class)
             .executeUpdate();   // изменить несколько полей
 
     // DELETE employees WHERE name='Inna';
-    session.createQuery("DELETE Employee WHERE name='Inna'")
+    session.createQuery("DELETE Employee WHERE name='Inna'", Employee.class)
             .executeUpdate();   // удалить несколько записей
 
     // подставить свои значения
