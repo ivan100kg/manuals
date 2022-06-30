@@ -1214,11 +1214,11 @@ Spring MVC + Hibernate + AOP
     3. Add dependencies into pom.xml
         Spring Web MVC(Spring Core Context Beans are included)
         JSTL
-        Hibernate Core Relocation
+        Hibernate Core Relocation(запустилась на 5.6.9.Final)
         PostgreSQL JDBC Driver
         C3P0
         Spring Object/Relational Mapping
-    4. Add Tomkat
+    4. Add Tomkat(9 или 8)
     5. Configure web.xml
     6. configure applicationContext.xml
 
@@ -1282,7 +1282,7 @@ Spring MVC + Hibernate + AOP
         <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
             destroy-method="close">
             <property name="driverClass" value="org.postgresql.Driver" />
-            <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/my_db" />
+            <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/my_db?useSSL=false&amp;serverTimezone=UTC" />
             <property name="user" value="bestuser" />
             <property name="password" value="bestuser" />
         </bean>
@@ -1293,7 +1293,7 @@ Spring MVC + Hibernate + AOP
             <property name="packagesToScan" value="io.github.ivan100kg.spring.mvc_hibernate_aop.entity" />
             <property name="hibernateProperties">
                 <props>
-                    <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+                    <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL95Dialect</prop>
                     <prop key="hibernate.show_sql">true</prop>
                 </props>
             </property>
@@ -1308,6 +1308,82 @@ Spring MVC + Hibernate + AOP
 
     </beans>
 
+--- Project Structure ---
+    Browser --> Controller <==> DAO <==> Database
+        <-- Model <--+
+    DAO (Data Access Object) - ответственный за работу(через Hibernate) с БД 
+    (CRUD), это Java class например Employee. Это вспомогательный элемент. 
+    Но так делать лучше чем напрямую из Контроллера обращаться к БД.
+
+    1. Create Entity class 
+    // Добавить требуемые элементы для Entity(см. Hibernate).
+    // entity.Employee.java
+    @Entity // запустилось от сюда: import javax.persistence.*;
+    @Table(name = "employees")  // таблица employees
+    public class Employee { ...
+
+    2. Create DAO
+    // Для хорошего тона необх создать интерфейс + класс импл этот интерфейс
+    // dao.EmployeeDAO
+    public interface EmployeeDAO {
+        public List<Employee> getAllEmployees();
+    }
+
+    // собственно сам DAO, для того чтобы он мог подключаться к БД - свяжем
+       его с бином(прописанном в xml) с sessionFactory
+    // dao.EmployeeDAOImpl
+    @Repository // Используется для DAO (@Component included (это бин))
+    public class EmployeeDAOImpl implements EmployeeDAO {
+        @Autowired
+        private SessionFactory sessionFactory;  // DI
+
+        @Override
+        @Transactional  // авто открытие/закрытие транзакций
+        public List<Employee> getAllEmployees() {
+            // сделаем запрос в БД и вернем результат
+            Session session = sessionFactory.getCurrentSession();
+            List<Employee> allEmployees = session.createQuery("FROM Employee",
+                    Employee.class).getResultList();
+            return allEmployees;
+        }
+    }
+
+    3. Creare Controller
+    @Controller
+    public class MyController {
+
+        @Autowired
+        private EmployeeDAO employeeDAO;    // свяжем с DAO(по интерфейсу)
+
+        @RequestMapping("/")                // url
+        public String showAllEmployees(Model model) {
+            // достанем результат из БД с пом DAO и добавим в модель
+            List<Employee> allEmployees = employeeDAO.getAllEmployees();
+            model.addAttribute("allEmps", allEmployees);
+            return "all-employees";         // вернуть view
+        }
+    }
+
+    4. Creaate view
+    // Пробегаем в forEach по allEmps(список что добавили в модель выше)
+    ...
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Department</th>
+            <th>Salary</th>
+        </tr>
+        <c:forEach var="emp" items="${allEmps}">
+            <tr>
+                <td>${emp.name}</td>
+                <td>${emp.surname}</td>
+                <td>${emp.department}</td>
+                <td>${emp.salary}</td>
+            </tr>
+        </c:forEach>
+    </table>
+    ...
 
 
 
