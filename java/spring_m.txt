@@ -1480,7 +1480,74 @@ Spring MVC + Hibernate + AOP
         return "redirect:/";                        // редирект на url: '/' -+
     }                                                  showAllEmployees   <--+
 
+--- Update ---
+    Actions:
+    Добавим во view all-employees.jsp кнопки Update для каждого работника,
+    кнопка будет вызывать метод(создать) контроллера updateInfo и передавать
+    ему id работника. Метод updateInfo будет получать работника по id из 
+    БД через методы getEmployee(int id) у Service/DAO. Далее updateInfo 
+    будет добав в модель готового работника и возвращать employee-info.jsp,
+    в итоге форма в employee-info.jsp уже будет заполнена записями из БД,
+    далее меняем что нужно и подтверждаем, вызывается метод saveEmployee.
+    Метод saveEmployee получает работника из @ModelAttribute, но id не 
+    получает(id назнач в БД автоинкр) - следовательно создадим в employee-info
+    скрытую форму для id <form:hidden path="id"/>. Теперь когда будет возвращ
+    employee-info.jsp из метода updateInfo - поле 'id' будет не пустым. И уже
+    при отправке формы id будет не пустым(ноль 0) как при создании нового emp.
+    Логично так как поле id устанавливается по умолчанию. В DAO saveEmployee 
+    просто прописываем if ..если id==0 -> создать, если не 0 -> изменить,
+    либо просто session.saveOrUpdate(employee) - все под капотом.
 
+    Add button to all-employees.jsp:
+    <c:forEach var="emp" items="${allEmps}">            // forEach по записям
+        <c:url var="updateButton" value="/updateInfo">  // создаем ссылку <-+
+            <c:param name="empId" value="${emp.id}"/>   // перед параметр   |
+        </c:url>                                                            |
+        <tr>                                                                |
+            <td>${emp.name}</td>                                            |
+            <td>${emp.surname}</td>                                         |
+            <td>${emp.department}</td>                                      |
+            <td>${emp.salary}</td>                                          |
+            <td><input type="button" value="Update"     // кнопка ссылающ --+
+                onclick="window.location.href = '${updateButton}'"></td>
+        </tr>
+    </c:forEach>
+
+    Add method updateInfo(int id) to MyController:
+    @RequestMapping("/updateInfo")
+    public String updateInfo(@RequestParam("empId") int id, Model model) {
+        Employee employee = employeeService.getEmployee(id);    // get Emp
+        model.addAttribute("employee", employee);               // доб в мод
+        return "employee-info";                                 // view
+    }
+
+    Add methods to EmployeeDAO and impl in EmployeeDAOImpl:
+    public Employee getEmployee(int id);    // EmployeeDAO
+    @Override                               // EmployeeDAOImpl
+    public Employee getEmployee(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(Employee.class, id); // получаем работника из БД
+    }
+
+    Add methods to EmployeeService and impl in EmployeeServiceImpl:
+    public Employee getEmployee(int id);    // EmployeeService
+    @Override                               // EmployeeServiceImpl
+    @Transactional
+    public Employee getEmployee(int id) {
+        return employeeDAO.getEmployee(id);
+    }
+
+    Add hidden field to form to employee-info.jsp:
+    <form:form action="saveEmployee" modelAttribute="employee">
+        <form:hidden path="id"/>    // скрытая форма для id
+        ...
+
+    Update saveEmployee in EmployeeDAOImpl:
+    @Override
+    public void saveEmployee(Employee employee) {
+        Session session = sessionFactory.getCurrentSession();
+        session.saveOrUpdate(employee); // если id==0 -> новая запись
+    }                                      либо обновить существ запись
 
 
 
