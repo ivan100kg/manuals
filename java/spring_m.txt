@@ -1309,15 +1309,23 @@ Spring MVC + Hibernate + AOP
     </beans>
 
 --- Project Structure ---
-    Browser --> Controller <==> DAO <==> Database
-        <-- Model <--+
+    Browser <==> Controller <==> Service <==> DAO <==> Database
+        +-- view
+    
     DAO (Data Access Object) - ответственный за работу(через Hibernate) с БД 
     (CRUD), это Java class например Employee. Это вспомогательный элемент. 
-    Но так делать лучше чем напрямую из Контроллера обращаться к БД.
+    Но так делать лучше чем напрямую из Контроллера обращаться к БД. Может быть
+    множество DAO - каждый под свои Entity+Table.
 
+    Service - связь контроллера с DAO(1+), service сам решает к какому DAO 
+    обращаться(и нужно ли вообще). В Controller вызывается метод Service -
+    в нем будет прописана бизнес логика, сервис если необходимо обращается
+    к нужному DAO для получения данных из БД.
+
+    Элементы проекта(создадим под все эл свои пакеты):
     1. Create Entity class 
     // Добавить требуемые элементы для Entity(см. Hibernate).
-    // entity.Employee.java
+    // entity.Employee
     @Entity // запустилось от сюда: import javax.persistence.*;
     @Table(name = "employees")  // таблица employees
     public class Employee { ...
@@ -1338,7 +1346,6 @@ Spring MVC + Hibernate + AOP
         private SessionFactory sessionFactory;  // DI
 
         @Override
-        @Transactional  // авто открытие/закрытие транзакций
         public List<Employee> getAllEmployees() {
             // сделаем запрос в БД и вернем результат
             Session session = sessionFactory.getCurrentSession();
@@ -1348,23 +1355,45 @@ Spring MVC + Hibernate + AOP
         }
     }
 
+    4. Create Service
+    // Также создаем interface + class (impl this interface)
+    // service.EmployeeService
+    public interface EmployeeService {
+        public List<Employee> getAllEmployee();
+    }
+
+    // service.EmployeeServiceImpl
+    @Service    // класс(@Component) с бизнес-лог, соед звено Controller-DAO 
+    public class EmployeeServiceImpl implements EmployeeService{
+        @Autowired
+        EmployeeDAO employeeDAO;    // связать с бином DAO
+
+        @Override
+        @Transactional  // авто открытие/закрытие транзакций
+        public List<Employee> getAllEmployee() {
+            return employeeDAO.getAllEmployees();   // вернуть через DAO
+        }                                              данные из БД
+    }
+
     3. Creare Controller
+    // controller.MyController
     @Controller
     public class MyController {
 
         @Autowired
-        private EmployeeDAO employeeDAO;    // свяжем с DAO(по интерфейсу)
+        private EmployeeService employeeService;    // свяжем Service
 
         @RequestMapping("/")                // url
         public String showAllEmployees(Model model) {
-            // достанем результат из БД с пом DAO и добавим в модель
-            List<Employee> allEmployees = employeeDAO.getAllEmployees();
+            // достанем результат из БД с пом Servise-DAO и добавим в модель
+            List<Employee> allEmployees = employeeService.getAllEmployees();
             model.addAttribute("allEmps", allEmployees);
             return "all-employees";         // вернуть view
         }
     }
 
     4. Creaate view
+    // WEB-INF/views/all-employees.jsp
     // Пробегаем в forEach по allEmps(список что добавили в модель выше)
     ...
     <table>
