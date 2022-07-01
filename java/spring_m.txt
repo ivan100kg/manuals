@@ -1414,6 +1414,72 @@ Spring MVC + Hibernate + AOP
     </table>
     ...
 
+--- Create/Insert ---
+    Actions:
+    Добавляем кнопку 'Add' на глав страницу all-employees.jsp, при нажатии
+    которой вызывается метод контроллера(создаем) addNewEmployee().
+    Метод addNewEmployee() создает пустого Employee, добавляет его в модель
+    и возвращает view(создаем) employee-info.jsp.
+    View employee-info.jsp содержит форму для заполнения полей Employee,
+    после нажатия submit кнопки форма отправляется на url '/saveEmployee'.
+    Создадим новый метод в MyController для обработки '/saveEmployee' с 
+    таким же названием saveEmployee, достаем данные из формы с помощью
+    модели: @ModelAttribute("employee") Employee employee и передаем
+    employee в сервис EmployeeServiceImpl, в метод(создаем в интерфейсе 
+    EmployeeService и импл EmployeeServiceImpl) saveEmployee(employee).
+    В этом методе вызыв одноименный метод у DAO (также создаем в EmployeeDAO 
+    и импл в EmployeeDAOImpl этот метод saveEmployee(employee)) в этом методе
+    уже сохраняем employee в БД. После всех манипуляций метод Контроллера
+    saveEmployee возвращает редирект на глав страницу уже с новым работником.
+
+    To MyController add method:
+    @RequestMapping("/addNewEmployee")              // url <----------------+
+    public String addNewEmployee(Model model){                              |
+        Employee employee = new Employee();         // new Employee         |
+        model.addAttribute("employee", employee);   // add to Model         |
+        return "employee-info";                     // return view(см ниже) |
+    }                                                                       |
+                                                                            |
+    To all-employees.jsp add button:                                        |
+    <input type="button" value="Add"                                        |
+           onclick="window.location.href = 'addNewEmployee'"> -->-----------+
+
+    Create views/employee-info.jsp:
+    <form:form action="saveEmployee" modelAttribute="employee"> -->---------+
+        Name <form:input path="name"/> <br>                                 |
+        Surname <form:input path="surname"/> <br>                           |
+        Department <form:input path="department"/> <br>                     |
+        Salary <form:input path="salary"/> <br>                             |
+        <input type="submit" value="ok">                                    |
+    </form:form>                                                            |
+                                                                            |
+    Add new method to EmployeeDAO and EmployeeDAOImpl:                      |
+    // EmployeeDAO.java                                                     |
+    public void saveEmployee(Employee employee);    // добавим в интерфейс  |
+    // EmployeeDAOImpl.java                                                 |
+    @Override                                       // переопределим        |
+    public void saveEmployee(Employee employee) {                           |
+        Session session = sessionFactory.getCurrentSession();               |
+        session.save(employee);                     // сохраняем в БД       |
+    }                                                                       |
+                                                                            |
+    Add new method to EmployeeService and EmployeeServiceImpl:              |
+    // EmployeeService.java                                                 |
+    public void saveEmployee(Employee employee);    // добавим в интерфейс  |
+    // EmployeeServiceImpl.java                                             |
+    @Override                                       // переопределим        |
+    @Transactional                                                          |
+    public void saveEmployee(Employee employee) {                           |
+        employeeDAO.saveEmployee(employee);         // через DAO сохр в БД  |
+    }                                                                       |
+                                                                            |
+    Add new method to MyController:                                         |
+    @RequestMapping("/saveEmployee")                // url <----------------+                
+    public String saveEmployee(@ModelAttribute("employee") Employee employee) {
+        employeeService.saveEmployee(employee);     // сохр чер Srvice-DAO в БД
+        return "redirect:/";                        // редирект на url: '/' -+
+    }                                                  showAllEmployees   <--+
+
 
 
 
