@@ -890,7 +890,11 @@ Spring MVC
     Можно использовать @RequestMapping на самом Контроллере(Controller-mapping)
     Удобен для создания нескольких контроллеров, каждый под свой URL.
     @Controller
-    @RequestMapping("/emp") // корень, будет приписываться ко всем url методов 
+    @RequestMapping("/emp") // корень, будет приписываться ко всем url методов
+    @RequestMapping(path="/emp", method=RequestMethod.GET)  // обработка только
+                                                               GET методов
+    @GetMapping("/emp")     // аналог тому что выше - только GET запросы 
+    @PostMapping("/")       // только POST запросы                                                 
 
 --- Using data in views ---
     Чтение данных из формы:
@@ -1649,7 +1653,21 @@ REST
     ключи:значения JSON и назначаются соотв полям Java объекта.
     Все преобразования проходят за кулисами Jackson.
 
-  
+--- REST API ---
+    Общепринятые стандарты:
+    method    URL                     CRUD
+    GET     api/employees           Получить всех работников
+    GET     api/rmployees/{empId}   Получить 1 работника 
+    POST    api/employees           Добавить работнника
+    PUT     api/employees           Изменить работника
+    DELETE  api/employees/{empId}   Удалить работника
+
+    api/        - корневой эл, @RequestMapping("api/") для Контроллера
+    employees   - Entity с которым идет работа
+
+    За действия что нужно сделать отвечают не названия URL(они одинаковые),
+    а тип метода HTTP запроса.
+
     
 
 
