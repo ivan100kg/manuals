@@ -1549,6 +1549,42 @@ Spring MVC + Hibernate + AOP
         session.saveOrUpdate(employee); // если id==0 -> новая запись
     }                                      либо обновить существ запись
 
+--- Delete ---
+    Actions:
+    Дообавим кнопку во view, пропишем c:url для нее как и в случае с Update,
+    также при нажатии будем вызывать метод(создать) из котроллера deleteEmployee,
+    связав его с этой кнопкой, с url '/deleteEmployee'. Этот метод будет
+    возвращать редирект на глав страницу. Пропишем одноименные методы в 
+    Service и DAO, по цепочке будут они вызываться и удалять нужную
+    запись из БД по id.
 
+    Add button and <c:url> to all-employees.jsp:
+    <c:url var="deleteButton" value="/deleteEmployee">
+        <c:param name="empId" value="${emp.id}"/>
+    </c:url>
+    ...
+    <input type="button" value="Delete" onclick="window.location.href = '${deleteButton}'"/>
+    
+    Add method to MyController:
+    @RequestMapping("/deleteEmployee")
+    public String deleteEmployee(@RequestParam("empId") int id) {
+        return "redirect:/";
+    }
 
+    Add method to Service:
+    void deleteEmployee(int id);    // EmployeeService
+    @Override                       // EmployeeServiceImpl
+    @Transactional
+    public void deleteEmployee(int id) {
+        employeeDAO.deleteEmployee(id);
+    }
 
+    Add method to DAO:
+    void deleteEmployee(int id);    // EmployeeDAO
+    @Override                       // EmployeeDAOImpl
+    public void deleteEmployee(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        session.createQuery("delete from Employee where id=:employeeId")
+                .setParameter("employeeId", id)
+                .executeUpdate();
+    }
