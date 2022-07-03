@@ -87,6 +87,7 @@ psql --help \? \h       # help for everything
 \d table_n  # show table 'table_name'
 \i sqr.sql  # чтение команд из файла
 \timing on	# включить замер времени выполнения команд
+\du			# all users
 
 -- Создать бд
 sudo -u postgres createdb mydb   # создать бд из консоли linux
@@ -588,3 +589,14 @@ DISTINCT            -- отбрасывание повторяющихся зн�
 UNION               -- объединяет наборы результатов двух запросов в один
 ORDER BY            -- сортировка результатов
 LIMIT и OFFSET      -- лимит и отступ
+
+-- PostgreSQL server ------------------------------------------------------
+1	sudo nano /etc/postgresql/12/main/postgresql.conf
+	#listen_addresses = 'localhost'
+	заменить на
+	listen_addresses = '*'
+2	sudo nano /etc/postgresql/12/main/pg_hba.conf
+	допишем в конец файла
+	host      mydb       myuser  all          md5
+3	Рестарт сервера
+	sudo service postgresql restart

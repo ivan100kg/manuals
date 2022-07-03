@@ -1549,3 +1549,15 @@ LANG=ru_RU.utf8         # изменить локаль на текущую се
 export LANG=en_US.utf8  # добавить в .bashrc для изменения на постоянной основе
 localectl set-locale LANG=en_US.utf8  # изменить локаль по умолчанию
 /etc/default/locale     # локаль по умолчанию
+
+--- PostgreSQL server --------------------------------------------------------
+1	sudo nano /etc/postgresql/12/main/postgresql.conf
+	#listen_addresses = 'localhost'
+	заменить на
+	listen_addresses = '*'
+2	sudo nano /etc/postgresql/12/main/pg_hba.conf
+	допишем в конец файла
+	host      mydb       myuser  all          md5
+3	Рестарт сервера
+	sudo service postgresql restart
+	
