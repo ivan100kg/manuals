@@ -505,14 +505,13 @@ Spring AOP
     public class MyConfig {}
 
     // Создадим класс Aspect, он будет отвечать за сквозную ф-ть
-    // Скачаем jar AspectJ Weaver с Maven repository и подключим к проекту
     // добавим зависимость в pom
         <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>1.9.9.1</version>
-            <scope>runtime</scope>
+            <!--            <scope>runtime</scope> не нужен --> 
         </dependency>
     // Aspect класс для логов, имя любое
     @Component
@@ -1588,3 +1587,38 @@ Spring MVC + Hibernate + AOP
                 .setParameter("employeeId", id)
                 .executeUpdate();
     }
+
+--- Add AOP ---
+    Configuration:
+    Add dependency to pom.xml:
+        AspectJ Weaver(<scope>runtime</scope> закомментим)
+    Update applicationContext.xml:
+        ...
+        xmlns:oap="http://www.springframework.org/schema/aop"
+        ...
+        http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+        ...
+        <aop:aspectj-autoproxy/>
+        ...
+    
+    Create package aspect and Aspect classes:
+    Advice будет перехватывать все методы в пакете dao и выводить в консоль лог
+    @Component
+    @Aspect
+    public class MyLoggingAspect {
+        @Around("execution(* io.github.ivan100kg.spring.mvc_hibernate_aop.dao.*.*(..))")
+        public Object aroundAllRepositoryMethodAdvice
+                (ProceedingJoinPoint point) throws Throwable{
+            MethodSignature signature = (MethodSignature) point.getSignature();
+            String methodName = signature.getName();
+            System.out.println("Begin of " + methodName);
+            Object target = point.proceed();
+            System.out.println("End of " + methodName);
+            return target;
+        }
+    }
+
+
+
+
