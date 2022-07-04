@@ -1668,7 +1668,88 @@ REST
     За действия что нужно сделать отвечают не названия URL(они одинаковые),
     а тип метода HTTP запроса.
 
-    
+--- Configuration without xml ---
+    Конфигурация приложения Sring MVC + Hibernate без исп-я xml:
+    1. Create project with webapp Maven archetype
+    2. Set up database
+    3. Add dependencies to pom.xml
+        spring-webmvc
+        javax.servlet
+        hibernate-core
+        postgresql
+        c3p0
+        spring-orm
+        javax.servlet-api   # для DispatcherServlet
+        jackson-databind    # тот самый Jackson (JSON<=>Java)
+    4. Directories/packages/files
+        ./src/main/java             - create dir, sourse root
+        io.github.ivan100kg.mypack  - create package in java <---+
+        configuration               - create package in mypack --+ 
+        MyConfig                    - create config class in configuration
+        MyWebInitializer            - create config class in configuration
+        entity                      - sreate package in mypack
+    5. Configure MyConfig.java 
+    6. Configure MyWebInitializer
+    7. Add Tomcat
+
+    // configuration.MyConfig
+    @Configuration
+    @ComponentScan("io.github.ivan100kg.rest")
+    @EnableWebMvc
+    @EnableTransactionManagement
+    public class MyConfig {
+        @Bean
+        public DataSource dataSource() {
+            ComboPooledDataSource dataSource = new ComboPooledDataSource();
+            try {
+                dataSource.setDriverClass("org.postgresql.Driver");
+                dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/my_db?useSSL=false&amp;serverTimezone=UTC");
+                dataSource.setUser("bestuser");
+                dataSource.setPassword("bestuser");
+            } catch (PropertyVetoException e) {
+                throw new RuntimeException(e);
+            }
+            return dataSource;
+        }
+
+        @Bean
+        public LocalSessionFactoryBean sessionFactory() {
+            LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+            sessionFactory.setDataSource(dataSource());
+            sessionFactory.setPackagesToScan("io.github.ivan100kg.rest.entity");
+            Properties hibernateProperties = new Properties();
+            hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");
+            hibernateProperties.setProperty("hibernate.show_sql", "true");
+            sessionFactory.setHibernateProperties(hibernateProperties);
+            return sessionFactory;
+        }
+
+        @Bean
+        public HibernateTransactionManager transactionManager() {
+            HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+            transactionManager.setSessionFactory(sessionFactory().getObject());
+            return transactionManager;
+        }
+    }
+
+    // configuration.MyWebInitializer
+    public class MyWebInitializer extends
+            AbstractAnnotationConfigDispatcherServletInitializer {
+        @Override
+        protected Class<?>[] getRootConfigClasses() {
+            return null;
+        }
+
+        @Override
+        protected Class<?>[] getServletConfigClasses() {
+            return new Class[] {MyConfig.class};
+        }
+
+        @Override
+        protected String[] getServletMappings() {
+            return new String[] {"/"};
+        }
+    }
 
 
 
