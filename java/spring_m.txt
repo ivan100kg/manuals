@@ -1684,15 +1684,20 @@ REST
     4. Directories/packages/files
         ./src/main/java             - create dir, sourse root
         io.github.ivan100kg.mypack  - create package in java <---+
-        configuration               - create package in mypack --+ 
+        create packages:
+            configuration
+            controller
+            dao
+            entity
+            service 
         MyConfig                    - create config class in configuration
-        MyWebInitializer            - create config class in configuration
-        entity                      - sreate package in mypack
+        MyWebInitializer            - create config class in configuration        
     5. Configure MyConfig.java 
     6. Configure MyWebInitializer
     7. Add Tomcat
 
     // configuration.MyConfig
+    // все аналогично конфигурации с пом xml
     @Configuration
     @ComponentScan("io.github.ivan100kg.rest")
     @EnableWebMvc
@@ -1732,7 +1737,8 @@ REST
         }
     }
 
-    // configuration.MyWebInitializer
+    // configuration.MyWebInitializer (это вместо web.xml) + Должен быть
+    установлен плагин maven-war-plugin в pom.xml(вроде как авто)
     public class MyWebInitializer extends
             AbstractAnnotationConfigDispatcherServletInitializer {
         @Override
@@ -1751,6 +1757,23 @@ REST
         }
     }
 
+--- CRUD ---
+    @RestController // это Controller, кот управляет REST запросами и ответами
+    @RequestMapping("/api") // так принято
+    public class MyRESTController {
+        @Autowired
+        private EmployeeService employeeService;    // service
+    }
 
+    dao, service, entity - идентичны что и в Spring MVC + Hibernate,
+    можно скопировать эти пакеты со всеми классами, переписав импорты.
+
+    // GET - api/employees - Получить всех работников
+    @GetMapping("/employees")   // GET url: http://localhost:8080/api/employees
+    public List<Employee> showAllEmployee() {
+        return employeeService.getAllEmployees();   // возвращаяя список, 
+    }                                                  он авто преобр в JSON
+                                                       и в теле responce 
+                                                       отправится клиенту
 
 
