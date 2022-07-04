@@ -1689,7 +1689,8 @@ REST
             controller
             dao
             entity
-            service 
+            service
+            exception_handling
         MyConfig                    - create config class in configuration
         MyWebInitializer            - create config class in configuration        
     5. Configure MyConfig.java 
@@ -1757,7 +1758,7 @@ REST
         }
     }
 
---- CRUD ---
+--- Get one/all ---
     @RestController // это Controller, кот управляет REST запросами и ответами
     @RequestMapping("/api") // так принято
     public class MyRESTController {
@@ -1775,9 +1776,77 @@ REST
     }                                                  он авто преобр в JSON
                                                        и в теле responce 
                                                        отправится клиенту
-    // GET - api/rmployees/{id} - Получить 1 работника
+    // GET - api/rmployees/{id} - Получить 1 работника(без обраб исключ)
     @GetMapping("/employees/{id}")
     public Employee getEmployee(@PathVariable int id) { // вытащить id из url-
         return employeeService.getEmployee(id);            парам-ра в запросе
     }
 
+--- Exceptions Handling ---
+    // Обработка исключений, если пользователь ввел несущ/неправильный id
+       Цель - при неверном запросе вернуть JSON с инфо об ошибке.
+    // Добавим класс в пакет exception_handling.EmployeeWrongId
+    public class EmployeeWrongId {
+        private String info;    // 1 поле
+        ...                     // no args constructor + getters/setters
+    
+    // создадим еще один класс-исключение там же
+    public class NoSuchEmployeeException extends RuntimeException{
+        public NoSuchEmployeeException(String message) { // переопр констр
+            super(message);
+        }
+    }
+    
+    // изменим метод getEmployee в RESTController
+    @GetMapping("/employees/{id}")
+    public Employee getEmployee(@PathVariable int id) {
+        Employee employee = employeeService.getEmployee(id);
+        if (employee == null) {
+            throw new NoSuchEmployeeException(
+                "There is no such Employee with ID: " + id);
+        } 
+        return employee;
+    }
+
+    // добавим в RESTController метод отвечающий за обработку исключений
+    @ExceptionHandler   // будет автоматически ловить исключения в Контроллере
+    public ResponseEntity<EmployeeWrongId> handleException(NoSuchEmployeeException exception) {
+        EmployeeWrongId wrongId = new EmployeeWrongId();
+        wrongId.setInfo(exception.getMessage());
+        return new ResponseEntity<>(wrongId, HttpStatus.NOT_FOUND);
+    }
+    // ResponseEntity<T>    - обертка HTTP - response
+    // <T>                  - тип объекта, кот добавляется в тело ответа
+    // HttpStatus.NOT_FOUND - код статуса ответа
+
+    // добавим еще 1 обработчик исключений, реагирующий на все Exception
+    @ExceptionHandler
+    public ResponseEntity<EmployeeWrongId> handleException(Exception exception) {
+        EmployeeWrongId wrongId = new EmployeeWrongId();
+        wrongId.setInfo(exception.getMessage());
+        return new ResponseEntity<>(wrongId, HttpStatus.BAD_REQUEST);
+    }
+    // Теперь в getMessage() будут попадать все остальные ошибки
+    Этот обработчик не перекрывает более спецефичный верхний обработчик
+
+    Глобальная обработка исключений
+    Чтобы наши обработчики работали над всеми контроллерами, нужно вынести
+    их в отдельный класс - Controller Advice. Реализуется все посредством AOP.
+    Вырезаем методы-обработчики из RESTController и вставляем в нов класс.
+    // exception_handling.EmployeeGlobalExceptionHandler
+    @ControllerAdvice
+    public class EmployeeGlobalExceptionHandler {
+        @ExceptionHandler
+        public ResponseEntity<EmployeeWrongId> handleException(NoSuchEmployeeException exception) {
+            EmployeeWrongId wrongId = new EmployeeWrongId();
+            wrongId.setInfo(exception.getMessage());
+            return new ResponseEntity<>(wrongId, HttpStatus.NOT_FOUND);
+        }
+
+        @ExceptionHandler
+        public ResponseEntity<EmployeeWrongId> handleException(Exception exception) {
+            EmployeeWrongId wrongId = new EmployeeWrongId();
+            wrongId.setInfo(exception.getMessage());
+            return new ResponseEntity<>(wrongId, HttpStatus.BAD_REQUEST);
+        }
+    }
