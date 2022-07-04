@@ -1775,5 +1775,9 @@ REST
     }                                                  он авто преобр в JSON
                                                        и в теле responce 
                                                        отправится клиенту
-
+    // GET - api/rmployees/{id} - Получить 1 работника
+    @GetMapping("/employees/{id}")
+    public Employee getEmployee(@PathVariable int id) { // вытащить id из url-
+        return employeeService.getEmployee(id);            парам-ра в запросе
+    }
 
