@@ -1897,4 +1897,72 @@ REST
         employeeService.deleteEmployee(id); // удаляем
         return "Employee with id: " + id + " was deleted";
     }
+
+--- Own REST Client ---
+    1. Create Maven project: maven-archetype-quickstart.
+    2. Configure pom.xml, Add: [junit, spring-webmvc, jackson-databind]
+    3. Create package configuration + MyConfig.java
+    4. Create package entity + Employee.java
+        можно скопировать уже существующий, удалить все аннотации
+    5. Create class io.github.ivan100kg.rest.Communication.java(Project root)
+    6. Create class App.java with in root main.
     
+    // MyConfig.java
+    @Configuration
+    @ComponentScan("io.github.ivan100kg.rest")
+    public class MyConfig {
+        @Bean   // бин для выполнения запросов
+        public RestTemplate restTemplate() {
+            return new RestTemplate();
+        }
+    }
+
+    // Communication.java
+    @Component
+    public class Communication {
+        @Autowired
+        private RestTemplate restTemplate;  // связать с бином для запросов
+        private final String URL = "http://localhost:8080/api/employees";
+
+        public List<Employee> getAllEmployees() {   // all Employees
+            ResponseEntity<List<Employee>> responseEntity =
+                    restTemplate.exchange(URL, HttpMethod.GET, null,
+                            new ParameterizedTypeReference<List<Employee>>() {});
+            List<Employee> allEmployees = responseEntity.getBody();
+            return allEmployees;    // возвращаем лист работников
+        }
+
+        public Employee getEmployee(int id) {
+            Employee employee = restTemplate.getForObject(URL + "/" + id, Employee.class);
+            return employee;
+        }
+
+        public void saveEmployee(Employee employee) {
+            int id = employee.getId();
+            if (id == 0) {
+                ResponseEntity<String> responseEntity =
+                        restTemplate.postForEntity(URL, employee, String.class);
+                System.out.println("New employee was added to DB");
+                System.out.println(responseEntity.getBody());
+            } else {
+                restTemplate.put(URL, employee);
+                System.out.println("Employee with id = " + id + " was updated");
+            }
+        }
+
+        public void deleteEmployee(int id) {
+            restTemplate.delete(URL + "/" + id);
+            System.out.println("Employee with id = " + id + " was deleted from DB");
+        }
+    }
+
+    // App.java
+    public class App {
+        public static void main(String[] args) {
+            AnnotationConfigApplicationContext context =
+                    new AnnotationConfigApplicationContext(MyConfig.class);
+            Communication communication = context.getBean("communication", Communication.class);
+            List<Employee> allEmployees = communication.getAllEmployees();
+            allEmployees.forEach(System.out::println);  // all
+        }
+    }
