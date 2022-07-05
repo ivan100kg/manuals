@@ -1777,7 +1777,7 @@ REST
                                                        и в теле responce 
                                                        отправится клиенту
     // GET - api/rmployees/{id} - Получить 1 работника(без обраб исключ)
-    @GetMapping("/employees/{id}")
+    @GetMapping("/employees/{id}")  // GET на url "api/employees/{id}"
     public Employee getEmployee(@PathVariable int id) { // вытащить id из url-
         return employeeService.getEmployee(id);            парам-ра в запросе
     }
@@ -1871,11 +1871,30 @@ REST
     // PUT - api/employees - Изменить работника
     @PutMapping("/employees")   // PUT запрос на url "api/employees"
     public Employee updateEmployee(@RequestBody Employee employee) {
-        employeeService.saveEmployee(employee);
-        return employee;
+        // Добавим проверку на существующую запись
+        Employee checkEmployee = employeeService.getEmployee(employee.getId());
+        if (checkEmployee==null) {
+            throw new NoSuchEmployeeException("There is no such Employee with ID: " + employee.getId());
+        }
+        employeeService.saveEmployee(employee); // сохраняем
+        return employee;                        // возвращаем измененную запись
     }
     // если id не существует - ошибка
     // если id = 0 - новая запись
 
 --- Delete ---
-
+    Удалить запись в БД.
+    Используется HTTP request method DELETE с id в url.
+    Метод обработки будет возвращать текстовую информацию.
+    // DELETE - api/employees/{empId} - Удалить работника
+    @DeleteMapping("/employees/{id}")   // DELETE на url "api/employees/{id}"
+    public String deleteEmployee(@PathVariable int id) {
+        // Добавим проверку на существующую запись
+        Employee employee = employeeService.getEmployee(id);
+        if (employee==null) {
+            throw new NoSuchEmployeeException("There is no such Employee with ID: " + id);
+        }
+        employeeService.deleteEmployee(id); // удаляем
+        return "Employee with id: " + id + " was deleted";
+    }
+    
