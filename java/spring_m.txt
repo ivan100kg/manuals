@@ -1966,3 +1966,26 @@ REST
             allEmployees.forEach(System.out::println);  // all
         }
     }
+
+Spring Security
+--- About ---
+    Spring Security предоставляет функционал для обеспеч без-ти приложения.
+
+    Аутентификкация - процедура проверки подлинности путем сравнения введенных
+    login:password с хранящимися в БД(или еще где-то) login:password.
+
+    Авторизация - проц проверки разрешений на доступ к тому или иному ресурсу.
+    Роль - дается клиенту для доступа к опред ресурсу.
+
+--- Process ---
+    При запросе на url сначала проходит Аутентификкация, далее
+    при ходит response(HTML-page) в зависимости от ролей - Авторизация.
+                                   role=Employee
+             URL                 +------------> info for all employees 
+    Browser ----> Authentication | role=HR
+                    login:       +------------> info for all employees + Salary
+                    password:    | role=HR+Manager
+                                 +------------> info + Salary + Performance
+    Форма для Аутентификкации дается по умолчанию.
+
+
