@@ -1850,3 +1850,17 @@ REST
             return new ResponseEntity<>(wrongId, HttpStatus.BAD_REQUEST);
         }
     }
+
+--- Insert ---
+    Добавить 1 запись в БД.
+    В теле запроса POST приходит Employee в формате JSON, метод контроллера
+    должен обработать запрос с пом параметра @RequestBody Employee employee,
+    автоматически конвертируется в Employee из JSON.
+    // POST - api/employees - Добавить работнника 
+    @PostMapping("/employees")  // POST запрос на url "api/employees"
+    public Employee addNewEmployee(@RequestBody Employee employee) {
+        employeeService.saveEmployee(employee); // сохраняем в БД
+        return employee;        // вернуть responce c Employee уже с id
+    }
+
+    
