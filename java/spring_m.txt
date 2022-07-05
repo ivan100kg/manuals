@@ -1758,7 +1758,7 @@ REST
         }
     }
 
---- Get one/all ---
+--- Read one/all ---
     @RestController // это Controller, кот управляет REST запросами и ответами
     @RequestMapping("/api") // так принято
     public class MyRESTController {
@@ -1853,9 +1853,10 @@ REST
 
 --- Insert ---
     Добавить 1 запись в БД.
-    В теле запроса POST приходит Employee в формате JSON, метод контроллера
-    должен обработать запрос с пом параметра @RequestBody Employee employee,
-    автоматически конвертируется в Employee из JSON.
+    В теле запроса POST приходит Employee(без id) в формате JSON, 
+    метод контроллера должен обработать запрос с пом параметра 
+    @RequestBody Employee employee, автоматически конвертируется 
+    в Employee из JSON.
     // POST - api/employees - Добавить работнника 
     @PostMapping("/employees")  // POST запрос на url "api/employees"
     public Employee addNewEmployee(@RequestBody Employee employee) {
@@ -1863,4 +1864,18 @@ REST
         return employee;        // вернуть responce c Employee уже с id
     }
 
-    
+--- Update ---
+    Изменить запись в БД.
+    Используется HTTP request method PUT c JSON объектом Employee(с id) в теле.
+    Ответ(response) будет уже обновленная запись.
+    // PUT - api/employees - Изменить работника
+    @PutMapping("/employees")   // PUT запрос на url "api/employees"
+    public Employee updateEmployee(@RequestBody Employee employee) {
+        employeeService.saveEmployee(employee);
+        return employee;
+    }
+    // если id не существует - ошибка
+    // если id = 0 - новая запись
+
+--- Delete ---
+
