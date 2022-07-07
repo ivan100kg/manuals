@@ -2050,4 +2050,35 @@ Spring Security
         }
     }
 
+--- Authentication ---
+    // Создадим контроллер и 3 странички 
+    // Теперь при входе на сайт - вылезет форма логина-пароля
+
+    // controller.MyController
+    @Controller
+    public class MyController {
+        @GetMapping("/")
+        public String getInfoForAllEmps() {
+            return "all-employees";
+        }
+        @GetMapping("/hr-info")
+        public String getInfoOnlyForHR() {
+            return "view-for-hr";
+        }
+        @GetMapping("/manager-info")
+        public String getInfoOnlyForManager() {
+            return "view-for-manager";
+        }
+    }
+
+    // all-employees.jsp - текст + 2 кнопки на др странички
+    <h3>Information for all employees</h3>
+    <input type="button" value="Salary" onclick="window.location.href='hr-info'">
+    Only for HR stuff <br>
+    <input type="button" value="Performance" onclick="window.location.href='manager-info'">
+    Only for Managers
+
+    // и две простенькие странички 
+    <p>Salary</p>       // view-for-hr.jsp
+    <p>Performance</p>  // view-for-manager.jsp
 
