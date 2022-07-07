@@ -1988,4 +1988,66 @@ Spring Security
                                  +------------> info + Salary + Performance
     Форма для Аутентификкации дается по умолчанию.
 
+--- Configuration ---
+    Add dependencies to pom.xml:
+        spring-webmvc
+        javax.servlet-api
+        spring-security-web
+        spring-security-config
+    Add files to configuration package: 
+        MyConfig.java
+        MyWebInitializer.java
+        MySecurityInitializer.java
+        MySecurityConfig.java
+    Add Tomcat
+
+    // MyWebInitializer
+    public class MyWebInitializer extends
+        AbstractAnnotationConfigDispatcherServletInitializer {
+        @Override
+        protected Class<?>[] getRootConfigClasses() {
+            return null;
+        }
+        @Override
+        protected Class<?>[] getServletConfigClasses() {
+            return new Class[]{MyConfig.class};
+        }
+        @Override
+        protected String[] getServletMappings() {
+            return new String[]{"/"};
+        }
+    }
+
+    // MyConfig
+    @Configuration
+    @ComponentScan("io.github.ivan100kg.security")
+    @EnableWebMvc
+    public class MyConfig {
+        @Bean   // jsp суффикс/префикс
+        public ViewResolver viewResolver(){
+            InternalResourceViewResolver internalResourceViewResolver =
+                    new InternalResourceViewResolver();
+            internalResourceViewResolver.setPrefix("/WEB-INF/views/");
+            internalResourceViewResolver.setSuffix(".jsp");
+            return internalResourceViewResolver;
+        }
+    }
+
+    // MySecurityInitializer.java
+    public class MySecurityInitializer extends
+        AbstractSecurityWebApplicationInitializer {}
+
+    // MySecurityConfig.java
+    @EnableWebSecurity  // класс ответственный за security config(@Configuration)
+    public class MySecurityConfig extends WebSecurityConfigurerAdapter {
+        @Override
+        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+            User.UserBuilder userBuilder = User.withDefaultPasswordEncoder();
+            auth.inMemoryAuthentication()
+                    .withUser(userBuilder.username("zaur").password("zaur").roles("EMPLOYEE"))
+                    .withUser(userBuilder.username("ivan").password("ivan").roles("MANAGER", "HR"))
+                    .withUser(userBuilder.username("oleg").password("oleg").roles("HR"));
+        }
+    }
+
 
