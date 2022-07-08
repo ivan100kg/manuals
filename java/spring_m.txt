@@ -2119,8 +2119,8 @@ Spring Security
         authorities:[username(15), authority(25)]   // роли, username FK на +
         -- table users
         zaur,{noop}zaur,1       // {noop} - без шифрования
-        elena,{noop}elena,1
-        ivan,{noop}ivan,1
+        elena,{bcrypt}$2a$1..,1 // {bcrypt} - шифрование(генерим на сайте)
+        ivan,{noop}ivan,0       // 0 - user disabled(не войдет)
 
         -- table authorities
         zaur,ROLE_EMPLOYEE
