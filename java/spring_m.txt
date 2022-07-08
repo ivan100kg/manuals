@@ -1992,8 +1992,9 @@ Spring Security
     Add dependencies to pom.xml:
         spring-webmvc
         javax.servlet-api
-        spring-security-web
+        spring-security-web         // включает spring-security-core
         spring-security-config
+        spring-security-taglibs     // для jsp
     Add files to configuration package: 
         MyConfig.java
         MyWebInitializer.java
@@ -2081,4 +2082,32 @@ Spring Security
     // и две простенькие странички 
     <p>Salary</p>       // view-for-hr.jsp
     <p>Performance</p>  // view-for-manager.jsp
+
+--- Authorization ---
+    Добавим перезаписанный метод в MySecurityConfig. Распределение прав доступа
+    к различным url.
+    // MySecurityConfig.java
+    ...
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests()    // url и права доступа у ролей
+                .antMatchers("/").hasAnyRole("EMPLOYEE", "HR", "MANAGER")
+                .antMatchers("/hr-info").hasRole("HR")
+                .antMatchers("/manager-info/**").hasRole("MANAGER")
+                .and().formLogin().permitAll(); // логин-пасс запраш у всех
+                // ** - значит люб адрес нач-ся с manager-info/
+    }
+
+    // Добавим в all-employees.jsp видимость кнопок для различных ролей
+    <security:authorize access="hasRole('HR')">
+        <input type="button" value="Salary" onclick="window.location.href='hr-info'">
+        Only for HR stuff
+    </security:authorize>
+    <br>
+    <security:authorize access="hasRole('MANAGER')">
+        <input type="button" value="Performance" onclick="window.location.href='manager-info'">
+        Only for Managers
+    </security:authorize>
+
+
 
