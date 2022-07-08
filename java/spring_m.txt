@@ -1995,6 +1995,8 @@ Spring Security
         spring-security-web         // включает spring-security-core
         spring-security-config
         spring-security-taglibs     // для jsp
+        postgresql                  // JDBC Driver
+        c3p0                        // connection pool
     Add files to configuration package: 
         MyConfig.java
         MyWebInitializer.java
@@ -2109,5 +2111,44 @@ Spring Security
         Only for Managers
     </security:authorize>
 
+--- Use Database ---
+    Хранение логин-паролей в БД.
+    
+    1. Set up database - tables: 
+        users:[username(15), password(15), enabled] // послед boolean <-----+
+        authorities:[username(15), authority(25)]   // роли, username FK на +
+        -- table users
+        zaur,{noop}zaur,1       // {noop} - без шифрования
+        elena,{noop}elena,1
+        ivan,{noop}ivan,1
+
+        -- table authorities
+        zaur,ROLE_EMPLOYEE
+        elena,ROLE_HR
+        ivan,ROLE_HR
+        ivan,ROLE_MANAGER
+    2. Add bean to MyConfig.java
+        @Bean
+        public DataSource dataSource() {
+            ComboPooledDataSource dataSource = new ComboPooledDataSource();
+            try {
+                dataSource.setDriverClass("org.postgresql.Driver");
+                dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/my_db?useSSL=false&amp;serverTimezone=UTC");
+                dataSource.setUser("bestuser");
+                dataSource.setPassword("bestuser");
+            } catch (PropertyVetoException e) {
+                throw new RuntimeException(e);
+            }
+            return dataSource;
+        }
+    3. Add to MySecurityConfig.java and update configure method(first)
+        @Autowired
+        DataSource dataSource;
+
+        @Override
+        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.jdbcAuthentication().dataSource(dataSource);
+        }
+        ...
 
 
