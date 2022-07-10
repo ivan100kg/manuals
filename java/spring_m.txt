@@ -2168,6 +2168,10 @@ Spring Boot
     Так как Tomcat сервер встроенный - моможно не устанавливать в war 
     формат, а в jar, и запускать приложение можно прямо с класса/jar
 
+    Дефолтной реализацией JPA в SpringBoot является Hibernate.
+    Роль Hibernate сессии в JPA выполняет EntityManager - управление связью 
+    Entity класса с таблицей в БД к которой привязан класс.
+
 --- Project Structure ---
     New project in Idea:
                     settings:            dependencies:
@@ -2220,4 +2224,20 @@ Spring Boot
     Сканируется пакет в котором расположен данный файл + все подпакеты
     (можно убрать этот файл в др место и указать пакеты для скана вручную).
 
-    
+
+
+--- REST API ---
+    Configuration:
+    1. Set up database(в зависимости от надобности)
+    2. Add dependencies(уже добавлены при создании)
+    3. Add properties for connection to DB.
+        // application.properties
+        spring.datasource.url=jdbc:postgresql://localhost:5432/my_db
+        spring.datasource.username=bestuser
+        spring.datasource.password=bestuser
+        server.port=3333    - можно включать множество настроек
+        server.servlet.context-path=/springboot-rest
+    4. Add entity package+class(Employee)
+    5. Add DAO
+    6. Add Service
+    7. Add Controller
