@@ -2151,4 +2151,73 @@ Spring Security
         }
         ...
 
+Spring Boot
+--- About ---
+    Spring Boot - это фреймворк, цель которого - упростить создание
+    приложений на Spring. Работает поверх Spring.
 
+    Фишки:
+        -автоматическая конфигурация приложения
+        -управление зависимостями в Maven проектах
+        -встроенная поддержка сервера
+
+    В Spring Boot используются спец зависимости Maven - Starter пакет - 
+    это набор взаимосвяз зависимостей, кот могут быть добавлены в прилож.
+    Версии пакетов в Starter совместимы между собой, не паримся.
+
+    Так как Tomcat сервер встроенный - моможно не устанавливать в war 
+    формат, а в jar, и запускать приложение можно прямо с класса/jar
+
+--- Project Structure ---
+    New project in Idea:
+                    settings:            dependencies:
+    New Project -> Spring Initializr -> Web:Spring Web, 
+                                        SQL:Data JPA
+                                        SQL:PostgreSQL Driver
+
+    New Project with site https://start.spring.io/:
+    Добавляем информацию о проекте + добавляем зависимости
+    Далее нажимаем Geneate - скаченный zip разарх в люб место - проект готов.
+    Далее просто создаем в Idea new project from existing sources.
+
+    Structure:
+    ├── HELP.md
+    ├── mvnw        # обертки Maven project 
+    ├── mvnw.cmd    # если не установлен Maven - тут он запустится
+    ├── pom.xml     # наши зависимости и остальные настройки Maven
+    ├── spring_course_springboot.iml
+    └── src
+        ├── main
+        │   ├── java
+        │   │   └── io
+        │   │       └── github
+        │   │           └── ivan100kg
+        │   │               └── springboot
+        │   │                   └── spring_course_springboot
+        │   │                       └── SpringCourseSpringbootApplication.java
+        │   └── resources
+        │       ├── application.properties  # файл со свойствами(@Value("{}"))
+        │       ├── static
+        │       └── templates
+        └── test                # тестирование
+            └── java
+                └── io
+                    └── github
+                        └── ivan100kg
+                            └── springboot
+                                └── spring_course_springboot
+                                    └── SpringCourseSpringbootApplicationTests.java
+
+    // SpringCourseSpringbootApplication.java
+    @SpringBootApplication  // @Configuration+@EnableAutoConfiguration+@ComponentScan
+    public class SpringCourseSpringbootApplication {
+        public static void main(String[] args) {    // запуск прилож
+            SpringApplication.run(SpringCourseSpringbootApplication.class, args);
+        }
+    }
+    При запуске main происходин создание Spring Container, поиск бинов и 
+    запуск Tomcat где и будет работать это приложение.
+    Сканируется пакет в котором расположен данный файл + все подпакеты
+    (можно убрать этот файл в др место и указать пакеты для скана вручную).
+
+    
