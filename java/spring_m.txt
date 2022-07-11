@@ -1369,7 +1369,7 @@ Spring MVC + Hibernate + AOP
     @Service    // класс(@Component) с бизнес-лог, соед звено Controller-DAO 
     public class EmployeeServiceImpl implements EmployeeService{
         @Autowired
-        EmployeeDAO employeeDAO;    // связать с бином DAO
+        private EmployeeDAO employeeDAO;            // связать с бином DAO
 
         @Override
         @Transactional  // авто открытие/закрытие транзакций
@@ -2241,7 +2241,35 @@ Spring Boot
         server.port=3333    - можно включать множество настроек
         server.servlet.context-path=/springboot-rest
     4. Add entity package+class(Employee)
+        @Entity // все как обычно + toString() можно
+        @Table(name = "employees")
+        public class Employee {
+            @Id
+            @GeneratedValue(strategy = GenerationType.IDENTITY)
+            @Column(name = "id")
+            private int id;
+            ...            
+            public Employee() {
+            }
+
+            public Employee(String name, String surname, String department, int salary) {
+                this.name = name;
+                this.surname = surname;
+                this.department = department;
+                this.salary = salary;
+            }
+
+            public int getId() {
+                return id;
+            }
+
+            public void setId(int id) {
+                this.id = id;
+            }
+            ...
+        }
     5. Add DAO
+        // Интерфейс такой же, реализацию подправим
         // Заменим получение сессии с пом Hibernate на JPA(javax.persistence)
         // Для того чтобы в будущем легко поменять реализацию JPA.
         @Repository
@@ -2277,7 +2305,114 @@ Spring Boot
             }
         }
     6. Add Service
+        // все такое же ничего не меняем
     7. Add Controller
+        // все тоже самое
+        @RestController
+        @RequestMapping("/api")
+        public class MyRESTController {
+            @Autowired
+            private EmployeeService employeeService;
+
+            @GetMapping("/employees")
+            public List<Employee> showAllEmployee() {
+                return employeeService.getAllEmployees();
+            }
+
+            @GetMapping("/employees/{id}")
+            public Employee getEmployee(@PathVariable int id) {
+                Employee employee = employeeService.getEmployee(id);
+                return employee;
+            }
+
+            @PostMapping("/employees")
+            public Employee addNewEmployee(@RequestBody Employee employee) {
+                employeeService.saveEmployee(employee);
+                return employee;
+            }
+
+            @PutMapping("/employees")
+            public Employee updateEmployee(@RequestBody Employee employee) {
+                employeeService.saveEmployee(employee);
+                return employee;
+            }
+
+            @DeleteMapping("/employees/{id}")
+            public String deleteEmployee(@PathVariable int id) {
+                Employee employee = employeeService.getEmployee(id);
+                employeeService.deleteEmployee(id);
+                return "Employee with id: " + id + " was deleted";
+            }
+        }
+
+--- Spring Data JPA ---
+    Spring Data JPA - удобный механизм для вз-ия с таблицами БД, минимум кода.
+    1. Изменим интерфейс EmployeeDAO:
+        // JpaRepository<T, ID> -> T - Employee, ID - тип id - Integer(wrapper)
+        // т.е. указываем Entity и тип ID(если примитив -> wrapper class)
+        public interface EmployeeRepository 
+                extends JpaRepository<Employee, Integer> {} // можно не override
+        Встроенные методы JpaRepository для работы с БД:
+        Method      | CRUD operation
+        ------------+---------------
+        findAll     | SELECT all rows
+        findById    | SELECT one row
+        save        | UPDATE row
+        deleteById  | DELETE row
+    2. Удаляем EmployeeDAOImpl, всю логику/имплементацию берет на себя Boot.
+    3. EmployeeService оставим без измен, изменим EmployeeServiceImpl:
+        @Service
+        public class EmployeeServiceImpl implements EmployeeService{
+            @Autowired  // Изменим название зависимости
+            private EmployeeRepository employeeRepository;
+
+            @Override   // получить все записи
+            public List<Employee> getAllEmployees() {
+                return employeeRepository.findAll();
+            }
+
+            @Override   // сохранить запись
+            public void saveEmployee(Employee employee) {
+                employeeRepository.save(employee);
+            }
+
+            @Override   // получить 1 запись - Optional
+            public Employee getEmployee(int id) {
+                return employeeRepository.findById(id).orElse(null);
+            }
+
+            @Override   // удалить запись
+            public void deleteEmployee(int id) {
+                employeeRepository.deleteById(id);
+            }
+        }
+    4. Контроллер и Entity без изменений
+
+    Добавление новых методов в Репозиторий:
+    В EmployeeRepository можно добавить множество разных методов для
+    манипулирования с данными в БД, Idea подсказывает как нужно называть
+    эти методы - тогда даже реализовывать не нужно, все будет работать
+    под капотом Spring Boot, например:
+    1. Добавить необходимый метод в Репозиторий
+        // EmployeeRepository
+            ...
+            public List<Employee> findAllByName(String name);   // можно не реализ
+        Далее добавляем в Service метод для работы с этим методом:
+    2. Добавить метод в Service
+        // EmployeeService
+            ...
+            public List<Employee> findAllByName(String name);   // можно назвать также
+        // EmployeeServiceImpl
+        @Override    // имплементим
+            public List<Employee> findAllByName(String name) {
+                return employeeRepository.findAllByName(name);
+            }
+    3. Добавить метод в Controller:
+        @GetMapping("/employees/name/{name}")   // так принято /name/{name}
+        public List<Employee> getAllEmployeesByName(@PathVariable String name) {
+            return employeeService.findAllByName(name);
+        }
+    
 
 
 
