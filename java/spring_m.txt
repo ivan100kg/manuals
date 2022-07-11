@@ -2350,6 +2350,7 @@ Spring Boot
     1. Изменим интерфейс EmployeeDAO:
         // JpaRepository<T, ID> -> T - Employee, ID - тип id - Integer(wrapper)
         // т.е. указываем Entity и тип ID(если примитив -> wrapper class)
+        @Repository // можно не писать уже включен
         public interface EmployeeRepository 
                 extends JpaRepository<Employee, Integer> {} // можно не override
         Встроенные методы JpaRepository для работы с БД:
@@ -2413,8 +2414,31 @@ Spring Boot
             return employeeService.findAllByName(name);
         }
     
+--- Spring Data REST ---
+    Spring Data REST - механизм создания REST API на основе типа Entity,
+    прописанного в репозитории проекта. Можно обойтись в проекте без 
+    контроллера и сервисов.
+    1. Добавим зависимость в pom.xml
+        spring-boot-starter-data-rest # версию удаляем(она пропис в <parent>)
+    2. Удаляем контроллер и сервисы.
 
-
+    Как происходит связь Entity с URL mapping:
+    Допустим наш Entity класс называется Employee, следовательно Репозиторий
+    будет таким:
+    public interface EmployeeRepository
+        extends JpaRepository<Employee, Integer> {}
+    Employee --> employees, заглав буква становится малой + множ число.
+    Маппинг будет следующий:
+        method  | URL                | CRUD
+        --------+--------------------+------------------------
+        GET     |/employees          |Получить всех работников
+        GET     |/rmployees/{id}     |Получить 1 работника 
+        POST    |/employees          |Добавить работнника
+        PUT     |/employees/{id}     |Изменить работника! тут так
+        DELETE  |/employees/{id}     |Удалить работника
+    
+    При открытии этих страниц - будет видна доп информация, ссылки
+    на отдельных работников, пагинация.
 
 
 
