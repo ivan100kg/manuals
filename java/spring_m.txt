@@ -2184,6 +2184,9 @@ Spring Boot
     Далее нажимаем Geneate - скаченный zip разарх в люб место - проект готов.
     Далее просто создаем в Idea new project from existing sources.
 
+    Можно добавить в dependency - Spring Boot DevTools - авто рестарт проекта
+    когда делаем какие-либо изменения.
+
     Structure:
     ├── HELP.md
     ├── mvnw        # обертки Maven project 
@@ -2224,12 +2227,12 @@ Spring Boot
     Сканируется пакет в котором расположен данный файл + все подпакеты
     (можно убрать этот файл в др место и указать пакеты для скана вручную).
 
-
-
 --- REST API ---
     Configuration:
     1. Set up database(в зависимости от надобности)
     2. Add dependencies(уже добавлены при создании)
+        Spring Boot DevTools(удалить версию) - авто рестарт проекта в Idea
+        еще нужно вкл settings -> compiler -> auto build
     3. Add properties for connection to DB.
         // application.properties
         spring.datasource.url=jdbc:postgresql://localhost:5432/my_db
@@ -2239,5 +2242,45 @@ Spring Boot
         server.servlet.context-path=/springboot-rest
     4. Add entity package+class(Employee)
     5. Add DAO
+        // Заменим получение сессии с пом Hibernate на JPA(javax.persistence)
+        // Для того чтобы в будущем легко поменять реализацию JPA.
+        @Repository
+        public class EmployeeDAOImpl implements EmployeeDAO {
+            @Autowired
+            private EntityManager entityManager;    // объект для работы с БД
+                                                       типа SessionFactory
+            @Override   // SELECT *
+            public List<Employee> getAllEmployees() {
+                List<Employee> allEmployees = entityManager
+                        .createQuery("FROM Employee").getResultList();
+                return allEmployees;
+            }
+
+            @Override   // INSERT
+            public void saveEmployee(Employee employee) {
+                // entityManager.merge(employee);  // просто добавить
+                // если нужно вернуть новую инфу об id
+                Employee newEmployee = entityManager.merge(employee);
+                employee.setId(newEmployee.getId());
+            }
+
+            @Override   // SELECT * ... WHERE id=?
+            public Employee getEmployee(int id) {
+                return entityManager.find(Employee.class, id);
+            }
+
+            @Override   // DELETE ... WHERE id=?
+            public void deleteEmployee(int id) {
+                entityManager.createQuery("delete from Employee where id=:employeeId")
+                        .setParameter("employeeId", id)
+                        .executeUpdate();
+            }
+        }
     6. Add Service
     7. Add Controller
+
+
+
+
+
+
