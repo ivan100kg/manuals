@@ -2440,6 +2440,25 @@ Spring Boot
     При открытии этих страниц - будет видна доп информация, ссылки
     на отдельных работников, пагинация.
 
-
-
-
+--- Spring Boot Actuator ---
+    Spring Boot Actuator - предоставляет готовые enpoints(конечные точки(url)),
+    с помощью которых мониторится приложение.
+    1. Добавим зависимости :
+        spring-boot-starter-actuator    # без версии
+        spring-boot-starter-security    # без версии, для входа
+        Пароль для входа будет показан при старте Boot в консоли
+        Логин: user
+        Либо прописываем в properties:
+            spring.security.user.name=user
+            spring.security.user.password=123
+    3. Добавить в properties
+        management.endpoints.web.exposure.include=*     # вкл все endpoints
+        info.name=Spring Data REST                      # инфа для /info
+        info.description=Test my Spring Data REST application
+    3. Endpoints
+        URL                 | Description
+        --------------------+--------------------------------------------
+        /actuator/health    | инфо о статусе приложения
+        /actuator/info      | инфо о приложении
+        /actuator/beans     | инфо о всех бинах, зарег в Spring Container
+        /actuator/mappings  | инфо о всех Mappings
