@@ -9,3 +9,21 @@ JUnit5 состоит из подпроектов:
     JUnit Platform          - запуск тестов на JVM, консоли, IDE
     JUnit Jupiter           - набор классов для написания тестов
     JUnit Vintage           - обрат совместимость со старыми версиями
+
+Maven зависимости:
+    junit-jupiter-engine    - включает все зависимости(api,platform)
+
+Example:
+    public class AppTest {  - тест-класс класса App, обычно так называют
+        @Test               - методы с такой аннотацией учавствуют в тестах
+        void userEmptyIfNoUserAdded() {                 - пр-ка метода getAll
+        App app = new App();                                
+        Assertions.assertTrue(app.getAll().isEmpty());  - класс с ассертами
+
+Assertions:
+    assertTrue(booleean, String)    - можно передавать String(вывод в случ ош)
+    assertFalse(booleean)           - ожидается ложь
+    assertEquals(expected, actual)  - ожидалось, получено
+    assertArrayEquals()             - ожидалось, получено для массивов/коллекц
+    assertAll()                     - неск ассертов в методе
+    assertThrows()                  -
