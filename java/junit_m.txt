@@ -12,6 +12,7 @@ JUnit5 состоит из подпроектов:
 
 Maven зависимости:
     junit-jupiter-engine    - включает все зависимости(api,platform)
+    junit-platform-launcher - для своего launcher
 
 Example:
     public class AppTest {  - тест-класс класса App, обычно так называют
@@ -73,5 +74,21 @@ Life cycle:
         @AfterAll
         static void after() {
             System.out.println("After all");
+        }
+    }
+
+Свой Launcher:
+    Тесты запускаются с помощью лаунчера, под капотом Idea/Maven использует его,
+    можно создать свой лаунчер и запустить тесты.
+    public class TestLauncher {
+        public static void main(String[] args) {
+            Launcher launcher = LauncherFactory.create();
+            SummaryGeneratingListener listener = new SummaryGeneratingListener();
+            LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder
+                    .request()
+                    .selectors(DiscoverySelectors.selectPackage("io.github.ivan100kg"))
+                    .build();
+            launcher.execute(request,listener);
+            listener.getSummary().printTo(new PrintWriter(System.out));
         }
     }
