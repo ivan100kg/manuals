@@ -27,3 +27,51 @@ Assertions:
     assertArrayEquals()             - ожидалось, получено для массивов/коллекц
     assertAll()                     - неск ассертов в методе
     assertThrows()                  -
+    ...
+    Во всех ассертах можно передавать вторым значением строку для уточнения
+    ошибки при выполнении ассерта.
+
+Life cycle:
+    @BeforeAll -> @BeforeEach -> @Test -> @AfterEach -> @AfterAll
+                       <-----------------------+
+    Можно с пом аннотаций перед каждым тестом и после вып какие-то действия.
+    Также можо что-то вып перед всеми тестами и после всех(static).
+    
+    public class AppTest {
+        private App app;    
+
+        @BeforeAll
+        static void before() {
+            System.out.println("Before all");
+        }
+
+        @BeforeEach
+        void beforeEach() {
+            app = new App();
+            System.out.println("Before each: " + this);
+        }
+
+        @Test
+        void userEmptyIfNoUserAdded() {
+            System.out.println("Test1: " + this);
+            Assertions.assertTrue(app.getAll().isEmpty());
+        }
+
+        @Test
+        void usersSizeIfUserAdded() {
+            System.out.println("Test2: " + this);
+            app.add(new User());
+            app.add(new User());
+            Assertions.assertEquals(2, app.getAll().size());
+        }
+
+        @AfterEach
+        void afterEach() {
+            System.out.println("After each: " + this + "\n");
+        }
+
+        @AfterAll
+        static void after() {
+            System.out.println("After all");
+        }
+    }
