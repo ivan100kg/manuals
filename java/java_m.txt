@@ -3256,7 +3256,7 @@
     IntStream.range(0,10).forEach(System.out::println);         // [0;10)
     IntStream.rangeClosed(0,10).forEach(System.out::println);   // [0;10]
 
- --- Optional<T> ---
+--- Optional<T> ---
     класс - контейнер-обертка над типом данных.
     Хранит либо значение(не null), либо его отсутствие.
     Optional.of(obj);           // create, if null - exception
