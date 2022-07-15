@@ -1,0 +1,32 @@
+Docker
+
+Docker - средство упаковки, доставки и запуска приложений.
+
+Docker Image - это упакованная сборка приложения, готовая к запуску, 
+это такая многослойная система из раздичных слоев(Ubuntu+Python+..)
+
+Docker Container - это работающее приложение созданное на базе Image,
+можно создавать множество контейнеров на одной и той же базе.
+
+Docker Hub - хранилище сборок.
+
+Dockerfile - файл с настройками для создания Image
+    # Use the OpenJDK 11 image as the base image
+    FROM openjdk:11
+
+    # Create a new app directory for my application files
+    RUN mkdir /app
+
+    # Copy the app files from host machine to image filesystem
+    COPY target/  /app
+
+    # Set the directory for executing future commands
+    WORKDIR /app
+
+    # Run the Main class
+    CMD java App
+
+# commadns
+docker images           # посмотреть образы на диске
+docker ps               # посмотреть запущенные контейнеры
+docker build -t <path>  # собрать Image по Dockerfile -t - тэг <path> - путь
