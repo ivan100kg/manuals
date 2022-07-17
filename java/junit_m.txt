@@ -27,7 +27,8 @@ Assertions:
     assertEquals(expected, actual)  - ожидалось, получено
     assertArrayEquals()             - ожидалось, получено для массивов/коллекц
     assertAll()                     - неск ассертов в методе
-    assertThrows()                  -
+    assertThrows(Excep.class, lamb) - класс ошибки и код завернуть в lambda
+    assertNull()                    - null - right
     ...
     Во всех ассертах можно передавать вторым значением строку для уточнения
     ошибки при выполнении ассерта.
