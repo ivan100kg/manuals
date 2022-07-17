@@ -7,26 +7,36 @@ Docker Image - это упакованная сборка приложения, 
 
 Docker Container - это работающее приложение созданное на базе Image,
 можно создавать множество контейнеров на одной и той же базе.
+Контейнер работыет до остановки приложения.
 
 Docker Hub - хранилище сборок.
 
-Dockerfile - файл с настройками для создания Image
-    # Use the OpenJDK 11 image as the base image
-    FROM openjdk:11
-
-    # Create a new app directory for my application files
-    RUN mkdir /app
-
-    # Copy the app files from host machine to image filesystem
-    COPY target/  /app
-
-    # Set the directory for executing future commands
-    WORKDIR /app
-
-    # Run the Main class
-    CMD java App
+Dockerfile - файл с настройками для создания Image:
+FROM python:3.8             # базовый образ для сборки image:version
+RUN mkdir /app              # создать дир app в корневой дир
+WORKDIR /app                # установить рабочий каталог
+COPY . /app                 # копировать все из тек дир в app/
+EXPOSE 8080                 # проброс порта 8080
+CMD ["python3", "app.py"]   # что нужно делать докеру при запуске
 
 # commadns
-docker images           # посмотреть образы на диске
-docker ps               # посмотреть запущенные контейнеры
-docker build -t <path>  # собрать Image по Dockerfile -t - тэг <path> - путь
+docker images               # посмотреть образы на диске
+docker ps                   # посмотреть запущенные контейнеры (-a все конты)
+docker build -t <path>      # собрать Image по Dockerfile -t - имя <path> - путь
+docker run <image>          # запуск контейнера
+docker run --name 'name' .. # запуск контейнера с не авто именем
+docker run -d ..            # запуск контейнера в фоновом режиме
+docker run --rm ...         # после отработки/остановки - конт удалится
+docker stop id/cname        # остановить контейнер по id/name
+docker rm ...               # удалить контейнер по ID/name
+docker rm $(docker ps -aq)  # удалить все контейнеры
+
+# запуск web приложения с пробросом портов
+docker run --rm --name web -p 8080:8080 springboot-demo
+
+Для каждого Image при вызове 'docker images' выводятся след данные:
+repository  # название (-t имя)
+tag         # тэг  
+image ID    # id sha256
+created     # создан
+size        # размер
