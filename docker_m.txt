@@ -11,13 +11,13 @@ Docker Container - это работающее приложение создан
 
 Docker Hub - хранилище сборок.
 
-Dockerfile - файл с настройками для создания Image:
-FROM python:3.8             # базовый образ для сборки image:version
-RUN mkdir /app              # создать дир app в корневой дир
+# Dockerfile - файл с настройками для создания Image:
+FROM openjdk:17             # базовый образ для сборки image:version
 WORKDIR /app                # установить рабочий каталог
 COPY . /app                 # копировать все из тек дир в app/
 EXPOSE 8080                 # проброс порта 8080
-CMD ["python3", "app.py"]   # что нужно делать докеру при запуске
+ENW TZ Europe/Samara        # переменная окружения TZ зо знач Europe/Samara
+CMD ["./mvnw", "spring-boot:run"]   # что нужно делать докеру при запуске
 
 # commadns
 docker images               # посмотреть образы на диске
@@ -31,12 +31,27 @@ docker stop id/cname        # остановить контейнер по id/na
 docker rm ...               # удалить контейнер по ID/name
 docker rm $(docker ps -aq)  # удалить все контейнеры
 
-# запуск web приложения с пробросом портов
-docker run --rm --name web -p 8080:8080 springboot-demo
+# запуск конта с web приложением с пробросом портов внеш:внутр
+docker run --rm --name web -p 8080:8080 mycont
 
-Для каждого Image при вызове 'docker images' выводятся след данные:
+# переменные окружения
+ENW TZ Europe/Samara        # либо указываем в dockerfile
+-e TZ Europe/Samara         # либо при запуске контейнера в параметрах
+
+# Для каждого Image при вызове 'docker images' выводятся след данные:
 repository  # название (-t имя)
 tag         # тэг  
 image ID    # id sha256
 created     # создан
 size        # размер
+
+# прикрепить к Docker директорию на хостовой машине
+-v absHostPath:absLocalPath # абсолютный хост путь : абс путь в контейнере
+
+# docker volume - прикрепить хостовые директории(для хранения постоянных файлов)
+docker volume create    # Create a volume
+docker volume inspect   # Display detailed information on one or more volumes
+docker volume ls        # List volumes
+docker volume prune     # Remove all unused local volumes
+docker volume rm        # Remove one or more volumes
+docker run -v volumeName:absHostPath    # запуск volume:хост путь
