@@ -2874,7 +2874,7 @@
     
 --- Lock/замок ---
     Lock - interface. 
-    ReeentrantLock - class that implements Lock.
+    ReentrantLock - class that implements Lock.
     Также как ключ слово synchronized нужен для синхронизации потоков.
 
     package java.util.concurrent;   # различные утилиты по работе с многопоточ.
