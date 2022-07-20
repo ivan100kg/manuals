@@ -2462,3 +2462,82 @@ Spring Boot
         /actuator/info      | инфо о приложении
         /actuator/beans     | инфо о всех бинах, зарег в Spring Container
         /actuator/mappings  | инфо о всех Mappings
+
+Setting examples
+
+--- Spring Boot + JPA + Postgress
+# structure
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── io
+│   │   │       └── github
+│   │   │           └── ivan100kg
+│   │   │               └── springsecuretoken
+│   │   │                   ├── SpringSecureTokenApplication.java
+│   │   │                   └── student
+│   │   │                       ├── Student.java
+│   │   │                       ├── StudentConfig.java
+│   │   │                       ├── StudentController.java
+│   │   │                       ├── StudentRepository.java
+│   │   │                       └── StudentService.java
+
+# application.properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/my_db
+spring.datasource.username=
+spring.datasource.password=
+spring.jpa.hibernate.ddl-auto=create-drop - авто создание/удаление таблицы
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.format_sql=true
+server.error.include-message=always - показывать msg ошибки сервера
+
+
+# Entity, благодаря конфигу выше таблица 'student' на основе этого Entity
+  будет каждый раз создаваться/дропаться при запуске приложения
+@Entity
+@Table
+public class Student {
+    @Id
+    @SequenceGenerator(name = "student_sequence",
+            sequenceName = "student_sequence",
+            allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "student_sequence")
+    private Long id;
+    private String name;
+    private String email;
+    private LocalDate dob;
+    @Transient              // не добавляется в базу а генерится в классе
+    private Integer age;    // не вкл в конструкторы генерим знач в get
+
+    public Student() {
+    }
+
+    public Integer getAge() {
+        return  Period.between(getDob(), LocalDate.now()).getYears();
+    }
+    ...
+
+# после создания таблицы можно еще добавлять данные для проверки
+@Configuration
+public class StudentConfig {
+    @Bean
+    CommandLineRunner commandLineRunner(StudentRepository repository) {
+        return args -> {
+            Student ivan = new Student(
+                    "Ivan",
+                    "ivan100kg@gmail.com",
+                    LocalDate.of(1983, Month.JANUARY, 23),
+                    39
+            );
+            Student inna = new Student(
+                    "Inna",
+                    "inna29@gmail.com",
+                    LocalDate.of(1998, Month.MARCH, 3),
+                    24
+            );           
+            repository.saveAll(List.of(ivan, inna));
+        };
+    }
+}
