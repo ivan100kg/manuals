@@ -2463,81 +2463,141 @@ Spring Boot
         /actuator/beans     | инфо о всех бинах, зарег в Spring Container
         /actuator/mappings  | инфо о всех Mappings
 
+--- REST consumer/client ---
+    Посылать запросы и принимать ответы можно с пом RestTemplate.
+    Допустим наш REST сервер отвечает JSON вида {"id":1, "content":"string"}
+    Create:
+    1. создаем domain(model) class на основе JSON объекта кот получаем из
+       возвращаемого API, названия и тип полей класса должен соответствовать
+       ключам JSON, если имя другое можно воспользоваться аннот @JsonProperty
+       чтобы указать точный ключ(в нашем случ не требуется)
+        @JsonIgnoreProperties(ignoreUnknown = true) // любые другие поля,
+        public class Greeting {                        которые будут получ
+            private long id;                           которых нет тут
+            private String content;                    будут игнорироваться
+
+            public Greeting() {
+            }
+
+            ...
+            // getters/setters + toString()
+        }
+    2. Отредактируем главный файл запуска RestClientApplication.java, добавим
+       в него логгер, RestTemplate для обработки входящ данных и средство,
+       которое запускает этот RestTemplate и извлекает данные с API - средство
+       наз-ся CommandLineRunner.
+        @SpringBootApplication
+        public class RestClientApplication {
+            // logger
+        private static final Logger log =
+                    LoggerFactory.getLogger(RestClientApplication.class);
+
+            public static void main(String[] args) {
+                SpringApplication.run(RestClientApplication.class, args);
+            }
+
+            // RestTemplate
+            @Bean
+            public RestTemplate restTemplate(RestTemplateBuilder builder) {
+                return builder.build();
+            }
+
+            // CommandLineRunner
+            @Bean
+            public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
+                return args -> {
+                    Greeting greeting = restTemplate.getForObject(
+                            "http://localhost:8082/greeting", Greeting.class);
+                };
+            }
+        }
+    3. Тестирум проект 
+        ./mvnw spring-boot:run
+        ./mvnw clean package
+        java -jar target/myjar-0.1.0.jar
+       
 Setting examples
-
 --- Spring Boot + JPA + Postgress
-# structure
-├── src
-│   ├── main
-│   │   ├── java
-│   │   │   └── io
-│   │   │       └── github
-│   │   │           └── ivan100kg
-│   │   │               └── springsecuretoken
-│   │   │                   ├── SpringSecureTokenApplication.java
-│   │   │                   └── student
-│   │   │                       ├── Student.java
-│   │   │                       ├── StudentConfig.java
-│   │   │                       ├── StudentController.java
-│   │   │                       ├── StudentRepository.java
-│   │   │                       └── StudentService.java
+    # structure
+    ├── src
+    │   ├── main
+    │   │   ├── java
+    │   │   │   └── io
+    │   │   │       └── github
+    │   │   │           └── ivan100kg
+    │   │   │               └── springsecuretoken
+    │   │   │                   ├── SpringSecureTokenApplication.java
+    │   │   │                   └── student
+    │   │   │                       ├── Student.java
+    │   │   │                       ├── StudentConfig.java
+    │   │   │                       ├── StudentController.java
+    │   │   │                       ├── StudentRepository.java
+    │   │   │                       └── StudentService.java
 
-# application.properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/my_db
-spring.datasource.username=
-spring.datasource.password=
-spring.jpa.hibernate.ddl-auto=create-drop - авто создание/удаление таблицы
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-spring.jpa.properties.hibernate.format_sql=true
-server.error.include-message=always - показывать msg ошибки сервера
+    # application.properties
+    spring.datasource.url=jdbc:postgresql://localhost:5432/my_db
+    spring.datasource.username=
+    spring.datasource.password=
+    spring.jpa.hibernate.ddl-auto=create-drop - авто создание/удаление таблицы
+    spring.jpa.show-sql=true
+    spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+    spring.jpa.properties.hibernate.format_sql=true
+    server.error.include-message=always - показывать msg ошибки сервера
 
 
-# Entity, благодаря конфигу выше таблица 'student' на основе этого Entity
-  будет каждый раз создаваться/дропаться при запуске приложения
-@Entity
-@Table
-public class Student {
-    @Id
-    @SequenceGenerator(name = "student_sequence",
-            sequenceName = "student_sequence",
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "student_sequence")
-    private Long id;
-    private String name;
-    private String email;
-    private LocalDate dob;
-    @Transient              // не добавляется в базу а генерится в классе
-    private Integer age;    // не вкл в конструкторы генерим знач в get
+    # Entity, благодаря конфигу выше таблица 'student' на основе этого Entity
+    будет каждый раз создаваться/дропаться при запуске приложения
+    @Entity
+    @Table
+    public class Student {
+        @Id
+        @SequenceGenerator(name = "student_sequence",
+                sequenceName = "student_sequence",
+                allocationSize = 1)
+        @GeneratedValue(strategy = GenerationType.SEQUENCE,
+                generator = "student_sequence")
+        private Long id;
+        private String name;
+        private String email;
+        private LocalDate dob;
+        @Transient              // не добавляется в базу а генерится в классе
+        private Integer age;    // не вкл в конструкторы генерим знач в get
 
-    public Student() {
+        public Student() {
+        }
+
+        public Integer getAge() {
+            return  Period.between(getDob(), LocalDate.now()).getYears();
+        }
+        ...
+
+    # после создания таблицы можно еще добавлять данные для проверки
+    @Configuration
+    public class StudentConfig {
+        @Bean
+        CommandLineRunner commandLineRunner(StudentRepository repository) {
+            return args -> {
+                Student ivan = new Student(
+                        "Ivan",
+                        "ivan100kg@gmail.com",
+                        LocalDate.of(1983, Month.JANUARY, 23),
+                        39
+                );
+                Student inna = new Student(
+                        "Inna",
+                        "inna29@gmail.com",
+                        LocalDate.of(1998, Month.MARCH, 3),
+                        24
+                );           
+                repository.saveAll(List.of(ivan, inna));
+            };
+        }
     }
 
-    public Integer getAge() {
-        return  Period.between(getDob(), LocalDate.now()).getYears();
-    }
-    ...
-
-# после создания таблицы можно еще добавлять данные для проверки
-@Configuration
-public class StudentConfig {
-    @Bean
-    CommandLineRunner commandLineRunner(StudentRepository repository) {
-        return args -> {
-            Student ivan = new Student(
-                    "Ivan",
-                    "ivan100kg@gmail.com",
-                    LocalDate.of(1983, Month.JANUARY, 23),
-                    39
-            );
-            Student inna = new Student(
-                    "Inna",
-                    "inna29@gmail.com",
-                    LocalDate.of(1998, Month.MARCH, 3),
-                    24
-            );           
-            repository.saveAll(List.of(ivan, inna));
-        };
-    }
-}
+--- Application running ---
+    If you use Maven, you can run the application by using:
+        ./mvnw spring-boot:run 
+    Alternatively, you can build the JAR file with:
+        ./mvnw clean package
+    And then run the JAR file, as follows:
+        java -jar target/gs-rest-service-0.1.0.jar
