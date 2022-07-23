@@ -2516,6 +2516,36 @@ Spring Boot
         ./mvnw clean package
         java -jar target/myjar-0.1.0.jar
        
+--- Data prealoading ---
+    После загрузки в ApplicationContext, Spring запуск бины CommandLineRunner,
+    в нашем случае с пом repository будут сохранены 2 entity в БД.
+    @Configuration
+    public class LoadCelebDatabase {
+        private static final Logger log = LoggerFactory.getLogger(LoadCelebDatabase.class);
+        @Bean
+        CommandLineRunner initDatabase(CelebRepository repository) {
+            return args -> {
+
+                Celeb iM = new Celeb(
+                        "Irina_Majorova",
+                        36.0,
+                        "Russia",
+                        LocalDate.of(1980, Month.APRIL, 12)
+                );
+                log.info("Preloading " + iM);
+                Celeb iN = new Celeb(
+                        "Irina_Neretina",
+                        37.0,
+                        "Russia",
+                        LocalDate.of(1988, Month.JULY, 3)
+                );
+                log.info("Preloading " + iN);
+
+                repository.saveAll(List.of(iM, iN));
+            };
+        }
+    }
+
 Setting examples
 --- Spring Boot + JPA + Postgress
     # structure
