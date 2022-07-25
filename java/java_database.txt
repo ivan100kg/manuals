@@ -173,7 +173,7 @@ Hibernate
         private поля                *
         all getters/setters         *
         Constructor() without args  *
-        Constructor with args (exclude PK 'id') - для создания записей
+        Constructor with args (exclude PK 'id') - для создания записей без id
         toString                                - для удобства
 
     JPA(Java Persistence API) - стандартная спецификация, которая описывает систему
