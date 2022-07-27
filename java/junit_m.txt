@@ -13,6 +13,7 @@ JUnit5 состоит из подпроектов:
 Maven зависимости:
     junit-jupiter-engine    - включает все зависимости(api,platform)
     junit-platform-launcher - для своего launcher
+    spring-boot-starter-test  для spring-boot
 
 Example:
     public class AppTest {  - тест-класс класса App, обычно так называют
@@ -93,3 +94,72 @@ Life cycle:
             listener.getSummary().printTo(new PrintWriter(System.out));
         }
     }
+
+Spring Boot MVC test
+    тестирование главной страницы spring-boot MVC приложения, а именно
+    класса-контроллера, метода обработки главной страницы на url "/".
+
+    // контроллер
+    @Controller
+    public class HomeController {
+        @GetMapping("/")
+        public String home() {
+            return "home";
+        }
+    }
+
+    // view (Thymeleaf)
+    документ .html положить в resources/templates
+    картинку в resources/static/images
+    th:src - Thymeleaf-атрибут и выражение @{...} описывает ссылку на 
+    изображение с контекстно-зависимым путем.
+    
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8"
+            xmlns="http://www.w3.org/1999/xhtml"
+            xmlns:th="http://www.thymeleaf.org">
+        <title>home</title>
+    </head>
+    <body>
+        <h1>Welcome to...</h1>
+        <img th:src="@{/images/action.png}">
+    </body>
+    </html>
+
+    // test
+    @WebMvcTest. Это специальная тестовая аннотация из Spring
+    Boot, которая организует запуск теста в контексте приложения Spring
+    MVC. В данном случае она обеспечивает регистрацию класса Home-Controller 
+    в Spring MVC, чтобы дать возможность отправлять ему запросы.
+    MockMvc - объект для имитации механики Spring MVC (без запувка Tomcat)
+    testHomePage() - определяет тест для проверки дом страницы(GET "/"),
+    ожидается следущее:
+        ответ должен иметь статус HTTP 200 (ОК);
+        представление должно иметь логическое имя home;
+        получившаяся страница должна содержать текст «Welcome to...».
+
+    import org.junit.jupiter.api.Test;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+    import org.springframework.test.web.servlet.MockMvc;
+    import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+    import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+    @WebMvcTest
+    public class HomeControllerTest {
+        @Autowired
+        private MockMvc mockMvc;
+
+        @Test
+        public void testHomePage() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders.get("/"))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("home"))
+                    .andExpect(content().string(org.hamcrest.Matchers.containsString(
+                            "Welcome to..."
+                    )));
+        }
+    }
+ 
