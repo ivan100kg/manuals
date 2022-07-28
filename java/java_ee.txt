@@ -1,4 +1,52 @@
+---  Servlet ---
+    Сервлет - это класс, который умеет получать запросы от клиента и возвращать
+    ему ответы.
+    Для создания сервлета требуется:
+        add dependency to pom.xml: javax.servlet-api
+        наследовать наш класс от HttpServlet
+        можно указать @WebServlet("/hello") над сервлетом для маппинга
+    // example
+    @WebServlet("/hello")
+    public class MainServlet extends HttpServlet {
+
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            HttpSession session = req.getSession();
+            Integer visitCounter = (Integer) session.getAttribute("visitCounter");
+            if (visitCounter == null) {
+                visitCounter = 1;
+            } else {
+                visitCounter++;
+            }
+            session.setAttribute("visitCounter", visitCounter);
+            String username = req.getParameter("username");
+            resp.setContentType("text/html");
+            PrintWriter printWriter = resp.getWriter();
+            if (username == null) {
+                printWriter.write("Hello, Anonymous" + "<br>");
+            } else {
+                printWriter.write("Hello, " + username + "<br>");
+            }
+            printWriter.write("Page was visited " + visitCounter + " times.");
+            printWriter.close();
+        }
+    }
+
+    // пример перенаправляющего сервлета с '/' на '/helleo'
+       два способа(работают одинаково)
+    @WebServlet("/")
+    public class IndexServlet extends HttpServlet {
+
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // getServletContext().getRequestDispatcher("/hello").forward(req, resp);
+            resp.sendRedirect(req.getContextPath() + "/hello");
+        }
+    }
+
 --- Web app on servlets ---
+    Для создания веб приложения необходимо настроить Tomcat.
+
     Structure:
     ├── pom.xml
     ├── src
