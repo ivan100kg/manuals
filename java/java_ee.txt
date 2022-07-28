@@ -1,0 +1,74 @@
+--- Web app on servlets ---
+    Structure:
+    ├── pom.xml
+    ├── src
+    │   ├── main
+    │   │   └── java
+    │   │       └── org
+    │   │           └── example
+    │   │               └── app
+    │   │                   ├── entity
+    │   │                   ├── model
+    │   │                   └── servlets    // сервлеты
+    │   │                       ├── AddServlet.java     
+    │   │                       └── ListServlet.java
+    │   └── test
+    │       └── java
+    │           └── org
+    │               └── example
+    └── web // корень нашего web-сайта
+        ├── index.html      // глав страница
+        ├── WEB-INF
+        │   └── web.xml     // конфигурация
+        └── view            // jsp-pages
+            ├── add.jsp
+            └── list.jsp
+
+    Configuration:
+    // pom.xml
+    javax.servlet-api
+    javax.servlet.jsp-api
+
+    // web.xml    
+    servlet         - наш сервлет, задаем имя и адрес расположения
+    servlet-mapping - связать url с сервлетом по имени
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+            version="4.0">
+        <!-- add servlet -->
+        <servlet>
+            <servlet-name>add</servlet-name>
+            <servlet-class>org.example.app.servlets.AddServlet</servlet-class>
+        </servlet>
+        
+        <servlet-mapping>
+            <servlet-name>add</servlet-name>
+            <url-pattern>/add</url-pattern>
+        </servlet-mapping>
+
+        <!-- list servlet -->
+        <servlet>
+            <servlet-name>list</servlet-name>
+            <servlet-class>org.example.app.servlets.ListServlet</servlet-class>
+        </servlet>
+
+        <servlet-mapping>
+            <servlet-name>list</servlet-name>
+            <url-pattern>/list</url-pattern>
+        </servlet-mapping>
+    </web-app>
+
+    Servlets:
+    // AddServlet.java
+    HttpServletRequest  - запрос(можно вытащить какие-то данные)
+    HttpServletResponse - ответ
+    public class AddServlet extends HttpServlet {
+        @Override
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            RequestDispatcher requestDispatcher = req.getRequestDispatcher("view/add.jsp");
+            requestDispatcher.forward(req, resp);   // вернуть add.jsp
+        }
+    }
