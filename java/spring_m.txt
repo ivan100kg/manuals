@@ -2553,6 +2553,91 @@ Spring Boot
     системами, и соответственно для десериализации обратно в объект, 
     то есть являются объектами передачи данных. DTO объекты не содержат 
     поведения и не содержат методов бизнес логики.
+    DTO могут содержать такие же поля как Entity или больше/меньше.
+    По сути DTO это POJO class(поля+свойства)
+
+    // Entity
+    @Entity
+    public class CelebEntity {
+        @Id
+        @Column
+        @GeneratedValue()
+        private Long id;
+        @Column
+        private String name;
+        ... + noArgsConstr,setters,getters
+    
+    // DTO
+    public class CelebDTO {
+    private Long id;
+    private String name;
+    private int someVar;    // какое-то доп поле к примеру
+    ... + getters,setters
+
+    // Utils
+    @Service
+    public class MappingUtils {
+        public CelebDTO mapToCelebDTO(Celeb entity) {
+            CelebDTO dto = new CelebDTO();
+            dto.setId(entity.getId());
+            dto.setName(entity.getName());
+            dto.someVar = entity.getName().length()
+            return dto;
+        }
+
+        public Celeb mapToCelebEntity(CelebDTO dto) {
+            Celeb entity = new Celeb();
+            entity.setName(dto.getName());
+            entity.setSize(dto.getSize());
+            return entity;
+        }
+    }
+
+    // Service
+    @Service
+    public class CelebServiceImpl implements CelebService{
+        private final CelebRepository celebRepository;
+        private final MappingUtils mappingUtils;
+
+        @Autowired
+        public CelebServiceImpl(CelebRepository celebRepository, MappingUtils mappingUtils) {
+            this.celebRepository = celebRepository;
+            this.mappingUtils = mappingUtils;
+        }
+
+        @Override
+        @Transactional
+        public List<CelebDTO> getAllCelebs() {
+            return celebRepository.findAll().stream()
+                    .map(mappingUtils::mapToCelebDTO)
+                    .toList();
+        }
+
+        @Override
+        @Transactional
+        public CelebDTO getCelebById(Long id) {
+            return mappingUtils.mapToCelebDTO(celebRepository.findById(id)
+                    .orElse(new Celeb()));
+
+    // Controller
+    @RestController
+    @RequestMapping("api/v1/celebs")
+    public class CelebController {
+        @Autowired
+        private CelebService celebService;
+
+        @GetMapping
+        public List<CelebDTO> all() {
+            return celebService.getAllCelebs();
+        }
+
+        @GetMapping("/{id}")
+        public CelebDTO one(@PathVariable Long id) {
+            return celebService.getCelebById(id);
+        }
+
+
+
 
 Setting examples
 --- Spring Boot + JPA + Postgress
