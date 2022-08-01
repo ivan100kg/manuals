@@ -247,6 +247,10 @@ Spring Core
         <property name="age" value="${person.age}"/>
     Вызов значений из др файла ${name}, name может быть любым, но
     парвильнее и более понятно уточнять типа person.age
+    
+    Spring Expression Language (SpEL):
+    #{person.getAge()} - доступ к проперти, а также к методам/полям бина, 
+    практически можно писать любой Java code.
 
     # with annotations
     -- DI @Autowired
@@ -340,10 +344,7 @@ Spring Core
     // use 
     System.out.println(person.getSurname() + " " + person.getAge());    // correct
 
-    способ #2 -с пом .config файла
-    <context:component-scan base-package="io.github.ivan100kg"/>
-    <context:property-placeholder location="myApp.properties"/> // допишем
-    // в классе исправим
+    способ #2 -с пом .config файла (см конфигурацию without xml)
     @Component("personBean")
     public class Person {
         private Pet pet;
