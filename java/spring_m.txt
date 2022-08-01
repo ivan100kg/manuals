@@ -352,17 +352,21 @@ Spring Core
         @Value("${person.age}")
         private int age;
 
---- Bean scope xml ---
+--- Bean scope ---
     Scope - область видимости, определяет:
         жизненный цикл бина
         возможное кол-во создаваемых бинов
     Разновидности bean scope:
+        создание из ApplicationContext:
         singletone      // default, если не указан scope, 1 общий бин
         prototype       // бины создаются каждый раз при обращении getBean()
-        request
-        session
-        global-session
+        создание из WebApplicationContext:
+        request         // новый бин для каждого http-запроса
+        session         // новый бин для каждой сессии
+        application     // на 1 сервлет - 1 сервлет
+        websocket       // на 1 сокет - 1 бин
     
+    # xml
     Singletone
         <bean id="myPet"
           class="io.github.ivan100kg.spring_intro.Dog"
@@ -395,6 +399,11 @@ Spring Core
         System.out.println(dog1 == dog2);   // false
     Подходеит для stateful объектов.(хранящих состояние, например поле имя)
 
+    # annotations
+    @Component              @Component  
+    @Scope("singleton")     @Scope("prototype")
+    public class Dog        public class Cat 
+
 --- Life Cycle of bean ---
     Запуск      -->  Начало работы     -->  Создание  -->  DI - внедряются
     приложения       Spring Container       бина           зависимости
@@ -409,6 +418,9 @@ Spring Core
     ставятся бины не зависящие от других, далее по нарастающей, потом для
     каждого бина вызывается конструктор + сеттеры, после иниц всех их 
     можно доставать из контейнера.
+
+    В контейнере хранятся только синглтоны, остальные создаются при каждом
+    обращении, но не хранятся.    
 
     init-method используется для открытия или настройки каких-либо
     ресурсов(базы данных, стримы ...). Вызывается автоматически, можно
@@ -470,13 +482,6 @@ Spring Core
     private void destroy() {    // перед уничтожением(НЕ для prototype)
         System.out.println("class Dog: destroy method");
     }
-
---- Bean scope with annotations ---
-    Те же правила, но создаются так:
-
-    @Component              @Component  
-    @Scope("singleton")     @Scope("prototype")
-    public class Dog        public class Cat 
 
 Spring AOP
 --- AOP Aspect Oriented Programming ---
