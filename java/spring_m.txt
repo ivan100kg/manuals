@@ -20,9 +20,21 @@ Spring Core
         <version>5.3.21</version>
     </dependency>
 
-    ApplicationContext  - контейнер/хранилище объектов(бинов).
+--- Structure ---
+    Spring application:
+    Metadata --> IoC Container <-- POJOs
+
+    Metadata            - совокупность объектов которые конфигурируют
+                          контейнер(создание бинов, управление зависимостями)
+    IoC Container       - контейнер/хранилище объектов(бинов), создает и 
+                          внедряет зависимости в них. Структура - ассоц массив.
+    ApplicationContext  - интерфейс, реализует базовый интерфейс BeanFactory,
+                          реализация ApplicationContext - это и есть Контейнер.
+    POJO                - Plain Old Java Object, объект с полями, свойствами,
+                          конструкторами, не содержит логики(DTO, Entity)                   
     Bean                - сущность/объект Java класса, создаваемая, хранимая 
                           в контейнере, которую можно получить из него.
+                          (Component, Controller, Repository, Service...)
 
 --- Inversion of Control ---
     IoC - аутсорсинг создания и управления объектами. Т.е. передача нами
