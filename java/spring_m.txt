@@ -62,7 +62,8 @@ Spring Core
     Spring Bean (или просто bean/бин) - объект, который создается и 
     управляется Spring Container.
    
---- ApplicationContext config with .xml file ---
+--- ApplicationContext configuration ---
+    # with .xml file
     // создаем файл в директории resources(root) "applicationContext.xml"
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans"
@@ -95,6 +96,86 @@ Spring Core
     Создание бинов через фабрику:
     <factory-method> - указываем метод и нов объект будет создаваться
     не через конструктор, а через статик метод - синглтон остается синглтон
+
+    # with annotations + xml ----------------------------------------------
+     Это более короткий и быстрый способ.
+    Процесс в 2 этапа:
+        сканирование классов и поиск аннотаций @Component
+        создание(регистрация) бина в Spring Container
+    
+    // Для сканирования необходимо указать в applicationContext.xml где скан:
+        <context:component-scan base-package="io.github.ivan100kg"/>
+        Указываем эту строку и наш главный пакет с классами.
+
+    // Теперь пометим наш класс аннотацией @Component
+    @Component("catBean")   // сдесь задаем люб имя бина, либо default cat
+    public class Cat implements Pet{
+        @Override
+        public void say() {
+            System.out.println("Meow-Meow");
+        }
+    }
+
+    // Создадим ApplicationContext и вытянем бин
+    ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
+                "applicationContext.xml"
+    );
+    Cat cat = context.getBean("catBean", Cat.class);    // получим бин 
+    cat.say();
+    context.close();
+
+    # Java code
+    способ #1
+    @Configuration                  // класс является конфигурацией
+    @ComponentScan("spring_intro")  // пакет для скана бинов и разл аннотаций
+    public class MyConfig {}        // имя класса любое
+
+    // создать ApplicationContext, отличается от xml способа, указываем
+       наш @Configuration класс. 
+    AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(MyConfig.class);
+    Person person = context.getBean("personBean", Person.class);
+    // Dependency Injection выполняется примерно так-же
+    person.callYourPet();
+    context.close();
+
+    способ #2
+    Сканирование не идет, поэтому убираем в конфиг-классе @ComponentScan
+    Убираем все аннотации @Component @Autowired @Qualifier в классах
+    
+    @Configuration
+    public class MyConfig {
+        @Bean                   // @Bean регулирует создание и обращ к бину
+        @Scope("singleton")     // можно указ scope - только 1 объект(как обычн)
+        public Cat catBean() {  // id будет как наз-е метода "catBean"
+            return new Cat();   
+        }
+        
+        @Bean
+        public Person personBean() {
+            return new Person(catBean());   // DI прописываем зависимость
+        }
+    }
+    // все работает также
+    AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(MyConfig.class);
+    Person person = context.getBean("personBean", Person.class);
+    person.callYourPet();
+    context.close();
+
+    Использование @Value из конфиг файла (для 2-ух способов):
+    Для того чтобы исп аннотацию @Value и подставлять наши значения из 
+    конфиг файла нужно исп аннотацию @PropertySource
+
+    // в классе Person
+    @Value("${person.surname}") // значения берутся из кофиг файла <--------+
+    private String surname;                                                 |
+                                                                            |
+    // Config.java                                                          |
+    @Configuration                                                          |
+    @ComponentScan("io.github.ivan100kg.spring_intro")                      |
+    @PropertySource("classpath:myApp.properties")   // наш конфиг файл  ----+
+    public class MyConfig {
 
 --- Dependency Injection xml ---
     DI - аутсорсинг добавления/внедрения зависимостей.
@@ -212,7 +293,7 @@ Spring Core
         System.out.println(dog1 == dog2);   // false
     Подходеит для stateful объектов.(хранящих состояние, например поле имя)
 
---- Life Cycle of bean xml ---
+--- Life Cycle of bean ---
     Запуск      -->  Начало работы     -->  Создание  -->  DI - внедряются
     приложения       Spring Container       бина           зависимости
                                                                   |
@@ -236,6 +317,7 @@ Spring Core
     логика после окончания работы с бином, перед его уничтожением. Также 
     вызывается автоматически. Если scope=prototype то destroy НЕ вызывается.
 
+    # xml
     Использование своего кода при init-method destroy-method:
     // добавим методы в наш класс Dog(такие названия не обязательно),
     модификаторы могут быть любыми
@@ -263,33 +345,29 @@ Spring Core
         dog.say();
         context.close();
         // тут авто вызовется destroy() если scope НЕ prototype
-
---- ApplicationContext config with annotations ---
-    Это более короткий и быстрый способ.
-    Процесс в 2 этапа:
-        сканирование классов и поиск аннотаций @Component
-        создание(регистрация) бина в Spring Container
     
-    // Для сканирования необходимо указать в applicationContext.xml где сканировать:
-        <context:component-scan base-package="io.github.ivan100kg"/>
-        Указываем эту строку и наш главный пакет с классами.
+    # Java code
+    Правила теже, создаются с пом аннотаций.
+    @PostConstruct
+    @PreDestroy
 
-    // Теперь пометим наш класс аннотацией @Component
-    @Component("catBean")   // сдесь задаем люб имя бина, либо по дефолту будет cat
-    public class Cat implements Pet{
-        @Override
-        public void say() {
-            System.out.println("Meow-Meow");
-        }
+    Эти методы были выведены в Java 9, поэтому добавим зависимость в pom.xml
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+
+    // применение
+    @PostConstruct
+    private void init() {   // после создания бина
+        System.out.println("class Dog: init method");
     }
 
-    // Создадим ApplicationContext и вытянем бин
-    ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-                "applicationContext.xml"
-    );
-    Cat cat = context.getBean("catBean", Cat.class);    // получим бин 
-    cat.say();
-    context.close();
+    @PreDestroy
+    private void destroy() {    // перед уничтожением(НЕ для prototype)
+        System.out.println("class Dog: destroy method");
+    }
 
 --- Dependency Injection with annotations ---
     -- DI @Autowired
@@ -401,82 +479,6 @@ Spring Core
     @Component              @Component  
     @Scope("singleton")     @Scope("prototype")
     public class Dog        public class Cat 
-
---- Life Cycle of bean with annotations ---
-    Правила теже, создаются с пом аннотаций.
-    @PostConstruct
-    @PreDestroy
-
-    Эти методы были выведены в Java 9, поэтому добавим зависимость в pom.xml
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-      <version>1.3.2</version>
-    </dependency>
-
-    // применение
-    @PostConstruct
-    private void init() {   // после создания бина
-        System.out.println("class Dog: init method");
-    }
-
-    @PreDestroy
-    private void destroy() {    // перед уничтожением(НЕ для prototype)
-        System.out.println("class Dog: destroy method");
-    }
-
---- ApplicationContext config without xml ---
-    способ #1
-    @Configuration                  // класс является конфигурацией
-    @ComponentScan("spring_intro")  // пакет для скана бинов и разл аннотаций
-    public class MyConfig {}        // имя класса любое
-
-    // создать ApplicationContext, отличается от xml способа, указываем
-       наш @Configuration класс. 
-    AnnotationConfigApplicationContext context =
-                new AnnotationConfigApplicationContext(MyConfig.class);
-    Person person = context.getBean("personBean", Person.class);
-    // Dependency Injection выполняется примерно так-же
-    person.callYourPet();
-    context.close();
-
-    способ #2
-    Сканирование не идет, поэтому убираем в конфиг-классе @ComponentScan
-    Убираем все аннотации @Component @Autowired @Qualifier в классах
-    
-    @Configuration
-    public class MyConfig {
-        @Bean                   // @Bean регулирует создание и обращ к бину
-        @Scope("singleton")     // можно указ scope - только 1 объект(как обычн)
-        public Cat catBean() {  // id будет как наз-е метода "catBean"
-            return new Cat();   
-        }
-        
-        @Bean
-        public Person personBean() {
-            return new Person(catBean());   // DI прописываем зависимость
-        }
-    }
-    // все работает также
-    AnnotationConfigApplicationContext context =
-                new AnnotationConfigApplicationContext(MyConfig.class);
-    Person person = context.getBean("personBean", Person.class);
-    person.callYourPet();
-    context.close();
-
-    Использование @Value из конфиг файла (для 2-ух способов):
-    Для того чтобы исп аннотацию @Value и подставлять наши значения из 
-    конфиг файла нужно исп аннотацию @PropertySource
-
-    // в классе Person
-    @Value("${person.surname}") // значения берутся из кофиг файла <--------+
-    private String surname;                                                 |
-                                                                            |
-    // Config.java                                                          |
-    @Configuration                                                          |
-    @ComponentScan("io.github.ivan100kg.spring_intro")                      |
-    @PropertySource("classpath:myApp.properties")   // наш конфиг файл  ----+
-    public class MyConfig {
 
 Spring AOP
 --- AOP Aspect Oriented Programming ---
