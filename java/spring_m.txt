@@ -177,7 +177,8 @@ Spring Core
     @PropertySource("classpath:myApp.properties")   // наш конфиг файл  ----+
     public class MyConfig {
 
---- Dependency Injection xml ---
+--- Dependency Injection ---
+    # with xml
     DI - аутсорсинг добавления/внедрения зависимостей.
     DI делает объекты нашего приложения слабо зависимыми друг от друга.
 
@@ -246,9 +247,110 @@ Spring Core
         <property name="age" value="${person.age}"/>
     Вызов значений из др файла ${name}, name может быть любым, но
     парвильнее и более понятно уточнять типа person.age
-        
 
-    }
+    # with annotations
+    -- DI @Autowired
+    Для внедрения зависимостей с помощью аннотаций исп @Autowired.
+    Может использоваться:
+        конструктор
+        method
+        поле
+    Использовать можно любой тип, но желательно придерж одного стиля.
+    
+    Использование с конструктором:
+    // добустим есть class Person, конструктор приним об др класса Pet,
+    пометим аннотацией 2 класса, тем самым создадим бины(если scope не prototype).
+    @Component("personBean")
+    class Person {
+        @Autowired      // пометим конструктор аннотацией @Autowired
+        public Person(Pet pet) {
+            System.out.println("Person bean is created");
+            this.pet = pet;
+        }
+
+    // use
+    Person person = context.getBean("personBean", Person.class);    // correct
+    person.callYourPet();
+    Как произошло внедрение:
+        После сканирования нашлось 2 бина (personBean, catBean)
+        далее нашлась аннотация @Autowired (На конструкторе Person)
+        начался поиск бина с типом Pet(тот что в параметрах конструктора)
+        нашелся подходящий бин - catBean
+        внедрение зависимости
+
+        если не найдется подходящий бин - exception
+        если найдется более 1 подходящего бина(например dogBean) - exception
+
+    Использование с методом:
+    @Component("personBean")
+    class Person {
+        @Autowired      // пометим метод аннотацией
+        public void setPet(Pet pet) {
+            this.pet = pet;
+            System.out.println("Pet was set in Person");
+        }
+    
+    // use
+    Person person = context.getBean("personBean", Person.class);    // correct
+    person.callYourPet();
+    Как произошло внедрение:
+        все также как и при конструкторе происходит внедрение
+
+    Использование с полем:
+    @Component("personBean")
+    public class Person {
+        @Autowired
+        private Pet pet;
+    
+    // use
+    Person person = context.getBean("personBean", Person.class);
+    person.callYourPet();
+    Как произошло внедрение:
+        все также находятся бины, @Autowired, идет подстановка,
+        сдесь под капотом исп-ся Reflecnion. 
+
+    -- DI @Qualifier
+    Когда находится более чем 1 бин при @Autowired происходит exception.
+    Можно предотвратить указав какой бин должен быть внедрен с пом @Qualifier
+                        @Autowired
+                        @Qualifier("dogBean")   // выбор бина
+                        private Pet pet;
+                       /                \
+    @Component("catBean")                @Component("dogBean")
+    public Cat implements Pet {          public Dog implements Pet {   
+    
+    С полем и методом работает как и @Autowired.
+    С конструктором:
+        @Autowired
+        public Person(@Qualifier("catBean") Pet pet) {  // указываем в параметре
+
+    -- DI @Value
+    Для внедрения строк и других значений мож исп аннотацию @Value
+    Нет необходимости в сеттерах как при конфиге с пом xml.
+    Значения устанавливаются не с пом сеттеров, а с пом Reflection.
+
+    способ #1 -на месте
+    @Component("personBean")
+    public class Person {
+        private Pet pet;
+        @Value("Bond")  // устанавливаем значения пямо в классе
+        private String surname;
+        @Value("39")    // int тоже пишется в ковычках
+        private int age;
+    // use 
+    System.out.println(person.getSurname() + " " + person.getAge());    // correct
+
+    способ #2 -с пом .config файла
+    <context:component-scan base-package="io.github.ivan100kg"/>
+    <context:property-placeholder location="myApp.properties"/> // допишем
+    // в классе исправим
+    @Component("personBean")
+    public class Person {
+        private Pet pet;
+        @Value("${person.surname}") // подстановка знач из файла
+        private String surname;
+        @Value("${person.age}")
+        private int age;
 
 --- Bean scope xml ---
     Scope - область видимости, определяет:
@@ -369,110 +471,6 @@ Spring Core
         System.out.println("class Dog: destroy method");
     }
 
---- Dependency Injection with annotations ---
-    -- DI @Autowired
-    Для внедрения зависимостей с помощью аннотаций исп @Autowired.
-    Может использоваться:
-        конструктор
-        method
-        поле
-    Использовать можно любой тип, но желательно придерж одного стиля.
-    
-    Использование с конструктором:
-    // добустим есть class Person, конструктор приним об др класса Pet,
-    пометим аннотацией 2 класса, тем самым создадим бины(если scope не prototype).
-    @Component("personBean")
-    class Person {
-        @Autowired      // пометим конструктор аннотацией @Autowired
-        public Person(Pet pet) {
-            System.out.println("Person bean is created");
-            this.pet = pet;
-        }
-
-    // use
-    Person person = context.getBean("personBean", Person.class);    // correct
-    person.callYourPet();
-    Как произошло внедрение:
-        После сканирования нашлось 2 бина (personBean, catBean)
-        далее нашлась аннотация @Autowired (На конструкторе Person)
-        начался поиск бина с типом Pet(тот что в параметрах конструктора)
-        нашелся подходящий бин - catBean
-        внедрение зависимости
-
-        если не найдется подходящий бин - exception
-        если найдется более 1 подходящего бина(например dogBean) - exception
-
-    Использование с методом:
-    @Component("personBean")
-    class Person {
-        @Autowired      // пометим метод аннотацией
-        public void setPet(Pet pet) {
-            this.pet = pet;
-            System.out.println("Pet was set in Person");
-        }
-    
-    // use
-    Person person = context.getBean("personBean", Person.class);    // correct
-    person.callYourPet();
-    Как произошло внедрение:
-        все также как и при конструкторе происходит внедрение
-
-    Использование с полем:
-    @Component("personBean")
-    public class Person {
-        @Autowired
-        private Pet pet;
-    
-    // use
-    Person person = context.getBean("personBean", Person.class);
-    person.callYourPet();
-    Как произошло внедрение:
-        все также находятся бины, @Autowired, идет подстановка,
-        сдесь под капотом исп-ся Reflecnion. 
-
-    -- DI @Qualifier
-    Когда находится более чем 1 бин при @Autowired происходит exception.
-    Можно предотвратить указав какой бин должен быть внедрен с пом @Qualifier
-                        @Autowired
-                        @Qualifier("dogBean")   // выбор бина
-                        private Pet pet;
-                       /                \
-    @Component("catBean")                @Component("dogBean")
-    public Cat implements Pet {          public Dog implements Pet {   
-    
-    С полем и методом работает как и @Autowired.
-    С конструктором:
-        @Autowired
-        public Person(@Qualifier("catBean") Pet pet) {  // указываем в параметре
-
-    -- DI @Value
-    Для внедрения строк и других значений мож исп аннотацию @Value
-    Нет необходимости в сеттерах как при конфиге с пом xml.
-    Значения устанавливаются не с пом сеттеров, а с пом Reflection.
-
-    способ #1 -на месте
-    @Component("personBean")
-    public class Person {
-        private Pet pet;
-        @Value("Bond")  // устанавливаем значения пямо в классе
-        private String surname;
-        @Value("39")    // int тоже пишется в ковычках
-        private int age;
-    // use 
-    System.out.println(person.getSurname() + " " + person.getAge());    // correct
-
-    способ #2 -с пом .config файла
-    <context:component-scan base-package="io.github.ivan100kg"/>
-    <context:property-placeholder location="myApp.properties"/> // допишем
-    // в классе исправим
-    @Component("personBean")
-    public class Person {
-        private Pet pet;
-        @Value("${person.surname}") // подстановка знач из файла
-        private String surname;
-        @Value("${person.age}")
-        private int age;
-    
 --- Bean scope with annotations ---
     Те же правила, но создаются так:
 
