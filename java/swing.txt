@@ -1,0 +1,31 @@
+Компонент - визуальный элемент(кнопка, ползунок...)
+Контейнер - спец компонент, который может вмещать другие компоненты
+Для отображения компонентов их необходимо поместить в контейнер
+
+Контейнеры верхнего уровня: JFrame, JApplet, JWindow и JDialog. Наследуются
+от Component и Container из библиотеки АWT. Должны находиться на верхнем
+уровне иерархии.
+
+Контейнеры не верхнего уровня(легковесные) наследуются от JComponent, 
+пример JPanel, могут быть вложенными.
+
+Компоненты наследуются от JComponent, их названия начинаются с 'J'
+
+public class Swing1 extends JFrame{
+    public Swing1() {
+        super("my app");                                        // title
+        super.setBounds(200, 200, 300, 200);                    // loc, size
+        super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   // when close
+        
+        Container container = super.getContentPane();           // контейнер
+        container.setLayout(new GridLayout(3,2,2,2));           // layout
+        
+    }
+    
+    public static void main(String[] args) {
+        Swing1 swing1 = new Swing1();                           // run
+        swing1.setVisible(true);                                // visible
+        
+    }
+
+}
