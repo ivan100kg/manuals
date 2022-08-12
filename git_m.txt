@@ -527,6 +527,7 @@ wild cards:
 
 --- Небольшая команда ----------------------------------------------
 Работаем в тематической ветке.      (next) git commit -m ""
+Заливаем на привяз уд ветку         (next) git push
 Создаем резервную ветку             (next) git checkout -b save
 Переходим на мастер                 (save) git checkout master
 Merge в ветку master.               (master) git merge next 
