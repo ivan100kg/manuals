@@ -5,6 +5,7 @@
         add dependency to pom.xml: javax.servlet-api
         наследовать наш класс от HttpServlet
         можно указать @WebServlet("/hello") над сервлетом для маппинга
+    
     // example
     @WebServlet("/hello")
     public class MainServlet extends HttpServlet {
