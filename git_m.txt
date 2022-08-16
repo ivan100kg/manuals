@@ -108,7 +108,13 @@ git clone <url> # с сервера забирается (pulled) каждая �
 --- Basics ------------------------------------------------------------
 # status
 git status                      # посмотреть состояние файлов, ветку,...
-git status -s                   # short version.
+git status -s                   # short version
+                                  M = modified
+                                  A = added
+                                  D = deleted
+                                  R = renamed
+                                  C = copied
+                                  U = updated but unmerged
 
 # diff
 git diff						# что изменено но не в индексе.
