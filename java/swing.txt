@@ -104,3 +104,7 @@ public class EventDemo {
     }
             
 }
+
+Рисование
+    Наследуем класс от JPanel
+    Переопределяем метод paintComponent(Graphics g)
