@@ -913,6 +913,7 @@ Spring MVC
     Можно использовать @RequestMapping на самом Контроллере(Controller-mapping)
     Удобен для создания нескольких контроллеров, каждый под свой URL.
     @Controller
+    @SessionAttributes("tacoOrder") // имена атрибутов модели, хранятся в сессии
     @RequestMapping("/emp") // корень, будет приписываться ко всем url методов
     @RequestMapping(path="/emp", method=RequestMethod.GET)  // обработка только
                                                                GET методов
