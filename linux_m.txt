@@ -1600,3 +1600,11 @@ localectl set-locale LANG=en_US.utf8  # изменить локаль по ум�
 3	Рестарт сервера
 	sudo service postgresql restart
 	
+--- Java -----------------------------------------
+sudo apt install openjdk-8-jdk
+sudo apt install maven
+sudo vim /etc/profile
+    # add to end of file
+    export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64/"
+    export PATH=$JAVA_HOME/bin:$PATH
+sudo reboot
