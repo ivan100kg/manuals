@@ -196,6 +196,13 @@ git commit -m'детальное описание, что и почему сде
 git cherry-pick <hash-commit-1>                         # перенести коммит в тек ветку из др 
 git cherry-pick <hash-commit-begin>..<hash-commit-end>  # перенести неск подряд идущих
 
+--- Откат ветки origin/master ---
+создаем дублирующую ветку для просмотра истории на всякий
+git reset --hard <commit>       # откатываемся до нужного коммита
+git push --force                # откатывам origin/master по master
+git cherry-pick <hash-commit-1> # вставляем коммиты которые нужны
+git push                        # обновляем
+
 --- Commit History -------------------------------------------------------------
 git log                         # перечисляет коммиты, сделанные в репозитории
                                   в обратном к хрон порядку. HEAD - последний
