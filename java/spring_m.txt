@@ -311,7 +311,7 @@ Spring Core
     person.callYourPet();
     Как произошло внедрение:
         все также находятся бины, @Autowired, идет подстановка,
-        сдесь под капотом исп-ся Reflecnion. 
+        сдесь под капотом исп-ся Reflection. 
 
     -- DI @Qualifier
     Когда находится более чем 1 бин при @Autowired происходит exception.
