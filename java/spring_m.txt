@@ -2188,6 +2188,9 @@ Spring Boot
     В Spring Boot используются спец зависимости Maven - Starter пакет - 
     это набор взаимосвяз зависимостей, кот могут быть добавлены в прилож.
     Версии пакетов в Starter совместимы между собой, не паримся.
+    например для AOP:
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-aop</artifactId>
 
     Так как Tomcat сервер встроенный - моможно не устанавливать в war 
     формат, а в jar, и запускать приложение можно прямо с класса/jar
@@ -2227,7 +2230,7 @@ Spring Boot
         │   │                   └── spring_course_springboot
         │   │                       └── SpringCourseSpringbootApplication.java
         │   └── resources
-        │       ├── application.properties  # файл со свойствами(@Value("{}"))
+        │       ├── application.properties  # @PropertySource(..)->(@Value("{}"))
         │       ├── static
         │       └── templates
         └── test                # тестирование
