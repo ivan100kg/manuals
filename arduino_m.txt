@@ -88,8 +88,6 @@ COM порт(последовательный(побитовый) порт (usb)
 		else digitalWrite(pin, LOW);
 		
 	
-	
-	
 Функции:
 	map(val, min, max, new_min, new_max); - возвращает величину в новом диап-не
 		val - входная величина

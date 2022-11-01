@@ -339,6 +339,10 @@ FROM students;
 CREATE INDEX name_ind ON table (field);
 DROP INDEX name_ind;
 
+-- FILTER 
+-- агрегатной ф-ии поставляются лишь фильтрованные строки по WHERE
+агрегатная_функция ( * ) [ FILTER ( WHERE условие_фильтра ) ]
+COUNT(*) FILTER (WHERE id > 0)
 ================================================================================
 
 --- SQL ------------------------------------------------------------------------
@@ -609,3 +613,11 @@ ALTER ROLE bestuser SET default_transaction_isolation TO 'read committed';
 ALTER ROLE bestuser SET timezone TO 'UTC';
 GRANT ALL PRIVILEGES ON DATABASE mydb TO bestuser;
 \q
+
+-- Tips/Triks ----------------------
+-- группировка по дням недели
+select 
+	date_trunc('week', gc.takingdate) as week,
+	count(*) as "all"
+group by 
+	date_trunc('week', gc.takingdate)
