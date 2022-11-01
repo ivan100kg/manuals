@@ -1599,4 +1599,24 @@ localectl set-locale LANG=en_US.utf8  # изменить локаль по ум�
 	host      mydb       myuser  all          md5
 3	Рестарт сервера
 	sudo service postgresql restart
-	
+
+--- ffmpeg -------------------------------------------------------------------
+ffmpeg -i input.avi output.avi  # simplest
+input/output - regular files, pipes, network streams, grabbing devices...
+streams - из чего состоят input/output - video/audio/subtitle/attachment/data
+options:
+-c:v libx264            # codec video(mp4)
+-b:v 64k                # bitrate
+-r 24                   # fps
+-c:a aac                # codec audio
+-vf scale=320:-1        # resolution (320 x auto)
+map: (упреавление потоками)
+-map 0:a:1 -map 0:a:0   # выбор аудиодорожек, их порядок
+-map 0:s:0              # субтитры
+examples:
+# car music
+ffmpeg -i input.avi -b:v 120k -c:v libx264 -vf scale=320:-1 -r 24 out.mp4
+# old TV
+ffmpeg -i input.webm -b:v 2600k -c:v libx264 -vf -c:a aac out.mp4
+# заменить звук во втором видео звуком из первого видео без перекодирования
+ffmpeg -i a.mp4 -i b.mp4 -map 0:a -map 1:v -c copy -shortest b_result.mp4
