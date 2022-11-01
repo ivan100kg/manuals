@@ -1624,3 +1624,10 @@ sudo vim /etc/profile
     export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64/"
     export PATH=$JAVA_HOME/bin:$PATH
 sudo reboot
+
+--- подключить сетевую папку Windows
+mount -t cifs -o username=user,password=pass //IP/folder /mnt
+username    - логин
+password    - пароль
+IP          - ip компьютера с сетевой папкой
+folder      - имя сетевой папки
