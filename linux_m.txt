@@ -1627,7 +1627,7 @@ sudo reboot
 
 --- подключить сетевую папку Windows
 mount -t cifs -o username=user,password=pass //IP/folder /mnt
-username    - логин
-password    - пароль
+user        - логин
+pass        - пароль
 IP          - ip компьютера с сетевой папкой
 folder      - имя сетевой папки
