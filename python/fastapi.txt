@@ -1,4 +1,25 @@
-# FastApi
+# FastApi(OpenAPI scheme)
 
-pip install "fastapi[all]"  # dependencies
-uvicorn main:app --reload   # run project
+pip install "fastapi[all]"      # dependencies
+uvicorn main:app --reload       # main: the file main.py (the Python "module").
+                                # app: the object created inside of main.py with the line app = FastAPI().
+                                # --reload: make the server restart after code changes. Only use for development.
+
+http://127.0.0.1:8000/docs      # API docs
+http://127.0.0.1:8000/redoc     # alternative API docs
+
+--- exampl simple class ------------------------------------------------------------
+from fastapi import FastAPI
+app = FastAPI()                 # app instance of fastapi
+@app.get("/")                   # endpoint of URL (http://127.0.0.1:8000 by default)
+async def root():       
+    return {"msg": "Hi"}        # JSON responce
+
+--- path parameters ------------------------------------------------------------------------
+@app.get("/items/{item}")       # get from enpoint 'item'+
+async def read_item(item):      # transmit to function
+    return {"back": item}       # processing ... get back
+
+@app.get("/items/{item}")       # data validation are included
+async def read_item(item: int): # with type of parameter(checking of exception are included)
+    return {"back": item}       # return int, not string as usually
