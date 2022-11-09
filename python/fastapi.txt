@@ -1,0 +1,4 @@
+# FastApi
+
+pip install "fastapi[all]"  # dependencies
+uvicorn main:app --reload   # run project
