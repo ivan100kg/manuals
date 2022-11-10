@@ -2260,6 +2260,7 @@ Spring Boot
     2. Add dependencies(уже добавлены при создании)
         Spring Boot DevTools(удалить версию) - авто рестарт проекта в Idea
         еще нужно вкл settings -> compiler -> auto build
+        перезапускать на молоточек в Idea
     3. Add properties for connection to DB.
         // application.properties
         spring.datasource.url=jdbc:postgresql://localhost:5432/my_db
