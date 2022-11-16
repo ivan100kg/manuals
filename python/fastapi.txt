@@ -16,10 +16,14 @@ async def root():
     return {"msg": "Hi"}        # JSON responce
 
 --- path parameters ------------------------------------------------------------------------
-@app.get("/items/{item}")       # get from enpoint 'item'+
+@app.get("/items/{item}")       # get from enpoint 'item'
 async def read_item(item):      # transmit to function
     return {"back": item}       # processing ... get back
 
 @app.get("/items/{item}")       # data validation are included
 async def read_item(item: int): # with type of parameter(checking of exception are included)
     return {"back": item}       # return int, not string as usually
+
+@app.get("/items/hui")          # fixed path musn be first
+@app.get("/items/{item}")       # if parameter == hui it never called, because it called above
+
