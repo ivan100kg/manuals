@@ -1617,6 +1617,7 @@ ffmpeg -i input.webm -b:v 2600k -c:v libx264 -vf -c:a aac out.mp4
 ffmpeg -i a.mp4 -i b.mp4 -map 0:a -map 1:v -c copy -shortest b_result.mp4
 	
 --- Java -----------------------------------------
+sudo apt install openjdk-8-jdk-headless
 sudo apt install openjdk-8-jdk
 sudo apt install maven
 sudo vim /etc/profile
@@ -1624,7 +1625,6 @@ sudo vim /etc/profile
     export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64/"
     export PATH=$JAVA_HOME/bin:$PATH
 sudo reboot
-sudo apt install openjdk-8-jdk-headless
 # for swing
 sudo vim /etc/java-8-openjdk/accessibility.properties
     #assistive_technologies=org.GNOME.Accessibility.AtkWrapper
