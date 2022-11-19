@@ -1612,7 +1612,7 @@ examples:
 # car music
 ffmpeg -i input.avi -b:v 120k -c:v libx264 -vf scale=320:-1 -r 24 out.mp4
 # old TV
-ffmpeg -i input.webm -b:v 2600k -c:v libx264 -vf -c:a aac out.mp4
+ffmpeg -i input.webm -b:v 2600k -c:v libx264 -c:a aac out.mp4
 # заменить звук во втором видео звуком из первого видео без перекодирования
 ffmpeg -i a.mp4 -i b.mp4 -map 0:a -map 1:v -c copy -shortest b_result.mp4
 	
