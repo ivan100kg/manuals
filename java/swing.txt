@@ -27,7 +27,7 @@ Jpanel - панель содержимого, на ней располагают
 --- Всплывающие окна ---
 JFrame frame = new JFrame();
 JOptionPane.showMessageDialog(frame, "Кэшбэк можно вносить только 1 раз");
-
+https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
 
 --- examples ---
 public class Swing1 extends JFrame{
