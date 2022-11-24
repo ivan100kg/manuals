@@ -1,16 +1,58 @@
-FreeMaker - шаблонизатор для Java
+FreeMarker - шаблонизатор для Java
 FreeMarker Template Language (FTL) - язык шаблонизатора
 
+FreeMarker соединяет шаблон с java объектами и формирует страницы
 +--Template-------+
 |<html>           |
 |    ...          |
-|    Hello ${name}|
-|    ...          |
-|</html>          |
-+-----------------+
-
-+--Java objects---------+
-|...                    |
-|model.setName("Word!");|
-|...                    |
+|    Hello ${name}|-----+
+|    ...          |      \
+|</html>          |       \       +--Output--------+
++-----------------+        \      |<html>          |
+                            ====> |    ...         |
++--Java objects---------+ /       |    Hello world!|
+|...                    |/        |    ...         |
+|model.setName("Word!");|         |</html>         |
+|...                    |         +----------------+
 +-----------------------+
+
+Example template:                                
+    <html>
+    <head>
+        <title>Welcome!</title>
+    </head>
+    <body>
+    <h1>Welcome ${user}!</h1>
+    <p>Our latest product:
+        <a href="${latestProduct.url}">${latestProduct.name}</a>!
+    </body>
+    </html>
+
+hashes  - содержат другие переменные(как скаляры так и хэши) - latestProduct
+scalars - содержат 1 значение                                - user
+latestProduct.name  - обратиться к значению подэлемента
+animals[0].name     - обратиться к значению эл последовательности
+
+Datatypes:
+    String
+    Number
+    Date-like: date-time, date, time
+    Boolean
+
+Special parts FTL:
+Interpolation:
+${user.id}  - freemarker заменяет выражение в скобках - соотв значением
+Tags/Direcrives:
+# - имя тэга начинается с этого символа
+@ - кастомные тэги пользователя начинаются с этого
+Comments:
+<#-- comment -->
+Все что не попадает под интерполяцию или тэги - печатается 1 в 1 в html
+
+Basic directives:
+if
+<h1>
+    Welcome ${user}<#if user == "Big Joe">, our beloved leader</#if>!
+</h1>
+если true то выполнить то что между <#if...>...<>
+
