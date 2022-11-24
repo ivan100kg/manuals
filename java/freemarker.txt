@@ -50,9 +50,16 @@ Comments:
 Все что не попадает под интерполяцию или тэги - печатается 1 в 1 в html
 
 Basic directives:
-if
+if-else
 <h1>
-    Welcome ${user}<#if user == "Big Joe">, our beloved leader</#if>!
+    Welcome ${user}
+    <#if user == "Big Joe">
+        text
+    <#elseif user != hui.user>
+        text
+    <#else>
+        text
+    </#if>
 </h1>
-если true то выполнить то что между <#if...>...<>
+
 
