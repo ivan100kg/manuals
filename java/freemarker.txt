@@ -1,0 +1,16 @@
+FreeMaker - шаблонизатор для Java
+FreeMarker Template Language (FTL) - язык шаблонизатора
+
++--Template-------+
+|<html>           |
+|    ...          |
+|    Hello ${name}|
+|    ...          |
+|</html>          |
++-----------------+
+
++--Java objects---------+
+|...                    |
+|model.setName("Word!");|
+|...                    |
++-----------------------+
