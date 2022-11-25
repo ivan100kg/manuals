@@ -50,7 +50,8 @@ Comments:
 Все что не попадает под интерполяцию или тэги - печатается 1 в 1 в html
 
 Basic directives:
-if-else
+
+# if-else
 <h1>
     Welcome ${user}
     <#if user == "Big Joe">
@@ -61,5 +62,15 @@ if-else
         text
     </#if>
 </h1>
+
+# list
+перебрать список animals
+animal - переменная по очереди принимавшая значение последовательности
+<p>We have these animals:                       <p>We have these animals:
+<table border=1>                                <table border=1>
+  <#list animals as animal>                         <tr><td>mouse<td>50 Eur
+    <tr><td>${an.name}<td>${an.price} Eur ==>       <tr><td>elephant<td>5000 Eur
+  </#list>                                          <tr><td>python<td>4999 Eur
+</table>                                        </table>
 
 
