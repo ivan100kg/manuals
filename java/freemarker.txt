@@ -27,7 +27,7 @@ Example template:
         <a href="${latestProduct.url}">${latestProduct.name}</a>!
     </body>
     </html>
-
+----------------------------------------------------------------------------
 hashes  - содержат другие переменные(как скаляры так и хэши) - latestProduct
 scalars - содержат 1 значение                                - user
 latestProduct.name  - обратиться к значению подэлемента
@@ -48,10 +48,10 @@ Tags/Direcrives:
 Comments:
 <#-- comment -->
 Все что не попадает под интерполяцию или тэги - печатается 1 в 1 в html
-
+-----------------------------------------------------------------------
 Basic directives:
 
-# if-else
+#if
 <h1>
     Welcome ${user}
     <#if user == "Big Joe">
@@ -63,14 +63,89 @@ Basic directives:
     </#if>
 </h1>
 
-# list
-перебрать список animals
-animal - переменная по очереди принимавшая значение последовательности
-<p>We have these animals:                       <p>We have these animals:
-<table border=1>                                <table border=1>
+#list
+перебрать список
+переменная по очереди принимает значение последовательности
+в таблице:
+<table>                                         <table>
   <#list animals as animal>                         <tr><td>mouse<td>50 Eur
     <tr><td>${an.name}<td>${an.price} Eur ==>       <tr><td>elephant<td>5000 Eur
   </#list>                                          <tr><td>python<td>4999 Eur
 </table>                                        </table>
+в списке: если будет нулевой список ничего не будет в html
+<#list misc.fruits>
+  <ul>
+    <#items as fruit>
+      <li>${fruit}
+    </#items>
+  </ul>
+</#list>
+В абзаце с разделителем <#sep> = ", " 
+<p>Fruits: <#list misc.fruits as fruit>${fruit}<#sep>, </#list>
+В абзаце с разделителем <#sep> = ", " если есть элем
+<p>Fruits: <#list misc.fruits as fruit>${fruit}<#sep>, <#else>None</#list>
+Все вместе
+<#list misc.fruits>
+  <p>Fruits:
+  <ul>
+    <#items as fruit>
+      <li>${fruit}<#sep> and</#sep>
+    </#items>
+  </ul>
+<#else>
+  <p>We have no fruits.
+</#list>
+
+#include
+включить код из другого файла по url
+<html>
+<head>
+  <title>Test page</title>
+</head>
+<body>
+  <h1>Test page</h1>
+  <p>Blah blah...
+  <#include "/copyright_footer.html">
+</body>
+</html>
+
+все директивы можно исп вместе
+<#list animals as animal>
+      <div<#if animal.protected> class="protected"</#if>>
+        ${animal.name} for ${animal.price} Euros
+      </div>
+</#list>
+---------------------------------------------------------
+Using built-ins/встроенные функции:
+user?upper_case         перевод в верхний регистр
+animal.name?cap_first   первый символ в верх регистр
+user?length             кол-во символов
+animals?size            кол-во элементов последовательности
+В цикле <#list animals as animal>...</#list>
+animal?index            индекс элемента
+animal?counter          номер итерации
+animal?item_parity      четный/нечетный номер итерации <------+
+с параметрами                                                 |
+animal.protected?string("Y", "N")       вернет Y если true    |
+animal?item_cycle('light', 'dark')      примерно тоже самое --+
+fruits?join(", ")       список -> в строку с разделителем ", "
+user?starts_with("J")   true/false если начинается с J
+animals?filter(it -> it.protected)      типа фильтра со stream
+<#list animals?filter(it -> it.protected) as animal>...</#list>
+fruits?join(", ")?upper_case            chaining
+---------------------------------------------------------------
+Обработка нулевых(Null) значений
+<h1>Welcome ${user!"visitor"}!</h1>         если user == null -> visitor
+?? - проверка на null -> boolean
+<#if user??><h1>Welcome ${user}!</h1></#if> или пропустить все приветствие
+animals.python.price!0      если price == null -> 0
+(animals.python.price)!0    если что-то из этого null -> 0
+animals.python.price??      также если price==null
+(animals.python.price)??    если что-то из этого null
+
+
+
+
+
 
 
