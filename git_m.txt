@@ -390,6 +390,7 @@ git checkout -b ver2 v2.0.0	# создать ветку по тэгу.
 
 git branch features         # создать ветку 'features', точная копия master,
                               новый указатель на текущий коммит.
+git branch feature <commit> # ответвиться от определенного коммита по хэш
 git checkout features       # переключение на ветку 'features'
 git switch features         # переключение на ветку 'features'
 git checkout -b new-branch  # создать и сразу переключиться
