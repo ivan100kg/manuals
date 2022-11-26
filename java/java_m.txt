@@ -3833,6 +3833,16 @@
     Example:
     System.out.printf("%03d\t%-7s\t%,.2f\n", 1, "Hi", 3.14); // 001	Hi 	3,14
 
+--- Round/Округление ---
+    1 способ:
+        System.out.printf("%.2f", value);   // округлить до 2 знаков после ,
+                                               всегда печатает нули
+    2 способ:
+        DecimalFormat decimalFormat = new DecimalFormat( "#.###" ); // 3 знака
+        String result = decimalFormat.format(value); // не печатает нули
+    3 способ:
+        Math.round(value);                  // выдает округленный int
+
 --- Reflection ---
     Рефлексия - механизм исслед данныхо прог-ме во время вып-я.
     Рефлексия позволяет исслед инфо о полях, методах, констркукторах
