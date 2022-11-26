@@ -2263,11 +2263,7 @@ Spring Boot
         перезапускать на молоточек в Idea
     3. Add properties for connection to DB.
         // application.properties
-        spring.datasource.url=jdbc:postgresql://localhost:5432/my_db
-        spring.datasource.username=bestuser
-        spring.datasource.password=bestuser
-        server.port=3333    - можно включать множество настроек
-        server.servlet.context-path=/springboot-rest
+        сщв
     4. Add entity package+class(Employee)
         @Entity // все как обычно + toString() можно
         @Table(name = "employees")
