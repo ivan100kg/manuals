@@ -302,8 +302,46 @@ random()    // 0 - 0.9999999...
 floor()     // усечение дробной части
 
 --- DOM - Document Object Model --------------------------------------------
-      window
-    /    |   \
-DOM     BOM   JavaScript
-document navigator  Object
+           Window
+    /         |         \
+DOM         BOM         JavaScript
+document    navigator   Object
+            location    Array
+            history     Function
 
+Window - глобальная переменная - окно браузера со своими методами
+BOM - доп объекты браузера для работы со всем кроме документа
+DOM - все содержимое страницы в виде объектов, кот можно менять
+
+document - объект который управляет DOM
+const bodyElement = document.body   # элементы верхнего уровня это свойства
+
+Навигация по узлам
+bodyElement.firstChild      # первый дочерний элемент <body>
+bodyElement.lastChild       # последний дочерний элемент <body>
+bodyElement.previousSibling # предыдущ эл той же грубины вложенности
+bodyElement.nextSibling     # следущ эл той же грубины вложенности
+bodyElement.parentNode      # родительский элемент
+
+Навигация по элементам(тэгам)
+bodyElem.firtElementChild   # первый дочерний элемент <body>
+bodyElem.lastElementChild   # последний дочерний элемент <body>
+bodyElem.previousElementSibling # предыдущ эл той же грубины вложенности
+bodyElem.nextElementSibling # следущ эл той же грубины вложенности
+bodyElem.parentElement      # родительский элемент
+
+Если при навигации нет узла/элемента - получим null
+
+Коллекции
+bodyElement.childNodes      # все дочерние узлы - элементы + комменты,
+                              какой-то текст между тэгами, в общем все узлы
+bodyElement.children        # все элементы(тэги)(и только)
+bodyElement.hasChildNodes() # -> boolean, есть ли доч элем
+# перебор коллекции
+for (let node of childNodes) {
+    console.log(node)
+}
+При изменении дерева DOM элементы коллекции автоматом меняют тек состояние
+Менять сами элементы в коллекции можно только особым способом.
+
+Поиск элементов
