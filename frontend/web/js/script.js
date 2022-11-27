@@ -43,5 +43,14 @@ if (images.length > 0){
     }
 }
 
-let text = document.getElementById('training_text');
-console.log(text);
+// изменение элементов
+const mainText = document.querySelector('.training__text');
+const elementText = mainText.innerHTML;
+console.log(elementText);
+mainText.innerHTML =
+    `<p>${elementText}</p>
+    <p><span class="yellow">FUUUUCK!!!</span></p>`;
+
+const elementObject = mainText.outerHTML;
+mainText.outerHTML = `<p>Deleted</p>`
+console.log(mainText.outerHTML);
