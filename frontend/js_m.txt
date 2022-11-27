@@ -396,3 +396,12 @@ getElementsByName       name           коллккция   -                +
 elem.matches('[class$="about__item_active"]')   # -> boolean
 
 --- Изменение элементов
+const mainText = document.querySelector('.training__text'); # получим элем
+const elementText = mainText.innerHTML;                     # сохр текст
+mainText.innerHTML =
+    `<p>${elementText}</p>                                  # вставим текст
+    <p><span class="yellow">FUUUUCK!!!</span></p>`;         # что-то допише
+
+const elementObject = mainText.outerHTML;   # весь объект в текстовой форм
+mainText.outerHTML = `<p>Deleted</p>`       # перезаписать весь объект
+console.log(mainText.outerHTML);            # старый текст можно снова получ
