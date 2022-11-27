@@ -59,3 +59,8 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 .training__column {
     flex: 0 0 33.33%;
 }
+
+.item-about__icon {
+    width: 40px;
+    height: 40px;
+}
