@@ -396,12 +396,42 @@ getElementsByName       name           коллккция   -                +
 elem.matches('[class$="about__item_active"]')   # -> boolean
 
 --- Изменение элементов
-const mainText = document.querySelector('.training__text'); # получим элем
-const elementText = mainText.innerHTML;                     # сохр текст
+const mainText = document.querySelector('.training__text');  # внутр элем
+const elementIText = mainText.innerHTML;                     # сохр текст
 mainText.innerHTML =
-    `<p>${elementText}</p>                                  # вставим текст
-    <p><span class="yellow">FUUUUCK!!!</span></p>`;         # что-то допише
+    `<p>${elementIText}</p>                                  # вставим текст
+    <p><span class="yellow">FUUUUCK!!!</span></p>`;          # что-то допише
 
-const elementObject = mainText.outerHTML;   # весь объект в текстовой форм
+const elementOText = mainText.outerHTML;    # весь объект в текстовой форме
 mainText.outerHTML = `<p>Deleted</p>`       # перезаписать весь объект
 console.log(mainText.outerHTML);            # старый текст можно снова получ
+
+const elementText = mainText.textContent;   # только текст
+mainText.textContent = `<p>hui</p>`         # строка, автоэкранирование тэг
+
+const getComment = mainText.nextSibling;    # получаем комент
+console.log(getComment);                    # получ комент или текст вне тэг
+console.log(getComment.data);               # текст комент
+getComment.data = "fuck!";                  # изменить текст комента
+
+--- Создание элементов
+const newElement = document.createElement('div');   # создать div
+newElement.innerHTML = `Hello`;                     # наполним содержимое
+const newText = document.createTextNode("Fuck u!"); # создать узел, текст
+
+--- Вставка созданных элементов(или сырого текста)
+mainText.before(newElement);                # вставить до элемента
+mainText.after(newText);                    # вставить после элемента
+mainText.prepend(newText);                  # внутрь в начало содержимого
+mainText.append(newText);                   # внутрь в конец содержимого
+mainText.append(newText, "some text");      # можно вставлять много объек
+
+    <!-- before -->
+    <ul class="lesson__list">
+        <!-- prepend -->
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <!-- append -->
+    </ul>
+    <!-- after -->
