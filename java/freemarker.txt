@@ -27,21 +27,31 @@ Example template:
         <a href="${latestProduct.url}">${latestProduct.name}</a>!
     </body>
     </html>
-----------------------------------------------------------------------------
+
+--- Datatypes --------------------------------------------------------------
 hashes  - содержат другие переменные(как скаляры так и хэши) - latestProduct
 scalars - содержат 1 значение                                - user
 latestProduct.name  - обратиться к значению подэлемента
 animals[0].name     - обратиться к значению эл последовательности
 
-Datatypes:
-    String
-    Number
-    Date-like: date-time, date, time
-    Boolean
+scalars:
+String
+Number
+Date-like   - date-time, date, time
+Boolean
 
-Special parts FTL:
+Containers:
+Hash        - ассоц массив 
+Sequence    - массив
+Collection  - itareble
+
+Subroutines:
+functions   - ${avg(animals.python.price, animals.elephant.price)}
+
+--- Special parts FTL -------------------------------------------------
 Interpolation:
 ${user.id}  - freemarker заменяет выражение в скобках - соотв значением
+${<>}       - автоматически экранирует все символы
 Tags/Direcrives:
 # - имя тэга начинается с этого символа
 @ - кастомные тэги пользователя начинаются с этого
@@ -51,7 +61,7 @@ Comments:
 -----------------------------------------------------------------------
 Basic directives:
 
-#if
+--- if -----------------------
 <h1>
     Welcome ${user}
     <#if user == "Big Joe">
@@ -63,15 +73,24 @@ Basic directives:
     </#if>
 </h1>
 
-#list
+--- list --------------------------------------------------
 перебрать список
 переменная по очереди принимает значение последовательности
+
 в таблице:
 <table>                                         <table>
   <#list animals as animal>                         <tr><td>mouse<td>50 Eur
     <tr><td>${an.name}<td>${an.price} Eur ==>       <tr><td>elephant<td>5000 Eur
   </#list>                                          <tr><td>python<td>4999 Eur
 </table>                                        </table>
+
+в списке:
+<ul>
+<#list misc.fruits as fruit>
+  <li>${fruit}
+</#list>
+</ul>
+
 в списке: если будет нулевой список ничего не будет в html
 <#list misc.fruits>
   <ul>
@@ -80,10 +99,12 @@ Basic directives:
     </#items>
   </ul>
 </#list>
+
 В абзаце с разделителем <#sep> = ", " 
 <p>Fruits: <#list misc.fruits as fruit>${fruit}<#sep>, </#list>
 В абзаце с разделителем <#sep> = ", " если есть элем
 <p>Fruits: <#list misc.fruits as fruit>${fruit}<#sep>, <#else>None</#list>
+
 Все вместе
 <#list misc.fruits>
   <p>Fruits:
@@ -96,7 +117,14 @@ Basic directives:
   <p>We have no fruits.
 </#list>
 
-#include
+все директивы можно исп вместе
+<#list animals as animal>
+      <div<#if animal.protected> class="protected"</#if>>
+        ${animal.name} for ${animal.price} Euros
+      </div>
+</#list>
+
+--- include ------------------------
 включить код из другого файла по url
 <html>
 <head>
@@ -109,13 +137,7 @@ Basic directives:
 </body>
 </html>
 
-все директивы можно исп вместе
-<#list animals as animal>
-      <div<#if animal.protected> class="protected"</#if>>
-        ${animal.name} for ${animal.price} Euros
-      </div>
-</#list>
----------------------------------------------------------
+--- built-ins -------------------------------------------------
 Using built-ins/встроенные функции:
 user?upper_case         перевод в верхний регистр
 animal.name?cap_first   первый символ в верх регистр
@@ -133,7 +155,8 @@ user?starts_with("J")   true/false если начинается с J
 animals?filter(it -> it.protected)      типа фильтра со stream
 <#list animals?filter(it -> it.protected) as animal>...</#list>
 fruits?join(", ")?upper_case            chaining
----------------------------------------------------------------
+
+--- Null ---------------------------------------------------------------
 Обработка нулевых(Null) значений
 <h1>Welcome ${user!"visitor"}!</h1>         если user == null -> visitor
 ?? - проверка на null -> boolean
@@ -143,6 +166,7 @@ animals.python.price!0      если price == null -> 0
 animals.python.price??      также если price==null
 (animals.python.price)??    если что-то из этого null
 
+--- User-defined directives ----------------
 
 
 
