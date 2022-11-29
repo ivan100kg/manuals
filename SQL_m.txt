@@ -199,7 +199,7 @@ CREATE TABLE accounts (
 	username VARCHAR ( 50 ) UNIQUE NOT NULL,
 	password VARCHAR ( 50 ) NOT NULL,
 	email VARCHAR ( 255 ) UNIQUE NOT NULL,
-	created_on TIMESTAMP default current_timestamp, -- автозаполнение
+	created_on TIMESTAMP default current_timestamp, =-
     last_login TIMESTAMP 
 );
 
@@ -388,8 +388,7 @@ WHERE author NOT IN ( SELECT author FROM book );	# также можно исп 
 SELECT column1, column2…    # извлечь одно, неск или * - все поля
 FROM table                  # имя таблицы
 WHERE condition1 AND ...    # где 1 или несколько условий
-ORDER BY column1 ... mn2…   # сортировка
-trunc
+ORDER BY column1 ... mn2…   # сортировка 
 LIMIT n                     # лимит вывода
 OFFSET m;                   # отступ
 
