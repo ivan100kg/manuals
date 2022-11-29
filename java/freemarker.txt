@@ -231,6 +231,21 @@ someParam=3/4       - числовые параметры
   </ul>
 </@border>
 
+--- Loops ------------------------------
+<#macro do_thrice>
+  <#nested 1>
+  <#nested 2>
+  <#nested 3>
+</#macro>
+
+<@do_thrice ; x> перебор в цикле
+  ${x} Anything.
+</@do_thrice>
+
+Output:
+1 Anything.
+2 Anything.
+3 Anything.
 
 
 
