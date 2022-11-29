@@ -45,12 +45,35 @@ if (images.length > 0){
 
 // изменение элементов
 const mainText = document.querySelector('.training__text');
-const elementText = mainText.innerHTML;
-console.log(elementText);
+const elementIText = mainText.innerHTML;
+console.log(elementIText);
 mainText.innerHTML =
-    `<p>${elementText}</p>
+    `<p>${elementIText}</p>
     <p><span class="yellow">FUUUUCK!!!</span></p>`;
 
-const elementObject = mainText.outerHTML;
-mainText.outerHTML = `<p>Deleted</p>`
-console.log(mainText.outerHTML);
+// const elementOText = mainText.outerHTML;
+// mainText.outerHTML = `<p>Deleted</p>`
+// console.log(mainText.outerHTML);
+
+const elementText = mainText.textContent;
+mainText.textContent = `<p>hui</p>`
+console.log(mainText);
+
+const getComment = mainText.nextSibling;
+console.log(getComment);
+console.log(getComment.data);
+getComment.data = "fuck!";
+
+// create element
+const newElement = document.createElement('div');
+console.log(newElement);
+newElement.innerHTML = `Hello <span class="yellow">blya</span> !!!`;
+
+const newText = document.createTextNode("Fuck you!");
+console.log(newText);
+
+mainText.before(newElement);
+mainText.after(newText);
+// mainText.prepend(newElement);
+// mainText.append(newText);
+
