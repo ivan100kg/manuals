@@ -80,7 +80,7 @@ mainText.after(newText);
 mainText.insertAdjacentHTML(`afterbegin`,`<p>Fuck off</p>`);
 mainText.insertAdjacentHTML(`afterend`,`<p>Bitch!!</p>`);
 
-// перенос
+// move
 const trainingHeader = document.querySelector('.training__header');
 const trainingRow = document.querySelector('.training__row');
 
@@ -91,4 +91,25 @@ const cloneHeader = trainingHeader.cloneNode();
 const cloneHeaderDeep = trainingHeader.cloneNode(true);
 trainingRow.after(cloneHeaderDeep);
 trainingRow.after(cloneHeader);
+
+// remove
 cloneHeaderDeep.remove();
+
+const classNameElem = document.getElementById('123');
+console.log(classNameElem.className);
+console.log(classNameElem.classList);
+
+classNameElem.className = 'item__loh';
+
+classNameElem.classList.add('new-cls'); // добавить класс
+classNameElem.classList.remove('cls');  // удалить класс
+classNameElem.classList.toggle('cls');  // доб класс если его нет, если есть - удалить
+classNameElem.classList.contains('cl'); // проверка на наличие - true/false
+
+// style
+mainText.style.color = "red";
+mainText.style.fontSize = "24px";
+
+console.log(getComputedStyle(mainText));
+console.log(getComputedStyle(mainText).fontFamily);
+

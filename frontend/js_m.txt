@@ -459,3 +459,28 @@ const cloneHeaderDeep = trainingHeader.cloneNode(true); // глубокая ко
 
 --- Удалить объект
 cloneHeaderDeep.remove();   // удалить
+
+--- Управление классами
+classNameElem.className;                // классы - string
+classNameElem.className = 'item__loh';  // перезаписать все классы на новы[й|e]
+
+classNameElem.classList;                // классы в спец объекте(итерируемый)
+classNameElem.classList.add('new-cls'); // добавить класс
+classNameElem.classList.remove('cls');  // удалить класс
+classNameElem.classList.toggle('cls');  // доб класс если его нет, если есть - удалить
+classNameElem.classList.contains('cl'); // проверка на наличие - true/false
+
+--- Стили
+Изменить стили
+element.style.color = "red";            // добавить стиль
+Для стилей из нескольких слов используется camel case:
+element.style.fontSize = "24px";        // для font-size
+element.style.color = "";               // сбросить свойство
+element.style.cssText = `               // сразу несколько стилей
+    margin-bottom: 30px;
+    color:red;
+`;
+Получить текущие значения стилей(чисто чтение)
+getComputedStyle(element)               // вытащить все стили
+getComputedStyle(element).fontFamily;   // вытащить семейство шрифта
+getComputedStyle(element, "::after");   // вытащить стиль псевдоэлемента
