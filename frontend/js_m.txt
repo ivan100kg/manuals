@@ -396,7 +396,7 @@ getElementsByName       name           коллккция   -                +
 elem.matches('[class$="about__item_active"]')   # -> boolean
 
 --- Изменение элементов
-const mainText = document.querySelector('.training__text');  # внутр элем
+const mainText = document.querySelector('.training__text');  # найдем элем
 const elementIText = mainText.innerHTML;                     # сохр текст
 mainText.innerHTML =
     `<p>${elementIText}</p>                                  # вставим текст
@@ -419,19 +419,43 @@ const newElement = document.createElement('div');   # создать div
 newElement.innerHTML = `Hello`;                     # наполним содержимое
 const newText = document.createTextNode("Fuck u!"); # создать узел, текст
 
---- Вставка созданных элементов(или сырого текста)
+--- Вставка созданных элементов(или сырого текста) тэги преобр в строки
 mainText.before(newElement);                # вставить до элемента
 mainText.after(newText);                    # вставить после элемента
 mainText.prepend(newText);                  # внутрь в начало содержимого
 mainText.append(newText);                   # внутрь в конец содержимого
 mainText.append(newText, "some text");      # можно вставлять много объек
 
-    <!-- before -->
-    <ul class="lesson__list">
-        <!-- prepend -->
-        <li>1</li>
-        <li>2</li>
-        <li>3</li>
-        <!-- append -->
-    </ul>
-    <!-- after -->
+    <!-- before -->                 <!-- beforebegin -->
+    <ul class="lesson__list">       <ul class="lesson__list">
+        <!-- prepend -->                <!-- afterbegin -->
+        <li>1</li>                      <li>1</li>
+        <li>2</li>                      <li>2</li>
+        <li>3</li>                      <li>3</li>
+        <!-- append -->                 <!-- beforeend -->
+    </ul>                           </ul>
+    <!-- after -->                  <!-- afterend -->
+
+--- Вставка html тэгов
+1-ый прам куда, 2-й парам что вставляем(тэги/строки)
+mainText.insertAdjacentHTML(`beforebegin`,`<p>text</p>`);   # перед объектом
+mainText.insertAdjacentHTML(`afterbegin`,`<p>text</p>`);    # внутрь объекта перед содержимым
+mainText.insertAdjacentHTML(`beforeend`,`<p>text</p>`);     # внутрь объекта после содержим
+mainText.insertAdjacentHTML(`afterend`,`<p>text</p>`);      # после объекта
+
+insertAdjacentText(`afterend`,`<p>...</p>`);    # вставляет текст как есть безетэгов
+insertAdjacentElement(`afterend`, newElement);  # вставляет элемент(допустим новый)
+
+--- Перенос/перемещение элемента
+// находим элементы
+const trainingHeader = document.querySelector('.training__header');
+const trainingRow = document.querySelector('.training__row');
+// перемещаем
+trainingHeader.before(trainingRow);
+
+--- Копия/Клон объекта
+const cloneHeader = trainingHeader.cloneNode();         // копия верх ур
+const cloneHeaderDeep = trainingHeader.cloneNode(true); // глубокая копия 
+
+--- Удалить объект
+cloneHeaderDeep.remove();   // удалить
