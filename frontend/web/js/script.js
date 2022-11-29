@@ -77,3 +77,18 @@ mainText.after(newText);
 // mainText.prepend(newElement);
 // mainText.append(newText);
 
+mainText.insertAdjacentHTML(`afterbegin`,`<p>Fuck off</p>`);
+mainText.insertAdjacentHTML(`afterend`,`<p>Bitch!!</p>`);
+
+// перенос
+const trainingHeader = document.querySelector('.training__header');
+const trainingRow = document.querySelector('.training__row');
+
+trainingHeader.before(trainingRow);
+
+// copy
+const cloneHeader = trainingHeader.cloneNode();
+const cloneHeaderDeep = trainingHeader.cloneNode(true);
+trainingRow.after(cloneHeaderDeep);
+trainingRow.after(cloneHeader);
+cloneHeaderDeep.remove();
