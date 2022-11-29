@@ -189,13 +189,47 @@ ${seq[3]!'-'}               -
 
 --- User-defined directives ----------------------------------------
 тэги fremarker(функция/макрос) которые можно переиспользовать в коде
-<@box title="Attention!">
-    Too much copy-pasting may leads to
-    maintenance headaches.
-</@box>
 
+сам по себе макрос не выполняется, создается переменна greet
+<#macro greet>
+  <font size="+2">Hello Joe!</font> - просто печатает текст
+</#macro>
+вызов макроса/выполнение тела макроса
+<@greet></@greet>       - так можно вызвать наш макрос greet
+<@greet/>               - или даже так
 
+параметры макроса видны только в нем
+<#macro greet person>   - макрос с параметрами(может быть много)
+  <font size="+2">Hello ${person}!</font>   - используем параметры
+</#macro>
+<@greet person="Fred"/> and <@greet person="Batman"/>   - вызов
+<font size="+2">Hello Fred!</font>          - output
+and <font size="+2">Hello Batman!</font>
 
+someParam=foo       - foo - аргумент, кот можно переисп
+someParam="${foo}"  - стринг
+someParam="${3/4}"  - стринг
+someParam=3/4       - числовые параметры
+
+--- Nested content ------------------------------------
+<#macro border>
+  <table border=4 cellspacing=0 cellpadding=4><tr><td>
+    <#nested>       - сюда вложится какой-то контент
+    <#nested>       - может быть много
+  </tr></td></table>
+</#macro>
+вложенный текст окружится началом и концом макроса
+<@border>The bordered text</@border>    - использование
+если использовать без <#nested>         - толку не будет
+
+любая вложенность макросов:
+<@border>
+  <ul>
+  <@do_thrice>
+    <li><@greet person="Joe"/>
+  </@do_thrice>
+  </ul>
+</@border>
 
 
 
