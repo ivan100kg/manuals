@@ -529,4 +529,5 @@ let scrollHeight = Math.max(
 window.pageYOffset;     // top прокруч пиксели сверху
 window.pageXOffset;     // left прокруч пиксели слева
 
---- 
+--- Управление прокруткой страницы
+window.scrollBy(0, 50); // прокрутить гор, верт

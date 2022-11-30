@@ -135,3 +135,11 @@ let scrollHeight = Math.max(
 console.log(scrollWidth);
 console.log(scrollHeight);
 
+function setScrollBy() {
+    window.scrollBy(0, 50);
+    const windowScrollTop = window.pageYOffset;
+    console.log(windowScrollTop);
+}
+
+window.scrollBy(0, 50);
+
