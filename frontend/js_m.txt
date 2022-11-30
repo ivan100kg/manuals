@@ -506,4 +506,27 @@ element.dataset;            // все аттрибуты нач-ся на data-
 element.dataset.size = "1"; // изменить аттрибут data-size
 element.dataset.fontSize;   // lower camel case для data-font-size
 
+--- Размеры окна браузера
+const elem = document.documentElement;  // весь документ html
+element.clientWidth;                    // ширина окна до полосы прокрутки
+element.clientHeight;                   // высота окна
+window.innerWidth;                      // ширина вместе с полосами прокр
+window.innerHeight;                     // высота
 
+// макс ширина и высота документа включая прокрученную часть вычислить
+let scrollWidth = Math.max(
+    document.body.scrollWidth, document.documentElement.scrollWidth,
+    document.body.offsetWidth, document.documentElement.offsetWidth,
+    document.body.clientWidth, document.documentElement.clientWidth,
+);
+let scrollHeight = Math.max(
+    document.body.scrollHeight, document.documentElement.scrollHeight,
+    document.body.offsetHeight, document.documentElement.offsetHeight,
+    document.body.clientHeight, document.documentElement.clientHeight,
+);
+
+// получить кол-во прокрученных пикселей, только для чтения
+window.pageYOffset;     // top прокруч пиксели сверху
+window.pageXOffset;     // left прокруч пиксели слева
+
+--- 

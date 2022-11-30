@@ -113,3 +113,25 @@ mainText.style.fontSize = "24px";
 console.log(getComputedStyle(mainText));
 console.log(getComputedStyle(mainText).fontFamily);
 
+// size
+const element = document.documentElement;
+console.log(element);
+console.log(element.clientWidth);
+console.log(element.clientHeight);
+console.log(window.innerWidth);
+console.log(window.innerHeight);
+
+let scrollWidth = Math.max(
+    document.body.scrollWidth, document.documentElement.scrollWidth,
+    document.body.offsetWidth, document.documentElement.offsetWidth,
+    document.body.clientWidth, document.documentElement.clientWidth,
+);
+let scrollHeight = Math.max(
+    document.body.scrollHeight, document.documentElement.scrollHeight,
+    document.body.offsetHeight, document.documentElement.offsetHeight,
+    document.body.clientHeight, document.documentElement.clientHeight,
+);
+
+console.log(scrollWidth);
+console.log(scrollHeight);
+
