@@ -525,9 +525,39 @@ let scrollHeight = Math.max(
     document.body.clientHeight, document.documentElement.clientHeight,
 );
 
+--- Управление прокруткой страницы
 // получить кол-во прокрученных пикселей, только для чтения
 window.pageYOffset;     // top прокруч пиксели сверху
 window.pageXOffset;     // left прокруч пиксели слева
 
---- Управление прокруткой страницы
-window.scrollBy(0, 50); // прокрутить гор, верт
+function setScroll() {          // своя функция, привяз к событию
+    window.scrollBy(0, 50);     // прокрутить на (x, y)
+    window.scrollTo(0,100);     // прокрутить к (x, y)
+}
+
+function setScroll() {          // своя функция, привяз к событию
+    window.scrollTo({
+        top: 50,
+        left: 0,
+        behavior: "smooth"      // плавно, instant - жестко
+    });                         // прокрутить к (x, y) с опциями
+}
+
+// прокрутка до какого-либо элемента
+function setScrollIntoView(top) {   // top - true/false
+    const elem = document.querySelector('.training__text');
+    elem.setScrollIntoView(top);    // true - элемент окажется вверху стр
+}
+function setScrollIntoViewOption(top) { // с опциями
+    const elem = document.querySelector('.training__text');
+    elem.setScrollIntoView({
+        block: "center",    // start end nearest 
+        inline: "nearest",  // center start end
+        behavior: "smooth"  // auto
+    });
+}
+// запретить прокрутку
+function setDisableEnableScroll {
+    document.body.style.overflow = "hidden";        // жестко лочим или
+    document.body.classList.toggle('scroll-lock');  // в CSS лочим/разлочим
+}

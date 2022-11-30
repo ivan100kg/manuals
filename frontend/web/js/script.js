@@ -135,11 +135,28 @@ let scrollHeight = Math.max(
 console.log(scrollWidth);
 console.log(scrollHeight);
 
-function setScrollBy() {
+const btn = document.querySelector('#btn');
+console.log(btn);
+btn.onclick = function setScrollBy() {
     window.scrollBy(0, 50);
     const windowScrollTop = window.pageYOffset;
     console.log(windowScrollTop);
 }
+function setScrollTo() {
+    window.scrollBy(0, 50);
+    window.scrollTo(0,100);
+}
+function setScrollIntoView(top) {
+    const elem = document.querySelector('.training__text');
+    elem.setScrollIntoView(top);
+}
+function setScrollIntoViewOption(top) {
+    const elem = document.querySelector('.training__text');
+    elem.setScrollIntoView({
+        block: "center",    // start end nearest 
+        inline: "nearest",  // center start end
+        behavior: "smooth"  // auto
+    });
+}
 
-window.scrollBy(0, 50);
 
