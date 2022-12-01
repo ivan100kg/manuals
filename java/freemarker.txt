@@ -148,6 +148,7 @@ Logical operations: && || !
 
 --- built-ins -------------------------------------------------
 Using built-ins/встроенные функции:
+user?has_content        string не null и не empty 
 user?upper_case         перевод в верхний регистр
 animal.name?cap_first   первый символ в верх регистр
 user?length             кол-во символов

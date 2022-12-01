@@ -561,3 +561,7 @@ function setDisableEnableScroll {
     document.body.style.overflow = "hidden";        // жестко лочим или
     document.body.classList.toggle('scroll-lock');  // в CSS лочим/разлочим
 }
+
+--- Метрики элементов на странице
+const block = document.querySelector('.someblock'); // берем элемент
+block.offsetParent;     // род элемент относ кот выполнено позиционирование
