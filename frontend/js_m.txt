@@ -565,3 +565,5 @@ function setDisableEnableScroll {
 --- Метрики элементов на странице
 const block = document.querySelector('.someblock'); // берем элемент
 block.offsetParent;     // род элемент относ кот выполнено позиционирование
+block.offsetLeft;       // положение по гориз относительно родителя
+block.offsetTop;        // положение по вертик относительно родителя
