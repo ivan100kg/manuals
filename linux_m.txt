@@ -1630,6 +1630,8 @@ sudo vim /etc/java-8-openjdk/accessibility.properties
     #assistive_technologies=org.GNOME.Accessibility.AtkWrapper
 # настройка Idea
 настроить keymap->navigate: back forward
+# выбрать нужную java для запуска:
+sudo update-alternatives --config java
 
 --- подключить сетевую папку Windows ------------------------
 mount -t cifs -o username=user,password=pass //IP/folder /mnt
