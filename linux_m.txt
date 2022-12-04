@@ -1632,6 +1632,19 @@ sudo vim /etc/java-8-openjdk/accessibility.properties
 настроить keymap->navigate: back forward
 # выбрать нужную java для запуска:
 sudo update-alternatives --config java
+# для VSCode выбрать compiler по умолчанию вставит в user settings
+"java.configuration.runtimes": [
+        
+        {
+          "name": "JavaSE-1.8",
+          "path": "/usr/lib/jvm/java-8-openjdk-amd64",
+        },
+        {
+          "name": "JavaSE-11",
+          "path": "/usr/lib/jvm/java-11-openjdk-amd64",
+          "default": true
+        }
+      ]
 
 --- подключить сетевую папку Windows ------------------------
 mount -t cifs -o username=user,password=pass //IP/folder /mnt
