@@ -198,7 +198,6 @@ function Book(title, author) {      // ф-ция конструктор
     // return this;  (неявно)
 }
 let book = new Book("Муму", "Тургенев");
-
     
 
 --- Insert to .html ---
