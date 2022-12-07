@@ -664,6 +664,14 @@ Chai    – библиотека, множество функций провер
 Sinon   – библиотека, позволяющая наблюдать за функциями, 
           эмулировать встроенные функции и многое другое.
 
+# popular asserts:
+assert.equal(value1, value2)            value1 == value2
+assert.strictEqual(value1, value2)      value1 === value2
+assert.notEqual(value1, value2)         value1 != value2
+assert.notStrictEqual(value1, value2)   value1 !== value2
+assert.isTrue(value)                    value === true
+assert.isFalse(value)                   value === false
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -685,7 +693,7 @@ Sinon   – библиотека, позволяющая наблюдать за
 <body>
   <script>
     function pow(x, n) {
-      /* Здесь будет реализация функции*/
+      <!-- здесь будет наша ф-ия см.ниже -->
     }
   </script>
   <!-- скрипт со спецификацией (describe, it...) -->
@@ -698,3 +706,33 @@ Sinon   – библиотека, позволяющая наблюдать за
   </script>
 </body>
 </html>
+
+# 4 теста
+describe("pow", function() {
+    before(() => console.log("перед всеми"));
+    after(() => console.log("после всех"));
+    beforeEach(() => console.log("перед каждым"));
+    afterEach(() => console.log("после каждого"));
+    
+    it("2 в степени 3 будет 8", () => assert.equal(pow(2, 3), 8));
+    it("3 в степени 3 будет 27", function() {
+        assert.equal(pow(3, 3), 27);
+    });
+    it("для отрицательных n возвращает NaN", function() {
+        assert.isNaN(pow(2, -1));
+    });
+    it("для дробных n возвращает NaN", function() {
+        assert.isNaN(pow(2, 1.5));
+    });
+});
+
+Итого пишем ф-ю:
+function pow(x, n) {
+    if (n < 0) return NaN;              // проверка на отриц
+    if (Math.round(n) != n) return NaN; // проверка на целое
+    let result = 1;
+    for (let i = 0; i < n; i++) {       // само вычисление
+        result *= x;
+    }
+    return result;
+}
