@@ -161,7 +161,9 @@ result = confirm(question); // ok - true, отмена - false
     foo.apply   # позвол вызв ф-ии с указ их контекста (context, args) массив
 
 
---- Objects ----------------------------------------------------------------
+--- Objects --------------------------------------------------------
+    let user = new Object(); // синтаксис "конструктор объекта"
+    let user = {};  // синтаксис "литерал объекта"
     {ключ: значение} // ключи - это строки, значения - любые объекты 
     newKey = 'gender';
     const person = {
@@ -174,30 +176,39 @@ result = confirm(question); // ok - true, отмена - false
         }
         getId() { return this.id; }     // ES6
     };
-    person.firstNsme    // обращение к полю. 
-    person['firstName'] // аналогично
-    person.salary = 100 // изм знач атр, либо создание атр, если такого нет.
-    delete person.salary // удалить атрибут 
-    "salary" in person  // проверка на вхождение ключа 
+    person.firstNsme        // обращение к полю. 
+    person['firstName']     // аналогично
+    person.salary = 100     // изм знач атр, либо создание атр, если такого нет
+    delete person.salary    // удалить атрибут 
+    "salary" in person      // проверка на вхождение ключа 
     person.salary === undefined // та же проверка на вхождение 
-    
+
+    let user = {
+        name: "John",
+        age: 30,            // можно заканчивать запятой 
+    }
+
+    const user = {          // объект можно менять внутри, но ссылку нельзя
+        name: "John"
+    };
+        
     let car = createCar("toyota", "black");
 
-function createCar(model, color) {
-    return {
-       model: model,
-       color: color
-    };
-}
+    function createCar(model, color) {
+        return {
+        model: model,
+        color: color
+        };
+    }
 
-function Book(title, author) {      // ф-ция конструктор
-    // this = {};  (неявно)
-    this.title = title;
-    this.author = author;
-    this.price = 10;
-    // return this;  (неявно)
-}
-let book = new Book("Муму", "Тургенев");
+    function Book(title, author) {      // ф-ция конструктор
+        // this = {};  (неявно)
+        this.title = title;
+        this.author = author;
+        this.price = 10;
+        // return this;  (неявно)
+    }
+    let book = new Book("Муму", "Тургенев");
     
 
 --- Insert to .html ---
