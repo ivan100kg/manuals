@@ -334,6 +334,10 @@ search:
 
     outer: for (let i = 0; i < 3; i++) {    // можно исп метки
 
+    icons.forEach(element => {  // foreach
+        console.log(element);
+    });
+
 --- Условные операторы ----------------------------------------
     if (true) {                 // if
         var x = true;
