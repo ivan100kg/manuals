@@ -223,6 +223,17 @@ result = confirm(question); // ok - true, отмена - false
         // return this;  (неявно)
     }
     let book = new Book("Муму", "Тургенев");
+
+    # + ссылка на объект
+    let a = {}; 
+    let b = a;
+    b == a;     // true - ссылаются на один и тот же об
+
+    # копирование объекта
+    let clone = {}; // новый пустой объект
+    for (let key in user) {
+        clone[key] = user[key];
+    }
     
 
 --- Insert to .html ---
