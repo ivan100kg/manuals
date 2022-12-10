@@ -162,15 +162,18 @@ result = confirm(question); // ok - true, отмена - false
 
 
 --- Objects --------------------------------------------------------
-    let user = new Object(); // синтаксис "конструктор объекта"
-    let user = {};  // синтаксис "литерал объекта"
-    {ключ: значение} // ключи - это строки, значения - любые объекты 
+    let user = new Object();    // синтаксис "конструктор объекта"
+    let user = {};              // синтаксис "литерал объекта"
+    {ключ: значение}            // ключи - это строки, знач - любые объекты 
     newKey = 'gender';
     const person = {
         firstName: "John",
         lastName: "Doe",
         id: 5566,
-        [newKey]: male, // с пом переменной
+        her,                    // сокращенно her:her
+        for: 2,                 // допустимы let for return
+        0: 123,                 // 0 -> '0'
+        [выраж + перем]: male,  // люб вычисляемое занач из переменных/текста..
         fullName: function () {     // this - то есть поля этого объекта
             return this.firstName + " " + this.lastName;
         }
@@ -182,6 +185,17 @@ result = confirm(question); // ok - true, отмена - false
     delete person.salary    // удалить атрибут 
     "salary" in person      // проверка на вхождение ключа 
     person.salary === undefined // та же проверка на вхождение 
+    person['hi bye']        // получение поля если название с пробелом
+
+    # пробежаться по объекту
+    # свойства с целочисленными ключами сортируются по возрастанию,
+      остальные располагаются в порядке создания
+    for (let key in user) {
+        // ключи
+        alert( key );  // name, age, isAdmin
+        // значения ключей
+        alert( user[key] ); // John, 30, true
+    }
 
     let user = {
         name: "John",
