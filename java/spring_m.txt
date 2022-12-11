@@ -2738,6 +2738,27 @@ Setting examples
         }
     }
 
+
+--- Spring Boot + Freemarker templates ---
+    Вся настройка и шаблоны можно кидать в resources/templates,
+    все суффиксы добавляются авто.
+    # Add to pom.xml:
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-freemarker</artifactId>
+    </dependency>
+
+    # Add to application.properties:
+    spring.freemarker.template-loader-path=classpath:/templates
+    spring.freemarker.suffix=.ftl
+
+    # возврат шаблона из контроллера
+    @GetMapping(value = "/celebs")
+    public String getAllCelebs() {
+        return "index";     // возвращает шаблон index.ftl
+    }
+
+
 --- Application running ---
     If you use Maven, you can run the application by using:
         ./mvnw spring-boot:run 
