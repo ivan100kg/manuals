@@ -536,6 +536,11 @@ Spring AOP
             <version>1.9.9.1</version>
             <!--            <scope>runtime</scope> не нужен --> 
         </dependency>
+        
+        # SpringBoot dependency
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-aop</artifactId>
+
     // Aspect класс для логов, имя любое
     @Component
     @Aspect                     // пометим наш класс @Aspect

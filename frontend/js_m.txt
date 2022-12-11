@@ -174,11 +174,16 @@ result = confirm(question); // ok - true, отмена - false
         for: 2,                 // допустимы let for return
         0: 123,                 // 0 -> '0'
         [выраж + перем]: male,  // люб вычисляемое занач из переменных/текста..
-        fullName: function () {     // this - то есть поля этого объекта
+        fullName: function () { // this(тек бъект) т.е поля этого объекта
             return this.firstName + " " + this.lastName;
-        }
-        getId() { return this.id; }     // ES6
+        },
+        getId() {               // ES6 - компактный вариант
+            return this.id;     
+        },
     };
+
+    Стрелочные функции не имеют this!
+
     person.firstNsme        // обращение к полю. 
     person['firstName']     // аналогично
     person.salary = 100     // изм знач атр, либо создание атр, если такого нет
