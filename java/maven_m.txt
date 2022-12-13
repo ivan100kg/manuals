@@ -113,3 +113,18 @@ Commands:
     mvn clean               - remove the target dir with all the build data
     mvn process-resources
     mvn verify
+
+Deploy:
+    <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+            <url>http://172.16.0.246:8080/manager/text</url>
+            <server>naukaServer</server>
+            <path>/medserver${tomcatPathSuffix}##${project.version}</path> <-+ 
+        </configuration>             +                      +--------------+
+    </plugin>                        |                                     |
+                                     +---------------------------------+   |
+    <version>0.9.8</version>                    # меняем версию +1 >---|---+
+    mvn clean install tomcat7:redeploy -P prod  # prod - имя профиля >-+
