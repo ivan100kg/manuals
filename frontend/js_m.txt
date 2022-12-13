@@ -210,24 +210,6 @@ result = confirm(question); // ok - true, отмена - false
     const user = {          // объект можно менять внутри, но ссылку нельзя
         name: "John"
     };
-        
-    let car = createCar("toyota", "black");
-
-    function createCar(model, color) {
-        return {
-        model: model,
-        color: color
-        };
-    }
-
-    function Book(title, author) {      // ф-ция конструктор
-        // this = {};  (неявно)
-        this.title = title;
-        this.author = author;
-        this.price = 10;
-        // return this;  (неявно)
-    }
-    let book = new Book("Муму", "Тургенев");
 
     # + ссылка на объект
     let a = {}; 
@@ -239,6 +221,39 @@ result = confirm(question); // ok - true, отмена - false
     for (let key in user) {
         clone[key] = user[key];
     }
+
+    // функция возвращающая объект
+    function createCar(model, color) {
+        return {
+        model: model,
+        color: color
+        };
+    }
+    let car = createCar("toyota", "black");
+
+    // Функции-конструкторы технически являются обычными функциями
+       два соглашения:
+       Имя функции-конструктора должно начинаться с большой буквы
+       Функция-конструктор должна выполняться только с помощью оператора "new"
+    
+    function Book(title, author) {          // ф-ция конструктор
+        // this = {};   // (неявно)
+        this.title = title;
+        this.author = author;               // поле
+        this.sayHi = function() {           // метод
+            alert("Hello " + this.author);
+        };
+        // return this; // (неявно)         // возвращает новый объект
+    }
+    let book = new Book("Муму", "Турген");  // можно плодить объекты    
+
+    new.target - св-во внутри функции, проверка, вызвана ли функция 
+    при помощи оператора new или без него.
+    function User() {
+        console.log(new.target);
+    }
+    User();     // undefined            new.target = undefined
+    new User(); // function User()...   new.target = самой ф-ии
     
 
 --- Insert to .html ---
@@ -384,7 +399,17 @@ search:
         default: console.log("her");
     }
 
-    тернарный опрератор
+    Опциональная цепочка (?):
+    Опциональная цепочка ?. останавливает вычисление и возвращает undefined,
+    если значение перед ?. равно undefined или null
+    user.address.street     // обращение к какому-то полю, где ошибка хз
+    user?.address?.street   // проверив каждое перед вызовом или undefined
+    obj?.prop       – возвращает obj.prop если obj существует, else undefined
+    obj?.[prop]     – возвращает obj[prop] если obj существует, else undefined
+    obj.method?.()  – вызывает obj.method(), если obj.method сущ, else возвр undefined
+
+
+    Тернарный опрератор:
     let result = условие ? значение1 : значение2;
     let old = age > 50 ? "oldman" : "young";
 
