@@ -254,35 +254,25 @@ result = confirm(question); // ok - true, отмена - false
     }
     User();     // undefined            new.target = undefined
     new User(); // function User()...   new.target = самой ф-ии
-    
 
---- Insert to .html ---
-    External: (лучшее местo длы вставки в конце body, чтобы страница прогруз)
-    <script src="myScript1.js"></script>    // ссылки на скрипты в коце <body>
-    Если скрипт не может загрузится работает <noscript>:
-    <noscript>Sorry, your browser does not support JavaScript!</noscript>
+--- Symbol -----------------------------------------------------------------
+в качестве ключей для свойств объекта могут исп только строки или символы
+// Создаём новый символ - id с описанием(метка) "id"
+let id1 = Symbol("id");     // каждый раз уник, метка ни на что не влияет
+let id2 = Symbol("id");     // не равен выше стоящему символу
+id1.description;            // -> id, возвраает метку              
 
---- Output ---
-    innerHTML           // вывод на странице: 
-                          document.getElementById("demo").innerHTML = 5 + 6;
-                          этот метод подходит как для кнопок так и на загрузке
-    document.write()    // document.write(5 + 6); вывод на странице(на загрузке)
-    window.alert()      // всплывающее сообщение браузера
-    console.log()       // консоль
-    window.print()      // распечатать
---- Input ---
-    var inpt = prompt ("enter the name") // типа alert() сохр строку в перем.
+// символы не преобразоваются автоматически в строки
+alert(id1);                 // TypeError: Cannot convert a Symbol value to..
+alert(id1.toString());      // так можно
 
---- Events ---
-    <element event="some JavaScript">    
-    Event 	       |  Description
-    ---------------+----------------------------------------------------
-    onchange 	   | An HTML element has been changed
-    onclick 	   | The user clicks an HTML element
-    onmouseover    | The user moves the mouse over an HTML element
-    onmouseout 	   | The user moves the mouse away from an HTML element
-    onkeydown 	   | The user pushes a keyboard key
-    onload 	       | The browser has finished loading the page
+let user = {                // some object
+  name: "Вася"
+};
+
+let id = Symbol("id");      // символ
+user[id] = 1;               // присвоим новое свойство по ключу-символу
+alert(user[id]);            // нет доступа к данным по ключу-символу
 
 --- Strings ---------------------------------------------------------------
 escape sequences:
@@ -359,6 +349,8 @@ search:
     let com = [...item,...arr]; // соединить массивы, можно комбинировать с 
                                    отдельными знач, в любом порявке
     let letters = [..."Hello"]; // распаковка строки на символы
+
+
 
 --- Циклы(loops) ---------------------------
     while (true) {              // while
@@ -806,3 +798,31 @@ function pow(x, n) {
     }
     return result;
 }
+-----------------------------------------------------------------------------
+--- Insert to .html ---
+    External: (лучшее местo длы вставки в конце body, чтобы страница прогруз)
+    <script src="myScript1.js"></script>    // ссылки на скрипты в коце <body>
+    Если скрипт не может загрузится работает <noscript>:
+    <noscript>Sorry, your browser does not support JavaScript!</noscript>
+
+--- Output ---
+    innerHTML           // вывод на странице: 
+                          document.getElementById("demo").innerHTML = 5 + 6;
+                          этот метод подходит как для кнопок так и на загрузке
+    document.write()    // document.write(5 + 6); вывод на странице(на загрузке)
+    window.alert()      // всплывающее сообщение браузера
+    console.log()       // консоль
+    window.print()      // распечатать
+--- Input ---
+    var inpt = prompt ("enter the name") // типа alert() сохр строку в перем.
+
+--- Events ---
+    <element event="some JavaScript">    
+    Event 	       |  Description
+    ---------------+----------------------------------------------------
+    onchange 	   | An HTML element has been changed
+    onclick 	   | The user clicks an HTML element
+    onmouseover    | The user moves the mouse over an HTML element
+    onmouseout 	   | The user moves the mouse away from an HTML element
+    onkeydown 	   | The user pushes a keyboard key
+    onload 	       | The browser has finished loading the page
