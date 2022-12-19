@@ -2442,6 +2442,25 @@ Spring Boot
         public List<Employee> getAllEmployeesByName(@PathVariable String name) {
             return employeeService.findAllByName(name);
         }
+
+    Свои методы в репозитории:
+    @Query annotation in Spring Data JPA to execute both JPQL and native SQL queries
+    // JPQL
+    @Query("SELECT u FROM User u WHERE u.status = 1")
+    Collection<User> findAllActiveUsers();
+    // Native SQL
+    @Query(
+    value = "SELECT * FROM users u WHERE u.status = 1", 
+    nativeQuery = true)
+    Collection<User> findAllActiveUsersNative();
+    // Named params
+    @Query("SELECT u FROM User u WHERE u.status = :status and u.name = :name")
+    User findUserByStatusAndNameNamedParams(
+        @Param("status") Integer status, 
+        @Param("name") String name);
+    // IN Collection
+    @Query(value = "SELECT u FROM User u WHERE u.name IN :names")
+    List<User> findUserByNameList(@Param("names") Collection<String> names);
     
 --- Spring Data REST ---
     Spring Data REST - механизм создания REST API на основе типа Entity,
