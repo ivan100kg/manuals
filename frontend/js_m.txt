@@ -360,7 +360,7 @@ search:
     let x = 0xFF;       // x will be 255
     x.toString();       // to string
     let x = 9.656;
-    x.toFixed(2);       // returns a string, with the number(2) '9.66'
+    x.toFixed(2);       // округление до сотых '9.66'
     2**2                // вторая степень
     2**(1/2)            // квадратный корень
 
