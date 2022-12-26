@@ -875,3 +875,27 @@ function pow(x, n) {
     onmouseout 	   | The user moves the mouse away from an HTML element
     onkeydown 	   | The user pushes a keyboard key
     onload 	       | The browser has finished loading the page
+
+--- JSHInt --------------------------------------------------------------
+пакет-валидатор кода для VSCode
+устанавливает пакет для nodejs:
+    sudo apt install npm
+создаем в дирректории файл .jshintrc и добавляем нужные настройки:
+{
+    "camelcase": true,
+    "indent": 4,
+    "undef": true,
+    "quotmark": false,
+    "maxlen": 80,
+    "trailing": true,
+    "curly": true,
+    "strict": true,
+    "browser": true,
+    "devel": true,
+    "jquery": true,
+    "esversion": 8,
+    "node": true
+}
+документация:
+    https://jshint.com/docs/
+все вложенные директории попадают под валидацию
