@@ -8,20 +8,37 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="wrapper">
-        <div class="header">
-            <div class="header__section">
-                <div class="header__item header-logo">Admin Panel</div>
-                <div class="header__item header-button header-button_active"><a href="/admin">Main</a></div>
-                <div class="header__item header-button"><a href="admin/role">Roles</a></div>
-                <div class="header__item header-button"><a href="admin/workplace">Workplace</a></div>
-            </div>
-            <div class="header__section">
-                <div class="header__item header-button"><a href="../">Tc</a></div>
-            </div>
-        </div>
-        <div class="content"></div>
-        <div class="footer"></div>
+    <div id="tab">
+        <table> 
+            <tr>
+                <th>Name</th>
+                    <th>Age</th>
+                        <th>Job</th>
+            </tr>
+            <tr>
+                <td>Brian</td>
+                    <td>41</td>
+                        <td>Blogger</td>
+            </tr>
+            <tr>
+                <td>Matt</td>
+                    <td>25</td>
+                        <td>Programmer</td>
+            </tr>
+            <tr>
+                <td>Arun</td>
+                    <td>39</td>
+                        <td>Writter</td>
+            </tr>
+        </table>
     </div>
+
+    <p>
+        <input type="button" value="Create PDF" 
+            id="btPrint" onclick="createPDF()" />
+    </p>
+
+    <script src="js/test.js"></script>
 </body>
+
 </html>

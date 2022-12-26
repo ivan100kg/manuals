@@ -1,6 +1,6 @@
-"use strict"
+"use strict";
 
-console.log("hello")
+console.log("hello");
 
 // body tag
 let bodyElement = document.body;
