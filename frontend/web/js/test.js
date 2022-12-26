@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 describe("pow", function() {
     before(() => console.log("перед всеми"));
@@ -36,7 +36,7 @@ let calculator = {
     mul() {
         return this.a * this.b;
     }
-}
+};
 
 calculator.read(2,3);
 console.log(calculator.sum());
@@ -59,7 +59,7 @@ function createPDF() {
     win.document.write(style);          // ADD STYLE INSIDE THE HEAD TAG.
     win.document.write('</head>');
     win.document.write('<body>');
-    win.document.write(sTable);         // THE TABLE CONTENTS INSIDE THE BODY TAG.
+    win.document.write(sTable);         // TABLE CONTENTS INSIDE THE BODY TAG.
     win.document.write('</body></html>');
 
     win.document.close(); 	// CLOSE THE CURRENT WINDOW.
