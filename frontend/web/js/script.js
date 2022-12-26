@@ -7,7 +7,7 @@ let bodyElement = document.body;
 
 // first element
 console.log("firstElementChild:");
-console.log(bodyElement.firstElementChild)
+console.log(bodyElement.firstElementChild);
 
 // has nodes
 console.log("hasChildNodes:");
@@ -58,7 +58,7 @@ mainText.innerHTML =
 // console.log(mainText.outerHTML);
 
 const elementText = mainText.textContent;
-mainText.textContent = `<p>hui</p>`
+mainText.textContent = `<p>hui</p>`;
 console.log(mainText);
 
 const getComment = mainText.nextSibling;
@@ -105,7 +105,7 @@ classNameElem.className = 'item__loh';
 
 classNameElem.classList.add('new-cls'); // добавить класс
 classNameElem.classList.remove('cls');  // удалить класс
-classNameElem.classList.toggle('cls');  // доб класс если его нет, если есть - удалить
+classNameElem.classList.toggle('cls');  // доб класс если его нет, если есть del
 classNameElem.classList.contains('cl'); // проверка на наличие - true/false
 
 // style
@@ -143,7 +143,7 @@ btn.onclick = function setScrollBy() {
     window.scrollBy(0, 50);
     const windowScrollTop = window.pageYOffset;
     console.log(windowScrollTop);
-}
+};
 function setScrollTo() {
     window.scrollBy(0, 50);
     window.scrollTo(0,100);
