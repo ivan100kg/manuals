@@ -878,8 +878,10 @@ function pow(x, n) {
 
 --- JSHInt --------------------------------------------------------------
 пакет-валидатор кода для VSCode
-устанавливает пакет для nodejs:
+устанавливает пакет для node js:
     sudo apt install npm
+установить jshint глобально:
+    sudo npm install -g jshint
 создаем в дирректории файл .jshintrc и добавляем нужные настройки:
 {
     "camelcase": true,
