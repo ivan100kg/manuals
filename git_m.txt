@@ -167,6 +167,7 @@ A,..,D  — коммиты в ветке master.
 git checkout -- <file>			# для неиндексированного файла отменить все 
 git restore <file>				  изменения, вернуть состояние файла до 
                                   состояния последнего коммита.
+git restore .                   # отменить все изменения
 git reset HEAD <file>           # отмена индексации файла, 
 git restore --staged <file>       HEAD - the last commit
 git checkout <commit>           # временно переключиться на другой коммит
