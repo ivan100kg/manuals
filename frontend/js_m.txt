@@ -59,9 +59,9 @@
     typeof x или typeof(x) - возвращ строковое знач типа данных
 
 Приведение типов:
-    String(78)  // '58'
-    Number('9') // 9
-    +"10"       // 10
+    String(78)  // '78' к строке
+    Number('9') // 9 к числу
+    +"10"       // 10 к числу
     Number('J') // NaN
     Boolean(9)  // true
 
@@ -173,6 +173,7 @@ result = confirm(question); // ok - true, отмена - false
         her,                    // сокращенно her:her
         for: 2,                 // допустимы let for return
         0: 123,                 // 0 -> '0'
+        [user]: user            // исп переменных в ключах и значениях
         [выраж + перем]: male,  // люб вычисляемое занач из переменных/текста..
         fullName: function () { // this(тек бъект) т.е поля этого объекта
             return this.firstName + " " + this.lastName;
@@ -449,10 +450,10 @@ search:
     obj?.[prop]     – возвращает obj[prop] если obj существует, else undefined
     obj.method?.()  – вызывает obj.method(), если obj.method сущ, else возвр undefined
 
-
     Тернарный опрератор:
     let result = условие ? значение1 : значение2;
     let old = age > 50 ? "oldman" : "young";
+    2 == 2 ? log(true) : log(false);
 
     Оператор нулевого слияния (??):
     result = a ?? b;    // проверка на null и undefined
