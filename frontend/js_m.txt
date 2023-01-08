@@ -40,23 +40,36 @@
 
 --- Типы ------------------------------------------------------------------
     typeof()    // look a type of variable
-    Number      // 0, -2, 3.14, 123e5, 12e-2
-    BigInt      // const i = 12345678901234567890n; числа неогр длины
+    Number      // 0, -2, 3.14, 123e5, 12e-2, NaN, ±infinity
+    BigInt      // 12345678901234567890n числа неогр длины -(n) на конце
     String      // 'hello' "world" `fuck ${name}`
-    Object      // {firstName:"John", lastName:"Doe"}, [1,2,3,4]
+    Object      // {}, [], null
     bollean     // true, false
     undefined   // let car; не определенная переменная
+    Symbol      // symbol - уник идентиф в объектах
+    function    // function
+    
     null        // спец объект обозначает 'ничего'
     NaN         // вычислительная ошибка - люб мат операц с NaN это NaN
     Infinity    // +infinity
     -Infinity   // -infinity
-    Symbol      // symbol - уник идентиф в объектах
-    function    // function
+
+    -------
+    typeof x или typeof(x) - возвращ строковое знач типа данных
+    example: if(typeof(obj === 'object'))
+
+    строковое представление типов, при исп функции typeof():
+    number
+    string
+    object
+    undefined
+    boolean
+    bigint
+    function
+    symbol
 
     динамическая типизация - у переменых нет типа
     1 перемнной может быть присвоен различный тип данных по ходу кода
-
-    typeof x или typeof(x) - возвращ строковое знач типа данных
 
 Приведение типов:
     String(78)  // '78' к строке
@@ -400,7 +413,13 @@ search:
                                    отдельными знач, в любом порявке
     let letters = [..."Hello"]; // распаковка строки на символы
 
-
+ Перебрка массива:
+    for-of:
+    for (let value of fruits) {
+        console.log(`value=${value}`);
+    }
+    for-each:
+    fruits.forEach(el => console.log(el));
 
 --- Циклы(loops) ---------------------------
     while (true) {              // while
@@ -419,9 +438,13 @@ search:
         console.log(key+": "+book[key]);
     }
 
+    for (let value of fruits) { // foreach для массивов
+        console.log(`value=${value}`);
+    }
+
     outer: for (let i = 0; i < 3; i++) {    // можно исп метки
 
-    icons.forEach(element => {  // foreach
+    icons.forEach(element => {  // foreach для массивов
         console.log(element);
     });
 

@@ -3395,7 +3395,7 @@
         close()             // close the file
         
         BufferedReader(new FileReader(path)) - класс для чтения использ буферизацию
-                                            более эффективный чем FileReader
+                                               более эффективный чем FileReader
         read()              // -> int, читает посимвольно
         readline()          // -> String, читает построчно
 
