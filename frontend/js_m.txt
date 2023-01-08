@@ -287,6 +287,11 @@ result = confirm(question); // ok - true, отмена - false
         obj.toString(); obj.valueOf();  // иначе хинт = "string"
         obj.valueOf(); obj.toString();  // иначе хинт = "number" or "default"
 
+    Object - спец объект для работы с объектами:
+    Object.keys(obj)    // массив ключей объекта obj
+    Object.values(obj)  // массив значений
+    Object.entries(obj) // массив массивов ключ-значение
+
 --- Symbol -----------------------------------------------------------------
 в качестве ключей для свойств объекта могут исп только строки или символы
 // Создаём новый символ - id с описанием(метка) "id"
