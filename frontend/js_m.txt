@@ -419,11 +419,6 @@ search:
         {type:"Saab", year:2001},
         {type:"BMW", year:2010}];
     cars.sort(function(a, b){return a.year - b.year});  // sort object
-    let txt = "";
-    numbers.forEach(myFunction);
-    function myFunction(value, index, array) {
-        txt += value + "<br>";
-    }
 Распаковка массива:
     let items = [1,2,3];        // массив
     let max = max(...items);    // передать в функцию распакованным
@@ -436,8 +431,22 @@ search:
     for (let value of fruits) {
         console.log(`value=${value}`);
     }
+
     for-each:
-    fruits.forEach(el => console.log(el));
+    arr.forEach(function(value, index, array) {
+        console.log(`${value} : ${index} : ${array}`);
+    });
+   
+    for-each(lambda):
+    fruits.forEach((val, ind, arr)  => console.log(val));
+
+    // все методы перебора(как стримы в Java)
+    arr.forEach     // просто переборка
+    arr.map         // применяет к каждому эл функцию -> возвращ нов массив
+    arr.every/some  // 
+    arr.filter      // фильтрует по ф-ии
+    arr.reduce   
+    arr.sort        // сортировка, если без ф-ии сортирует как строки
 
 --- Циклы(loops) ---------------------------
     while (true) {              // while
