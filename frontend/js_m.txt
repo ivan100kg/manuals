@@ -233,8 +233,10 @@ result = confirm(question); // ok - true, отмена - false
     # копирование объекта
     let clone = {}; // новый пустой объект
     for (let key in user) {
-        clone[key] = user[key];
+        clone[key] = user[key];                 // поверхностная копия
     }
+    const deepClone = Object.assign({}, user);  // глубокая копия объекта   
+    const deepClone = {...user};                // глубокая копия объекта(ES9)
 
     // функция возвращающая объект
     function createCar(model, color) {
@@ -419,6 +421,11 @@ search:
         {type:"Saab", year:2001},
         {type:"BMW", year:2010}];
     cars.sort(function(a, b){return a.year - b.year});  // sort object
+
+Копия:
+    const newArray = oldArray.slice();  // копия массива
+    const newArray = [...oldArray];     // копия массива
+
 Распаковка массива:
     let items = [1,2,3];        // массив
     let max = max(...items);    // передать в функцию распакованным
@@ -426,7 +433,7 @@ search:
                                    отдельными знач, в любом порявке
     let letters = [..."Hello"]; // распаковка строки на символы
 
- Перебрка массива:
+Перебрка массива:
     for-of:
     for (let value of fruits) {
         console.log(`value=${value}`);
