@@ -138,21 +138,6 @@ result = confirm(question); // ok - true, отмена - false
     sum();          // error - отсутствует обяз аргумент а
 
 
-Замыкания:
-    function createCounter() {      // внеш ф-я
-        let count = 0;
- 
-        return function() {         // внутр ф-я
-            return count++;         // ссылка на перем во внеш зоне вид-ти
-        };
-    }
- 
-    let counter = createCounter();  // тут ссылка на анонимную ф-ию, которая
-    console.log( counter() );          ссылается на переменную в внеш области
-                                       видимости 'count' - это замыкание.
-                                       пока существует ссылка counter, область
-                                       вид-сти createCounter будет жить.
-
 Функция setTimeout:
     отложенный вызов - вызывается параллельно, не зависит от расположения
                              ф-ия|выр   задерж мс  аргументы ф-ии
@@ -174,6 +159,51 @@ result = confirm(question); // ok - true, отмена - false
     foo.call    # позвол вызв ф-ии с указ их контекста (context,arg1,arg2,...)
     foo.apply   # позвол вызв ф-ии с указ их контекста (context, args) массив
 
+--- Лексическое окружение  ---
+    Лексическое окружение - внешнее/внутренние - scope/зона видимости
+    на самом деле это объекты лекс окр - хранящие свойсва этих зон вид-ти
+    работу этих объектов контолирует интерпретатор, эти объекты существуют у 
+    любого блока кода { ... }
+
+    let number = 5;
+    function logNumber(){
+        let number = 4;
+        console.log(number);
+    }
+
+    Scope
+    Local:          // record environment - сначала ищется все тут
+        this: undefined
+        number: 4
+    Script:
+        number: 6
+    Global:    
+
+--- Замыкания ---
+    Замыкание - это еще один объект лексического окружения, который
+    может существовать в блоках
+        Scope
+        Local:      
+        Closure:    
+        Script:
+        Global: 
+
+    function createCounter(){           // функция которая возвращ др ф-ю
+        let counter = 0;                // переменая
+
+        const myFunction = function(){  // возвращаемая функция
+            counter ++;                 // ссылаемся на внеш обл видимости
+            return counter;
+        };
+        return myFunction;
+    }
+
+    const increment = createCounter();  // тут получаем функцию + лексическое окружение,
+    const c1 = increment();                которое существовало при ее создании,
+    const c2 = increment();                можно использовать это лекс окружение,
+    const c3 = increment();                замыкание это ссылка на counter из влож ф-ии
+
+    console.log(c1, c2, c3);    // 1 2 3
 
 --- Objects --------------------------------------------------------
     let user = new Object();    // синтаксис "конструктор объекта"
