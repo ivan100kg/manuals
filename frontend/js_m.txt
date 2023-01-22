@@ -696,6 +696,7 @@ elem.matches('[class$="about__item_active"]')   # -> boolean
 
 --- Изменение элементов
 const mainText = document.querySelector('.training__text');  # найдем элем
+// innerHTML - добавляет как текст так и тэги
 const elementIText = mainText.innerHTML;                     # сохр текст
 mainText.innerHTML =
     `<p>${elementIText}</p>                                  # вставим текст
@@ -719,6 +720,10 @@ newElement.innerHTML = `Hello`;                     # наполним соде�
 const newText = document.createTextNode("Fuck u!"); # создать узел, текст
 
 --- Вставка созданных элементов(или сырого текста) тэги преобр в строки
+mainText.appendChild(elem);     # устаревший - то же что append
+mainText.removeChild(elem);     # устаревший - то же что remove
+            ...Child...         # etc
+
 mainText.before(newElement);                # вставить до элемента
 mainText.after(newText);                    # вставить после элемента
 mainText.prepend(newText);                  # внутрь в начало содержимого
@@ -755,6 +760,9 @@ trainingHeader.before(trainingRow);
 --- Копия/Клон объекта
 const cloneHeader = trainingHeader.cloneNode();         // копия верх ур
 const cloneHeaderDeep = trainingHeader.cloneNode(true); // глубокая копия 
+
+--- Замена
+oldElem.replaceWith(newElem);   // заменить на др элемент
 
 --- Удалить объект
 cloneHeaderDeep.remove();   // удалить
