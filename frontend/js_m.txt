@@ -804,11 +804,13 @@ console.log(link.href);     // http://www...
 console.log(input.href);    // undefined - нет такого свойства
 input.href = 'www.jshuihiu' // установить нов значение аттриб
 link.hidden = true;         // скрыть объект с пом свойства
+
 // Работа с нестандартными аттрибутами
 element.hasAttribute('name');           // наличие аттрибута
 element.getAttribute('name');           // значение аттрибута
 element.setAttribute('name', 'value');  // установить аттрибут + значение
 element.removeAttribute('name');        // удалить ат трибут
+setAttribute('onclick', 'clickMe()');   // установить обработчик события
 element.dataset;            // все аттрибуты нач-ся на data-
 element.dataset.size = "1"; // изменить аттрибут data-size
 element.dataset.fontSize;   // lower camel case для data-font-size
@@ -974,33 +976,43 @@ function pow(x, n) {
     return result;
 }
 -----------------------------------------------------------------------------
---- Insert to .html ---
-    External: (лучшее местo длы вставки в конце body, чтобы страница прогруз)
-    <script src="myScript1.js"></script>    // ссылки на скрипты в коце <body>
-    Если скрипт не может загрузится работает <noscript>:
-    <noscript>Sorry, your browser does not support JavaScript!</noscript>
-
---- Output ---
-    innerHTML           // вывод на странице: 
-                          document.getElementById("demo").innerHTML = 5 + 6;
-                          этот метод подходит как для кнопок так и на загрузке
-    document.write()    // document.write(5 + 6); вывод на странице(на загрузке)
-    window.alert()      // всплывающее сообщение браузера
-    console.log()       // консоль
-    window.print()      // распечатать
---- Input ---
-    var inpt = prompt ("enter the name") // типа alert() сохр строку в перем.
 
 --- Events ---
-    <element event="some JavaScript">    
+    Для использования события нужно назначить обработчик события.
+    Обработчик события - функция кот срабатывает как только событие произошло
+    
+    Варианты создания обработчиков событий:
+    <button onclick="clickMe()" id="btn">click me</button>  
+    const btn = document.querySelector('#btn');
+    btn.setAttribute('onclick', 'clickMe()');
+    
+    // the best - события прописываем без 'on' + callback function
+    ------------------------------------------------------------------
+    addEventListener('event', callbackFoo);     // добавить обработчик
+    removeEventListener('event', callbackFoo);  // удалить обработчик
+
+    btn.addEventListener('click', clickMe);             // add listener
+    btn.addEventListener('mouseout', () => log('2'));   // add +1 listener
+    
+    // аргументы callback функции(необяз) 1 арг - событие, остальные свои
+    btn.addEventListener('click', (e, args) => {
+        console.log(e); // объект MouseEvent(тип события, цель, коорды...)
+        e.target;       // элемент на котором висит обработчик
+    });
+    // отдельная callback функция для удобства
+    const delBtn = (e) => e.target.remove();
+    btn.addEventListener('mouseout', delBtn);   // удалит сам себя после соб 
+    
     Event 	       |  Description
     ---------------+----------------------------------------------------
     onchange 	   | An HTML element has been changed
     onclick 	   | The user clicks an HTML element
     onmouseover    | The user moves the mouse over an HTML element
+    onmouseenter   | The user moves the mouse in an HTML element
     onmouseout 	   | The user moves the mouse away from an HTML element
     onkeydown 	   | The user pushes a keyboard key
     onload 	       | The browser has finished loading the page
+
 
 --- JSHInt --------------------------------------------------------------
 пакет-валидатор кода для VSCode
@@ -1027,3 +1039,4 @@ function pow(x, n) {
 документация:
     https://jshint.com/docs/
 все вложенные директории попадают под валидацию
+
