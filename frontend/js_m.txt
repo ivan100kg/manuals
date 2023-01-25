@@ -986,7 +986,10 @@ function pow(x, n) {
     const btn = document.querySelector('#btn');
     btn.setAttribute('onclick', 'clickMe()');
     
-    // the best - события прописываем без 'on' + callback function
+    // the best 
+    addEventListener(событиe прописываем без 'on', 
+                     callback function(обыч/стрел),
+                     опции не обяз);    
     ------------------------------------------------------------------
     addEventListener('event', callbackFoo);     // добавить обработчик
     removeEventListener('event', callbackFoo);  // удалить обработчик
@@ -1002,6 +1005,22 @@ function pow(x, n) {
     // отдельная callback функция для удобства
     const delBtn = (e) => e.target.remove();
     btn.addEventListener('mouseout', delBtn);   // удалит сам себя после соб 
+
+    // всплытие событий
+       два обработчика на элементе и его родителе/влож элементе
+       первым срабатывает обраб влож элемента, потом остальные
+       e.currentTarget();   // в отличие от tsrget показывает текущий элемент
+
+    // переопределить стандартное поведение элементов(ссылки, формы, ...)
+    const link = document.querySelector('a');
+    link.addEventListener('click', function(e) {
+        e.preventDefault());    // сброс стд поведения ссылки
+        console.log('e.target') // своя логика
+    }
+
+    // опции события
+    btn.addEventListener('click', clickMe, {once: true});   // обработчик сраб
+                                                               только 1 раз.
     
     Event 	       |  Description
     ---------------+----------------------------------------------------
