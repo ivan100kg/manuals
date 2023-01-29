@@ -1038,6 +1038,12 @@ function pow(x, n) {
     onkeydown 	   | The user pushes a keyboard key
     onload 	       | The browser has finished loading the page
 
+    События при загрузки страницы:
+    load - срабатывает когда страница полностью прогрузилась со всеми эл
+    DOMContentLoaded - DOM дерево полность прогрузилось(остальное возможно нет)
+    document.addEventListener('DOMContentLoaded', foo); // использование
+    window.addEventListener('DOMContentLoaded', foo);   // аналогично
+
 
 --- JSHInt --------------------------------------------------------------
 пакет-валидатор кода для VSCode
