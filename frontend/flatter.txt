@@ -1,0 +1,29 @@
+# Flutter
+
+--- set ---
+1. https://docs.flutter.dev/get-started/install
+после установки весх компонентов могут быть ошибки:
+    unable to find bundled java version - Go to "C:\Program Files\Android\Android Studio"
+    then copy the content of jbr and paste the content into jre folder
+    
+    unable to confirm if installed Windows version is 10 or greater - 
+    flutter upgrade
+    flutter channel
+    flutter channel master
+    flutter upgrade
+    flutter channel
+2. install plagin for VSCode
+3. Config files
+    pubspec.yaml - specifies basic information about your app, such as its current version,
+    its dependencies, and the assets with which it will ship
+    analysis_options.yaml -  determines how strict Flutter should be when analyzing your code
+
+--- structure ---
+lib/main.dart - main file
+void main() {       - стартует приложение написанное в классе MyApp --+
+class MyApp extends StatelessWidget { - класс наслед от виджета, все эл приложения - виджеты
+                                        code in MyApp sets up the whole app. It creates the 
+                                        app-wide state, 
+                                        names the app, 
+                                        defines the visual theme,
+                                        and sets the "home" widget—the starting point of app.
