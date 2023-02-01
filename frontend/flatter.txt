@@ -5,6 +5,8 @@
 после установки весх компонентов могут быть ошибки:
     unable to find bundled java version - Go to "C:\Program Files\Android\Android Studio"
     then copy the content of jbr and paste the content into jre folder
+    cd ~/android-studio/ && ln -s jbr jre - for linux
+    flutter config --android-studio-dir=/home/ivan/Programming/android-studio
     
     unable to confirm if installed Windows version is 10 or greater - 
     flutter upgrade
