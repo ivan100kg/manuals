@@ -1,4 +1,10 @@
-# Flutter
+# Flutter - framework on Dart and tools
+# Dart - programming language
+
+--- About ---
+Flutter это фреймворк для создания UI для различных платформ, используется единый язык
+Dart - programming language of Google
+Приложение на флаттере - набор виджетов, все состоит из виджетов
 
 --- set ---
 1. https://docs.flutter.dev/get-started/install
@@ -20,7 +26,24 @@
     its dependencies, and the assets with which it will ship
     analysis_options.yaml -  determines how strict Flutter should be when analyzing your code
 
+--- terminal commands ---
+flutter create my-project   # create new flutter project with name 'my-project'
+flutter run                 # run project
+
 --- structure ---
+android/        - полная сборка для различных платформ - все заполняется авто
+ios/            ...
+linux/          ...
+windows/        ...
+build/          - различные файлы компилляции для flutter sdk - все на автомате
+test/           - авто тесты
+lib/            - our code working directory
+  .metadata     - атоматич файл для flutter
+  .packages     ...
+  .my-proj.iml  ...
+  pubspec.lock  ...
+  pubspec.yaml  - описание, всякие зависимости проекта, шрифты, фотки 3-й стороны ...
+
            My App
              |
         My Home Page
@@ -29,7 +52,7 @@ Some Widget     Other Widget
 
 lib/main.dart - main file of app
 
-void main() {                         - стартует приложение(класс MyApp) 
+void main() {                         - точка старта, стартует приложение(класс MyApp) 
     runApp(MyApp());
 }
 
