@@ -1,0 +1,88 @@
+# Flutter
+
+--- set ---
+1. https://docs.flutter.dev/get-started/install
+после установки весх компонентов могут быть ошибки:
+    unable to find bundled java version - Go to "C:\Program Files\Android\Android Studio"
+    then copy the content of jbr and paste the content into jre folder
+    cd ~/android-studio/ && ln -s jbr jre - for linux
+    flutter config --android-studio-dir=/home/ivan/Programming/android-studio
+    
+    unable to confirm if installed Windows version is 10 or greater - 
+    flutter upgrade
+    flutter channel
+    flutter channel master
+    flutter upgrade
+    flutter channel
+2. install plagin for VSCode
+3. Config files
+    pubspec.yaml - specifies basic information about your app, such as its current version,
+    its dependencies, and the assets with which it will ship
+    analysis_options.yaml -  determines how strict Flutter should be when analyzing your code
+
+--- structure ---
+           My App
+             |
+        My Home Page
+        /          \
+Some Widget     Other Widget
+
+lib/main.dart - main file of app
+
+void main() {                         - стартует приложение(класс MyApp) 
+    runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget { - класс наслед от виджета, все эл приложения - виджеты
+  const MyApp({super.key});             code in MyApp sets up the whole app. It creates the 
+    @override                           app-wide state, names the app, defines the visual theme
+    Widget build(BuildContext context){ 
+      return ChangeNotifierProvider(  - обязывает все виджеты хранить текущее состояние(ниже)
+        create: (context) => MyAppState(),
+        child: MaterialApp(
+        title: 'Namer App',
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+        ),
+        home: MyHomePage(),
+      ),
+    );
+  }
+}
+
+class MyAppState exts ChangeNotifier{ - класс опред состояние, определяет данные, которые
+  var current = WordPair.random();      будут использоваться функциями. ChangeNotifier -
+                                        если будут изменения - все виджеты будут знать
+  void getNext() {                    - какой-то обработчик 
+    current = WordPair.random();      - действия
+    notifyListeners();                - посылает уведомления виджетам(кто подписан)
+  }                                     об изменениях
+}
+
+class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {- автоматически выз при изменении виджета
+    var appState = context.watch<MyAppState>();  - каждый виджет просм текущее App сост
+    
+
+    return Scaffold(                  - кажд виджет возвращ другой виджет/дерево виджетов
+      body: Column(                     Scaffold - часто исп полезный виджет
+        children: [                   - Column - один из базовых layout of widget
+          Text('A random good idea:'),  вставляет люб кол-во children в колонку сверху-вниз
+          Text(appState.hui),         - Text widget  
+          Text(appState.current.asLowerCase), - обращение к состоянию appState(выше),
+                                                получение знач переменной
+          // add the button
+          ElevatedButton(
+            onPressed: () {
+              appState.getNext();     - привязываем обработчик на кнопку
+            },
+            child: Text('Next'),
+          ),
+        ],                            - запятые можно оставлять у посл элем для удобства
+      ),                                вставки других элементов потом(также с , на конце)
+    );
+  }
+}
+https://codelabs.developers.google.com/codelabs/flutter-codelab-first#4
