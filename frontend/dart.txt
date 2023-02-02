@@ -1,2 +1,28 @@
 # Dart - programming language provided by Google
 
+--- About ---
+
+
+--- Syntax ----------------------
+Comments:
+//  comment
+/*  multi-line comment*/
+/// documentation comment
+/** documentation multi-line comment **/
+
+Literals:
+'string'
+"string"
+10
+3.14
+
+Types:
+Все что можно присвоить переменным - это объект.
+Каждый объект является инстансом какого-то класса.
+
+Object - базовый класс для всех кроме null
+
+
+
+
+
