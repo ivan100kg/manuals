@@ -19,8 +19,122 @@ Literals:
 Types:
 Все что можно присвоить переменным - это объект.
 Каждый объект является инстансом какого-то класса.
-
 Object - базовый класс для всех кроме null
+Переменные без инициализации равны null
+
+        num     ->  int -1, 0, 100;  double 3.14, -0;           // numbers
+O       String  ->  'hui' "bui" """multi""" '''pulti'''         // string
+b       bool    ->  true false                                  // booleans
+j  ->   List    ->  List<int>                                   // array/list
+r       Set     ->  Set<Object>                                 // set
+c       Map     ->  Map<int, String>                            // map
+t       Runes   -> often replaced by the characters API)Runes
+        Symbol  -> Symbols
+        Null    -> null                                         // The value null
+        Enum: The superclass of all enums.
+        Future and Stream: Used in asynchrony support.
+        Iterable: Used in for-in loops and in synchronous generator functions.
+        Never: Indicates that an expression can never successfully finish evaluating. Most often used for functions that always throw an exception.
+        dynamic: Indicates that you want to disable static checking. Usually you should use Object or Object? instead.
+        void: Indicates that a value is never used. Often used as a return type.
+
+Variables:
+var name = 'Bob';           // dynamic type
+Object name = 'Bob';        // any type
+String name = 'Bob';        // string
+late String description;    // не нулевая переменная, инициализируется позже
+final name = 'Bob';         // константа, нельзя изменить
+final String name = 'Bob';  // ...
+const bar = 1000000;        // инициализируются при компилляции, можно менять
+const double atm = 1.01325; // ...
+
+Numbers:
+int i = 10;                 // integer
+double d = 3.14             // double 
+var x = 1;                  // int dynamic
+num x = 1;                  // int && double
+var hex = 0xFF88FF;         // hex
+var exponents = 1.42e5;     // exponent
+var one = int.parse('1');   // Strint -> int
+two = double.parse('1.1');  // Strint -> double
+3 << 1 == 6;                // 0011 << 1 == 0110
+3 | 4 == 7;                 // 0011 | 0100 == 0111
+3 & 4 == 0;                 // 0011 & 0100 == 0000
+
+
+String:
+'hui \n \t  \' "a" $varriable ${expr}'  // format, escape-seq
+var s1 = 'hello '                       // concatenation
+         "world!";
+var s2 = 'hello ' + "world!"            // ...
+var s3 = '''multi-line                  // ''' or """
+string''';
+var s4 = r'Hello\n';                    // raw string -> 'Hello\n'
+String one = 1.toString();              // int -> String
+String pi = 3.14159.toStringAsFixed(2); // double -> String with precision .00
+str.contains('hui');                    // -> bool
+str.startsWith('hui');                  // ...
+str.endsWith('hui');                    // ...
+str.substring(6, 9);                    // -> String [from;to)
+var parts = '1, 2, 3'.split(', ');      // -> List ['1','2','3']
+str.toUpperCase();                      // -> String
+str.toLowerCase();                      // -> String
+'  hello  '.trim();                     // -> String
+str.isEmpty();                          // -> bool
+str.isNotEmpty();                       // -> bool
+str.replaceAll(RegExp('NAME'), 'Bob');  // -> String
+
+StringBuffer:
+var sb = StringBuffer();
+sb                                      // .. -> cascade expression
+  ..write('Use a StringBuffer for ')    // add String
+  ..writeAll(['a', 'b', 'c'], ' ')      // добавить эл-ты из списка через пробел 
+  ..write('.');
+
+RegExp:
+регулярки такие же как и в др ЯП *+?^$[]
+var numbers = RegExp(r'^\d{6}$');       // 6 цифр от начала до конца
+numbers.hasMatch("999999");             // -> bool
+
+Null safety:
+Переменные не могут использоваться если в них null
+Но можно разрешить чтобы переменная могла быть null
+int a;      // integer
+int? b;     // integer or null
+int c = b!; // integer or null
+int? d = b; // integer or null
+
+
+Generics:
+List:
+var list = [1, 2, 3];       // list of integers
+List<int> list = [1,2,3];   //
+var constL = const [1,2,3]; // const list is not allowed to change
+var list2 = [...list, 5,6]; // spresd operator, вставка других массивов, в люб место
+var list2 = [...?list, 5];  // если list null -> просто ничего не вставит
+var nav = ['Home', 'Furniture', 'Plants', if (promoActive) 'Outlet'];   // if inside
+var listOfStrings = ['#0', for (var i in listOfInts) '#$i'];            // for inside
+
+Set:
+var set = {'a','b','c'};    // 
+var set = <String>{}        // 
+Set<String> set = {1,2}     // 
+
+Map:
+var map = {1:'a',2:'b'};    //
+var map2 = <int,String>{};  //
+Map<String, String> map;    //
+map[2] = 'hui';             // доступ к значению по  ключу
+
+
+Functions:
+обычное объявление функции
+bool isNoble(int atomicNumber) {                                        // function
+  return _nobleGases[atomicNumber] != null;
+}
+стрелочная ф-я для однострочных инструкций
+bool isNoble(int atomicNumber) => _nobleGases[atomicNumber] != null;    // the same
+
 
 
 
