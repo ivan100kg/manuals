@@ -111,6 +111,18 @@ int.parse('200');       // String -> int
 (20 is int)             // -> bool
 
 
+DateTime:
+var dateTime = DateTime.now();                  // now
+DateTime.utc(1989, 11, 9);                      // 1989-11-9
+DateTime.november == dateTime.month;            // сравнить месяцы
+var dateTime = DateTime.parse('2023-01-23');    // from String
+dateTime1.isBefore(dateTime2);                  // разл сравнения
+dateTime1.isAtSameMomentAs(dateTime2);          // тоже время?
+dateTime.year;                                  // разл поля
+dateTime1.difference(dateTime2).inDays          // разница в опред
+DateTime(date.year - 18, date.month, date.day); // отнять 18 лет от какой-то даты(date)
+
+
 --- Collections -------------------------------
 List:
 var list = [1, 2, 3];       // list of integers
@@ -250,3 +262,8 @@ Throw:
 выбрасывание исключений
 throw FormatException('Expected at least 1 section');   // спец искл
 throw 'Out of llamas!';                                 // Error без типа
+
+
+--- Class -------------------
+множественное наследование не поддерживается, есть миксины 
+
