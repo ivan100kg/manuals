@@ -1,8 +1,5 @@
 # Dart - programming language provided by Google
 
---- About ---
-
-
 --- Syntax ----------------------
 Comments:
 //  comment
@@ -16,7 +13,8 @@ Literals:
 10
 3.14
 
-Types:
+
+--- Types --------------------------------------
 Все что можно присвоить переменным - это объект.
 Каждый объект является инстансом какого-то класса.
 Object - базовый класс для всех кроме null
@@ -61,8 +59,7 @@ two = double.parse('1.1');  // Strint -> double
 3 | 4 == 7;                 // 0011 | 0100 == 0111
 3 & 4 == 0;                 // 0011 & 0100 == 0000
 
-
-String:
+Strings:
 'hui \n \t  \' "a" $varriable ${expr}'  // format, escape-seq
 var s1 = 'hello '                       // concatenation
          "world!";
@@ -96,7 +93,6 @@ sb                                      // .. -> cascade expression
   ..writeAll(['a', 'b', 'c'], ' ')      // добавить эл-ты из списка через пробел 
   ..write('.');
 
-
 Null safety:
 Переменные не могут использоваться если в них null
 Но можно разрешить чтобы переменная могла быть null
@@ -106,7 +102,7 @@ int c = b!; // integer or null
 int? d = b; // integer or null
 
 
-Generics:
+--- Collections -------------------------------
 List:
 var list = [1, 2, 3];       // list of integers
 List<int> list = [1,2,3];   //
@@ -130,12 +126,16 @@ map[2] = 'hui';             // доступ к значению по  ключу
 
 Обход коллекций:
 var list = [1,2,3];
-list.forEach(foo);          // foo - функция или переменная ссыл на функцию
+list.forEach(foo);                      // foo - функция или перем ссыл на функцию
 list.forEach((el) => print('$el%%%'));  // обход, анонимная функция(лямбда)
-list.map((el) => el*el));               // изменяет кажд эл согласно функции
+list.map((el) => el*el);                // мэп, изменяет кажд эл согласно функции
+list.where((el) => el > 100);           // фильтр, пропускает те что соотв условию
+list                                    // цепочка методов
+    .where((el) => el >= 5)
+    .forEach((el) => foo(el));  
 
 
-Functions:
+--- Functions -----------------------------------------------------------------
 обычное объявление функции
 bool foo(int atomicNumber) {                                        // function
   return _nobleGases[atomicNumber] != null;
@@ -160,6 +160,81 @@ Calls:
 foo(2, 3);                  // positional 
 foo(a:2, b:3);              // named
 
+Return:
+все функции что-то возвращают, если void - то null
 
 
+--- Operators -------------------------------------------
+- ++ --             // унарные - negative, prefix postfix 
++ - * / % ~/        // арифметические ~/ - целочисленное деление
+== != > < >= <=     // сравнения
+as is is!           // типовые, is! - is not
+= += -= *= ...      // присвоение
+! && ||             // логические
+& | ^ ~ << >> >>>   // битовые
+?. ?[]              // проверка на null при обращении к св-ву, индексу
+!                   // foo!.bar если null - то выбрас исключение
 
+Conditional expressions:
+condition ? expr1 : expr2           // тернарный
+expr1 ?? expr2                      // если певый не null то он, иначе второй
+var name = expr ? 'yes' : 'no';     // examples
+var getName(String? name) => name ?? 'Guest';   // удобная проверка на null
+
+Cascade notation:
+(синт сахар)применить сразу много медотов к одному объекту
+..  - каскадное применение различных действий к объекту
+?.. - то же самое но с проверкой на null
+querySelector('#confirm')           // Get an object.
+  ?..text = 'Confirm'               // Use its members.
+  ..classes.add('important')
+  ..onClick.listen((e) => window.alert('Confirmed!'))
+  ..scrollIntoView();
+Original
+var button = querySelector('#confirm');
+button?.text = 'Confirm';           // если есть такое поле - то присвоение
+button?.classes.add('important');
+button?.onClick.listen((e) => window.alert('Confirmed!'));
+button?.scrollIntoView();
+
+
+--- Standart constructions -----------------------------------------------
+if(expr1) {         switch(value) {     for(var i = 0; i < 10; i++) {
+    code;               case '1':           callbacks.add(() => print(i));
+} else if(expr2){           code;      }
+    code;                   break;
+} else {                case '2':       for(final c in callbacks) {
+    code;                   code;           c();
+}                           break;      }
+                        default:
+                            code;       collection.forEach(print);
+                    }
+
+while (!isDone()) {         do {
+    doSomething();              doSomething();
+    break;                      continue;
+}                           } while(!isDone());
+
+
+--- Assert -------------------------------------------------------
+В течение разработки можно использовать ассерты
+assert(condition, optionalMessage); // true/false + свое сообщение
+assert(text != null);   // если то что в скобках false - AssertionError
+
+
+--- Exceptions ---------------
+все исключения unchecked
+try {
+    breedMoreLlamas();
+} on OutOfLlamasException {     // спец exception    
+    buyMoreLlamas();
+} on Exception catch (e) {      // общ класс, e - message    
+    print('Unknown exception: $e');
+} catch (e, s) {                // s - stacktrace
+    print('Something really unknown: $e');
+}
+
+Throw:
+выбрасывание исключений
+throw FormatException('Expected at least 1 section');   // спец искл
+throw 'Out of llamas!';                                 // Uncaught Error
