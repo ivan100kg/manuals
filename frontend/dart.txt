@@ -26,7 +26,7 @@ Object - базовый класс для всех кроме null
 O       String  ->  'hui' "bui" """multi""" '''pulti'''         // string
 b       bool    ->  true false                                  // booleans
 j  ->   List    ->  List<int>                                   // array/list
-r       Set     ->  Set<Object>                                 // set
+e       Set     ->  Set<Object>                                 // set
 c       Map     ->  Map<int, String>                            // map
 t       Runes   -> often replaced by the characters API)Runes
         Symbol  -> Symbols
@@ -84,6 +84,11 @@ str.isEmpty();                          // -> bool
 str.isNotEmpty();                       // -> bool
 str.replaceAll(RegExp('NAME'), 'Bob');  // -> String
 
+RegExp:
+регулярки такие же как и в др ЯП *+?^$[]
+var numbers = RegExp(r'^\d{6}$');       // 6 цифр от начала до конца
+numbers.hasMatch("999999");             // -> bool
+
 StringBuffer:
 var sb = StringBuffer();
 sb                                      // .. -> cascade expression
@@ -91,10 +96,6 @@ sb                                      // .. -> cascade expression
   ..writeAll(['a', 'b', 'c'], ' ')      // добавить эл-ты из списка через пробел 
   ..write('.');
 
-RegExp:
-регулярки такие же как и в др ЯП *+?^$[]
-var numbers = RegExp(r'^\d{6}$');       // 6 цифр от начала до конца
-numbers.hasMatch("999999");             // -> bool
 
 Null safety:
 Переменные не могут использоваться если в них null
@@ -109,6 +110,7 @@ Generics:
 List:
 var list = [1, 2, 3];       // list of integers
 List<int> list = [1,2,3];   //
+var list = <int>[1,2,3];    //
 var constL = const [1,2,3]; // const list is not allowed to change
 var list2 = [...list, 5,6]; // spresd operator, вставка других массивов, в люб место
 var list2 = [...?list, 5];  // если list null -> просто ничего не вставит
@@ -126,16 +128,37 @@ var map2 = <int,String>{};  //
 Map<String, String> map;    //
 map[2] = 'hui';             // доступ к значению по  ключу
 
+Обход коллекций:
+var list = [1,2,3];
+list.forEach(foo);          // foo - функция или переменная ссыл на функцию
+list.forEach((el) => print('$el%%%'));  // обход, анонимная функция(лямбда)
+list.map((el) => el*el));               // изменяет кажд эл согласно функции
+
 
 Functions:
 обычное объявление функции
-bool isNoble(int atomicNumber) {                                        // function
+bool foo(int atomicNumber) {                                        // function
   return _nobleGases[atomicNumber] != null;
 }
 стрелочная ф-я для однострочных инструкций
-bool isNoble(int atomicNumber) => _nobleGases[atomicNumber] != null;    // the same
+bool foo(int atomicNumber) => _nobleGases[atomicNumber] != null;    // the same
+можно присвоить функцию переменной
+bool foo = (msg) => '!!! ${msg.toUpperCase()} !!!';
 
+Params:
+void foo(a, b){}            // позиционные пар без типа(авто)
+void foo(int a, int b){}    // позиционные пар c типом
+foo({a, b}){}               // именованные параметры без типа
+foo({int? a, int? b}){}     // именованные параметры с типом, ? - обязателен
+foo({a=5, int? b}){}        // значение по умолчанию
+foo({a=5, required int b})  // обязательный параметр
+foo({a=5, required int? b}) // обязательный параметр но может быть null
+foo(a, [String other]){}    // опциональный позиц параметр, по умолч = null
+foo(a, [String other = '']) // опциональный позиц параметр со знач по умолч
 
+Calls:
+foo(2, 3);                  // positional 
+foo(a:2, b:3);              // named
 
 
 
