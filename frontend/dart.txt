@@ -26,9 +26,9 @@ b       bool    ->  true false                                  // booleans
 j  ->   List    ->  List<int>                                   // array/list
 e       Set     ->  Set<Object>                                 // set
 c       Map     ->  Map<int, String>                            // map
-t       Runes   -> often replaced by the characters API)Runes
-        Symbol  -> Symbols
-        Null    -> null                                         // The value null
+t       Runes   ->  often replaced by the characters API)Runes
+        Symbol  ->  Symbols
+        Null    ->  null                                        // The value null
         Enum: The superclass of all enums.
         Future and Stream: Used in asynchrony support.
         Iterable: Used in for-in loops and in synchronous generator functions.
@@ -37,13 +37,14 @@ t       Runes   -> often replaced by the characters API)Runes
         void: Indicates that a value is never used. Often used as a return type.
 
 Variables:
-var name = 'Bob';           // dynamic type
-Object name = 'Bob';        // any type
+var name = 'Bob';           // any type
+dynamic name = 1;           // в дальнейшем можно присвоить другой тип(аля JS)
+Object name = 'Bob';        // Object type
 String name = 'Bob';        // string
 late String description;    // не нулевая переменная, инициализируется позже
-final name = 'Bob';         // константа, нельзя изменить
+final name = 'Bob';         // инициализируются рантайм, нельзя изменить
 final String name = 'Bob';  // ...
-const bar = 1000000;        // инициализируются при компилляции, можно менять
+const bar = 1000000;        // инициализируются при компилляции, нельзя менять
 const double atm = 1.01325; // ...
 
 Numbers:
@@ -100,6 +101,14 @@ int a;      // integer
 int? b;     // integer or null
 int c = b!; // integer or null
 int? d = b; // integer or null
+
+Casting:
+приведение типов
+type.runtimeType        // у каждого эл можно посмотреть тип
+200.toString();         // int -> String
+int.tryParse('2a');     // try parse -> null если не распарсил
+int.parse('200');       // String -> int
+(20 is int)             // -> bool
 
 
 --- Collections -------------------------------
@@ -178,6 +187,7 @@ as is is!           // типовые, is! - is not
 Conditional expressions:
 condition ? expr1 : expr2           // тернарный
 expr1 ?? expr2                      // если певый не null то он, иначе второй
+value ??= 6;                        // только если value = null оно станет = 6  
 var name = expr ? 'yes' : 'no';     // examples
 var getName(String? name) => name ?? 'Guest';   // удобная проверка на null
 
@@ -231,10 +241,12 @@ try {
 } on Exception catch (e) {      // общ класс, e - message    
     print('Unknown exception: $e');
 } catch (e, s) {                // s - stacktrace
-    print('Something really unknown: $e');
-}
+    print('Something really unknown: $s');
+    rethrow;                    // Allow callers to see the exception
+} finally {
+     cleanLlamaStalls();        // всегда выполняется
 
 Throw:
 выбрасывание исключений
 throw FormatException('Expected at least 1 section');   // спец искл
-throw 'Out of llamas!';                                 // Uncaught Error
+throw 'Out of llamas!';                                 // Error без типа
