@@ -267,3 +267,18 @@ throw 'Out of llamas!';                                 // Error без типа
 --- Class -------------------
 множественное наследование не поддерживается, есть миксины 
 
+class Point {
+  double? x;    // Declare instance variable x, initially null.
+  double? y;    // Declare y, initially null.
+  double z = 0; // Declare z, initially 0.
+
+  Point(double x, double y) {       -> Point(this.x, this.y); // the same  
+    this.x = x;                     
+    this.y = y;
+  }
+}
+
+var p1 = Point(2, 2);       // use constructor 
+var p2 = new Point(2, 2);   // the same
+p1.x = 100;
+var a = p1?.y;              // обратится если не null
