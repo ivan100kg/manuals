@@ -264,7 +264,7 @@ throw FormatException('Expected at least 1 section');   // спец искл
 throw 'Out of llamas!';                                 // Error без типа
 
 
---- Class -------------------
+--- Class ------------------------------------------------
 множественное наследование не поддерживается, есть миксины 
 
 class Point {
