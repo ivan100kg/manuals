@@ -189,7 +189,7 @@ Return:
 - ++ --             // унарные - negative, prefix postfix 
 + - * / % ~/        // арифметические ~/ - целочисленное деление
 == != > < >= <=     // сравнения
-as is is!           // типовые, is! - is not
+as is is!           // типовые, is! - is not - сравнение с типом
 = += -= *= ...      // присвоение
 ! && ||             // логические
 & | ^ ~ << >> >>>   // битовые
@@ -268,17 +268,24 @@ throw 'Out of llamas!';                                 // Error без типа
 множественное наследование не поддерживается, есть миксины 
 
 class Point {
-  double? x;    // Declare instance variable x, initially null.
-  double? y;    // Declare y, initially null.
-  double z = 0; // Declare z, initially 0.
-
+  double? x;    // иниц null
+  double? y;    
+  double z = 0; // иниц нулем
+  // constructor                        
   Point(double x, double y) {       -> Point(this.x, this.y); // the same  
     this.x = x;                     
     this.y = y;
   }
+  // Named constructor
+  Point.origin()
+      : x = 100,
+        y = 200;
 }
 
 var p1 = Point(2, 2);       // use constructor 
-var p2 = new Point(2, 2);   // the same
-p1.x = 100;
+var p2 = new Point(2, 2);   // the same - new не обязателен
+var p = const CPoint(2, 2); // использовать синглтон(константный конструктор)
+все поля имеют геттеры и сеттеры(если не final)
+p1.x = 100;                 // setter
+print(p1.x);                // getter
 var a = p1?.y;              // обратится если не null
