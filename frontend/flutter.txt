@@ -108,4 +108,9 @@ class MyHomePage extends StatelessWidget {
     );
   }
 }
-https://codelabs.developers.google.com/codelabs/flutter-codelab-first#4
+
+1. Каждый виджет должен быть унаследован от одного из 2-х виджетов
+    StatelessWidget
+    StatefulWidget
+2. Необходимо @override build метод
+027 1:34

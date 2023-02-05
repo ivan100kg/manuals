@@ -277,9 +277,10 @@ class Point {
     this.y = y;
   }
   // Named constructor
-  Point.origin()
-      : x = 100,
-        y = 200;
+  Point({double? x, double? y}) {   -> Point({this.x, this.y}); // the same  
+    this.x = x;                     
+    this.y = y;
+  }
 }
 
 var p1 = Point(2, 2);       // use constructor 
