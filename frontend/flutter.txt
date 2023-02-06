@@ -112,8 +112,28 @@ class MyHomePage extends StatelessWidget {
 }
 
 1. Каждый виджет должен быть унаследован от одного из 2-х виджетов
-    StatelessWidget
-    StatefulWidget
+     StatelessWidget - формируется при вызове конструктора и не меняется
+     StatefulWidget  - может менять свое внутреннее состояние(меняет виджеты)
+   чтобы пределать один в другой можно нажать refactor
+   // StatelessWidget
+   class MyApp extends StatelessWidget {
+     return(Text('Hello World!'));
+   }
+   // StatefulWidget
+   class MyApp extends StatefulWidget {
+     @override
+     State<StatefulWidget> createState() {
+       return MyAppState();     // возвращ класс ниже
+     }
+   }
+   class MyAppState extends State<MyApp> {  // привязка к классу MyApp
+     var questionIndex = 0;
+     void answerQuestion() {    // обработчик кнопки
+       setState(() {            // отрисовывает все дерево виджетов заново build()
+         questionIndex++;
+       )});
+     }
+   }
 2. Необходимо добавить/переопределить build метод - который возвращает виджет
    и он рисуется флаттером.
 
@@ -134,3 +154,6 @@ Scaffold(     - базовый дизайн и структура страниц
         onPressed: () => print('pressed1'), // обработчик, если null - кнопка disabled
         child: Text('answer 1'),            // текст на кнопке
       ),
+    ],
+  ),
+);
