@@ -159,16 +159,30 @@ Scaffold(     - базовый дизайн и структура страниц
   ),
 );
 
-Свой Stateless виджет в одтельном файле, чтобы его использовать нужен импорт:
+Свой Stateless виджет в одтельном файле, чтобы его использовать нужен импорт,
+можно использовать вместо Text(+можно вставить свою логику):
 import 'package:flutter/material.dart';
-
 class Question extends StatelessWidget {
-  String questionText;
+  final String questionText;    // делаем final
 
-  Question(this.questionText);
+  Question(this.questionText);  // конструктор
 
-  @override
+  @override                     // переопределение как всегда
   Widget build(BuildContext context) {
     return Text(questionText);
   }
 }
+
+Кастомизация виджета(лучше своего, и всталять его в основной файл чтоб там не загромождать):
+Widget build(BuildContext context) {
+    return Container(                           // контейнер типа div чтоб разместить
+      child: Text(                              // дочерний элемент
+        questionText,
+        style: const TextStyle(fontSize: 28),   // размер шрифта
+        textAlign: TextAlign.center,            // выровнить по центру(только в контейнере)
+      ),
+      width: double.infinity,                   // макс ширина контейнера(вся шир страницы)
+      margin: EdgeInsets.all(5.0),              // внешний отсуп за border
+      padding: EdgeInsets.all(2),               // внутр отступ от child до border
+    );
+  }
