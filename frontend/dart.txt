@@ -78,8 +78,8 @@ var parts = '1, 2, 3'.split(', ');      // -> List ['1','2','3']
 str.toUpperCase();                      // -> String
 str.toLowerCase();                      // -> String
 '  hello  '.trim();                     // -> String
-str.isEmpty();                          // -> bool
-str.isNotEmpty();                       // -> bool
+str.isEmpty;                            // -> bool
+str.isNotEmpty;                         // -> bool
 str.replaceAll(RegExp('NAME'), 'Bob');  // -> String
 
 RegExp:
@@ -293,9 +293,11 @@ throw 'Out of llamas!';                                 // Error без типа
 множественное наследование не поддерживается, есть миксины 
 
 class Point {
+  // fields
   double? x;    // иниц null
-  double? y;    
+  _double? y;   // переменная нач с _ видна в этом же пакете/файле    
   double z = 0; // иниц нулем
+  
   // constructor                        
   Point(double x, double y) {       -> Point(this.x, this.y); // the same  
     this.x = x;                     
@@ -306,12 +308,35 @@ class Point {
     this.x = x;                     
     this.y = y;
   }
+
+  String init() => 'Initialization';  // some method
+
+  @override
+  String toString() => '$x : $ y';    // переопределить toString
+
+  // getters setters
+  // название может быть любым, помечаем get или set для того чтобы обращаться
+     не как к функции, а как к полю
+  String get title {                  // свой сеттер -> вызывается o.title
+    return _title.toUpperCase();
+  }
+
+  set title(String newTitle) {        // свой геттер -> выз-ся o.title = ''
+    if (newTitle.isEmpty) {
+      throw 'Fuck you!';
+    } else {
+      _title = newTitle;
+    }
+  }
+
+
 }
 
 var p1 = Point(2, 2);       // use constructor 
-var p2 = new Point(2, 2);   // the same - new не обязателен
+var p2 = new Point(2, 2);   // the same - new не обязателен!
 var p = const CPoint(2, 2); // использовать синглтон(константный конструктор)
-все поля имеют геттеры и сеттеры(если не final)
+все поля имеют default геттеры и сеттеры(если не final)
 p1.x = 100;                 // setter
 print(p1.x);                // getter
 var a = p1?.y;              // обратится если не null
+
