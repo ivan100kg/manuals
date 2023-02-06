@@ -52,14 +52,16 @@ Some Widget     Other Widget
 
 lib/main.dart - main file of app
 
-void main() {                         - точка старта, стартует приложение(класс MyApp) 
-    runApp(MyApp());
-}
+import 'package:flutter/material.dart'; // импорт пакета - доступен так как в pubspec.yaml
+                                           прописаны dependencies: flutter
+void main() {                         - точка старта, вызывается при запуску приложения 
+    runApp(MyApp());                  - функция из импортированного пакета material, рисует
+}                                       виджет(который вызывает build() для этого)
 
 class MyApp extends StatelessWidget { - класс наслед от виджета, все эл приложения - виджеты
   const MyApp({super.key});             code in MyApp sets up the whole app. It creates the 
     @override                           app-wide state, names the app, defines the visual theme
-    Widget build(BuildContext context){ 
+    Widget build(BuildContext context){ - context - метаданные исп флаттеров о тек виджете
       return ChangeNotifierProvider(  - обязывает все виджеты хранить текущее состояние(ниже)
         create: (context) => MyAppState(),
         child: MaterialApp(
@@ -112,5 +114,23 @@ class MyHomePage extends StatelessWidget {
 1. Каждый виджет должен быть унаследован от одного из 2-х виджетов
     StatelessWidget
     StatefulWidget
-2. Необходимо @override build метод
-027 1:34
+2. Необходимо добавить/переопределить build метод - который возвращает виджет
+   и он рисуется флаттером.
+
+--- Widgets ----------------------------------------
+Виджеты - это классы Dart, которые имеют build метод
+Типы виджетов:
+    visible/видимые виджеты: Text(), ElevatedButton(), Card() ...
+    unvisible: виджеты определяющие структуру и контроль, колонки, строки
+
+MaterialApp   - базовый класс
+Scaffold(     - базовый дизайн и структура страницы, имеет множ полезный
+  appBar: AppBar(       // бар, передадим ему AppBar() - который включ много чего
+    title: 'hui'),
+  body: Column(         // контейнер для др виджетов располож по вертикали
+    children: [         // лист входящ в колонку
+      Text('text'),     // текст
+      ElevatedButton(   // кнопка
+        onPressed: () => print('pressed1'), // обработчик, если null - кнопка disabled
+        child: Text('answer 1'),            // текст на кнопке
+      ),
