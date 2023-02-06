@@ -123,19 +123,20 @@ class MyHomePage extends StatelessWidget {
    class MyApp extends StatefulWidget {
      @override
      State<StatefulWidget> createState() {
-       return MyAppState();     // возвращ класс ниже
+       return _MyAppState();    // возвращ класс ниже
      }
    }
-   class MyAppState extends State<MyApp> {  // привязка к классу MyApp
-     var questionIndex = 0;
-     void answerQuestion() {    // обработчик кнопки
+   class _MyAppState extends State<MyApp> {  // привязка к классу MyApp, _ - исп только
+     var _questionIndex = 0;                    в этом файле (private)
+     void _answerQuestion() {   // обработчик кнопки приватный, только в классе
        setState(() {            // отрисовывает все дерево виджетов заново build()
-         questionIndex++;
+         _questionIndex++;      // private переменная - исп только в классе
        )});
      }
    }
 2. Необходимо добавить/переопределить build метод - который возвращает виджет
    и он рисуется флаттером.
+3. Обычно под 1 класс - 1 файл, редко 2 виджета в 1 файле
 
 --- Widgets ----------------------------------------
 Виджеты - это классы Dart, которые имеют build метод
@@ -157,3 +158,17 @@ Scaffold(     - базовый дизайн и структура страниц
     ],
   ),
 );
+
+Свой Stateless виджет в одтельном файле, чтобы его использовать нужен импорт:
+import 'package:flutter/material.dart';
+
+class Question extends StatelessWidget {
+  String questionText;
+
+  Question(this.questionText);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(questionText);
+  }
+}
