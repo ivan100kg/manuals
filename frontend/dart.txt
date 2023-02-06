@@ -309,6 +309,11 @@ class Point {
     this.y = y;
   }
 
+  // кастомный конструктор, вызывается так: var p1 = Point.mySet(20);
+  Point.mySet(this.y) {               // спец синтаксис
+    x = 30; 
+  }
+
   String init() => 'Initialization';  // some method
 
   @override
