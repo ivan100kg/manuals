@@ -37,10 +37,12 @@ t       Runes   ->  often replaced by the characters API)Runes
         void: Indicates that a value is never used. Often used as a return type.
 
 Variables:
-var name = 'Bob';           // any type
+рекомендация использовать всегда const если возможно, если нет то final, если
+нет то var, в место конкретных типов везде используем var
+var name;                   // any type, но при присвоении тип менять нельзя
 dynamic name = 1;           // в дальнейшем можно присвоить другой тип(аля JS)
 Object name = 'Bob';        // Object type
-String name = 'Bob';        // string
+String name = 'Bob';        // string type
 late String description;    // не нулевая переменная, инициализируется позже
 final name = 'Bob';         // инициализируются рантайм, нельзя изменить
 final String name = 'Bob';  // ...
@@ -95,20 +97,22 @@ sb                                      // .. -> cascade expression
   ..write('.');
 
 Null safety:
-Переменные не могут использоваться если в них null
-Но можно разрешить чтобы переменная могла быть null
-int a;      // integer
-int? b;     // integer or null
-int c = b!; // integer or null
+При созданиии переменной определить что она 100% не null, чтоб не проверять
+int a;      // integer не может быть null, можно не проверять по коду
+int? b;     // integer or null - может быть null
+int c = b!; // принебречь, считать что b точно не null
 int? d = b; // integer or null
+
+Type checking:
+someVar.runtimeType     // у каждого эл можно посмотреть тип
+someVar is String       // -> bool
 
 Casting:
 приведение типов
-type.runtimeType        // у каждого эл можно посмотреть тип
 200.toString();         // int -> String
 int.tryParse('2a');     // try parse -> null если не распарсил
 int.parse('200');       // String -> int
-(20 is int)             // -> bool
+var a = obj as String   // из неопр типа(dynamic) в конкретный тип
 
 DateTime:
 var dateTime = DateTime.now();                  // now
@@ -144,6 +148,10 @@ var map2 = <int,String>{};  //
 Map<String, String> map;    //
 map[2] = 'hui';             // доступ к значению по  ключу
 
+Casting:
+final newList = oldList as List<int>(); // привести тип самого списка
+final newList = oldList.cast<int>();    // привести все эл списка к int 
+
 Обход коллекций:
 var list = [1,2,3];
 list.forEach(foo);                      // foo - функция или перем ссыл на функцию
@@ -154,6 +162,10 @@ list                                    // цепочка методов
     .where((el) => el >= 5)
     .forEach((el) => foo(el));  
 
+Сортировка коллекций:
+final list = [3,4,0,1,2,7];
+list.sort((a,b) => a.compareTo(b));     // сортировка происходит с пом ф-ии
+print(list);                            // [0, 1, 2, 3, 4, 7]
 
 --- Functions -----------------------------------------------------------------
 Функции имеют тип Function, toString() возвращает представ: '(dynamic) => void'
@@ -169,13 +181,15 @@ bool foo = (msg) => '!!! ${msg.toUpperCase()} !!!';
 Params:
 void foo(a, b){}            // позиционные пар без типа - становятся dynamic
 void foo(int a, int b){}    // позиционные пар c типом
-foo({a, b}){}               // именованные параметры без типа
-foo({int? a, int? b}){}     // именованные параметры с типом, ? - обязателен
-foo({a=5, int? b}){}        // значение по умолчанию
-foo({a=5, required int b})  // обязательный параметр
-foo({a=5, required int? b}) // обязательный параметр но может быть null
-foo(a, [String other]){}    // опциональный позиц параметр, по умолч = null
-foo(a, [String other = '']) // опциональный позиц параметр со знач по умолч
+foo(a, [String other]){}    // опциональный/необяз позиц параметр, по умолч = null
+foo(a, [String other = '']) // опциональный/необяз позиц параметр со знач по умолч
+foo({a, b}){}               // {} - именованные/необяз параметры без типа по умолч null
+foo({int? a, int? b}){}     // параметры с с конкретным типом, ? - обязателен
+foo({a=5, int b=3}){}       // значение по умолчанию
+foo({a=5, required b})      // обязательный параметр люб тип, может быть null
+foo({a=5, required int b})  // обязательный параметр с конк типом не может принимать null
+foo({a=5, required int? b}) // обязательный параметрс конк типом, но может быть null
+
 
 Calls:
 foo(2, 3);                  // positional 
