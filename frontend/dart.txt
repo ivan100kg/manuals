@@ -329,7 +329,7 @@ class Point {
     this.x = x;                     
     this.y = y;
   }
-  // кастомный конструктор + синтаксис без скобок
+  // кастомный конструктор, дополнительный + синтаксис без скобок
   Point.origin()
       : x = xOrigin,
         y = yOrigin;
@@ -387,3 +387,5 @@ class Child extends Parent with Musical{
                                        нужны чтобы добавить какую-то логику в класс
 }
 
+Enums:
+enum Color { red, green, blue } 
