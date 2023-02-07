@@ -112,7 +112,7 @@ class MyHomePage extends StatelessWidget {
 }
 
 1. Каждый виджет должен быть унаследован от одного из 2-х виджетов
-     StatelessWidget - формируется при вызове конструктора и не меняется
+     StatelessWidget - формируется при вызове конструктора и не меняется runtime
      StatefulWidget  - может менять свое внутреннее состояние(меняет виджеты)
    чтобы пределать один в другой можно нажать refactor
    // StatelessWidget
@@ -134,8 +134,8 @@ class MyHomePage extends StatelessWidget {
        )});
      }
    }
-2. Необходимо добавить/переопределить build метод - который возвращает виджет
-   и он рисуется флаттером.
+2. Необходимо добавить/переопределить build метод - который принимает BuildContext и
+   возвращает Widget и он рисуется флаттером. Для StatelessWidget вызывается 1 раз
 3. Обычно под 1 класс - 1 файл, редко 2 виджета в 1 файле
 
 --- Widgets ----------------------------------------
@@ -144,8 +144,12 @@ class MyHomePage extends StatelessWidget {
     visible/видимые виджеты: Text(), ElevatedButton(), Card() ...
     unvisible: виджеты определяющие структуру и контроль, колонки, строки
 
-MaterialApp   - базовый класс
-Scaffold(     - базовый дизайн и структура страницы, имеет множ полезный
+Material Disign - это система дизайна, созданная Google, чтобы помочь командам 
+создавать высококачественные цифровые приложения для Android, iOS, Flutter и Интернета
+Material Guidelines - рекомендации следования дизайну от Google.
+MaterialApp   - базовый root виджет, предоставляет доступ к множеству др виджетов,
+                следует Material Guidelines.
+Scaffold(     - базовый дизайн и структура страницы
   appBar: AppBar(       // бар, передадим ему AppBar() - который включ много чего
     title: 'hui'),
   body: Column(         // контейнер для др виджетов располож по вертикали
@@ -186,3 +190,12 @@ Widget build(BuildContext context) {
       padding: EdgeInsets.all(2),               // внутр отступ от child до border
     );
   }
+
+Свой шрифт:
+заходим в google fonts и скачиваем понравившийся
+перенесем шрифт .ttf из скаченного архива в новую дир в корне проекта fonts/
+в pubspec.yaml добавим/расскомментим
+  fonts:
+    - family: Rubik
+      fonts:
+        - asset: fonts/Rubik-VariableFont_wght.ttf
