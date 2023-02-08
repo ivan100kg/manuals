@@ -126,6 +126,50 @@ dateTime1.difference(dateTime2).inDays          // разница в опред
 DateTime(date.year - 18, date.month, date.day); // отнять 18 лет от какой-то даты(date)
 
 
+--- Generics ------------------------------------------------
+нужны для создания универсальных конструкций под любые классы
+generic methods:
+T first<T>(List<T> ts) {    // принимает List опред типа и возвращ 1-ый эл этого типа
+  return = ts[0];
+}
+first([1,2,3]);             // -> 1
+
+generic class:
+class Stack<T> {            // класс используемый с люб типом
+  List<T> storage = [];     // коллекция с этим типом
+  T element;                // один элемент
+  Stack(this.element);      // конструктор
+  T getFirst() {            // метод возвращ этот же тип
+    return storage[0];
+  }
+}
+Stack stack = Stack(300);         // в скобках не обяз указывать тип, будет <int>
+Stack stack = Stack<double>(300); // принудительно указываем что это <double>
+
+abstract class Cache<T> {   // абстрактный класс с неопред типом
+  T getByKey(String key);
+  void setByKey(String key, T value);
+}
+
+class MyCache implements Cache<int> {
+  @override                 // подставляем свой тип и имплементим методы
+  int getByKey(String key) {
+    return 23;
+  }
+
+  @override
+  void setByKey(String key, int value) {
+    print(key);
+  }
+}
+
+ограничения:
+<T extends num>   // num и его наследники
+
+несколько
+<R> foo <T, Z>(T t, Z z) => otherFoo(t, z); // принимает два разных типа, возвр третий
+
+
 --- Collections -------------------------------
 List:
 var list = [1, 2, 3];       // list of integers
@@ -374,7 +418,23 @@ p1.x = 100;                 // setter
 print(p1.x);                // getter
 var a = p1?.y;              // обратится если не null
 
---- inheritance/Наследование: ---
+--- Static ---
+class Car {
+  int sum;                                    // доступна для обьектов класса
+  static int totalCar = 0;                    // доступна Классу 
+  static const url = 'https://sdafasdf.asf';  
+  static void foo() => print(totalCar);       // имеет доступ только к статик перем
+                                                 может вызываться с пом Класса
+  void foo2() => print(totalCar + sum);       // имеет доступ ко всем
+
+  Car(this.sum);
+}
+
+--- Enums ---
+enum Color { red, green, blue } 
+
+
+--- inheritance/Наследование: --------------------------------------------------------
 наследуясь от родителя, наследник наследует все, и должен прокинуть через конструкторы
 все свойства, которые требуются в конструкторе родителя, можно пользоваться родительскими
 методами, можно преопределять их или дописывать свои.
@@ -444,11 +504,6 @@ class Plane with Mechanism{       // будет иметь метод repair()
             наследование   миксины               интерфейсы 
 class Plane extends Object with Mechanism, Beast implements Flyable, Runnable
 
-
---- Enums ---
-enum Color { red, green, blue } 
-
-
 --- extension/расширение ---
 Если нужно какому-то классу/типу например String добавить метод например toDouble,
 оббъявляем extension на верхнем уровне как класс:
@@ -456,17 +511,4 @@ extension MyExt on String {
   double? toDouble() {            // возвращает double либо null
     return double.tryParse(this); // this - объект на котором применяется этот метод
   }
-}
-
-
---- Static ---
-class Car {
-  int sum;                                    // доступна для обьектов класса
-  static int totalCar = 0;                    // доступна Классу 
-  static const url = 'https://sdafasdf.asf';  
-  static void foo() => print(totalCar);       // имеет доступ только к статик перем
-                                                 может вызываться с пом Класса
-  void foo2() => print(totalCar + sum);       // имеет доступ ко всем
-
-  Car(this.sum);
 }
