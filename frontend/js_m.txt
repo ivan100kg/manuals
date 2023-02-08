@@ -573,6 +573,7 @@ search:
     2 == 2 ? log(true) : log(false);
 
     Оператор нулевого слияния (??):
+    если первое null или undefined - то берется второе значение, иначе первое
     result = a ?? b;    // проверка на null и undefined
     result = (a !== null && a !== undefined) ? a : b; 
     example:
