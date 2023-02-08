@@ -457,3 +457,16 @@ extension MyExt on String {
     return double.tryParse(this); // this - объект на котором применяется этот метод
   }
 }
+
+
+--- Static ---
+class Car {
+  int sum;                                    // доступна для обьектов класса
+  static int totalCar = 0;                    // доступна Классу 
+  static const url = 'https://sdafasdf.asf';  
+  static void foo() => print(totalCar);       // имеет доступ только к статик перем
+                                                 может вызываться с пом Класса
+  void foo2() => print(totalCar + sum);       // имеет доступ ко всем
+
+  Car(this.sum);
+}
