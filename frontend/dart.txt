@@ -304,7 +304,8 @@ throw 'Out of llamas!';                                 // Error без типа
 
 
 --- Class ------------------------------------------------
-множественное наследование не поддерживается, есть миксины 
+множественное наследование не поддерживается, есть миксины
+все кастомные классы по умолчанию наследуются от Object
 
 class Point {
   // fields
@@ -373,10 +374,46 @@ p1.x = 100;                 // setter
 print(p1.x);                // getter
 var a = p1?.y;              // обратится если не null
 
-Наследование:
-class Child extends Parent{         // наследование всех свойсв и методов парента
+inheritance/Наследование:
+наследуясь от родителя, наследник наследует все, и должен прокинуть через конструкторы
+все свойства, которые требуются в конструкторе родителя
+class Shape {
+  int square;
+  final Color color;
 
+  void method() {}
+
+  int get getSquare => square;
+
+  Shape(this.square, this.color);       // должен быть вызван в наследнике >--+
+}                                                                             |
+                                                                              |
+class Rectangle extends Shape {                                               |
+  int sideA;                                                                  |
+  int sideB;                                                                  |
+  // способы написания вызова конструктора родителя (выбрать 1)               |
+  Rectangle(this.sideA, this.sideB, super.square, super.color); // <----------+
+  Rectangle(this.sideA, this.sideB, int square, Color color) : super(square, color);
+
+  @override
+  int get getSquare => sideA * sideB; // переопределить базовый метод
+
+  @override                           // еще переопределение
+  void foo() {
+    super.foo();                      // super. - вызов через родителя
+    print('child');
+  } 
 }
+
+Под родительский класс подходят все наследники is-a
+void foo(Shape shape){}   // сюда можно передавать Shape и всех Наследников
+
+Абстрактный класс:
+abstract class Shape {}   // нельзя создать экземпляр, можно только унаследоваться
+                             можно не иметь реализации для методов и свойств
+
+
+
 
 class Child implements Readeble{    // осуществление/переопределение всех методов
                                        другого класса, как интерфейса в Java
