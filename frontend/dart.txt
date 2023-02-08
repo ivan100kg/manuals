@@ -440,6 +440,20 @@ mixin Mechanism {                 // миксин
 class Plane with Mechanism{       // будет иметь метод repair()
 }
 
+Порядок:
+            наследование   миксины               интерфейсы 
+class Plane extends Object with Mechanism, Beast implements Flyable, Runnable
+
 
 --- Enums ---
 enum Color { red, green, blue } 
+
+
+--- extension/расширение ---
+Если нужно какому-то классу/типу например String добавить метод например toDouble,
+оббъявляем extension на верхнем уровне как класс:
+extension MyExt on String {
+  double? toDouble() {            // возвращает double либо null
+    return double.tryParse(this); // this - объект на котором применяется этот метод
+  }
+}
