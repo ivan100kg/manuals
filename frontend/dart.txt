@@ -639,3 +639,23 @@ void main(List<String> args) {
     print('controller closed');
   });
 }
+
+--- Генератор ------------------------------
+void main(List<String> args) {
+  print(gen());
+  aGen().listen((event) {
+    print(event);
+  });
+}
+
+Iterable<int> gen() sync* {       // синхронный генератор, вернет Iterable
+  for (int i = 0; i < 10; i++) {  // вернет (1,2,3,4,5,6,7,8,9)
+    yield i;
+  }
+}
+
+Stream<int> aGen() async* {       // асинх генератор, возвр поток, на который
+  for (int i = 0; i < 10; i++) {  // можно подписаться
+    yield i;
+  }
+}
