@@ -124,6 +124,7 @@ dateTime1.isAtSameMomentAs(dateTime2);          // тоже время?
 dateTime.year;                                  // разл поля
 dateTime1.difference(dateTime2).inDays          // разница в опред
 DateTime(date.year - 18, date.month, date.day); // отнять 18 лет от какой-то даты(date)
+sleep(Duration(seconds: 2));                    // sleep на опр длительность
 
 
 --- Generics ------------------------------------------------
@@ -514,5 +515,61 @@ extension MyExt on String {
 }
 
 
---- Асинхронность -----------------------------------------------------------------
+--- Асинхронность -------------------------------------------------------------------
+синхронная операция:  асинхронная операция блокирует вып др операций до ее завершения
+синхронная функция:   Синхронная функция выполняет только синхронные операции
+асинхронная операция: После инициирования асинхронная операция позволяет др операциям
+                      выполняться до ее завершения
+асинхронная функция:  Асинхронная функция выполняет по меньшей мере одну асинхронную 
+                      операцию и может также выполнять синхронные операции
 
+Future:
+Результат асинх вычислений, возвращ рез после выполнения, основной поток не ждет этого.
+Объект класса Future<T> - результат асинхронной операции, может иметь два состояния: 
+  незавершенный:  при вызове асинх функции, она возвращает незавершенное будущее. 
+                  Это будущее ожидает завершения асинх операции ф-ии или выдачи ошибки.
+  завершенный:    если асинхронная операция завершается успешно, будущее завершается
+                  значением или ошибкой:
+                    значением:
+                    Объект типа Future<T> завершается значением типа T. Например, 
+                    future с типом Future<String> выдает строку. Если будущее не создает
+                    используемого значения, то тип будущего - Future<void>.
+                    ошибкой: 
+                    Если асинхронная операция, выполняемая функцией, по какой-либо 
+                    причине завершается неудачей, future завершается с ошибкой.
+
+Future<void> fetchUserOrder() {     // асинх ф-я , возвращ объект Future без значения
+  // асинхронная операция, Future.delayed - конструктор, созд объект после задержки
+  var future = Future.delayed(const Duration(seconds: 2), // ждет 2 с
+      () => print('Large Latte'));                        // исполняет callback
+      () => throw Exception('Some Error'));               // пример с ошибкой(см output)
+  return future;
+}
+
+void main() {
+  fetchUserOrder();                 // вызов асинхронной функции <--+
+  print('Fetching user order...');  // выполняется дальше, не ждет -+
+}
+
+Output:
+  // без ошибки           // с ошибкой
+  Fetching user order...  Fetching user order...
+  Large Latte             Uncaught Error: Some Error
+
+// конструкторы
+Future(FutureOr<T> computation()) Creates a future containing the result of calling computation asynchronously with Timer.run.factory
+Future.delayed(Duration duration, [FutureOr<T> computation()?])Creates a future that runs its computation after a delay.factory
+Future.error(Object error, [StackTrace? stackTrace])Creates a future that completes with an error.factory
+Future.microtask(FutureOr<T> computation())Creates a future containing the result of calling computation asynchronously with scheduleMicrotask.factory
+Future.sync(FutureOr<T> computation())Returns a future containing the result of immediately calling computation.factory
+Future.value([FutureOr<T>? value])Creates a future completed with value.factory
+// методы
+future.asStream()             → Stream<T> в поток
+future.then<R>(foo})          → Future<R> вызов foo когда завершится
+future.timeout(Duration time) → Future<T> не ждет после опр времени
+future.whenComplete(foo)      → Future<T> вызов foo когда завершится
+// статик методы
+any<T>(Iterable<Future<T>> futures) → Future<T> result of the first future in futures to complete.
+doWhile(FutureOr<bool> action())    → Future Performs an operation repeatedly until it returns false.
+forEach<T>(Iterable<T> elements, FutureOr action(T element)) → Future Performs an action for each element of the iterable, in turn.
+wait<T>(Iterable<Future<T>> futures) → Future<List<T>>Waits for multiple futures to complete and collects their results.
