@@ -605,3 +605,37 @@ Future<void> main() async {                 // делаем main async чтоб�
 Output:
   Fetching user order...
   Your order is: Large Latte
+
+
+--- Stream ---
+Поток это своего рода коллекция - очередь
+Stream<int>? stream;                    // поток
+stream = stream.asBroadcastStream();    // на такой поток можно подписываться > 1 раза
+StreamSubscription<int>? subscription;  // подписка на поток
+StreamController<int> controller = StreamController<int>(); // управление стримом
+
+
+void main(List<String> args) {
+  print('one');
+  stream = Stream.periodic(Duration(seconds: 1), (tick) => tick); // беск поток
+  print('two');
+  subscription = stream?.listen((event) { // слушаем поток и обрабатываем по своему
+    print(event);
+  });
+  Future.delayed(Duration(seconds: 10), () => subscription?.cancel());  // закончить
+  
+  StreamSubscription<int>? subscription2;
+  subscription2 = controller.stream.listen((event) {  <--------------+
+    print(event);                                                    |
+  });                                                                |
+  controller.add(100);  // добавляются в поток и ловятся слушателем -+
+  controller.add(101);
+  controller.add(102);
+  controller.add(103);
+  print('three');
+  Future.delayed(Duration(seconds: 3), () { // через 3 сек
+    subscription2?.cancel();  // отписаться
+    controller.close();       // закрыть контроллер
+    print('controller closed');
+  });
+}
