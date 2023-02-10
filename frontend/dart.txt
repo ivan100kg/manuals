@@ -523,7 +523,7 @@ extension MyExt on String {
 асинхронная функция:  Асинхронная функция выполняет по меньшей мере одну асинхронную 
                       операцию и может также выполнять синхронные операции
 
-Future:
+--- Future ---
 Результат асинх вычислений, возвращ рез после выполнения, основной поток не ждет этого.
 Объект класса Future<T> - результат асинхронной операции, может иметь два состояния: 
   незавершенный:  при вызове асинх функции, она возвращает незавершенное будущее. 
@@ -561,7 +561,7 @@ Future(FutureOr<T> computation()) Creates a future containing the result of call
 Future.delayed(Duration duration, [FutureOr<T> computation()?])Creates a future that runs its computation after a delay.factory
 Future.error(Object error, [StackTrace? stackTrace])Creates a future that completes with an error.factory
 Future.microtask(FutureOr<T> computation())Creates a future containing the result of calling computation asynchronously with scheduleMicrotask.factory
-Future.sync(FutureOr<T> computation())Returns a future containing the result of immediately calling computation.factory
+Future.sync(FutureOr<T> computation())  → Future<T> синхронную функцию оборачивает в асинх
 Future.value([FutureOr<T>? value])Creates a future completed with value.factory
 // методы
 future.asStream()             → Stream<T> в поток
@@ -573,3 +573,35 @@ any<T>(Iterable<Future<T>> futures) → Future<T> result of the first future in 
 doWhile(FutureOr<bool> action())    → Future Performs an operation repeatedly until it returns false.
 forEach<T>(Iterable<T> elements, FutureOr action(T element)) → Future Performs an action for each element of the iterable, in turn.
 wait<T>(Iterable<Future<T>> futures) → Future<List<T>>Waits for multiple futures to complete and collects their results.
+
+// example
+var future = Future.delayed(Duration(seconds: 3));  // созд объект Future
+future.then((value) => print('Hello world!'));      // объявляем что должно вып после завершения 
+code;                                               // выполняется какой-то код
+---> 'Hello world'(не ранее чем через 3 сек после объявления)             
+
+--- async await ---
+Механизм который позволяет ждать выполнения асинх операций.
+async - добавить перед телом ф-ии чтобы определить асинхронную функцию
+await - работает только в асинхронных функциях, ставится перед вызовом асинх ф-ии,
+        ждет завершения, не идет дальше
+
+Future<String> createOrderMessage() async { // анинх функция
+  var order = await fetchUserOrder();       // awit ставим перед вызовом др асинх ф-ии
+  return 'Your order is: $order';
+}
+
+Future<String> fetchUserOrder() =>          // функция возвращ объет Future<String>
+    Future.delayed(
+      const Duration(seconds: 2),
+      () => 'Large Latte',
+    );
+
+Future<void> main() async {                 // делаем main async чтобы использовать await  
+  print('Fetching user order...');             возвращ тип меняем на Future<void>
+  print(await createOrderMessage());
+}
+
+Output:
+  Fetching user order...
+  Your order is: Large Latte
