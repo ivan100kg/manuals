@@ -331,7 +331,7 @@ assert(text != null);   // если то что в скобках false - Assert
 все исключения unchecked
 try {
     breedMoreLlamas();
-} on OutOfLlamasException {     // спец exception    
+} on OutOfLlamasException {     // конкретный exception    
     buyMoreLlamas();
 } on Exception catch (e) {      // общ класс, e - message    
     print('Unknown exception: $e');
@@ -512,3 +512,7 @@ extension MyExt on String {
     return double.tryParse(this); // this - объект на котором применяется этот метод
   }
 }
+
+
+--- Асинхронность -----------------------------------------------------------------
+

@@ -3810,6 +3810,7 @@
     "(\\d{4})(\\d{2})"  # regex, группы идут по порядку с 1 в скобках()
         $1      $2      # groups
     (не забываем создать Pattern and Matcher)
+    if(matcher.find(){              // -> bool, только после этого исп группы
     matcher.replaceAll("$2-($4)")   // -> String, "56-(1234)", манип с группами
     matcher.group(1)                // -> String, "1234" -вывести 1-ую группу
 
