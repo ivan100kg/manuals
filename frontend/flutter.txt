@@ -71,6 +71,21 @@ flutter:                              # подключение различн ш
       fonts:
         - asset: fonts/Rubik-VariableFont_wght.ttf
 
+--- analysis_options.yaml ---
+include: package:pedantic/analysis_options.1.11.0.yaml  # наш подключ пакетб версия та же
+
+analyzer:                             # свои настройки
+  strong-mode: 
+    implicit-casts: false             #
+    implicit-dynamic: false           # динамик типы будет запрещать
+
+linter:
+  rules:
+    - prefer_const_constructors       # где можно const - подсветит
+    - prefer_const_declarations
+    - avoid_print                     # запретить print()
+    - use_key_in_widget_constructors
+
 
            My App
              |
