@@ -24,11 +24,13 @@ Dart - programming language of Google
 3. Config files
     pubspec.yaml - specifies basic information about your app, such as its current version,
     its dependencies, and the assets with which it will ship
-    analysis_options.yaml -  determines how strict Flutter should be when analyzing your code
+    analysis_options.yaml - настройки для анализатора
 
 --- terminal commands ---
 flutter create my-project   # create new flutter project with name 'my-project'
 flutter run                 # run project
+dart pub add pedantic_mono  # добавить пакет
+dart pub get                # обновить пакеты согласно pubspec.yaml
 
 --- structure ---
 android/        - полная сборка для различных платформ - все заполняется авто
@@ -42,7 +44,33 @@ lib/            - our code working directory
   .packages     ...
   .my-proj.iml  ...
   pubspec.lock  ...
-  pubspec.yaml  - описание, всякие зависимости проекта, шрифты, фотки 3-й стороны ...
+  pubspec.yaml  - описание, всякие зависимости проекта(pub.dev), шрифты, фотки ...
+  analysis_options.yaml
+
+--- pubspec.yaml ---
+name: flutter_complete_guide
+description: A new Flutter project.
+publish_to: 'none'                    # Remove this line if you wish to publish to pub.dev
+version: 0.1.0+1                      # версия нашего проекта
+environment:                          # окружение
+  sdk: '>=2.19.0 <3.0.0'              # версия нашей sdk должна попадать в диапазон
+                                        смотреть flutter --version (Tools • Dart 2.19.2)
+dependencies:                         # зависимости на проде, берем с pub.dev
+  flutter:                            # стандартная необходимая библиотека
+    sdk: flutter                      
+  cupertino_icons: ^1.0.2             # иконки для ios
+  pedantic: ^1.11.0                   # подключение сторонней либы с pub.dev
+dev_dependencies:                     # зависимости только для разработки, в прод не идет
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+flutter:                              # подключение различн шрифтов иконок итд
+  uses-material-design: true
+  fonts:                              # шрифты
+    - family: Rubik                   # определенный скаченный шрифт
+      fonts:
+        - asset: fonts/Rubik-VariableFont_wght.ttf
+
 
            My App
              |
