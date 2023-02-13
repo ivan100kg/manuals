@@ -221,13 +221,16 @@ Container(                    // содержит др виджет
   color: Colors.cyan,         // можно задать цвет
   width: double.infinity,     // макс ширина 
   height: 120,
-  child: ...  
+  child: ...,
+  margin: EdgeInsets.only(left: 20, right: 20),               // внешние отступы
+  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10), // внутренние отступы
 
 Row(                          // контейнер для виджетов, занимает все пространство по верт
 Column(                       // контейнер для виджетов, занимает все пространство по гориз
   mainAxisAlignment: ... ,    // выравнивание относ глав оси (center, start, spaceAround..)
   crossAxisAlignment: ... ,   // выравнивание относ другой оси (center, start, end..)
   children: [ ...             // может содержать множество виджетов
+  Spacer()                    // пробел максимально возможной длины между эл в Row
 
 SizedBox(                     // просто отступ в любом месте
   width: 20,                  // можно чисто отступ по вертикали или гориз, или оба
@@ -249,3 +252,8 @@ Text(                         // отображение текста
     - family: Rubik   <-------------------------------------------------------+
       fonts:
         - asset: fonts/Rubik-VariableFont_wght.ttf
+
+Expanded(
+  child: Text('Избранное'),   // экспандед занимает все возможное пространство
+                                 например элемент A в строке: A______BCD => A-expanded
+                                 несколько таких делят пустое пространство междк собой
