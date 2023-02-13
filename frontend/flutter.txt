@@ -1,12 +1,14 @@
 # Flutter - framework on Dart and tools
 # Dart - programming language
 
---- About ---
+
+--- About ----------------------------------------------------------------------------
 Flutter это фреймворк для создания UI для различных платформ, используется единый язык
 Dart - programming language of Google
 Приложение на флаттере - набор виджетов, все состоит из виджетов
 
---- set ---
+
+--- setings -----------------------------------
 1. https://docs.flutter.dev/get-started/install
 после установки весх компонентов могут быть ошибки:
     unable to find bundled java version - Go to "C:\Program Files\Android\Android Studio"
@@ -32,7 +34,7 @@ flutter run                 # run project
 dart pub add pedantic_mono  # добавить пакет
 dart pub get                # обновить пакеты согласно pubspec.yaml
 
---- structure ---
+--- project ---
 android/        - полная сборка для различных платформ - все заполняется авто
 ios/            ...
 linux/          ...
@@ -72,7 +74,7 @@ flutter:                              # подключение различн ш
         - asset: fonts/Rubik-VariableFont_wght.ttf
 
 --- analysis_options.yaml ---
-include: package:pedantic/analysis_options.1.11.0.yaml  # наш подключ пакетб версия та же
+include: package:pedantic/analysis_options.1.11.0.yaml  # наш подключ пакет версия та же
 
 analyzer:                             # свои настройки
   strong-mode: 
@@ -86,7 +88,7 @@ linter:
     - avoid_print                     # запретить print()
     - use_key_in_widget_constructors
 
-
+--- structure ---
            My App
              |
         My Home Page
@@ -97,9 +99,10 @@ lib/main.dart - main file of app
 
 import 'package:flutter/material.dart'; // импорт пакета - доступен так как в pubspec.yaml
                                            прописаны dependencies: flutter
-void main() {                         - точка старта, вызывается при запуску приложения 
-    runApp(MyApp());                  - функция из импортированного пакета material, рисует
-}                                       виджет(который вызывает build() для этого)
+                                           material.dart - набор виджетов для Android
+void main() {                         - точка старта, вызывается при запускe приложения 
+    runApp(MyApp());                  - функция из импортированного пакета material, приним
+}                                       виджет, который вызывает build() - отрисовка
 
 class MyApp extends StatelessWidget { - класс наслед от виджета, все эл приложения - виджеты
   const MyApp({super.key});             code in MyApp sets up the whole app. It creates the 
@@ -132,8 +135,6 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {- автоматически выз при изменении виджета
     var appState = context.watch<MyAppState>();  - каждый виджет просм текущее App сост
-    
-
     return Scaffold(                  - кажд виджет возвращ другой виджет/дерево виджетов
       body: Column(                     Scaffold - часто исп полезный виджет
         children: [                   - Column - один из базовых layout of widget
@@ -154,45 +155,60 @@ class MyHomePage extends StatelessWidget {
   }
 }
 
-1. Каждый виджет должен быть унаследован от одного из 2-х виджетов
-     StatelessWidget - формируется при вызове конструктора и не меняется runtime
-     StatefulWidget  - может менять свое внутреннее состояние(меняет виджеты)
-   чтобы пределать один в другой можно нажать refactor
-   // StatelessWidget
-   class MyApp extends StatelessWidget {
-     return(Text('Hello World!'));
-   }
-   // StatefulWidget
-   class MyApp extends StatefulWidget {
-     @override
-     State<StatefulWidget> createState() {
-       return _MyAppState();    // возвращ класс ниже
-     }
-   }
-   class _MyAppState extends State<MyApp> {  // привязка к классу MyApp, _ - исп только
-     var _questionIndex = 0;                    в этом файле (private)
-     void _answerQuestion() {   // обработчик кнопки приватный, только в классе
-       setState(() {            // отрисовывает все дерево виджетов заново build()
-         _questionIndex++;      // private переменная - исп только в классе
-       )});
-     }
-   }
-2. Необходимо добавить/переопределить build метод - который принимает BuildContext и
-   возвращает Widget и он рисуется флаттером. Для StatelessWidget вызывается 1 раз
-3. Обычно под 1 класс - 1 файл, редко 2 виджета в 1 файле
 
---- Widgets ----------------------------------------
-Виджеты - это классы Dart, которые имеют build метод
+--- Widgets ------------------------------------------------
+Виджеты         - это классы Dart, которые имеют build метод
+Widget          - главный базовый виджет, предок для всех
+Widget catalog  - все виджеты flutter на сайте по категориям  с описанием
+
 Типы виджетов:
-    visible/видимые виджеты: Text(), ElevatedButton(), Card() ...
-    unvisible: виджеты определяющие структуру и контроль, колонки, строки
+visible/видимые виджеты:  Text(), ElevatedButton(), Card() ...
+unvisible виджеты:        определяющие структуру и контроль, колонки, строки
 
 Material Disign - это система дизайна, созданная Google, чтобы помочь командам 
 создавать высококачественные цифровые приложения для Android, iOS, Flutter и Интернета
 Material Guidelines - рекомендации следования дизайну от Google.
+
 MaterialApp   - базовый root виджет, предоставляет доступ к множеству др виджетов,
-                следует Material Guidelines.
-Scaffold(     - базовый дизайн и структура страницы
+                следует Material Guidelines. Используем этот всегда!
+CupertinoApp  - брат MaterialApp только все под Apple ios
+
+--- Свои виджеты ---
+1. Каждый виджет должен быть унаследован от одного из 2-х виджетов
+     StatelessWidget - формируется при вызове конструктора и не меняется runtime
+     StatefulWidget  - может менять свое внутреннее состояние(меняет виджеты)
+2. Необходимо добавить/переопределить build метод - который принимает BuildContext и
+   возвращает Widget и он рисуется флаттером. Для StatelessWidget вызывается 1 раз.
+   В этом методе как раз вся структура для отрисовки виджета.
+3. Обычно под 1 класс - 1 файл, редко 2 виджета в 1 файле
+
+Examples:
+// StatelessWidget
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(...                // отрисовка виджетов тут
+  }}
+// StatefulWidget - разделен как бы на 2 класса Основной+Состояние(с build методом)
+class MyApp extends StatefulWidget {      // <--------------------------+
+  @override                                                             |
+  State<MyApp> createState() {  // переопред createState()              |
+    return _MyAppState();       // возвращ класс ниже --+               |
+  }}  //      v-----------------------------------------+               |
+class _MyAppState extends State<MyApp> {  // привязка к классу MyApp ---+
+  var _questionIndex = 0;     // какие-то данные
+  void _answerQuestion() {    // обработчик кнопки приватный, только в классе
+    setState(() {             // отрисовывает виджет заново build() --------+
+      _questionIndex++;       // private переменная - исп только в классе   |
+    )});                                                                    |
+  }                                                                         |
+  @override                                                                 |
+  Widget build(BuildContext context) {  <-----------------------------------+
+    return MaterialApp(...    // отрисовка виджетов тут
+}
+
+
+Scaffold(               // базовый дизайн и структура страницы/каркас экрана
   appBar: AppBar(       // бар, передадим ему AppBar() - который включ много чего
     title: 'hui'),
   body: Column(         // контейнер для др виджетов располож по вертикали
