@@ -217,6 +217,9 @@ Scaffold(                     // базовый дизайн и структур
 Center(                       // выравнивает все по центру
   child: ...                  // содержит др виджет
 
+Align(                        // типа Center но может выравнивать и по другим краям
+  alignment: Alignment.bottomRight,
+
 Container(                    // содержит др виджет
   color: Colors.cyan,         // можно задать цвет
   width: double.infinity,     // макс ширина 
@@ -257,3 +260,18 @@ Expanded(
   child: Text('Избранное'),   // экспандед занимает все возможное пространство
                                  например элемент A в строке: A______BCD => A-expanded
                                  несколько таких делят пустое пространство междк собой
+
+
+--- layout -----------------------------------------------------------------
+Родительский виджет может указать дочернему ограничения по занимаемому месту
+min width, max width, min height, max height, нек виджеты не могут этого
+
+Center(                       // Center позволяет чайлду выставлять размеры --+
+  child: Container(           // Container будет занимать 200x200 <-----------+
+    width: double.infinity,   // вся ширина     
+    height: 200,
+    color: Colors.amber,
+    child: Container(         // Container не дает такой возможности, будет 200x200
+      width: 50,              // здесь родитель не даст занять меньше
+      height: 50,
+      color: Colors.black,
