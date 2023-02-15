@@ -256,7 +256,13 @@ Text(                         // отображение текста
       fonts:
         - asset: fonts/Rubik-VariableFont_wght.ttf
 
+Stack(                          // стопка элементов 1 на другом допустим pic+text
+  fit: StackFit.loose,          // занимаемое пространство
+  alignment: Alignment.center,  // выравнивание
+  children: [                   // виджеты в стэке
 
+Positioned(                     // изменение позиции/отступа относ родителя
+  left: 40,                     // используется в стэке
 
 
 --- layout -----------------------------------------------------------------------
