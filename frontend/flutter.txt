@@ -291,5 +291,56 @@ Center(                       // Center позволяет чайлду выст
       height: 200,            // будет 150, потомучто ограничил родитель --------------+
       color: Colors.black,
 
+--- Custom layouts widget---
+// single - редко используется
+CustomSingleChildLayout(      // тонкая настройка для 1 виджета--+
+  delegate: MyDelegate(),     // сюда вставл класс ниже          |
+  child: Widget               // виджет <------------------------+
 
-CustomSingleChildLayout
+class MyDelegate extends SingleChildLayoutDelegate {
+  houldRelayout                         // обяз, можно вернуть true
+  Size getSize                          // собственные ограничения
+  BoxConstraints getConstraintsForChild // ограничения для чайлдов
+  Offset getPositionForChild            // офсет
+}
+
+// multi - например расположить элементы на экране в определенных частях
+   экрана , определенных размеров.
+ustomMultiChildLayout(
+  delegate: MyMultiDelegate(),  // делегат определяется ниже
+  children: [                   // список лэйаутов
+    LayoutId(                   // только такие структуры могут тут быть  
+      id: 1,                    // id должны быть разными(могут быть строками)
+      child: Text(              // виджеты
+          'data-left'),
+    ),
+    LayoutId(
+      id: 2,
+      child: Text(
+          'data-midle'),
+    ),
+
+class MyMultiDelegate extends MultiChildLayoutDelegate {
+  @override
+  void performLayout(Size size) {
+    if (hasChild(1) && hasChild(2) && hasChild(3)) {  // проверка по id
+      // размеры чайлдов
+      layoutChild(1, BoxConstraints.loose(Size(size.width * 2 / 3, size.height)));
+      layoutChild(2, BoxConstraints.tight(Size(size.width / 6, size.height)));
+      layoutChild(3, BoxConstraints.loose(Size(size.width / 6, size.height)));
+      // отступ от 0:0 чайлдов
+      positionChild(1, Offset(0, size.height / 2));
+      positionChild(2, Offset(size.width * 2 / 3, size.height * 1 / 2));
+      positionChild(
+          3, Offset(size.width - size.width * 1 / 6, size.height * 1 / 2));
+    }
+  }
+
+  BoxConstraints.loose - не больший size
+  BoxConstraints.tight - точный size
+
+  @override
+  bool shouldRelayout(covariant MultiChildLayoutDelegate oldDelegate) {
+    return true;
+  }
+}
