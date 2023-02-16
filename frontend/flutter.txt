@@ -353,13 +353,27 @@ class MyMultiDelegate extends MultiChildLayoutDelegate {
 
 
 --- Scroll -------------------------------------------
+// вызывает build/initState всех элементов сразу, используется
+   для небольших списков, для больших - ListView
 SingleChildScrollView(            // скролит 1 элемент
   scrollDirection: Axis.vertical, // гориз скролл
   controller: controller,         // приним скролл контроллер(для sf)
   child: Column(                  // скролищейся элемсент
     children: widgets,            // виджеты
 
-ListView
+// вызывает build/initState элементов только при скролле на них
+   использовать для всего
+ListView(                         // обычн конструктор
+  children: [ ...                 // виджеты
+ListView.builder(                 // строит/удаляет виджеты автом при скрол
+  itemBuilder: (context, index) => Text('hi $index'), // с пом этого
+  addAutomaticKeepAlives: false,  // пытаться сохранить состояние виджетов
+ListView.separated(               // как builder, только генерит между -+
+  itemBuilder:                    // виджеты                            |
+  separatedBuilder:               // виджеты между виджетами <----------+
+// Для нек виджетов не нужно удалять содержимое (TextFueld например) -
+   можно в ListView.builder в itemBuilder засунуть свой sf видж c миксином 
+   AutomaticKeepAliveClientMixin
 
 ScrollController();               // всякие настройки
 controller.jumpTo(400)            // прыг на опр офсет
