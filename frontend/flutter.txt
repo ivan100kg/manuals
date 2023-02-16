@@ -350,3 +350,18 @@ class MyMultiDelegate extends MultiChildLayoutDelegate {
     return true;
   }
 }
+
+
+--- Scroll -------------------------------------------
+SingleChildScrollView(            // скролит 1 элемент
+  scrollDirection: Axis.vertical, // гориз скролл
+  controller: controller,         // приним скролл контроллер(для sf)
+  child: Column(                  // скролищейся элемсент
+    children: widgets,            // виджеты
+
+ListView
+
+ScrollController();               // всякие настройки
+controller.jumpTo(400)            // прыг на опр офсет
+controller.animateTo(...)         // прыг на опр офсет плавно
+
