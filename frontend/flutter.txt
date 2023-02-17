@@ -208,6 +208,9 @@ class _MyAppState extends State<MyApp> {  // привязка к классу My
 --- Базовые виджеты ---
 MaterialApp(                  // корн виджет, который должен быть на самом верху
   title: 'some title',        // заголовок на вкладке(для веб)
+  theme: ThemeData(           // темы для различ виджетов
+    appBarTheme: AppBarTheme(backgroundColor: AppColors.darkBlue),
+    bottomNavigationBarTheme:
   home: Text('some text'),    // основное тело - весь экран
 
 Scaffold(                     // базовый дизайн и структура страницы/каркас экрана
@@ -448,9 +451,18 @@ return MaterialApp(
 
 
 --- Bottom navigaiton bar -----------
-Добавляется в Scaffold
+// стили в MaterialApp
+bottomNavigationBarTheme: BottomNavigationBarThemeData(
+  backgroundColor: AppColors.darkBlue,
+  selectedItemColor: Colors.white,
+  unselectedItemColor: Colors.grey,
+// Добавляется в Scaffold
+body: Center(
+  child: _widgets[_selectedTab],          // перерисовка в завис от инд 
+),                                           _widgets - массив наших видж
 bottomNavigationBar: BottomNavigationBar(
-  items: [
+  currentIndex: _selectedTab,             // переменная обновляемыя в setState
+  items: [                                   выбранная вкладочка в баре
     BottomNavigationBarItem(
       icon: Icon(Icons.access_time),
       label: 'her',
@@ -459,6 +471,8 @@ bottomNavigationBar: BottomNavigationBar(
       icon: Icon(Icons.money),
       label: 'hui',
     ),
+  ],
+  onTap: onSelectTab,                     // наша функция кот обновляет индекс
 
 
 --- TextField -------------
