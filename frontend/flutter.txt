@@ -402,3 +402,65 @@ IconButton(                                         // кнопка - иконк
 // В кнопки можно заворачивать не только текст - а любой виджет,
 TextButton(                                         
   child: Row(...                                    // все будет кнопкой
+
+
+--- Navigation ---------------------------
+Длф навигации используется класс Navigator.
+навигатор умеет переходить вперед, возвращаться назад, провер возможность этого.
+
+
+final navigator = Navigator.of(context);  // получить текущий навигатор
+
+// Навигатору передается route в котором определен builder: что открыть
+final route = MaterialPageRoute<void>(builder: (context) => MyWidget());
+
+Переходы:
+navigator.push(route);  // переход, появится кнопка назад на предыдущ виджет
+navigator.pushNamed('/main_screen');            // переход по url (см ниже)
+                                                   добавляется в стэк нов виджет
+navigator.pushReplacementNamed('/main_screen'); // то же но нет стрелки назад,
+                                                   убирает из стэка пред виджет
+Navigator.of(context).pop();                    // переход назад
+Navigator.of(context).canPop();                 // возможен ли переход
+
+// убираем home: из главного виджета и пропишем маршруты
+return MaterialApp(
+  theme: ThemeData(
+      appBarTheme:  // общая тема для AppBar всех страниц
+          AppBarTheme(backgroundColor: Color.fromARGB(255, 0, 34, 61))),
+  routes: {
+    '/auth': (context) => AuthWidget(), // <-----------+
+    '/main_screen': (context) => MainScreenWidget(),   |
+  },                                                   |
+  initialRoute: '/auth',  // этот вместо home: --------+
+  // использовать только если необходимо, иначе всегда есть куда перейти(стрелка)
+  onGenerateRoute: (settings) => MaterialPageRoute<void>( // если переходим по неправ
+        builder: (context) => Text('Wrong path!'),           пути вызовется этот метод
+      ),                                                     и откроет нов экран
+                                                             кнопка назад будет всегда
+                                                             активна.
+
+  Маршрутизация:
+  /       - корень
+  /main   - с этой страницы автоматически будет кнопка назад в корень
+  /sacond - с min не пересикается
+  /main/a - а с этой в /main
+
+
+--- Bottom navigaiton bar -----------
+Добавляется в Scaffold
+bottomNavigationBar: BottomNavigationBar(
+  items: [
+    BottomNavigationBarItem(
+      icon: Icon(Icons.access_time),
+      label: 'her',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.money),
+      label: 'hui',
+    ),
+
+
+--- TextField -------------
+decoration
+controller
