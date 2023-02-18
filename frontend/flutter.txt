@@ -541,3 +541,27 @@ TextField(
   minLines: 2,                            // минимально строк
   maxLength: 100,                         // макс кол-во символов
   textAlign: TextAlign.center,            // текст по центру
+
+--- events ---
+// контроллеры, 1 поле - 1 контроллер, sf widget
+final _controllerOne = TextEditingController();
+final _controllerTwo = TextEditingController('start text');
+
+// функции для обработки событий
+void _onChanged(String text) => print('_onChanged $text');
+void _onEditingComplete() => print('_onEditingComplete');
+void _onSubmitted(String text) => print('_onSubmitted $text');
+
+// работа с контроллерами
+void _onTab() {
+  _controllerOne.clear();                 // очистить поле при событии
+  _controllerTwo.text = 'Hi';             // текст поля, можно другой контроллер
+  print('_onTab');
+}
+
+TextField(
+  controller: _controllerOne,             // подключить контроллер
+  onChanged: _onChanged,                  // что-то меняется в поле
+  onEditingComplete: _onEditingComplete,  // нажатие enter
+  onSubmitted: _onSubmitted,              // нажатие enter
+  onTap: _onTab,                          // нажать на поле
