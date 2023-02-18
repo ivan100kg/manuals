@@ -485,9 +485,10 @@ bottomNavigationBar: BottomNavigationBar(
   disabled
 под каждый есть свой декороатор и можно настроить
 
+--- decoration ---
 TextField(
   decoration: InputDecoration(            // различные настройки отображения
-    enabled: true,                        // глоб состояние enabled/disabled
+    enabled: true,                        // состояние enabled/disabled
     border: OutlineInputBorder(),         // рамка вокруг общий стиль
     disabledBorder: OutlineInputBorder(), // рамка вогруг неактивного поля
     enabledBorder: OutlineInputBorder(    // активное поле со своим стилем
@@ -521,4 +522,22 @@ TextField(
     fillColor: Colors.amber,              // этим цветом
     hoverColor: Colors.black,             // при наведении этим цветом
 
-
+--- root settings ---
+TextField(
+  enabled: true,                          // глоб состояние enabled/disabled
+  readOnly: true,                         // активное, но вводить ничего не получится
+  textInputAction:                        // действия при нажатии (enter) много всего
+    TextInputAction.done,                 // выйти из фокуса
+    TextInputAction.next,                 // переход на след поле 
+  keyboardType: TextInputType.number,     // тип клавы для мобилок
+  showCursor: true,                       // показывать курсор в поле
+  cursorWidth: 2.0,                       // разл настройки курсора внутри поля
+  obscureText: true,                      // точки для password
+  obscuringCharacter: '&',                // символ вместо точек в password
+  autocorrect: false,                     // откл автокоррект
+  enableSuggestions: false,               // откл предлож вар-ты(мобилка)
+  style: TextStyle(fontSize: 30,          // настройки самого текста в поле
+  maxLines: 2,                            // максимально строк
+  minLines: 2,                            // минимально строк
+  maxLength: 100,                         // макс кол-во символов
+  textAlign: TextAlign.center,            // текст по центру
