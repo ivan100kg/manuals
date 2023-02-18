@@ -475,6 +475,50 @@ bottomNavigationBar: BottomNavigationBar(
   onTap: onSelectTab,                     // наша функция кот обновляет индекс
 
 
---- TextField -------------
-decoration
-controller
+--- TextField --------------------------------------------------------------
+Виджет текстового поля ввода
+Имеет несколько состояний в decorator:
+  enabled:
+    focused (можно вводить текст)
+    error
+    error + focused
+  disabled
+под каждый есть свой декороатор и можно настроить
+
+TextField(
+  decoration: InputDecoration(            // различные настройки отображения
+    enabled: true,                        // глоб состояние enabled/disabled
+    border: OutlineInputBorder(),         // рамка вокруг общий стиль
+    disabledBorder: OutlineInputBorder(), // рамка вогруг неактивного поля
+    enabledBorder: OutlineInputBorder(    // активное поле со своим стилем
+      borderSide: BorderSide(             // сама рамка, имеет настройки
+        color: Colors.green),
+        width: 5,
+      borderRadius: BorderRadius.all(     // скругление
+                Radius.circular(50),
+    focusedBorder: UnderlineInputBorder() // в фокусе
+    labelText: 'Hello',                   // label поля - отображ в рамке
+    labelStyle: TextStyle(                // стиль label
+      color: Colors.deepOrange,
+    helperText: 'Fuck you',               // текст подсказка снизу рамки
+    helperStyle: TextStyle(),             // ее стиль
+    helperMaxLines: 1,                    // макс кол-во строк подсказки
+    hintText: 'huohuohuou',               // placeholder в поле при фокусе 
+    hintStyle: TextStyle(                 // стиль
+      color: Colors.black12,
+    floatingLabelBehavior:                // настройка анимации лэйбла 
+      FloatingLabelBehavior.always,       // always/never поведение label
+    errorText: null,                      // если не null то рамка errorBorder + текст
+    icon: Icon(Icons.access_time),        // иконка перед полем
+    prefixIcon: Icon(Icons.money),        // иконка внутри поля перед текстом
+    prefix: Text('pre'),                  // виджет перед текстом
+    prefixText: 'pre',                    // текст перед текстом
+    suffixIcon: ...                       // после
+    suffixText: ...                       // после
+    isCollapsed: true,                    // сжать до минимума(убрать иконки, лэйблы)
+    contentPadding: EdgeInsets.all(30),   // если isCollapsed - настройка паддинга
+    filled: true,                         // заполнять поля
+    fillColor: Colors.amber,              // этим цветом
+    hoverColor: Colors.black,             // при наведении этим цветом
+
+
