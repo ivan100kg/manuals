@@ -486,6 +486,7 @@ bottomNavigationBar: BottomNavigationBar(
 под каждый есть свой декороатор и можно настроить
 
 --- decoration ---
+Настройка видимости самого поля, все кроме текста
 TextField(
   decoration: InputDecoration(            // различные настройки отображения
     enabled: true,                        // состояние enabled/disabled
@@ -523,6 +524,7 @@ TextField(
     hoverColor: Colors.black,             // при наведении этим цветом
 
 --- root settings ---
+Общие настройки поля и текста
 TextField(
   enabled: true,                          // глоб состояние enabled/disabled
   readOnly: true,                         // активное, но вводить ничего не получится
@@ -543,6 +545,7 @@ TextField(
   textAlign: TextAlign.center,            // текст по центру
 
 --- events ---
+Управление взаимодействиями с полем
 // функции для обработки событий
 void _onChanged(String text) => print('_onChanged $text');
 void _onEditingComplete() => print('_onEditingComplete');
@@ -557,6 +560,7 @@ TextField(
   onTap: _onTab,                          // нажать на поле
 
 --- controllers ---
+Управление текстом поля
 // контроллеры, 1 поле - 1 контроллер, sf widget
 final _controllerOne = TextEditingController();
 final _controllerTwo = TextEditingController('start text'); // начальный текст
@@ -573,6 +577,7 @@ _controllerOne.value = TextEditingValue(  // манипуляции с текс�
 _controllerOne 
 
 --- focus ---
+Управление фокусом поля
 TextField(
   focusNode: _nodeOne,                    // фокус поля
 
@@ -583,3 +588,23 @@ void foo() {
   _nodeOne.nextFocus();                   // сл TextField фокус
   _nodeOne.addListener((){});             // можно навесить listener
 }
+
+--- formatters ---
+Форматирование текста на лету
+TextField(
+  inputFormatters: [                      // список форматтеров
+    FilteringTextInputFormatter.digitsOnly,             // только цифры
+    FilteringTextInputFormatter.allow(RegExp(r'\d+')),  // только под regex
+    FilteringTextInputFormatter.deny(RegExp(r'0+')),    // запред под regex
+    MyFormatter(),                                      // свой форматтер
+  ],
+
+// свой форматтер
+class MyFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final digitsOnly = newValue.text.replaceAll(RegExp(r'[^\d]'), '');
+    return TextEditingValue(
+      text: digitsOnly,
+      selection: TextSelection.collapsed(offset: digitsOnly.length),
