@@ -543,25 +543,43 @@ TextField(
   textAlign: TextAlign.center,            // текст по центру
 
 --- events ---
-// контроллеры, 1 поле - 1 контроллер, sf widget
-final _controllerOne = TextEditingController();
-final _controllerTwo = TextEditingController('start text');
-
 // функции для обработки событий
 void _onChanged(String text) => print('_onChanged $text');
 void _onEditingComplete() => print('_onEditingComplete');
 void _onSubmitted(String text) => print('_onSubmitted $text');
 
-// работа с контроллерами
-void _onTab() {
-  _controllerOne.clear();                 // очистить поле при событии
-  _controllerTwo.text = 'Hi';             // текст поля, можно другой контроллер
-  print('_onTab');
-}
-
 TextField(
   controller: _controllerOne,             // подключить контроллер
+  focusNode: _nodeOne,                    // фокус поля
   onChanged: _onChanged,                  // что-то меняется в поле
   onEditingComplete: _onEditingComplete,  // нажатие enter
   onSubmitted: _onSubmitted,              // нажатие enter
   onTap: _onTab,                          // нажать на поле
+
+--- controllers ---
+// контроллеры, 1 поле - 1 контроллер, sf widget
+final _controllerOne = TextEditingController();
+final _controllerTwo = TextEditingController('start text'); // начальный текст
+
+// работа с контроллерами удобно в ф-ии-обработчике
+_controllerOne.clear();                   // очистить поле при событии
+_controllerTwo.text = 'Hi';               // установить в поле некий текст
+_controllerOne.addListener(foo);          // доб listener реагирует на изменения
+                                             эквивалент событию onChanged
+_controllerOne.removeListener(foo);       // удалить listener
+_controllerOne.value = TextEditingValue(  // манипуляции с текстом
+      text: 'one',                        // тот самый текст
+      selection: TextSelection.collapsed(offset: 5),  // позиц курсора
+_controllerOne 
+
+--- focus ---
+TextField(
+  focusNode: _nodeOne,                    // фокус поля
+
+void foo() {
+  _nodeOne.requestFocus();                // сделать фокус
+  _nodeOne.unFocus();                     // убрать фокус
+  _nodeOne.hasFocus();                    // в фокусе?
+  _nodeOne.nextFocus();                   // сл TextField фокус
+  _nodeOne.addListener((){});             // можно навесить listener
+}
