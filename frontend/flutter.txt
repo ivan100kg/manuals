@@ -608,3 +608,22 @@ class MyFormatter extends TextInputFormatter {
     return TextEditingValue(
       text: digitsOnly,
       selection: TextSelection.collapsed(offset: digitsOnly.length),
+
+
+--- Pictires ----------------------------------------------------------
+создать папку images в корне проекта
+# pubspec.yaml
+flutter:
+  uses-material-design: true
+  assets:
+    - images/audio.png  # добавим наши картинки
+  fonts:
+
+// отдельный класс в lib/screens с картинками
+abstract class AppImages {
+  static const AssetImage audio = AssetImage('images/audio.png');
+}
+// в классе
+Center(
+  child: Image(image: AppImages.audio), 
+);
