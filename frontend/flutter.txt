@@ -185,6 +185,16 @@ CupertinoApp  - брат MaterialApp только все под Apple ios
 --- StatelessWidget ---
 Не хранит никакого состояния, всегда все виджеты создаются заново с пом build
 Использоывать const везде где только можно!
+
+Внутреннее строение - дерево виджетов, дерево элементов
+дерево виджетов   дерево элементов
+MaterialApp       MaterialApp
+  Scaffold          Scaffold
+    Container         Container
+      Row               Row
+        Text              Text
+        Text              Text
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -192,12 +202,43 @@ class MyApp extends StatelessWidget {
   }}
 
 --- StatefulWidget ---
-разделен как бы на 2 класса Основной+Состояние(с build методом)
+Хранит сосотояние, подходит для динамичных виджетов, имеет доступ к самому виджету,
+а также доступ к контексту.
+Внутреннее строение - дерево виджетов, дерево элементов, состояние
+дерево виджетов   дерево элементов  состояние
+MaterialApp       MaterialApp       _MaterialApp
+  Scaffold          Scaffold        _Scaffold
+    Container         Container     _Container
+      Row               Row         _Row
+        Text              Text      _Text
+        Text              Text      _Text
+При пересоздании виджетов, если он не менялся, то элементы не пересоздаются. 
+Сосотояние живет с элементами. 
+
+Жизненный цикл StatefulWidget:
+1. создается виджет
+2. у него вызывается createState()
+3. создается состояние
+4. к состоянию цепляется контекст
+5. вызывается initState() - 1 раз
+6. выз-ся didChangeDependencies() - выше по дереву обновился инхерит
+7. выз-ся build()
+8. deactivate() если виджет деактивирован, может вернуться с пом build()
+9. dispose() удалился виджет на совсем - здесь закрываем все что нужно
+
+Доп методы состояния:
+1. didUpdateWidget()  - выз-ся если виджет изменился
+2. reassemble() - произшел хот релоад(отладка)
+3. didChangeDependencies() - выше по дереву обновился инхерит
+
+// разделен как бы на 2 класса Основной+Состояние(с build методом)
 class MyApp extends StatefulWidget {      // <--------------------------+
   @override                                                             |
   State<MyApp> createState() {  // переопред createState()              |
     return _MyAppState();       // возвращ класс ниже --+               |
   }}  //      v-----------------------------------------+               |
+                                                                        |
+// State - здесь вся                                                    |
 class _MyAppState extends State<MyApp> {  // привязка к классу MyApp ---+
   var _questionIndex = 0;     // какие-то данные
   void _answerQuestion() {    // обработчик кнопки приватный, только в классе
@@ -210,7 +251,7 @@ class _MyAppState extends State<MyApp> {  // привязка к классу My
     return MaterialApp(...    // отрисовка виджетов тут
   
   @override                   // определяется 1 раз - здесь инициализация
-  void InitState() {
+  void InitState() {             есть доступ к context
     super.initState();
 
     _myController.addListener(foo);
