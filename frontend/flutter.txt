@@ -725,3 +725,35 @@ Center(
       onTap: () => print('hui'),    // callback
       borderRadius: ...             // настройки сплэша
       child: Row(...                // any widgets
+
+
+--- Keys ------------------------------------------------------------------------
+Это класс-идентификатор виджета (id)
+Когда использовать:
+  Для корректного премещения виджета в дереве виджетов
+  Для сохранения стандартного сотояния виджета(позиция скролла, фокус), в те моменты
+  когда он удаляется из дерева.
+
+              Keys                            Уникальные:           Со значением:
+          /         \                           GlobalKey             ObjectKey
+GlobalKey             LocalKey                  LabeledObjectKey      ValueKey
+  GlobalObjectKey       ObjectKey               UniqueKey             PageStorageKey
+  LabeledObjectKey      UniqueKey                                     GlobalObjectKey
+                        ValueKey  
+                          PageStorageKey
+
+final key = GlobalKey();            // глобальный ключ
+final localKey = UniqueKey();       // локальный, виден например в списках
+this.key;                           // каждый виджет имеет ключ
+this.key == localKey                // сравнения ключей
+final valueKey = ValueKey('some');  // ключ с каким то примитивным значением
+valueKey == ValueKey('some')        // сравнение ключей-значений
+final valueKey = ValueKey(obj);     // ключ с любым объектом внутри
+
+Flutter при изменении дерева виджетов сравнивает элементы между собой по классу,
+в ситуациях когда классы одинаковые, можно передать им уникальные ключи,
+для того чтобы сравнение проходило также по ключу
+MyWidget(key: UniqueKey());         // например так - теперь будет рассматриваться
+MyWidget(key: UniqueKey());            изменение именно этого виджета
+
+PageStorageKey('первая страница..') // используется для запоминания стандартного сост виджета
