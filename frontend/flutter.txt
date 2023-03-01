@@ -922,8 +922,7 @@ class DataProviderInherit extends InheritedModel<String> {
 // аспект добавляется в аргументы при подписке на инхерит
 context.dependOnInheritedWidgetOfExactType<DataProviderInherit>(aspect: '2')?.value2;
 
-
---- Model ----------------------------------------------------------
+--- Model ---
 Модель нужна для хранения данных и различной логики, методы, поля...
 Виджеты получают провайдера с помощью котекста и получают через него
 доступ к модели - так можно изменить данные модели.
@@ -1028,3 +1027,54 @@ onChanged: (value) =>
   SimpleCalcWidgetProvider.of(context)?.model.secondNumber = value,
 Или кнопка - просто использует метод модели
 onPressed: () => SimpleCalcWidgetProvider.of(context)?.model.sum(),
+
+--- InheritedNotifier the best choice! ---
+Совмещает в себе оповещение модели и провайдера - теперь при изменении
+модели - все листенеры подписанные на провайдера так-же получат уведомление
+перерисоваваться будут не все, а те кто пытается допустим показать данные
+
+class SimpleCalcWidgetProvider
+    extends InheritedNotifier<SimpleCalcWidgetModel> {      // <наша модель>
+  SimpleCalcWidgetProvider({
+    Key? key,
+    required SimpleCalcWidgetModel model,                   // принимает модель
+    required Widget child,
+  }) : super(
+          key: key,
+          notifier: model,                                  // передаем в notifier модель
+          child: child,
+        );
+
+  static SimpleCalcWidgetModel? of(BuildContext context) {  // подписка - ставим на виджеты с перерисовкой
+    return context
+        .dependOnInheritedWidgetOfExactType<SimpleCalcWidgetProvider>()
+        ?.notifier;
+  }
+
+  static SimpleCalcWidgetModel? read(BuildContext context){ // без подписки - на те что перерисовывать не надо
+    final widget = context
+        .getElementForInheritedWidgetOfExactType<SimpleCalcWidgetProvider>()
+        ?.widget;
+    return widget is SimpleCalcWidgetProvider ? widget.notifier : null;
+  }
+}
+
+// Итого класс будет перерисован автоматически если он подписан на провайдера с пом of(можно назвать по другому)
+class ResultWidget extends StatelessWidget {
+  const ResultWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final value = SimpleCalcWidgetProvider.of(context)?.sumResult ?? 0;
+    return Text('$value');
+  }
+}
+
+--- Best practice ---
+Модель(ChangeNotifier)        // тут вся логика
+Провайдер(InheritedNotifier)  // доставка инфрмации в/из виджеты
+const Stateless Widgets       // тут вся верстка
+
+
+--- Provider ------------------------------------------------------
+пакет для работы с инхеритами, не нужно ничего писать, все написано
