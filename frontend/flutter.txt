@@ -232,7 +232,7 @@ MaterialApp       MaterialApp       _MaterialApp
 Доп методы состояния:
 1. didUpdateWidget()  - выз-ся если виджет изменился
 2. reassemble() - произшел хот релоад(отладка)
-3. didChangeDependencies() - выше по дереву обновился инхерит
+3. didChangeDependencies() - выше по дереву обновился инхерит/модель
 
 // разделен как бы на 2 класса Основной+Состояние(с build методом)
 class MyApp extends StatefulWidget {      // <--------------------------+
@@ -817,6 +817,7 @@ context.visitChildElements(foo);                      // перебирает п
 
 
 --- Inherited -----------------------------------------------------------------
+Инхериты - Провайдеры
 Виджет служит для передачи какого-то связанного с ним значения своим потомкам
 с инхеритом могут работать только его дочерние виджеты, если они подписаны на инхерит, и получили
 уведомление об изменении (updateShouldNotify) то виджет перерисовывается.
@@ -920,3 +921,110 @@ class DataProviderInherit extends InheritedModel<String> {
 
 // аспект добавляется в аргументы при подписке на инхерит
 context.dependOnInheritedWidgetOfExactType<DataProviderInherit>(aspect: '2')?.value2;
+
+
+--- Model ----------------------------------------------------------
+Модель нужна для хранения данных и различной логики, методы, поля...
+Виджеты получают провайдера с помощью котекста и получают через него
+доступ к модели - так можно изменить данные модели.
+Чтобы известить всех о смене данных в модели используется
+
+Модель - наследуется от ChangeNotifier
+class SimpleCalcWidgetModel extends ChangeNotifier {
+  int? _firstNumber;    // данные
+  int? _secondNumber;
+  int? sumResult;
+
+  // какие-то свойства для работы с данными
+  set firstNumber(String value) => _firstNumber = int.tryParse(value);
+  set secondNumber(String value) => _secondNumber = int.tryParse(value);
+
+  void sum() {           // какой-то метод
+    int? result;
+    if (_firstNumber != null && _secondNumber != null) {
+      result = _firstNumber! + _secondNumber!;
+    } else {
+      sumResult = null;
+    }
+    if (result != sumResult) {
+      sumResult = result;
+      notifyListeners();  // фишка модели - известить всех листенеров
+    }
+  }
+}
+
+Инхерит с моделью
+class SimpleCalcWidgetProvider extends InheritedWidget {
+  final SimpleCalcWidgetModel model;                          // модель объявляем в провайдере
+  SimpleCalcWidgetProvider({required super.child, required this.model});
+
+  static SimpleCalcWidgetProvider? of(BuildContext context) { // удобный способ получить и подписаться на инхерит
+    return context
+        .dependOnInheritedWidgetOfExactType<SimpleCalcWidgetProvider>();
+  }
+
+  @override
+  bool updateShouldNotify(covariant SimpleCalcWidgetProvider oldWidget) {
+    return model != oldWidget.model;                          // уведомить всех об изменении если модль сменится
+  }                                                              если данные меняются внутри модели - нет извещ
+}                                                                приходится добавлять модели листенера
+
+Корневой sf класс(state) в котором все происходит
+class _SimpleCalcWidgetState extends State<SimpleCalcWidget> {
+  final _model = SimpleCalcWidgetModel(); // объявляем модель
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: 
+        SimpleCalcWidgetProvider(         // провайдер обеспечит доступ к нему и модели
+          model: _model,                  // устанавливаем модель(кот объявили в конструкторе провайдера) 
+          child: Column(
+            children: [                   // все элементы будут иметь доступ к провайдеру и модели
+              const FirstNumberWidget(),  // st виджет 
+              const ResultWidget(),       // sf виджет
+
+Виджеты - дочерние элементы нашего Инхерита(Провайдера) могут изменять модель
+// st виджет:
+class FirstNumberWidget extends StatelessWidget {
+  const FirstNumberWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+      ),
+      onChanged: (value) =>               // можно на событие навешать callback который пишет значение в модель
+          SimpleCalcWidgetProvider.of(context)?.model.firstNumber = value,
+
+// sf виджет:
+class ResultWidget extends StatefulWidget {
+  const ResultWidget({super.key});
+
+  @override
+  State<ResultWidget> createState() => _ResultWidgetState();
+}
+
+class _ResultWidgetState extends State<ResultWidget> {
+  String _value = '-1';                   // sf нужен для того чтобы хранить тут значения
+
+  @override
+  void didChangeDependencies() {          // вызывается при изменении модели
+    super.didChangeDependencies();
+    final model = SimpleCalcWidgetProvider.of(context)?.model;
+    model?.addListener(() {               // добавим в модель listener, кот будет вызван когда у модели
+      _value = '${model.sumResult}';         будет вызван notifyListeners()
+      setState(() {});                    // просто меняем значение и обновляем виджет(build)
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {    // отрисовка текста
+    return Text('result: $_value');
+  }
+
+Например в TextField можно на событие навешать callback который пишет значение в модель
+onChanged: (value) =>
+  SimpleCalcWidgetProvider.of(context)?.model.secondNumber = value,
+Или кнопка - просто использует метод модели
+onPressed: () => SimpleCalcWidgetProvider.of(context)?.model.sum(),
