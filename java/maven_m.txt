@@ -115,6 +115,19 @@ Commands:
     mvn verify
 
 Deploy:
+    ~/.m2/settings.xml
+    или
+    /etc/maven/settings.xml
+    Вставить блок:
+    <servers>
+    <server>
+        <id>myServer</id>
+        <username>tomcat</username>
+        <password>*******</password>
+        </server>
+    </servers>
+
+    pom.xml
     <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat7-maven-plugin</artifactId>
