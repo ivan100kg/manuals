@@ -44,13 +44,17 @@ build/          - различные файлы компилляции для fl
 test/           - авто тесты
 images/         - папка с нашими изображениями
 fonts/          - наши скаченный шрифты
+.metadata       - атоматич файл для flutter
+.packages       ...
+.my-proj.iml    ...
+pubspec.lock    ...
+pubspec.yaml    - описание, всякие зависимости проекта(pub.dev), шрифты, фотки ...
+analysis_options.yaml
 lib/            - our code working directory
-  .metadata     - атоматич файл для flutter
-  .packages     ...
-  .my-proj.iml  ...
-  pubspec.lock  ...
-  pubspec.yaml  - описание, всякие зависимости проекта(pub.dev), шрифты, фотки ...
-  analysis_options.yaml
+  widgets/      - виджеты/верстка
+  domain/       - сущности, клиенты
+    clients/    - клиенты взяимодействия с сетью HTTP
+    entity/     - классы связ с таблицами в БД
 
 --- pubspec.yaml ---
 name: flutter_complete_guide
@@ -1087,7 +1091,7 @@ http            - all
 dio             - all
 
 --- JSON -----------------------------------------------------------
---- ручная сериализация ---
+--- ручная сериализация (не очень, используй Serializable)---
 final jsonString = '''{                               // JSON строка
   "name": "John Smith",
   "email": "john@example.com"
@@ -1114,3 +1118,36 @@ class User {
       };
 }
 
+--- Serializable ---
+Автоматическое генерирование методов работы с JSON
+
+
+dependencies:                           # pubspec.yaml подключить зависимости
+  json_annotation: <latest_version>     # версии ищем в pub.dev
+dev_dependencies:
+  build_runner:                         # если не указать - то последняя
+  json_serializable: <latest_version>
+
+> flutter pub get                       # обновиться
+
+// Класс для сериализации
+import 'package:json_annotation/json_annotation.dart';
+part 'user.g.dart';                     # укажем часть - текущ_файл.g.dart
+
+@JsonSerializable()                     # пометим класс для сериализации
+class User {
+  User(this.name, this.email);
+  String name;
+  @JsonKey(                             # различные настройки поля из коробки
+    required: true,
+    defaultValue: 'sd',
+    name: '1почта',
+  )
+  String email;
+
+  // эти методы можно будет дописать после генерации(скопировать от туда)
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  Map<String, dynamic> toJson() => _$UserToJson(this);
+}
+
+> flutter pub run build_runner build    # генерация - сформируется нов файл с логикой
