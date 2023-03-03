@@ -1086,4 +1086,31 @@ dart:html       - web(системная либа)
 http            - all
 dio             - all
 
---- JSON ---
+--- JSON -----------------------------------------------------------
+--- ручная сериализация ---
+final jsonString = '''{                               // JSON строка
+  "name": "John Smith",
+  "email": "john@example.com"
+}'''
+
+Map<String, dynamic> userMap = jsonDecode(jsonString);// конверт из JSON строки в мэпку
+var user = User.fromJson(userMap);                    // получить User
+String newJsonString = jsonEncode(user);              // конверт из User строку JSON 
+
+// в классах применяют след методы
+class User {
+  final String name;
+  final String email;
+
+  User(this.name, this.email);
+
+  User.fromJson(Map<String, dynamic> json)            // из мэпки получить объект User
+      : name = json['name'],
+        email = json['email'];
+
+  Map<String, dynamic> toJson() => {                  // из полей User вернуть мэпку
+        'name': name,
+        'email': email,
+      };
+}
+
