@@ -23,7 +23,10 @@ Dart - programming language of Google
     flutter channel master
     flutter upgrade
     flutter channel
-2. install plagin for VSCode
+2. install plugin for VSCode
+  Flutter
+  Dart
+  Dart Data Class Generator - пакет для VSCode - по нажатию(Ctrl + . / Alt + Enter) генерирует все что угодно
 3. Config files
     pubspec.yaml - specifies basic information about your app, such as its current version,
     its dependencies, and the assets with which it will ship
@@ -53,8 +56,9 @@ analysis_options.yaml
 lib/            - our code working directory
   widgets/      - виджеты/верстка
   domain/       - сущности, клиенты
-    clients/    - клиенты взяимодействия с сетью HTTP
-    entity/     - классы связ с таблицами в БД
+    client/     - клиенты взяимодействия с сетью HTTP
+    model/      - классы связ с таблицами в БД, можно назвать entity
+  resources/    - разл ресурсы
 
 --- pubspec.yaml ---
 name: flutter_complete_guide
@@ -1040,9 +1044,10 @@ onPressed: () => SimpleCalcWidgetProvider.of(context)?.model.sum(),
 
 class SimpleCalcWidgetProvider
     extends InheritedNotifier<SimpleCalcWidgetModel> {      // <наша модель>
+  final SimpleCalcWidgetModel model;
   SimpleCalcWidgetProvider({
     Key? key,
-    required SimpleCalcWidgetModel model,                   // принимает модель
+    required this.model,                   // принимает модель
     required Widget child,
   }) : super(
           key: key,
@@ -1082,13 +1087,6 @@ const Stateless Widgets       // тут вся верстка
 
 
 --- Работа с данными ---------------------------------------------------------------------------------------
-Пакеты/Библиотеки
-package         area
-------------------------
-dart:io         - mobile(системная либа)
-dart:html       - web(системная либа)
-http            - all
-dio             - all
 
 --- JSON -----------------------------------------------------------
 --- ручная сериализация (не очень, используй Serializable)---
@@ -1121,7 +1119,6 @@ class User {
 --- Serializable ---
 Автоматическое генерирование методов работы с JSON
 
-
 dependencies:                           # pubspec.yaml подключить зависимости
   json_annotation: <latest_version>     # версии ищем в pub.dev
 dev_dependencies:
@@ -1151,3 +1148,14 @@ class User {
 }
 
 > flutter pub run build_runner build    # генерация - сформируется нов файл с логикой
+
+
+--- Сеть -----------------------------
+Пакеты/Библиотеки
+package         area
+------------------------
+dart:io         - mobile(системная либа)
+dart:html       - web(системная либа)
+http            - all
+dio             - all
+
