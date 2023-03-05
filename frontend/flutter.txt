@@ -305,6 +305,9 @@ Container(                    // содержит др виджет
       offset:
     )
 
+SafeArea(                     // можно обернуть люб виджет, чтобы он не залез на системное
+  child:                         пространство(например app bar в андройде)
+
 Row(                          // контейнер для виджетов, занимает все пространство по верт
 Column(                       // контейнер для виджетов, занимает все пространство по гориз
   mainAxisAlignment: ... ,    // выравнивание относ глав оси (center, start, spaceAround..)
@@ -1159,3 +1162,78 @@ dart:html       - web(системная либа)
 http            - all
 dio             - all
 
+ 
+ --- Архитектура -------------------------------
+Блоки приложения
+
+-- Модуль
+1  - экран
+
+-- View
+2  - верстка
+10 - навигация
+9  - маппинг
+7  - стэйт
+
+-- Domain
+-- логика
+8  - бизнес логика
+-- Repository
+3  - сетевые запросы
+4  - БД
+5  - камера
+6  - геолокация
+
+--- Provider ---------------------------------------------------------
+Устанавливаем пакет с pub.dev
+provider добавляет extensions к контексту
+read<Model>()     - читать модель без подписки
+watch<Model>()    - читать модель + подписаться на изменения(будет ребилдится)
+select((Model value) => value.one) - подписка только на опред значения(только для Provider)
+// другой способ получить модель(идентичный)
+Provider.of<Model>(context, listen: true)   == context.read<Model>()
+Provider.of<Model>(context, listen: false)  == context.watch<Model>()
+
+// ChangeNotifierProvider
+1. главный виджет StatefulWidget или StatelessWidget, размещаем провайдер там
+   если нужно хранить только модель, используем StatelessWidget. 
+   dispose() модели вызывается автоматически провайдером
+class CelebApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => ChangeNotifierProvider( // провайдер
+        create: (context) => CelebModel(),                      // замык, возвращающее модель
+        child: const CelebView(),                               // дерево виджетов которому будет доступна модель
+        lazy: true,                                             // создает create при обращении, не раньше
+      );
+2. верстка, обращение к модели элементами из дерева
+class CelebView extends StatelessWidget {
+  const CelebView({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final model = context.read<CelebModel>();                   // находим модель, читаем без подписки
+    return Column(
+      children: [                                               // обращение к методам модели 
+        ElevatedButton(onPressed: model.inc1, child: Text('button 1')),
+        ElevatedButton(onPressed: model.inc2, child: Text('button 2')),
+        _MyTextWidget(),                                        // виджет с watch
+3. сама модель - простой класс имеющий пару полей и пару методов
+class CelebModel extends ChangeNotifier {
+  var one = 0;
+  var two = 0;
+  void inc1() {
+    one++;
+    notifyListeners();                                          // уведомить подписчиков (watch)
+  }
+  void inc2() {
+    two++;
+    notifyListeners();
+  }
+4. Text виджет с watch
+class _MyTextWidget extends StatelessWidget {
+  const _MyTextWidget({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final value = context.watch<CelebModel>().one;              // подписка на изменение модели
+    return Text('$value');
+  }
+}
