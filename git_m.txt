@@ -228,7 +228,7 @@ git log --pretty=format:""      # свой формат вывода, напр "
 git log --pretty=oneline --graph  графы веток, коммитов (также с опцией oneline)
 
 example:
-git log --pretty=format:"%h %cd %cn %s" --date=format:'%Y-%m-%d'^C
+git log --pretty=format:"%h %cd %cn %s" --date=format:'%Y-%m-%d'
 
     Опции в форматированном выводе:
     Опция   | Описания вывода
