@@ -860,11 +860,12 @@ oldElem.replaceWith(newElem);   // заменить на др элемент
 cloneHeaderDeep.remove();   // удалить
 
 --- Управление классами(лучший способ манипуляции компонентами)
+// устаревший
 classNameElem.className;                // классы - string
 classNameElem.className = 'item__loh';  // перезаписать все классы на новы[й|e]
 // более удобный инструмент
 classNameElem.classList;                // классы в спец объекте(итерируемый)
-classNameElem.classList.add('new-cls'); // добавить класс
+classNameElem.classList.add('new-cls'); // добавить класс, ('cl1', 'cl2' ...) неск
 classNameElem.classList.remove('cls');  // удалить класс
 classNameElem.classList.toggle('cls');  // доб класс если его нет, если есть - удалить
 classNameElem.classList.contains('cl'); // проверка на наличие - true/false
@@ -1002,9 +1003,19 @@ block.getBoundingClientRect;    // координаты элемента на с
     
     // аргументы callback функции(необяз) 1 арг - событие, остальные свои
     btn.addEventListener('click', (e, args) => {
-        console.log(e); // объект MouseEvent(тип события, цель, коорды...)
-        e.target;       // элемент на котором висит обработчик
+        console.log(e);     // объект MouseEvent(тип события, цель, коорды...)
+        e.target;           // элемент на котором висит обработчик
     });
+
+    Делегирование событий - вешаем обработчик на предка - принимают потомки
+    // можно обработчик навесить на весь div с кнопками и проверять ткнули
+       ли на кнопку или еще куда-то
+    if(event?.target?.tagName === 'BUTTON' ||       // тэг кнопка
+       event?.target?.classList.contains('cls') ||  // проверка на класс
+       event?.target?.matches('button.cls')){       // проверка тэг+класс
+        console.log(event.target);
+    }
+
     // отдельная callback функция для удобства
     const delBtn = (e) => e.target.remove();
     btn.addEventListener('mouseout', delBtn);   // удалит сам себя после соб 
@@ -1012,7 +1023,7 @@ block.getBoundingClientRect;    // координаты элемента на с
     // всплытие событий
        два обработчика на элементе и его родителе/влож элементе
        первым срабатывает обраб влож элемента, потом остальные
-       e.currentTarget();   // в отличие от tsrget показывает текущий элемент
+       e.currentTarget();   // в отличие от target показывает текущий элемент
 
     // переопределить стандартное поведение элементов(ссылки, формы, ...)
     const link = document.querySelector('a');
@@ -1027,13 +1038,12 @@ block.getBoundingClientRect;    // координаты элемента на с
     
     Event 	       |  Description
     ---------------+----------------------------------------------------
-    onchange 	   | An HTML element has been changed
-    onclick 	   | The user clicks an HTML element
-    onmouseover    | The user moves the mouse over an HTML element
-    onmouseenter   | The user moves the mouse in an HTML element
-    onmouseout 	   | The user moves the mouse away from an HTML element
-    onkeydown 	   | The user pushes a keyboard key
-    onload 	       | The browser has finished loading the page
+    change 	       | An HTML element has been changed
+    click 	       | The user clicks an HTML element
+    mouseover      | The user moves the mouse over an HTML element
+    mouseenter     | The user moves the mouse in an HTML element
+    mouseout 	   | The user moves the mouse away from an HTML element
+    keydown 	   | The user pushes a keyboard key
 
     События при загрузки страницы:
     load - срабатывает когда страница полностью прогрузилась со всеми эл
