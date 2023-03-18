@@ -378,6 +378,31 @@ result = confirm(question); // ok - true, отмена - false
     const {r,g,b} = obj.color;  // деструктуризация
     console.log(g);             // 128
 
+
+--- Classes/Классы ------------------------------------------------------------
+Это обертка над функциями-коннструкторами, синт сахар
+class Rectangle {                           // класс
+    constructor(height, width) {            // конструктор
+        this.height = height;               // иниц поля
+        this.width = width;
+    }
+
+    calsArea() {                            // метод
+        return this.height * this.width;
+    }
+}
+
+const square = new Rectangle(12,13);        // объект
+console.log(square.calsArea());
+
+class ColoredRect extends Rectangle {       // наследование
+    constructor(height, width, color) {
+        super(height, width);               // вызов конструктора родителя
+        this.color = color;
+    }
+}
+
+
 --- OOP --------------------------------------------------------------------
 Каждый экземпляр какого-то класса имеет имеет поля и методы, которые можно
 использовать. Все эти свойства экз видны в dev-tools браузерa
