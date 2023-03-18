@@ -382,13 +382,23 @@ result = confirm(question); // ok - true, отмена - false
 --- Classes/Классы ------------------------------------------------------------
 Это обертка над функциями-коннструкторами, синт сахар
 class Rectangle {                           // класс
-    constructor(height, width) {            // конструктор
+    constructor(height, width, parent) {    // конструктор
         this.height = height;               // иниц поля
         this.width = width;
+        this.parent = document.querySelector('#parent');
     }
 
     calsArea() {                            // метод
         return this.height * this.width;
+    }
+
+    render() {                              // отрисовка
+        const div = document.createElement('div');
+        div.style.width = this.width;
+        div.style.height = this.height;
+        div.style.backgroundColor = 'red';
+        div.textContent = 'Hello blya!';
+        this.parent.append(div);
     }
 }
 
