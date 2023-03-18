@@ -1124,6 +1124,7 @@ block.getBoundingClientRect;    // координаты элемента на с
     mouseenter     | The user moves the mouse in an HTML element
     mouseout 	   | The user moves the mouse away from an HTML element
     keydown 	   | The user pushes a keyboard key
+    input          | что-то изменилось поле текста(набор текста)
 
     События при загрузки страницы:
     load - срабатывает когда страница полностью прогрузилась со всеми эл
@@ -1308,3 +1309,28 @@ const obj = JSON.parse(json);           // из JSON в объект
 
 // глубокий клон объекта с пом JSON
 const clone = JSON.parse(JSON.stringify(person));
+
+
+--- AJAX -------------------------------------------
+Asynchronous JavaScript and XML
+
+1. устаревший способ
+const inputField = document.querySelector('#usd');
+const outputField = document.querySelector('#rub');
+inputField.addEventListener('input', () => {
+    const request = new XMLHttpRequest();           // объект
+    //        method, url, async(true), login, pass // параметры
+    request.open('GET', 'js/example.json');         // настройки запроса
+    request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+    request.send();                                 // запрос(в POST передаем в параметры)
+    request.addEventListener('load', () => {        // как придет какой-то ответ
+        if(request.status === 200) {
+            console.log(request.response);
+            const data = JSON.parse(request.response);
+            outputField.value = (inputField.value / data.curren.usd).toFixed(2);
+        } else {
+            console.log(request.response);
+            outputField.value = 'unknown';
+        }
+    });
+});
