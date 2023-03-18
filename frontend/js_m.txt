@@ -1370,6 +1370,8 @@ function postData(form) {
             if(request.status === 200) {
                 console.log(request.response);
                 status.textContent = message.success;
+                form.reset();                       // очистка формы
+                setTimeout(() => status.remove(), 2000);    // удалить div
             } else {
                 console.log(request.response);
                 status.textContent = message.failure;
