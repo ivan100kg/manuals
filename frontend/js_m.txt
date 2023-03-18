@@ -1295,3 +1295,16 @@ function pow(x, n) {
     https://jshint.com/docs/
 все вложенные директории попадают под валидацию
 
+
+--- JSON -------------------------------------------
+const person = {                        // JS object
+    name: 'Ivan',
+    phone: '+79002341000'
+}
+const json = JSON.stringify(person);    // из объекта в JSON:
+                                           {"name":"Ivan","phone":"+79002341000"}
+                                           добавляются/заменяются двойные ковычки
+const obj = JSON.parse(json);           // из JSON в объект
+
+// глубокий клон объекта с пом JSON
+const clone = JSON.parse(JSON.stringify(person));
