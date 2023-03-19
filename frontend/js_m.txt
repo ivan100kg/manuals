@@ -1379,3 +1379,28 @@ function postData(form) {
         });
     });
 }
+
+--- Promise ---
+Используется с асинхронными функциями, для обработки результата и порядка выполнения
+Обещание - завершается либо положительно либо отрицательно(например ответ сервера)
+resolve, reject - аргументы в которые будут подставляться ф-ии.
+Если promice завержается успешно - выз-ся resolve, если неудачно - reject
+const req = new Promice(function(resolve, reject) { // resolve - выполнилось правильно
+    setTimeout(() => {                                 reject - что-то пошло не так
+        console.log('hello');
+    }, 2000);
+
+    const obj = {name: 'loh'};                      // объект - имитация ответа с сервера
+    if(false) {reject(); return;}                   // reject()
+    resolve(obj);                                   // <--------------------------+
+});                                                                               |
+                                                                                  |
+req.then((obj) => log('I'm resolve' + obj));        // передача функции resolve <-+
+req.then().then().then();                           // может быть целая цепочка then
+req.then().catch(() => log('error'));               // reject - ставится после then
+req.then().catch().finally(() => log('final'));     // finally - выполняется всегда
+
+// пример промиса(просто выполняет в случ успеха через время запускается resolve)
+const test = time => new Promise(resolve => setTimeout(() => resolve(), time));
+// в случае успеха всех - запуск callback
+Promise.all([test(1000), test(2000)]).then(() => console.log('success'));
