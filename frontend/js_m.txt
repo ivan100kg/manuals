@@ -1312,7 +1312,7 @@ const obj = JSON.parse(json);           // из JSON в объект
 const clone = JSON.parse(JSON.stringify(person));
 
 
---- AJAX -------------------------------------------
+=== AJAX =================================================================
 Asynchronous JavaScript and XML
 
 const message = {                                   // сообщения о статусе
@@ -1380,7 +1380,7 @@ function postData(form) {
     });
 }
 
---- Promise ---
+--- Promise ------------------------------------------------------------------------
 Используется с асинхронными функциями, для обработки результата и порядка выполнения
 Используются вместо callback для удобства.
 Обещание - завершается либо положительно либо отрицательно(например ответ сервера)
@@ -1433,4 +1433,65 @@ promise.then(backendData => {                           // <--------------------
     .then(data => console.log('modified', data))        // можно чейнить then сколько угодно
     .catch(err => console.log('Error', err))            // обработка ошибок      |
     .finally(() => console.log('finally'));             // срабатывает в люб случае
+});
+
+
+--- fecth -----------------------------------------
+2. современный способ
+Технология общения с сервером, основана на промисах
+// GET
+fetch('https://httpbin.org/get')            // url
+.then(response => response.json())          // ответ в JSON ковертируем в объект
+.then(obj => console.log(obj));             // обрабатываем дальше наш объект
+
+// не GET
+fetch('https://httpbin.org/post', {         // url
+    method: 'POST',                         // метод
+    body: JSON.stringify({name: 'Mike'}),   // передаваемый объект JSON или строка
+    headers: {                              // заголовки
+        'Content-type': 'application/json'
+    }
 })
+.then(response => response.json())          // ответ в JSON ковертируем в объект
+.then(obj => console.log(obj));             // обрабатываем дальше наш объект
+
+// example - переписываем старый код на XMLHttpRequest сверху
+// GET
+const inputField = document.querySelector('#usd');
+const outputField = document.querySelector('#rub');
+inputField.addEventListener('input', () => {
+    fetch('js/example.json')                // url
+    .then(response => response.json())
+    .then(response => {
+        outputField.value = (inputField.value / response.curren.usd).toFixed(2);
+    })
+    .catch(err => console.log('Error', err));
+});
+// POST
+function postData(form) {
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();                         // сброс поведения по умолчанию
+
+        // блок для сообщений о статусе
+        const status = document.createElement('div');
+        status.classList.add('status');
+        status.textContent = message.loading;       // статус
+        form.append(status);
+        
+        const formData = new FormData(form);        // спец объект формы заголовки не треб
+        const obj = {};
+        formData.forEach((value, key) => obj[key] = value);
+        const json = JSON.stringify(obj);
+        
+        fetch('server/', {                          // url
+            method: 'POST',                         // метод
+            //body: formData,                       // передаваемый объект - FormData
+            body: json,                             // передаваемый объект - JSON
+            headers: {                              // заголовки
+                'Content-type': 'application/json'
+            }
+        })
+        .then(response => response.json())          // ответ в JSON ковертируем в объект
+        .then(obj => console.log(obj))              // обрабатываем дальше наш объект
+        .catch(err => console.log('Error', err))    // ошибки
+        .finally(() => form.reset());               // финал
