@@ -1500,3 +1500,19 @@ function postData(form) {
         .then(obj => console.log(obj))              // обрабатываем дальше наш объект
         .catch(err => console.log('Error', err))    // ошибки
         .finally(() => form.reset());               // финал
+
+
+--- async await ------------------------------------------
+Механизи async await
+async - ставится перед функциями с асинхронными ф-иями
+await - ставится в асинк ф-иях перед асинк операциями - ждет завершения асинк кода
+const postData = async (url, data) => {
+    const res = await fetch(url, {                  // ждем завершения(или 30 сек по стд)
+        method: 'POST',                             // метод
+        body: data,                                 // передаваемый объект - JSON
+        headers: {                                  // заголовки
+            'Content-type': 'application/json'
+        }
+    });
+    return await res.json();                        // ждем
+}
