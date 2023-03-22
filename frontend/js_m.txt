@@ -1503,9 +1503,26 @@ function postData(form) {
 
 
 --- async await ------------------------------------------
-Механизи async await
+3. способ - механизи async await(ждем завершения запроса)
 async - ставится перед функциями с асинхронными ф-иями
 await - ставится в асинк ф-иях перед асинк операциями - ждет завершения асинк кода
+
+// пример универсального метода, исп GET запрос с данными
+const getData = async (url) => {
+    const res = await fetch(url);
+    if(!res.ok) {                                   // ok - boolean(статус 200?)
+        throw new Error('cant fetch');              // обработка ошибки
+    }
+    return await res.json();                        // ждем и возвращаем объект
+}
+
+// вызов GET из кода
+getData('/api')
+.then(data => console.log(data))                    // обработка успешного результата
+.catch(err => console.log(err));                    // обработка ошибки
+.finally(() => console.log('finally'));             // финал
+
+// пример универсального метода, исп POST запрос с данными
 const postData = async (url, data) => {
     const res = await fetch(url, {                  // ждем завершения(или 30 сек по стд)
         method: 'POST',                             // метод
@@ -1514,5 +1531,12 @@ const postData = async (url, data) => {
             'Content-type': 'application/json'
         }
     });
-    return await res.json();                        // ждем
+    return await res.json();                        // ждем и возвращаем объект
 }
+
+// вызов POST из кода
+postData('/api', JSON.stringify(someObj))           // кидаем url и какой-то объект в JSON
+.then(data => console.log(data))                    // обрабатываем полученные данные
+.catch(err => console.log(err))                     // обработка ошибки                
+.finally(() => console.log('finally'));             // финал
+
