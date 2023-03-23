@@ -396,6 +396,7 @@ const person = {
 person.userAge;                 // обращение к свойству без () - getter
 person.userAge = 40;            // обращение к свойству без () - setter
 
+
 --- Classes/Классы ------------------------------------------------------------
 Это обертка над функциями-коннструкторами, синт сахар
 class Rectangle {                           // класс
@@ -453,6 +454,39 @@ const john = {              // child
 john.__proto__ = soldier;               // устаревший способ
 Object.setPrototypeOf(john, soldier);   // добавить связь parent/child
 const mike = Object.create(soldier);    // создать наследника от parent
+
+Инкапсуляция(имитация):
+class User {
+    constructor(name, age) {
+        this.name = name;
+        this._age = age;                // скрытая переменная(типа)
+    }
+    
+    surname = 'Bond';                   // открытое свойство
+    #patronamic = 'Yurevich';           // реально скрытое св-во
+    
+    say = () => {                       // метод
+        console.log(`${this.name}: ${this._age} : ${this.surname} : ${this.#patronamic}`);
+    }
+    
+    get age() {                         // getter
+        return this._age;
+    }
+    
+    set age(num) {                      // setter
+        if(num > 0){
+            this._age = num;
+        }
+    }
+}
+
+const ivan = new User('Ivan', 44);
+ivan.age = 23;
+ivan.say();
+
+const ivan = new User('Ivan', 44);
+ivan.age = 23;
+
 
 --- Symbol -----------------------------------------------------------------
 в качестве ключей для свойств объекта могут исп только строки или символы
