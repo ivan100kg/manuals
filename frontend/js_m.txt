@@ -487,6 +487,29 @@ ivan.say();
 const ivan = new User('Ivan', 44);
 ivan.age = 23;
 
+--- Модули ----
+Модули образуют свою зону видимости
+const number = 1;
+
+// вариант 1
+(function(){                        // анонимная самовызывающаяся ф-ия
+    let number = 2;
+    console.log(number);            // 2
+}());
+console.log(number);                // 1
+
+// вариант 2
+const user = (function() {
+    const privat = () => {
+        console.log('hello');
+    };
+    return {
+        sayHello: privat
+    };
+}());
+
+user.sayHello();                    // hello
+
 
 --- Symbol -----------------------------------------------------------------
 в качестве ключей для свойств объекта могут исп только строки или символы
