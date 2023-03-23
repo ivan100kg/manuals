@@ -577,7 +577,16 @@ gr(a|e)y    - означает точно то же, что и gr[ae]y.
 gra|ey      - означает gra или ey.
 
 скобочные группы:
-
+https://learn.javascript.ru/regexp-groups - здесь все
+Позволяет поместить часть совпадения в отдельный массив.
+Если установить квантификатор после скобок, то он будет применяться ко всему 
+содержимому скобки, а не к одному символу.
+    /(go)+/ - go, gogo, gogogo
+Формат email: имя@домен. В качестве имени может быть любое слово, разрешены дефисы и точки
+    /[-.\w]+@([\w-]+\.)+[\w-]+/g - my@mail.com, his@site.com.uk
+Содержимое скобок в match:
+Скобочные группы нумеруются слева направо. Поисковый движок запоминает содержимое,
+которое соответствует каждой скобочной группе, и позволяет получить его в результате.
 
 
 --- Numbers --------------------------------------------------------
@@ -1237,105 +1246,6 @@ modalCloseBtn.addEventListener('click', () => {
     modal.classList.remove('show');
     document.body.style.overflow = '';
 });
-
-
---- Тестирование -----------------------------------------------------------
-BDD - это три в одном: и тесты, и документация, и примеры использования.
-Перед написанием основ тест-мой ф-ии в нашем случае pow(x,y) напишем спец-ю:
-Спецификация:
-    describe("pow", function() {                    // описание тестир ф-ии
-
-        it("возводит 2 степень 3", function() {     // тесты(1+)
-            assert.equal(pow(2, 3), 8);
-        });
-
-    });
-Спецификация состоит из трёх основных блоков:
-describe("заголовок", function() { ... });  - какая ф-ть описывается, использ
-                                              для группировки  функций it()
-it("описание", function() { ... });         - описываем что тестируем, и
-                                              функция кот это делает
-assert.*();                                 - исп для проверки рез-та
-
-JavaScript-библиотеки для тестов:
-Mocha   - основной фреймворк. Он предоставляет общие функции тестирования, 
-          такие как describe и it, а также функцию запуска тестов.
-Chai    - библиотека, множество функций проверки утверждений - assert. 
-Sinon   - библиотека, позволяющая наблюдать за функциями, 
-          эмулировать встроенные функции и многое другое.
-
-# popular asserts:
-assert.equal(value1, value2)            value1 == value2
-assert.strictEqual(value1, value2)      value1 === value2
-assert.notEqual(value1, value2)         value1 != value2
-assert.notStrictEqual(value1, value2)   value1 !== value2
-assert.isTrue(value)                    value === true
-assert.isFalse(value)                   value === false
-
-<!DOCTYPE html>
-<html>
-<head>
-  <!-- добавим стили mocha для отображения результатов -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.css">
-  <!-- добавляем сам фреймворк mocha -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.js"></script>
-  <script>
-    // включаем режим тестирования в стиле BDD
-    mocha.setup('bdd');
-  </script>
-  <!-- добавим chai -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.js"></script>
-  <script>
-    // chai предоставляет большое количество функций. Объявим assert глобально
-    let assert = chai.assert;
-  </script>
-</head>
-<body>
-  <script>
-    function pow(x, n) {
-      <!-- здесь будет наша ф-ия см.ниже -->
-    }
-  </script>
-  <!-- скрипт со спецификацией (describe, it...) -->
-  <script src="test.js"></script>
-  <!-- элемент с id="mocha" будет содержать результаты тестов -->
-  <div id="mocha"></div>
-  <!-- запускаем тесты! -->
-  <script>
-    mocha.run();
-  </script>
-</body>
-</html>
-
-# 4 теста
-describe("pow", function() {
-    before(() => console.log("перед всеми"));
-    after(() => console.log("после всех"));
-    beforeEach(() => console.log("перед каждым"));
-    afterEach(() => console.log("после каждого"));
-    
-    it("2 в степени 3 будет 8", () => assert.equal(pow(2, 3), 8));
-    it("3 в степени 3 будет 27", function() {
-        assert.equal(pow(3, 3), 27);
-    });
-    it("для отрицательных n возвращает NaN", function() {
-        assert.isNaN(pow(2, -1));
-    });
-    it("для дробных n возвращает NaN", function() {
-        assert.isNaN(pow(2, 1.5));
-    });
-});
-
-Итого пишем ф-ю:
-function pow(x, n) {
-    if (n < 0) return NaN;              // проверка на отриц
-    if (Math.round(n) != n) return NaN; // проверка на целое
-    let result = 1;
-    for (let i = 0; i < n; i++) {       // само вычисление
-        result *= x;
-    }
-    return result;
-}
 
 
 --- JSHInt --------------------------------------------------------------
