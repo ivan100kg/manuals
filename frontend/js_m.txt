@@ -378,6 +378,23 @@ result = confirm(question); // ok - true, отмена - false
     const {r,g,b} = obj.color;  // деструктуризация
     console.log(g);             // 128
 
+--- Геттеры/Сеттеры ---
+весь прикол состоит в том что к ним обращаться можно без скобок()
+const person = {
+    name: 'Ivan',
+    age: 23,
+
+    get userAge() {             // getter
+        return this.age;
+    }
+
+    set userAge(num) {          // setter
+        this.age = num;
+    }
+}
+
+person.userAge;                 // обращение к свойству без () - getter
+person.userAge = 40;            // обращение к свойству без () - setter
 
 --- Classes/Классы ------------------------------------------------------------
 Это обертка над функциями-коннструкторами, синт сахар
