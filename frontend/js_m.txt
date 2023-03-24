@@ -554,6 +554,25 @@ const myObj = new mod();            // создать объект ф-ии myMod
         log('Hello');
     }
     module.exports = mod1;          // экспорт
+собираем все это с помощью webpack
+
+--- модули ES6+ import/export ---
+# main.js
+export let one = 1;                 // экспорт переменной
+let two = 2;
+const sayHi = () => console.log('Hi');
+export {two, sayHi};                // именованный экпорт неск переменных
+export default function sayHui() {  // только 1 дефаулт экспорт
+    log('hui');
+}
+
+# index.js
+import {one, two, sayHi} from '../js/main'; // импорт каждой переменной
+console.log(`${one} ${two}`);
+sayHi();                                    // обращение
+import * as data from '../js/main';         // импорт всех в одну перем
+data.sayHi()                                // обращение
+import hui from '../js/main';               // импорт дефаулт экспорта
 
 --- Symbol -----------------------------------------------------------------
 в качестве ключей для свойств объекта могут исп только строки или символы
