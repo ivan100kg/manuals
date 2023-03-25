@@ -1727,3 +1727,28 @@ sessionStorage существует только в рамках текущей 
 Другая вкладка с той же страницей будет иметь другое хранилище.
 Но оно разделяется между ифреймами на той же вкладке (при условии, что они из одного и того же источника).
 Данные продолжают существовать после перезагрузки страницы, но не после закрытия/открытия вкладки.
+
+
+--- Frameworks Libraries ----------------------------------------
+Что необходимо знать
+Framework Angular(Google):
+    - node.js
+    - TypeScript
+    - Webpack
+    - MVC
+    - Angular
+Library React(Facebook):
+    - node.js
+    - JSX
+    - Babel
+    - Webpack
+    - React
+Framework Vue.js:
+    - node.js
+    - Webpack
+    - Vue.js
+Library jQuery:
+    - jQuery
+
+
+
