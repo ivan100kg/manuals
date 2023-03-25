@@ -952,6 +952,31 @@ let start = new Date();
 let end = new Date();
 let interval = end - start;             // автоматически переводится в миллисекунды
 
+
+--- Errors -----------------------------------------------
+--- try catch ---
+try {                                   // try
+    const a = b / c; 
+} catch(e) {                            // catch
+    log('error', e);                    // e.name, e.message, e.stack
+} finally {                             // finally
+    close();
+}
+
+--- throw ---
+throw 'fuck';                           // throw строка
+throw new Error('fuck');                // имеет name(Error) message(fuck) stack(стэк выз)
+throw new TypeError('fuck');            // спец ошибка name - TypeError
+
+catch(e) {
+    if(e.name === 'TypeError') {        // обработка спец ошибки
+        log(e);
+    } else {
+        throw e;                        // проброс ошибки дальше
+    }
+}
+
+
 --- Debugger ------------------------------------
 F12 - открыть devtools
 F8  - выполнить до сл брейкпоинта
