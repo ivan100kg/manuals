@@ -12,7 +12,7 @@ JDBC
         <version>42.3.6</version>
     </dependency>
     // далее загрузим этот класс в JVM с пом загрузчика:
-    Class.forName("org.postgres.Driver");           // загрузка класса загрузчиком
+    Class.forName("org.postgresql.Driver");         // загрузка класса загрузчиком
     Class.forName(className, true, currentLoader);  // эквивалент того что выше
 
     Connection      - класс для настройки подключения к БД
