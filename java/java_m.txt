@@ -1432,6 +1432,15 @@
     LocalDate ld = LocalDate.parse("1983-01-23");   // если строка в таком виде,
                                                        то можно без форматтера.
 
+    // Convert
+    // from String to localDate
+    LocalDate date = LocalDate.parse("2018-05-05");
+
+    // from LocalDate to format String
+    LocalDate localDate = LocalDate.now();//For reference
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    String formattedString = localDate.format(formatter);
+
 --- Random ---
     (int) ((Math.random() * (max - min)) + min);    // генератор инт [min, max)
     new Random().nextInt(3);                        // [0,3)
