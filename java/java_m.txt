@@ -3662,6 +3662,9 @@
     delete(Path)        // -> void, delete file/empty dir
     write(Path, byte[]) // -> Path, записать в файл
     readLine(Path)      // -> List<String>, прочитать файл
+
+    // Создать директории если их не существует
+    Files.createDirectories(Paths.get(dirPath));
     
     Method Files.walkFileTree:
     walkFileTree(Path start, FileVisitor v) 
