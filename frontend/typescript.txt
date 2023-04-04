@@ -1,14 +1,44 @@
 TypeScript
 
+Это типизированный JS
+
+TS -> TSCompiler -> JS
+    - создаем файл file.ts
+    - компилируем
+    - получаем file.js 
+
 # Console
 npm i -g typescript     // установить typescript
-tsc -v                  // tsc - компилятор ts, посмотреть версию
-tsc --init              // конфиг файл для настройки, настроить под проект
-tsc                     // скрмпилить все файлы
+tsc --v                 // tsc - компилятор ts, посмотреть версию
+tsc --init              // конфиг файл для настройки, настроить под проект <-----------+
+tsc                     // скомпилить все файлы в name.js (имя ставится в настройках) -+
 tsc index.ts            // скомпилить 1 файл в index.js
 
 
 --- datatypes ---
+
+Primitive types:
+string      'text'      let firstName: string;  // 'John' "Mike" `Fuck you ${name}`
+number      3.14	    let price: number;      // 100 -2.4 0b1000 0o146 0x2FF 9007199254740991n
+boolean     true	    let pending: boolean;   // true false
+null	    null        has one value: null
+undefined	undefined   has one value: undefined. It is a default value of an uninitialized variable
+symbol	    symbol      represents a unique constant value
+
+Object types:
+let person: {           // объявляем объект, специфицурем какие поля какого типа
+   name: string;
+   age: number
+}
+
+person = {              // инициализация
+   name: 'John',
+   age: 25
+};
+
+let vacant: {} = {};    // объявить + инициализация, пустой объект(можно с не пустыми)
+
+
 any
 unknown
 never
@@ -18,3 +48,24 @@ tuple
 let a: number;          // объявление переменной со статическим типом
 a = 10.6;               // инициализация - только number
 let b:boolean = true;   // объявление + иниц
+
+Array:
+let names: string[] = ['John', 'Jane', 'Peter', 'David', 'Mary'];
+
+Object:
+let person: {
+   name: string;
+   age: number
+};
+
+person = {
+   name: 'John',
+   age: 25
+}; // valid
+
+Function:
+let greeting : (name: string) => string;
+
+greeting = function (name: string) {
+    return `Hi ${name}`;
+}; // valid
