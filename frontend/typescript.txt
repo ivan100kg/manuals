@@ -15,8 +15,7 @@ tsc                     // скомпилить все файлы в name.js (и
 tsc index.ts            // скомпилить 1 файл в index.js
 
 
---- datatypes ---
-
+--- datatypes --------------------------------------------------------------------------------------
 Primitive types:
 string      'text'      let firstName: string;  // 'John' "Mike" `Fuck you ${name}`
 number      3.14	    let price: number;      // 100 -2.4 0b1000 0o146 0x2FF 9007199254740991n
@@ -30,42 +29,122 @@ let person: {           // объявляем объект, специфицур
    name: string;
    age: number
 }
-
 person = {              // инициализация
    name: 'John',
    age: 25
 };
-
 let vacant: {} = {};    // объявить + инициализация, пустой объект(можно с не пустыми)
 
-
-any
-unknown
-never
-enum
-tuple
-
-let a: number;          // объявление переменной со статическим типом
-a = 10.6;               // инициализация - только number
-let b:boolean = true;   // объявление + иниц
-
 Array:
-let names: string[] = ['John', 'Jane', 'Peter', 'David', 'Mary'];
+let names: string[];    // могут содержаться только строки
+names = ['John','Jane'];
+names.push('Ivan');
+работают все методы forEach() map() reduce() filter()
+// микс различных типов
+let scores : (string | number)[];
+scores = ['Programming', 5, 'Software Design', 4];
 
-Object:
-let person: {
-   name: string;
-   age: number
+Tupple:
+массив только фиксированного числа эл, опред типов
+let tup: [number, boolean] = [1, false];
+tup[0].toFixed(2);      // спец методы типо
+let rgb: [number, number, number] = [255, 0, 0];
+
+Enum:
+константы, под капотом это числа от 0
+enum ApprovalStatus {   // enum
+    draft = 1,          // по умолчанию от 0, можно поменять          
+    submitted,
+    approved,
+    rejected
 };
+ApprovalStatus.draft    // обращения к константам
 
-person = {
-   name: 'John',
-   age: 25
-}; // valid
+Any:
+любой тип
+let result;
+const json = `{"latitude": 10.11, "longitude":12.12}`;
 
-Function:
-let greeting : (name: string) => string;
+Void:
+отсутствие типа
+function log(message): void {   // обычное применеиние в ф-ях без возвр знач
+    console.log(messsage);
+}
+let useless: void = undefined;  // к void можно присвоить только undefined
 
-greeting = function (name: string) {
-    return `Hi ${name}`;
-}; // valid
+Never:
+тип не содержащий никаких занчений используется в функциях
+которые всегда завершаются ошибкой, либо бесконечным циклом
+function raiseError(message: string): never {
+    throw new Error(message);
+}
+
+Union of types:
+let result: number | string;    // можно присвоить только строку или число
+function add(a: number | string, b: number | string)    // в параметрах
+
+Alias:
+шаблон для типа
+type chars = string;    // шаблон для string
+let messsage: chars;    // same as string type
+
+String Literal:
+let click: 'click';     // click - string literal type = 'click'
+click = 'click';        // valid
+click = 'dblclick';     // compiler error
+string literal type может иметь одно из неск значений
+let mouseEvent: 'click' | 'dblclick' | 'mouseup' | 'mousedown';
+mouseEvent = 'click';       // valid
+mouseEvent = 'dblclick';    // valid
+mouseEvent = 'mouseup';     // valid
+mouseEvent = 'mousedown';   // valid
+mouseEvent = 'mouseover';   // compiler error
+
+
+--- Basic constructions ----------------------------------------------
+if (condition1) {
+    code;
+} else if (condition2) {
+    code;
+} else {
+    code;
+}
+
+switch ( expression ) {
+    case value1:
+        code;
+        break;
+    case value2:
+    case value3:
+        code;
+        break;
+    default: 
+        break;
+}
+
+for(initialization; condition; expression) {
+    break;
+}
+
+while(condition) {
+    continue;
+}
+
+do {
+    code;
+} while(condition);
+
+
+--- Function --------------------------------------------------------------------------
+function add(a: number, b: number): number {    // принимает 2 числа и возвращает число
+    return a + b;
+}
+
+let add: (a: number, b: number) => number =     // тоже самое
+    function (x: number, y: number) {
+        return x + y;
+    };
+
+function echo(message: string): void {          // void ф-ия
+    console.log(message.toUpperCase());
+}
