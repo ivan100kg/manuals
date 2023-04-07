@@ -148,3 +148,36 @@ let add: (a: number, b: number) => number =     // тоже самое
 function echo(message: string): void {          // void ф-ия
     console.log(message.toUpperCase());
 }
+
+function multiply(a: number, b?: number)        // опционаяльный параметр, может быть или не быть
+function multiply(a: number, b: number = 5)     // значение параметра по умолчанию
+function getTotal(...numbers: number[])         // rest параметры(распаковка массива)
+
+overloading:
+function add(a: number, b: number): number;
+function add(a: string, b: string): string;
+function add(a: any, b: any): any {
+   return a + b;
+}
+
+--- Class ---------------------------------------------------------
+добавляются типы в поля, конструктор, методы
+class Person {
+    ssn: string;
+    firstName: string;
+    lastName: string;
+
+    constructor(ssn: string, firstName: string, lastName: string) {
+        private this.ssn = ssn;             // private - доступ внутри класса
+        public this.firstName = firstName;  // по умолчанию все поля/методы public
+        protected this.lastName = lastName; // доступен только в классе и сабклассах
+    }
+
+    getFullName(): string {
+        return `${this.firstName} ${this.lastName}`;
+    }
+}
+
+let person = new Person(171280926, 'John', 'Doe');  // создать объект
+// конструктор с модификаторами
+constructor(protected ssn: string, private firstName: string, private lastName: string)
