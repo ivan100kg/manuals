@@ -163,21 +163,56 @@ function add(a: any, b: any): any {
 --- Class ---------------------------------------------------------
 добавляются типы в поля, конструктор, методы
 class Person {
-    ssn: string;
-    firstName: string;
-    lastName: string;
+    private ssn: string;            // private - доступ внутри класса
+    public firstName: string;       // по умолчанию все поля/методы public
+    protected lastName: string;     // доступен только в классе и сабклассах
+    readonly birthDate: Date;       // final field не изменямая
+    private _age : number;          // поле для геттера/сеттера
 
     constructor(ssn: string, firstName: string, lastName: string) {
-        private this.ssn = ssn;             // private - доступ внутри класса
-        public this.firstName = firstName;  // по умолчанию все поля/методы public
-        protected this.lastName = lastName; // доступен только в классе и сабклассах
+        this.ssn = ssn;             
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate; // readonly обязательно иниц в конструкторе
     }
 
     getFullName(): string {
         return `${this.firstName} ${this.lastName}`;
     }
+
+    public get age() {              // getter
+        return this._age;
+    }
+
+    public set age(ag: number) {    // setter
+        if (ag <= 0 || ag >= 200) {
+            throw new Error('The age is invalid');
+        }
+        this._age = ag;
+    }
 }
 
 let person = new Person(171280926, 'John', 'Doe');  // создать объект
-// конструктор с модификаторами
-constructor(protected ssn: string, private firstName: string, private lastName: string)
+person.firstName = 'Ivan';                          // обратиться к полю напрямую
+person.age = 12;                                    // setter
+// конструктор с модификаторами сразу
+constructor(protected ssn: string, 
+            private firstName: string, 
+            private lastName: string, 
+            readonly birthDate: Date)
+
+// наследование
+class Employee extends Person {                 
+    constructor(
+        firstName: string,
+        lastName: string,
+        private jobTitle: string) {
+        
+        // call the constructor of the Person class:
+        super(firstName, lastName);
+    }
+}
+
+let emp1: Employee = new Employee('Ivan', 'Bond', 'programmer');
+let pers1: Person = new Person('12345', 'Oleg', 'Gvozd', new Date(), 39);
+let pers2: Person = new Employee('Igor', 'Vernik', 'cleaner');              // полимофизм
