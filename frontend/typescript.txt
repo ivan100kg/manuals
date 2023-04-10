@@ -244,3 +244,47 @@ class FullTimeEmployee extends Employee {
     }
 }
 
+--- Interfaces ------------------------------------------------------------------------------------
+interface Person {                              // интерфейс 
+    firstName: string;
+    lastName: string;
+}
+
+function getFullName(person: Person) {          // использование в параметрах функции
+    return `${person.firstName} ${person.lastName}`;
+}
+
+let john = {                                    // объект типа Person
+    firstName: 'John',
+    lastName?: 'Doe'                            // опциональный элемент
+    readonly ssn: string;                       // только для чтения
+};
+
+console.log(getFullName(john));                 // использование в аргументах
+
+// функциональный интерфейс
+interface StringFormat {
+    (str: string, isUpper: boolean): string     // сигнатура ф-ии
+}
+
+let format: StringFormat;                       // переменная типа StringFormat
+
+format = function (str: string, isUpper: boolean) { // имлем ф-ии
+    return isUpper ? str.toLocaleUpperCase() : str.toLocaleLowerCase();
+};
+
+console.log(format('hi', true));
+
+// имплементация интерфейса как в Java
+interface Json {                                // интерфейс
+   toJSON(): string
+}
+
+class Person implements Json {                  // класс имплементирующий интерфейс
+    constructor(private firstName: string,
+        private lastName: string) {
+    }
+    toJson(): string {                          // переопределение метода
+        return JSON.stringify(this);
+    }
+}
