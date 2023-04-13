@@ -336,3 +336,32 @@ class TextBox extends Control implements StatefulControl {
 
 --- Intersection Types -------------------------------------------------------
 Новый тип создается мультикомбинацией других типов, имеет все фишки этих типов
+
+interface A {
+    name: string;
+}
+
+interface B {
+    age: number;
+}
+
+// my types
+type myTypeAND = A & B;     // все поля
+type myTypeOR = A | B;      // или поля одного или другого или все
+
+// варианты
+let Igor: myTypeAND = {name: 'Igor', age: 49};
+let Inna: myTypeOR = {name: 'Inna'};
+let Egor: myTypeOR = {age: 45};
+let Lilu: myTypeOR = {name: 'Lilu', age: 19};
+
+// primitive
+type xz = string | number;
+let myVar1: xz = 12;
+let myVar2: xz = '12';
+
+
+--- Type Guards -------------------------------------------------------------------------------
+typeof a === 'number';      // -> boolean, проверка на тип
+obj instanceof String;      // -> boolean, проверка на принадлежность классу(не для примитивов)
+'name' in partner;          // -> boolean, проверка на вхождение свойства в объект
