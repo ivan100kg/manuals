@@ -365,3 +365,16 @@ let myVar2: xz = '12';
 typeof a === 'number';      // -> boolean, проверка на тип
 obj instanceof String;      // -> boolean, проверка на принадлежность классу(не для примитивов)
 'name' in partner;          // -> boolean, проверка на вхождение свойства в объект
+
+
+--- Casting -----------------------------------------------------------------------------------
+// downcasting
+Element -> HTMLElement -> HTMLInputElement                  // иерархия наследования
+let input = document.querySelector('input["type="text"]');  // Element type
+let enteredText = input as HTMLInputElement;                // кастинг к HTMLInputElement
+let enteredText = <HTMLInputElement>input;                  // тоже самое, др синтаксис
+
+
+--- Assertions --------------------------------------------------------------------------------
+sum(5, 12) as string;       // говорим компилятору что это строка
+<string>sum(5, 12);         // тоже самое но другой синтаксис
