@@ -247,18 +247,20 @@ class FullTimeEmployee extends Employee {
 --- Interfaces ------------------------------------------------------------------------------------
 interface Person {                              // интерфейс 
     firstName: string;
-    lastName: string;
+    lastName?: strring;                         // опциональный элемент
+    readonly ssn: string;                       // только для чтения
 }
+
+let john: Person = {                            // объект типа Person
+    firstName: 'John',
+    lastName: 'Doe'                             // опциональный элемент, можно не указывать
+    readonly ssn: '124-214';                    // только для чтения, менять потом нельзя
+};
+
 
 function getFullName(person: Person) {          // использование в параметрах функции
     return `${person.firstName} ${person.lastName}`;
 }
-
-let john = {                                    // объект типа Person
-    firstName: 'John',
-    lastName?: 'Doe'                            // опциональный элемент
-    readonly ssn: string;                       // только для чтения
-};
 
 console.log(getFullName(john));                 // использование в аргументах
 
@@ -273,7 +275,7 @@ format = function (str: string, isUpper: boolean) { // имлем ф-ии
     return isUpper ? str.toLocaleUpperCase() : str.toLocaleLowerCase();
 };
 
-console.log(format('hi', true));
+console.log(format('hi', true));                // вызов ф-ии
 
 // имплементация интерфейса как в Java
 interface Json {                                // интерфейс
@@ -288,3 +290,49 @@ class Person implements Json {                  // класс имплемент
         return JSON.stringify(this);
     }
 }
+
+// наследование интерфейсов
+interface Mailable {                            // interface
+    send(email: string): boolean
+    queue(email: string): boolean
+}
+
+interface FutureMailable extends Mailable {     // наследуется от Mailable, имеет все его методы
+    later(email: string, after: number): boolean
+}
+
+class Mail implements FutureMailable {          // класс имплементирующий интерфейс, переопр все методы
+    later(email: string, after: number): boolean {
+        console.log(`Send email to ${email} in ${after} ms.`);
+        return true;
+    }
+    send(email: string): boolean {
+        console.log(`Sent email to ${email} after ${after} ms. `);
+        return true;
+    }
+    queue(email: string): boolean {
+        console.log(`Queue an email to ${email}.`);
+        return true;
+    }
+}
+
+interface D extends B, C {                      // множественное наследование интерфейсов
+    d(): void
+}
+
+// наследование от класса
+class Control {                                 // класс
+    private state: boolean;
+}
+
+interface StatefulControl extends Control {    // интерфейс, наследуется от класса
+    enable(): void
+}
+
+// если нужно имплементить такой интерфейс, то нужно наследоваться от класса
+class TextBox extends Control implements StatefulControl {
+    enable() { }
+}
+
+--- Intersection Types -------------------------------------------------------
+Новый тип создается мультикомбинацией других типов, имеет все фишки этих типов
