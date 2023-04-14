@@ -1633,6 +1633,7 @@ sudo update-alternatives --config java
       ]
 
 --- подключить сетевую папку Windows ------------------------
+sudo apt install cifs-utils
 mount -t cifs -o username=user,password=pass //IP/folder /mnt
 user        - логин
 pass        - пароль
