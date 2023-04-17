@@ -1639,3 +1639,4 @@ user        - логин
 pass        - пароль
 IP          - ip компьютера с сетевой папкой
 folder      - имя сетевой папки
+umount /mnt - umount
