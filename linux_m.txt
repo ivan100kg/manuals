@@ -1614,6 +1614,9 @@ sudo reboot
 # for swing
 sudo vim /etc/java-8-openjdk/accessibility.properties
     #assistive_technologies=org.GNOME.Accessibility.AtkWrapper
+Для сглаживания шрифтов Adding this line:
+_JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on -Dswing.aatext=true'
+to /etc/environment
 # настройка Idea
 настроить keymap->navigate: back forward
 # выбрать нужную java для запуска:
