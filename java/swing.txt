@@ -29,88 +29,21 @@ JFrame frame = new JFrame();
 JOptionPane.showMessageDialog(frame, "Кэшбэк можно вносить только 1 раз");
 https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
 
---- examples ---
-public class Swing1 extends JFrame{
-    public Swing1() {
-        super("my app");                                        // title
-        super.setBounds(200, 200, 300, 200);                    // loc, size
-        super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   // when close
-        
-        // получаем панель содержимого типа Container
-        Container container = super.getContentPane();           // container
-        container.setLayout(new GridLayout(3,2,2,2));           // layout
+// yes no
+int n = JOptionPane.showConfirmDialog(
+    frame,
+    "Would you like green eggs and ham?",
+    "An Inane Question",
+    JOptionPane.YES_NO_OPTION);
 
-        // метка - создать и добавить в конт
-        JLabel jlab = new JLabel("My label");                   // label
-        container.add(jlab);                                    // add to container
-        
-    }
-    
-    public static void main(String[] args) {
-        Swing1 swing1 = new Swing1();                           // run
-        swing1.setVisible(true);                                // visible
-        
-    }
-
-}
-
-// Example #2
-import java.awt.FlowLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
-
-/**
- *
- * @author BondarevIY
- */
-public class EventDemo {
-    JLabel jlab;
-
-    public EventDemo() {
-        // container
-        JFrame jfrm = new JFrame("Event Example");
-        
-        // диспетчер поточной компоновки типа FlowLayout
-        jfrm.setLayout(new FlowLayout());
-        
-        // исх размеры фрейма
-        jfrm.setSize(220, 90);
-        
-        // завершить работу приложения если пользователь закрыв окно
-        jfrm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // 2 buttons
-        JButton jbtnAlpha = new JButton("Alpha");
-        JButton jbtnBeta = new JButton("Beta");
-        
-        // ввести приемник действий от кнопки Альфа
-        jbtnAlpha.addActionListener(() -> jlab.setText("Alpha pressed"));
-        
-        // ввести приемник действий от кнопки Альфа
-        jbtnBeta.addActionListener(() -> jlab.setText("Beta pressed"));
-        
-        // ввести кнопки на панель содержимого
-        jfrm.add(jbtnAlpha);
-        jfrm.add(jbtnBeta);
-        
-        // создать метку, добавить в панель
-        jlab = new JLabel("Press a button");
-        jfrm.add(jlab);
-        
-        // отобразить фреймы
-        jfrm.setVisible(true);                
-    }
-     
-    public static void main(String[] args) {
-        // создать фрейм в потоке диспетчеризации событий
-        SwingUtilities.invokeLater(() -> new EventDemo());
-        
-    }
-            
-}
-
-Рисование
-    Наследуем класс от JPanel
-    Переопределяем метод paintComponent(Graphics g)
+// yes no - custom names
+Object[] options = {"Yes, please",
+                    "No way!"};
+int n = JOptionPane.showOptionDialog(frame,
+    "Would you like green eggs and ham?",
+    "A Silly Question",
+    JOptionPane.YES_NO_OPTION,
+    JOptionPane.QUESTION_MESSAGE,
+    null,     //do not use a custom Icon
+    options,  //the titles of buttons
+    options[0]); //default button title
