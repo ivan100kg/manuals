@@ -621,3 +621,24 @@ select
 	count(*) as "all"
 group by 
 	date_trunc('week', gc.takingdate)
+
+-- вставка записей в таблицу итерируясь по массиву
+DO
+$do$
+declare x integer;
+BEGIN
+    FOREACH x IN array(
+        SELECT
+            array_agg(id::integer)
+        FROM table
+        WHERE 
+            name = 'Vasya')
+    LOOP
+        INSERT INTO table_2
+            (field1,field2,field3)
+        VALUES
+            (1, 'hello',
+            (SELECT hui FROM table WHERE id = x));
+    END LOOP;
+END
+$do$;
