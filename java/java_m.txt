@@ -46,7 +46,7 @@
     2.72        // double
     'a'         // char
     "hi"        // String
-    NaN         // not a Number 0.0/0
+    NaN         // not a Number (0.0/0, √-1) - только для float и double
     Infinity    // 10.0/0
     -Infinity   // -10.0/0
 
@@ -1109,13 +1109,12 @@
                   int a = i; (тот что выше)
     class Number    // предок всех wrapper классов.
     Methods:
-        parse(s)    // --> type, конвертация подходящего значения типа данных
-                       String(s) в соответствующий примитивный тип данных.
+        parse(s)    // --> type, String(s) в соответствующий примитивный тип данных.
                        int i1 = Integer.parseInt("50");
         valueOf(x)  // --> wrapper, создать об wrapper класса того типа,
                        на котором данный метод был вызван.
                        Integer i3 = Integer.valueOf(10);    // в итоге 10
-                       Integer i4 = Integer.valueOf("10");
+                       Integer i4 = Integer.valueOf("10");  // -> Integer (10)
 
 --- Overloading, приоритетность методов ---
     Если при вызове метода его параметр лист соотв-т нескольким парам-листам
