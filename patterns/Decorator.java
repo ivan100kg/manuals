@@ -52,7 +52,7 @@ public class Decorator {
         System.out.println(animal2.getDescription());   // "Basic animal, can fly"
 
         Animal animal3 = new CanSwimDecorator(new CanFlyDecorator(new BasicAnimal()));
-        System.out.println(animal3.getDescription());   // "Basic animal, can swim"
+        System.out.println(animal3.getDescription());   // "Basic animal, can fly, can swim"
     }
 
 }
