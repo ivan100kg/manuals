@@ -19,6 +19,15 @@ Docker Image
 Dockerfile
     скрипт для создания Image
 
+Порядок развертывания приложения в контейнере:
+    1. Создаем Dockerfile в корне проекта, заполняем его(мануал отдельно)
+    2. Билдим образ на основе Dockerfile -> docker build -t imName path
+    3. Запускаем контейнер на базе образа -> docker run --rm -dp 3000:3000 imName
+    4. Если нужно перезалить - смотрим запущенные контейнеры, копируем contId
+    5. Останавливаем контейнер docker stop contId
+    6. Удаляем конт, если при запуске не было опции --rm -> docker rm contId
+    7. Возвращаемся к пункту 2
+
 Docker Hub - хранилище сборок.
 
 # Dockerfile - файл с настройками для создания Image:
@@ -29,20 +38,27 @@ EXPOSE 8080                 # проброс порта 8080
 ENW TZ Europe/Samara        # переменная окружения TZ зо знач Europe/Samara
 CMD ["./mvnw", "spring-boot:run"]   # что нужно делать докеру при запуске
 
-# commadns
+# info
 docker images               # посмотреть образы на диске
 docker ps                   # посмотреть запущенные контейнеры (-a все конты)
-docker build -t <path>      # собрать Image по Dockerfile -t - имя <path> - путь
-docker run <image>          # запуск контейнера
-docker run --name 'name' .. # запуск контейнера с не авто именем
-docker run -d ..            # запуск контейнера в фоновом режиме
-docker run --rm ...         # после отработки/остановки - конт удалится
+
+# сборка образа
+docker build -t name path   # собрать Image по Dockerfile
+                              name - имя Image 
+                              path - путь Dockerfile
+# запуск контейнера                             
+docker run image            # запуск контейнера по образу
+docker run --rm id          # после отработки/остановки - конт с id=id удалится
+docker run -dp 80:3000 im   # -d - запуск контейнера в фоновом режиме
+                              -p - маппинг портов hostPort:containerPort
+                              im - имя Image
+# остановка/удаление контейнеров
 docker stop id/cname        # остановить контейнер по id/name
-docker rm ...               # удалить контейнер по ID/name
+docker rm id/cname          # удалить контейнер по ID/name
 docker rm $(docker ps -aq)  # удалить все контейнеры
 
-# запуск конта с web приложением с пробросом портов внеш:внутр
-docker run --rm --name web -p 8080:8080 mycont
+# example
+docker run --rm --name web -p 8080:8080 myProject
 
 # переменные окружения
 ENW TZ Europe/Samara        # либо указываем в dockerfile
