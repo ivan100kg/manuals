@@ -15,9 +15,29 @@ Docker Image
     Обеспечивает конфигурацию контейнера, ОС, зависимости, всякие данные
     это упакованная сборка приложения, готовая к запуску 
     это такая многослойная система из раздичных слоев(Ubuntu+Python+..)
+    Для каждого Image при вызове 'docker images' выводятся след данные:
+        repository  # название (-t имя)
+        tag         # тэг  
+        image ID    # id sha256
+        created     # создан
+        size        # размер
 
-Dockerfile
-    скрипт для создания Image
+Dockerfile - скрипт для создания Image
+    example:
+    FROM openjdk:11-jdk                 # базовый образ для сборки image:version
+    ENV CATALINA_HOME /usr/local/tomcat # переменные окружения
+    ENV PATH $CATALINA_HOME/bin:$PATH
+    WORKDIR /usr/local/                 # установить рабочий каталог
+    RUN wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.75/bin/apache-tomcat-9.0.75.tar.gz && \
+        tar -xf apache-tomcat-9.0.75.tar.gz && \
+        mv apache-tomcat-9.0.75 ${CATALINA_HOME}
+    COPY target/medserver.war  ${CATALINA_HOME}/webapps/    # копирование
+    EXPOSE 8080                         # открыть порт
+    CMD ["catalina.sh", "run"]          # выполнить команду при запуске контейнера
+    
+    # переменные окружения
+        ENW TZ Europe/Samara        # либо указываем в dockerfile
+        -e TZ Europe/Samara         # либо при запуске контейнера в параметрах
 
 Порядок развертывания приложения в контейнере:
     1. Создаем Dockerfile в корне проекта, заполняем его(мануал отдельно)
@@ -30,14 +50,7 @@ Dockerfile
 
 Docker Hub - хранилище сборок.
 
-# Dockerfile - файл с настройками для создания Image:
-FROM openjdk:17             # базовый образ для сборки image:version
-WORKDIR /app                # установить рабочий каталог
-COPY . /app                 # копировать все из тек дир в app/
-EXPOSE 8080                 # проброс порта 8080
-ENW TZ Europe/Samara        # переменная окружения TZ зо знач Europe/Samara
-CMD ["./mvnw", "spring-boot:run"]   # что нужно делать докеру при запуске
-
+--- Console command ---------------------------------------------------------
 # info
 docker images               # посмотреть образы на диске
 docker ps                   # посмотреть запущенные контейнеры (-a все конты)
@@ -59,17 +72,8 @@ docker rm $(docker ps -aq)  # удалить все контейнеры
 
 # example
 docker run --rm --name web -p 8080:8080 myProject
+----------------------------------------------------------------------------
 
-# переменные окружения
-ENW TZ Europe/Samara        # либо указываем в dockerfile
--e TZ Europe/Samara         # либо при запуске контейнера в параметрах
-
-# Для каждого Image при вызове 'docker images' выводятся след данные:
-repository  # название (-t имя)
-tag         # тэг  
-image ID    # id sha256
-created     # создан
-size        # размер
 
 # прикрепить к Docker директорию на хостовой машине
 -v absHostPath:absLocalPath # абсолютный хост путь : абс путь в контейнере
