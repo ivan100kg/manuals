@@ -1532,21 +1532,38 @@ function postData(form) {
 }
 
 --- Promise ------------------------------------------------------------------------
-Используется с асинхронными функциями, для обработки результата и порядка выполнения
-Используются вместо callback для удобства.
-Обещание - завершается либо положительно либо отрицательно(например ответ сервера)
-resolve, reject - аргументы в которые будут подставляться ф-ии.
-Если promice завержается успешно - выз-ся resolve, если неудачно - reject
-const req = new Promice(function(resolve, reject) { // resolve - выполнилось правильно
-    setTimeout(() => {                                 reject - что-то пошло не так
-        console.log('hello');
-    }, 2000);
+Promise - результат асинхронной операции.
+Может находиться в трех состояниях:
+    ожидание (pending)              - асинхронная операция еще не завершена
+    выполнено успешно (fulfilled)   - операция завершается успешно
+    отклонено (rejected)            - операция завершается с ошибкой
 
-    const obj = {name: 'loh'};                      // объект - имитация ответа с сервера
-    if(false) {reject(); return;}                   // reject()
-    resolve(obj);                                   // <--------------------------+
-});                                                                               |
-                                                                                  |
+Создать Promise:
+    new Promise((resolve, reject)=> - конструктор принимает функцию с двумя параметрами
+                                      resolve(obj) - выз-ся в случ успешного вып-я асинх опрерации,
+                                                     можно в параметр прокинуть какой-то obj(напр
+                                                     ответ сервера), потом из вне можно
+                                                     получ этот obj с пом .then((obj)=>{})
+                                      reject(err)  - выз-ся в случ ошибки, ошибку кидаем в парам
+
+function fetchUser(id) {                        // функция возвращающая Promise
+  return new Promise((resolve, reject) => {     // З
+    setTimeout(() => {
+      const user = { id: id, name: "John" };
+      if (id <= 0) {
+        reject(new Error("Invalid id"));
+      } else {
+        resolve(user);
+      }
+    }, 1000);
+  });
+}
+
+fetchUser(1)
+  .then((user) => console.log(user))            // в случ успеха
+  .catch((err) => console.error(err))           // неудача
+  .finally((f) => console.log(f))               // всегда
+
 req.then((obj) => log('I'm resolve' + obj));        // передача функции resolve <-+
 req.then().then().then();                           // может быть целая цепочка then
 req.then().catch(() => log('error'));               // reject - ставится после then
