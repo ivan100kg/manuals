@@ -162,3 +162,34 @@ function setScrollIntoViewOption(top) {
 }
 
 
+function promice() {
+    
+}
+
+function main() {
+    const header = document.querySelector('.training__header');
+    const button = document.createElement('button');
+    button.id = 'promice_btn';
+    button.type = 'button';
+    button.innerHTML = 'кнопка';
+    header.append(button);
+
+    button.addEventListener('click',(e, args) => {
+        e.preventDefault();
+        console.log(e);
+        const promice = new Promise(function(resolve, reject) { // resolve - выполнилось правильно
+            setTimeout(() => {                                
+                console.log('hello');
+                const obj = {name: 'loh'};                      // объект - имитация ответа с сервера
+                if(false) {reject(); return;}                   // reject()
+                resolve(obj); 
+            }, 2000);
+        
+                                              // <--------------------------+
+        });
+        promice.then((obj) => console.log('What a fuck! ' + obj.name));
+
+    });
+}
+
+document.addEventListener('DOMContentLoaded', main);
