@@ -1466,70 +1466,7 @@ const clone = JSON.parse(JSON.stringify(person));
 === AJAX =================================================================
 Asynchronous JavaScript and XML
 
-const message = {                                   // сообщения о статусе
-    loading: 'Загрузка',
-    success: 'Успешно',
-    failure: 'Что-то пошло не так'
-};
 
-1. устаревший способ
-// GET
-const inputField = document.querySelector('#usd');
-const outputField = document.querySelector('#rub');
-inputField.addEventListener('input', () => {
-    const request = new XMLHttpRequest();           // объект
-    //        method, url, async(true), login, pass // параметры
-    request.open('GET', 'js/example.json');         // настройки запроса
-    request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-    request.send();                                 // запрос(в POST передаем в параметры)
-    request.addEventListener('load', () => {        // как придет какой-то ответ
-        if(request.status === 200) {
-            console.log(request.response);
-            const data = JSON.parse(request.response);
-            outputField.value = (inputField.value / data.curren.usd).toFixed(2);
-        } else {
-            console.log(request.response);
-            outputField.value = 'unknown';
-        }
-    });
-});
-// POST
-function postData(form) {
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();                         // сброс поведения по умолчанию
-
-        // блок для сообщений о статусе
-        const status = document.createElement('div');
-        status.classList.add('status');
-        status.textContent = message.loading;       // статус
-        form.append(status);
-
-        const request = new XMLHttpRequest();
-        request.open('POST', 'server/');            // POST
-
-        const formData = new FormData(form);        // спец объект формы(устар) заголовки не треб
-
-         // FormData to JSON
-        request.setRequestHeader('Content-type', 'application/json');
-        const obj = {};
-        formData.forEach((value, key) => obj[key] = value);
-        const json = JSON.stringify(obj);
-
-        // request.send(formData);                  // отправить FormData
-        request.send(json);                         // отправить JSON
-        request.addEventListener('load', () => {
-            if(request.status === 200) {
-                console.log(request.response);
-                status.textContent = message.success;
-                form.reset();                       // очистка формы
-                setTimeout(() => status.remove(), 2000);    // удалить div
-            } else {
-                console.log(request.response);
-                status.textContent = message.failure;
-            }
-        });
-    });
-}
 
 --- Promise ------------------------------------------------------------------------
 Promise - результат асинхронной операции.
@@ -1546,14 +1483,15 @@ Promise - результат асинхронной операции.
                                                      получ этот obj с пом .then((obj)=>{})
                                       reject(err)  - выз-ся в случ ошибки, ошибку кидаем в парам
 
+// example
 function fetchUser(id) {                        // функция возвращающая Promise
-  return new Promise((resolve, reject) => {     // З
-    setTimeout(() => {
-      const user = { id: id, name: "John" };
+  return new Promise((resolve, reject) => {     // Promise
+    setTimeout(() => {                          // имитация асинх ф-ии
+      const user = { id: id, name: "John" };    // имитация данных
       if (id <= 0) {
-        reject(new Error("Invalid id"));
+        reject(new Error("Invalid id"));        // ошибка
       } else {
-        resolve(user);
+        resolve(user);                          // или успех
       }
     }, 1000);
   });
@@ -1562,55 +1500,30 @@ function fetchUser(id) {                        // функция возвращ
 fetchUser(1)
   .then((user) => console.log(user))            // в случ успеха
   .catch((err) => console.error(err))           // неудача
-  .finally((f) => console.log(f))               // всегда
+  .finally(() => console.log())                 // всегда
 
-req.then((obj) => log('I'm resolve' + obj));        // передача функции resolve <-+
-req.then().then().then();                           // может быть целая цепочка then
-req.then().catch(() => log('error'));               // reject - ставится после then
-req.then().catch().finally(() => log('final'));     // finally - выполняется всегда
 
 // пример промиса(просто выполняет в случ успеха через время запускается resolve)
 const test = time => new Promise(resolve => setTimeout(() => resolve(), time));
+test(2000).then(() => console.log('ok!'));
+
 // в случае успеха всех - запуск callback
 Promise.all([test(1000), test(2000)]).then(() => console.log('success'));
 
-// example
-const promise = new Promise((resolve, reject) => {      // promise
-    setTimeout(() => {                                  // фсинх функция
-        console.log('Preparing data...');
-        const backendData = {                           // данные - имитация
-            server: 'aws',
-            port: 2000,
-            status: 'ok'
-        };
-        resolve(backendData);                           // вызов в случ успеха --+
-    }, 2000);                                                                    |
-});                                                                              |
-                                                                                 |
-promise.then(backendData => {                           // <---------------------+
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {                              // еще 1 асинх функция
-            backendData.moidified = true;               // имитация модиф данных
-           resolve(backendData);                        // вызов в случ успеха --+
-        }, 2000);                                                                |
-    })                                                                           |
-    .then(clientData => {                               // <---------------------+
-        clientData.hui = true;                          // имитация модиф данных
-        return clientData;                              // можно возвращ не промисе если нет асинх
-    })
-    .then(data => console.log('modified', data))        // можно чейнить then сколько угодно
-    .catch(err => console.log('Error', err))            // обработка ошибок      |
-    .finally(() => console.log('finally'));             // срабатывает в люб случае
-});
 
-
---- fecth -----------------------------------------
-2. современный способ
+--- fetch -------------------------------------------------------------------------------------
+Fetch - это новый стандарт JavaScript для выполнения запросов на сервер.
+Он заменяет устаревшие методы XMLHttpRequest и jQuery Ajax.
+Fetch позволяет отправлять HTTP-запросы с использованием простого и интуитивно понятного API.
+Запросы могут быть синхронными или асинхронными, и они могут использовать различные методы HTTP
 Технология общения с сервером, основана на промисах
+
+// Пример асинхронных функций
 // GET
 fetch('https://httpbin.org/get')            // url
 .then(response => response.json())          // ответ в JSON ковертируем в объект
-.then(obj => console.log(obj));             // обрабатываем дальше наш объект
+.then(obj => console.log(obj.origin))       // обрабатываем дальше наш объект
+.catch(err => console.log('Fuck!' + err));  // в случае ошибки
 
 // не GET
 fetch('https://httpbin.org/post', {         // url
@@ -1623,51 +1536,9 @@ fetch('https://httpbin.org/post', {         // url
 .then(response => response.json())          // ответ в JSON ковертируем в объект
 .then(obj => console.log(obj));             // обрабатываем дальше наш объект
 
-// example - переписываем старый код на XMLHttpRequest сверху
-// GET
-const inputField = document.querySelector('#usd');
-const outputField = document.querySelector('#rub');
-inputField.addEventListener('input', () => {
-    fetch('js/example.json')                // url
-    .then(response => response.json())
-    .then(response => {
-        outputField.value = (inputField.value / response.curren.usd).toFixed(2);
-    })
-    .catch(err => console.log('Error', err));
-});
-// POST
-function postData(form) {
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();                         // сброс поведения по умолчанию
-
-        // блок для сообщений о статусе
-        const status = document.createElement('div');
-        status.classList.add('status');
-        status.textContent = message.loading;       // статус
-        form.append(status);
-        
-        const formData = new FormData(form);        // спец объект формы заголовки не треб
-        const obj = {};
-        formData.forEach((value, key) => obj[key] = value);
-        const json = JSON.stringify(obj);
-        
-        fetch('server/', {                          // url
-            method: 'POST',                         // метод
-            //body: formData,                       // передаваемый объект - FormData
-            body: json,                             // передаваемый объект - JSON
-            headers: {                              // заголовки
-                'Content-type': 'application/json'
-            }
-        })
-        .then(response => response.json())          // ответ в JSON ковертируем в объект
-        .then(obj => console.log(obj))              // обрабатываем дальше наш объект
-        .catch(err => console.log('Error', err))    // ошибки
-        .finally(() => form.reset());               // финал
-
-
---- async await ------------------------------------------
-3. способ - механизи async await(ждем завершения запроса)
-async - ставится перед функциями с асинхронными ф-иями
+// синхронные функции - для этого заворачиваем fetch в async функцию
+способ - механизи async await(ждем завершения запроса)
+async - ставится перед функциями с асинхронными операциями
 await - ставится в асинк ф-иях перед асинк операциями - ждет завершения асинк кода
 
 // пример универсального метода, исп GET запрос с данными
@@ -1680,7 +1551,7 @@ const getData = async (url) => {
 }
 
 // вызов GET из кода
-getData('/api')
+getData('/api')                                     // просто fetch завернули в это
 .then(data => console.log(data))                    // обработка успешного результата
 .catch(err => console.log(err));                    // обработка ошибки
 .finally(() => console.log('finally'));             // финал

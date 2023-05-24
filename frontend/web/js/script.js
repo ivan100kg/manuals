@@ -14,14 +14,14 @@ console.log("hasChildNodes:");
 console.log(bodyElement.hasChildNodes());
 
 // all nodes
-if(document.hasChildNodes()) {
+if (document.hasChildNodes()) {
     for (let node of bodyElement.childNodes) {
         console.log(node);
     }
 }
 
 // all elemets
-if(document.hasChildNodes()) {
+if (document.hasChildNodes()) {
     for (let node of bodyElement.children) {
         console.log(node);
     }
@@ -39,7 +39,7 @@ icons.forEach(element => {
 const images = document.querySelectorAll('img');
 console.log(images);
 
-if (images.length > 0){
+if (images.length > 0) {
     for (let img of images) {
         console.log(img.currentSrc);
     }
@@ -79,8 +79,8 @@ mainText.after(newText);
 // mainText.prepend(newElement);
 // mainText.append(newText);
 
-mainText.insertAdjacentHTML(`afterbegin`,`<p>Fuck off</p>`);
-mainText.insertAdjacentHTML(`afterend`,`<p>Bitch!!</p>`);
+mainText.insertAdjacentHTML(`afterbegin`, `<p>Fuck off</p>`);
+mainText.insertAdjacentHTML(`afterend`, `<p>Bitch!!</p>`);
 
 // move
 const trainingHeader = document.querySelector('.training__header');
@@ -146,7 +146,7 @@ btn.onclick = function setScrollBy() {
 };
 function setScrollTo() {
     window.scrollBy(0, 50);
-    window.scrollTo(0,100);
+    window.scrollTo(0, 100);
 }
 function setScrollIntoView(top) {
     const elem = document.querySelector('.training__text');
@@ -163,7 +163,7 @@ function setScrollIntoViewOption(top) {
 
 
 function promice() {
-    
+
 }
 
 function main() {
@@ -174,22 +174,54 @@ function main() {
     button.innerHTML = 'кнопка';
     header.append(button);
 
-    button.addEventListener('click',(e, args) => {
+    button.addEventListener('click', (e, args) => {
         e.preventDefault();
         console.log(e);
-        const promice = new Promise(function(resolve, reject) { // resolve - выполнилось правильно
-            setTimeout(() => {                                
+        const promice = new Promise(function (resolve, reject) { // resolve - выполнилось правильно
+            setTimeout(() => {
                 console.log('hello');
-                const obj = {name: 'loh'};                      // объект - имитация ответа с сервера
-                if(false) {reject(); return;}                   // reject()
-                resolve(obj); 
+                const obj = { name: 'loh' };                      // объект - имитация ответа с сервера
+                if (false) { reject(); return; }                   // reject()
+                resolve(obj);
             }, 2000);
-        
-                                              // <--------------------------+
+
+            // <--------------------------+
         });
         promice.then((obj) => console.log('What a fuck! ' + obj.name));
 
     });
 }
+
+function fetchUser(id) {                        // функция возвращающая Promise
+    return new Promise((resolve, reject) => {     // Promise
+        setTimeout(() => {                          // имитация асинх ф-ии
+            const user = { id: id, name: "John" };
+            if (id <= 0) {
+                reject(new Error("Invalid id"));
+            } else {
+                resolve(user);
+            }
+        }, 1000);
+    });
+}
+
+fetchUser(1)
+    .then((user) => console.log(user))            // в случ успеха
+    .catch((err) => console.error(err))           // неудача
+    .finally(() => console.log('f'))               // всегда
+
+
+fetchUser(-1)
+    .then((user) => console.log(user))            // в случ успеха
+    .catch((err) => console.error(err))           // неудача
+    .finally((f) => console.log(f))               // всегда
+
+const test = time => new Promise(resolve => setTimeout(() => resolve(), time));
+test(2000).then(() => console.log('ok!'));
+
+fetch('https://httpbin.org/get')                // url
+.then(response => response.json())              // ответ в JSON ковертируем в объект
+.then(obj => console.log('IP: ' + obj.origin))  // обрабатываем дальше наш объект
+.catch(err => console.log('Fuck!' + err));      // в случае ошибки
 
 document.addEventListener('DOMContentLoaded', main);
