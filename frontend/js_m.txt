@@ -812,8 +812,9 @@ https://learn.javascript.ru/regexp-groups - здесь все
                        reduce((aсс, el, 2) - третий параметр - индекс начала acc
     arr.sort        // сортировка, если без ф-ии сортирует как строки
 
-    // переделываем любой объект в массив и вертим как хотим
-    Object.entries(obj)
+    // конвертация в массив
+    Object.entries(obj)     // объект - в массив
+    Array.from(nodelist)    // nodeList(из querySelectorAll) в массив
 
 --- Циклы(loops) ---------------------------
     while (true) {              // while
@@ -1557,6 +1558,7 @@ getData('/api')                             // просто fetch заверну
 
 // пример универсального метода, исп POST запрос с данными
 async function postData(url="", data={}) {
+    try {
     const response = await fetch(url, {     // ждем завершения(или 30 сек по стд)
         method: "POST",                     // *GET, POST, PUT, DELETE, etc.
         mode: "cors",                       // no-cors, *cors, same-origin
@@ -1571,6 +1573,9 @@ async function postData(url="", data={}) {
         body: JSON.stringify(data),         // body data type must match "Content-Type" header
     });
     return response.json();                 // parses JSON response into native JavaScript objects
+    } catch(err) {
+        throw err;                          // в случае неудачи
+    }
 }
 
 // вызов POST из кода
