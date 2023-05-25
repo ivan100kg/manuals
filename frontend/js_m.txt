@@ -1518,7 +1518,6 @@ Fetch позволяет отправлять HTTP-запросы с испол�
 Запросы могут быть синхронными или асинхронными, и они могут использовать различные методы HTTP
 Технология общения с сервером, основана на промисах
 
-// Пример асинхронных функций
 // GET
 fetch('https://httpbin.org/get')            // url
 .then(response => response.json())          // ответ в JSON ковертируем в объект
@@ -1536,43 +1535,48 @@ fetch('https://httpbin.org/post', {         // url
 .then(response => response.json())          // ответ в JSON ковертируем в объект
 .then(obj => console.log(obj));             // обрабатываем дальше наш объект
 
-// синхронные функции - для этого заворачиваем fetch в async функцию
-способ - механизи async await(ждем завершения запроса)
+// Реализация в функциях
+механизи async await(ждем завершения запроса)
 async - ставится перед функциями с асинхронными операциями
 await - ставится в асинк ф-иях перед асинк операциями - ждет завершения асинк кода
 
-// пример универсального метода, исп GET запрос с данными
-const getData = async (url) => {
-    const res = await fetch(url);
-    if(!res.ok) {                                   // ok - boolean(статус 200?)
-        throw new Error('cant fetch');              // обработка ошибки
+// GET
+async function getData(url){
+    const response = await fetch(url);
+    if(!res.ok) {                           // ok - boolean(статус 200?)
+        throw new Error('cant fetch');      // обработка ошибки
     }
-    return await res.json();                        // ждем и возвращаем объект
+    const jsonData = await response.json(); // ответ в JSON ковертируем в объект
+    return jsonData;                        // возвращаем объект
 }
 
 // вызов GET из кода
-getData('/api')                                     // просто fetch завернули в это
-.then(data => console.log(data))                    // обработка успешного результата
-.catch(err => console.log(err));                    // обработка ошибки
-.finally(() => console.log('finally'));             // финал
+getData('/api')                             // просто fetch завернули в это
+.then(data => console.log(data))            // обработка успешного результата
+.catch(err => console.log(err));            // обработка ошибки
 
 // пример универсального метода, исп POST запрос с данными
-const postData = async (url, data) => {
-    const res = await fetch(url, {                  // ждем завершения(или 30 сек по стд)
-        method: 'POST',                             // метод
-        body: data,                                 // передаваемый объект - JSON
-        headers: {                                  // заголовки
-            'Content-type': 'application/json'
-        }
+async function postData(url="", data={}) {
+    const response = await fetch(url, {     // ждем завершения(или 30 сек по стд)
+        method: "POST",                     // *GET, POST, PUT, DELETE, etc.
+        mode: "cors",                       // no-cors, *cors, same-origin
+        cache: "no-cache",                  // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin",         // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: "follow",                 // manual, *follow, error
+        referrerPolicy: "no-referrer",      // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data),         // body data type must match "Content-Type" header
     });
-    return await res.json();                        // ждем и возвращаем объект
+    return response.json();                 // parses JSON response into native JavaScript objects
 }
 
 // вызов POST из кода
-postData('/api', JSON.stringify(someObj))           // кидаем url и какой-то объект в JSON
-.then(data => console.log(data))                    // обрабатываем полученные данные
-.catch(err => console.log(err))                     // обработка ошибки                
-.finally(() => console.log('finally'));             // финал
+postData("https://exmpl.com/aner", someObj) // кидаем url и какой-то объект
+.then(data => console.log(data))            // обрабатываем полученные данные
+.catch(err => console.log(err));            // обработка ошибки                
 
 
 --- Asynchronous vs synchronous--------------------------------------------------------------------
