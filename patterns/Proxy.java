@@ -34,6 +34,10 @@ class AnimalProxy implements Animal {
     }
 }
 
+// В данном примере RealAnimal является реальной реализацией интерфейса Animal, а AnimalProxy - его прокси.
+// В конструкторе AnimalProxy создается объект RealAnimal, который будет использоваться для делегирования вызовов. 
+// Фактически, метод makeSound() в AnimalProxy только вызывает метод makeSound() у RealAnimal, дополнительно выводя сообщения до и после вызова.
+
 public class Proxy {
     public static void main(String[] args) {
         Animal realAnimal = new RealAnimal("meow");
