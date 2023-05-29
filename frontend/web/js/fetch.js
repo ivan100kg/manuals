@@ -9,7 +9,6 @@ asyncGetFetch(url);
 
 console.log('hello 2');
 
-// асинхронная ф-ия
 function asyncGetFetch(url) {
     fetch(url)                                          // url
         .then(response => response.json())              // ответ в JSON ковертируем в объект
@@ -17,7 +16,6 @@ function asyncGetFetch(url) {
         .catch(err => console.log('Fuck!' + err));      // в случае ошибки
 }
 
-// синхронная ф-я
 async function syncGetFetch(url) {
     const responce = await fetch(url);
     const data = await responce.json();
