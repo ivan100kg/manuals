@@ -1458,6 +1458,8 @@
            ss   30
            n    5555    nanoseconds
            nnnnn    0555
+    DateFormat myFormatter = new SimpleDateFormat("ddMMyy");    // форматтер для Date
+    myFormatter.format(new Date());                             // -> "310523"
 
     parse()
     Переводит дату/время из строки в объект времени, строка должна
