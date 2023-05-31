@@ -17,7 +17,7 @@
     "Write Once, Run Anywhere"
     human.java  // сохраненный файл с исх кодом с расширением .java
       |
-    javac       // компилятор javaс
+    javac       // компилятор javaс JIT Compiler
       |
     human.class // на выходе byte code в файле .class
       |
@@ -31,6 +31,10 @@
     exit        // выход, Ctrl+D
 
 --- JVM ---
+    JVM - Java Virtual Machine - Виртуальная машина Java исполняет байт-код Java(после JIT)
+    JRE - Java Runtime Environment - JMV + classes, мин необх реализация для запуска прил-й
+    JDK - Java Development Kit - JRE + JIT компиллятор - ля разработки программ на Java
+    
     Загрузка, проверка и исполнение байт кода
         Загрузчик классов является частью JRE, которая динамически загружает Java классы в JVM
         Обычно классы загружаются только по запросу
@@ -274,10 +278,11 @@
     static  // может относится к переменной/методу
                принадл классу, можно вызвать через класс Class.var или
                через объект obj.var. В статик методах нельзя использовать
-               не статические переменные. Но в не статик методах - можно 
-               использовать статик переменные. Если final static - 
+               не статические переменные. Но в не статик методах - можно
+               использовать статик переменные. Если final static -
                определяется только сразу.
-    abstract// 
+    abstract// может относится к методу/классу
+               классы наследующие abstract должны переопределить методы
 
 --- Scope of variables ---
     local       // локальные, видны только в одном блоке, после объявления
@@ -1471,6 +1476,12 @@
     LocalDate localDate = LocalDate.now();//For reference
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     String formattedString = localDate.format(formatter);
+
+    // from Date to LocalDate
+    new java.sql.Date(date.getTime()).toLocalDate();
+
+    // from LocalDate to Date
+    java.sql.Date.valueOf(localdate);
 
 --- Random ---
     (int) ((Math.random() * (max - min)) + min);    // генератор инт [min, max)
