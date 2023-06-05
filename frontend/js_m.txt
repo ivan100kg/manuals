@@ -1544,7 +1544,7 @@ await - ставится в асинк ф-иях перед асинк опер�
 // GET
 async function getData(url){
     const response = await fetch(url);
-    if(!res.ok) {                           // ok - boolean(статус 200?)
+    if(!response.ok) {                      // ok - boolean(статус 200?)
         throw new Error('cant fetch');      // обработка ошибки
     }
     const jsonData = await response.json(); // ответ в JSON ковертируем в объект

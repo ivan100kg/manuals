@@ -3889,6 +3889,7 @@
                   f # double
     Example:
     System.out.printf("%03d\t%-7s\t%,.2f\n", 1, "Hi", 3.14); // 001	Hi 	3,14
+    String.format("%03d", number);                           // number = 2 => "002"
 
 --- Round/Округление ---
     1 способ:
