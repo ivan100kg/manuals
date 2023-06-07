@@ -4,7 +4,7 @@ const url = 'https://httpbin.org/get';
 
 console.log('hello 1');
 
-asyncGetFetch(url);
+// asyncGetFetch(url);
 // syncGetFetch(url);
 
 console.log('hello 2');
