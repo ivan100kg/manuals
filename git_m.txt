@@ -133,12 +133,12 @@ git diff --check                # проверка перед доб в инде
 git add <file> or -A        	# add file to index(подготовка к коммиту)
 git reset HEAD <file>          	# отменить add, файл будет не в индексе
 git restore --staged			# тоже - отмена индексации файла
- 
+
 # commit
 git commit -m "Initial commit." # коммит, фиксация изменений, -m - коммент
 git commit -a					# add + commit of trackied files
 git commit --amend				# переделать/заменить последний коммит
-                                  можно добавить/удалить то что забыли, 
+                                  можно добавить/удалить то что забыли,
                                   выполнить add, переписать сообщение.
 # delete
 git rm <file>					# удаляет из раб каталога и из индекса
