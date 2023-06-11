@@ -18,8 +18,9 @@
 типы данных:
 	short(2), int(4), long(8), long long(8)	# целочисленные
 	float(4), double(8), long double(16)	# с плав точкой
-	char = 'r';
-	bool = true;
+	char = 'r';								# char
+	bool = true;							# boolean
+
 	int a, b = 0;
 	double d = 10.66;
 	float f = 10.5f;
