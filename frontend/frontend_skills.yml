@@ -1,0 +1,90 @@
+Сетевые протоколы:
+    с какими сетевыми протоколами работает фронтенд разработчик
+    TCP - Transmittion Control Protocol (прот управл передеачей)
+    WebSocket - иннтерфейсы для управлением травпортным уровнем
+    HTTP:
+        Hyper Transfer Protocol (Прот передачи гипертекста(HTML))
+        методы GET, POST, PUT, DELETE..
+        GET vs POST(тело) + GET-запросы могут быть закешированы прокси-серверами и браузерами, в то время как POST-запросы не могут быть закешированы.
+        заголовки 
+        тело
+        порт 80 443(https)
+        куки - хранятся на компьютере клиента и используются для хранения персональных(выдаются сервером)
+        сессия - механизм взаимодействия между сервером и клиентом в протоколе HTTP, который позволяет сохранять информацию о состоянии клиента на сервере
+Браузер:
+    dev-tools
+    Объекты веб-хранилища localStorage и sessionStorage позволяют хранить пары ключ/значение в браузере
+HTML:
+    hyperText Markup Language — «язык гипертекстовой разметки»
+    Структура документа
+    div span
+    строчные блочные
+    таблицы
+    списки
+    атрибуты
+    как подключить скрипт, стили
+    form:
+        input виды
+        select, option
+    Методология БЭМ
+CSS:
+    Cascading Style Sheets (каскадные таблицы стилей) 
+    селекторы виды
+    margin vs padding (border
+    псевдоэлементы, псевлоклассы
+    position
+    display
+JavaScript:
+    приведение типов
+    scope лексическое окружение/видимость local global script Closure
+    замыкание 
+    обход объекта for (let key in user)
+    функции-конструкторы let book = new Book("Муму", "Турген")
+    this
+    классы:
+        наследование class ColoredRect extends Rectangle {       // наследование
+        constructor(height, width, color) {
+            super(height, width);
+    Promise - результат асинхронной операции new Promise((resolve, reject) ... then catch
+    Fetch - это новый стандарт JavaScript для выполнения запросов на сервер
+    Regex  - одна или больше цифр ^\d+
+    массивы - переборка for (let value of fruits) foreach, map, filter, reduce, every/some, sort
+    опциональная цепочка ?.
+    обработка ошибок, выброс ошибки
+    Window  - глобальная переменная - окно браузера со своими методами
+    BOM     - доп объекты браузера для работы со всем кроме документа
+    DOM     - все содержимое страницы в виде объектов, кот можно менять
+    DOM:
+        firtElementChild vs firstChild
+        children
+        querySelectorAll
+        querySelector
+        getElementById
+        after
+        remove
+        classList
+        style.fontSize
+        clientWidth;                    // ширина окна до полосы прокрутки
+        Events:
+            addEventListener('event', callbackFoo);
+            e.target
+            e.currentTarget;   // в отличие от target показывает текущий элемент(на родителе и ребенке обработчики)
+            e.preventDefault() сброс стд поведения эл
+            document.addEventListener('DOMContentLoaded', foo);
+            JSON.stringify
+
+    AJAX:
+        Asynchronous JavaScript and XML технология, которая позволяет отправлять запросы на сервер без перезагрузки страницы
+        XMLHttpRequest()
+        jQuery
+        fetch
+    Модули: 
+        нужны для разделения большого кода на отдельные файлы(модули)
+        Модуль обычно содержит класс или библиотеку с функциями.
+        Модуль – это просто файл. Один скрипт – это один модуль.
+        Модули работают только если их собрать, например с помощью Webpack!
+Git:
+MVC:
+JSON:  это текстовый формат обмена данными, который широко используется в web-разработке
+
+
