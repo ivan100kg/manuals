@@ -25,9 +25,23 @@ Jpanel - панель содержимого, на ней располагают
 добавляется в контейнер верхнего уровня - он попадает на панель содержимого.
 
 --- Всплывающие окна ---
+// message
 JFrame frame = new JFrame();
 JOptionPane.showMessageDialog(frame, "Кэшбэк можно вносить только 1 раз");
+
 https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
+
+// error
+JOptionPane.showMessageDialog(frame,
+    "Eggs are not supposed to be green.",   // message
+    "Inane error",                          // title
+    JOptionPane.ERROR_MESSAGE);
+
+// warning
+JOptionPane.showMessageDialog(frame,
+    "Eggs are not supposed to be green.",   // message
+    "Inane warning",                        // title
+    JOptionPane.WARNING_MESSAGE);
 
 // yes no
 int n = JOptionPane.showConfirmDialog(
