@@ -715,14 +715,31 @@ tload    # тоже самое но без граф инт ---------------------
                         но не завершение работы
 19          SIGCONT     Продолжение выполнения ранее остановленного процесса
 
-# репозитории дистрибутивы пакеты-------------------------------------
+# репозитории - коллекции пакетов ----------------------------------
+/etc/apt/sources.list       стандартные репозитории дистрибутива
+/etc/apt/sources.list.d/    дополнительные репозитории - файлы .list
+добавить репозиторий:
+apt-add-repository 'deb http://rep_addr version branch'             обыч реп
+apt-add-repository 'ppa:repository/ppa'                             ppa реп
+echo "deb http://rep_addr version branch" >> /etc/apt/sources.list  ввести напрямую
+добавить ключи безопасности(3 способа):
+curl -L http://addr/repo_key | sudo apt-key add
+wget -q -O - http://addr/repo_key| sudo apt-key add -
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys <http://addr/repo_key>
+удалить репозиторий:
+apt-add-repository --remove 'deb http://rep_addr version branch'    обыч реп
+/etc/apt/sources.list или в одном из /etc/apt/sources.list.d/*.list закоментить строки
+sudo add-apt-repository --remove ppa:repository/ppa                 ppa реп
+далее обновляем список репов
+sudo apt update
+
+# пакеты ---------------------------------------------------------
 # 32 or 64 bit
   i386, x86, IA-32 # 32 bit
   amd64, x86_64    # 64 bit
 # пакеты - сжатая кол-ция файлов программ сценариев метаданных...
   debian  # .deb
   red hat # .rpm
-# репозиторий - коллекция пакетов
 # дистрибутив включает 1 центральный репозиоорий и несколько сторонних
 # инструменты управления пакетами
   debian: высокоур: apt, apt-get, aptitude. низкоур: dpkg
