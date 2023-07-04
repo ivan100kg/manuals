@@ -1,2 +1,2 @@
 # Manuals
-My notes on various topics.
+My notes on various topics
