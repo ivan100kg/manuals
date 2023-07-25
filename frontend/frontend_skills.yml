@@ -87,4 +87,84 @@ Git:
 MVC:
 JSON:  это текстовый формат обмена данными, который широко используется в web-разработке
 
+JAVA:   1. Java Core 8/11/17, Unit-tests
+            - примитивы/ссылочные знач по умолчанию
+            - overloading overriding hidding
+            - пакет/импорт
+            - Access modifier private -> default -> protected -> public
+            - Non-access modifiers final static abstract transient
+                transient       // такие переменные класса не сериализуются
+                native          // методы реализованы не на Java а на C. Не имеют тела;
+                synchronized    // методы могут быть исп в одно время только 1-м потоком.
+                volatile        // переменный могут быть изменены разными потоками и 
+                                данные изменения будут видны во всех потоках.
+                strictfp        // в методах и классах огранич точность вычислений float
+                                и double по стандарту IEEE
+            - this this() super()
+            - Object, equals and hashcode 
+                Если obj1.equals(obj2) == true -> hashCode должен быть одинаковый.
+                Если obj1.equals(obj2) == false-> hashCode НЕ обяз должен быть разным.
+            - String? StringBuilder
+            - массив
+            - Binding Compile/Runtime time binding
+            - 1. static blocks и static переменные родительского класса.
+                2. static blocks и static переменные дочернего класса.
+                3. non-static blocks и non-static переменные родительского класса.
+                4. constructor родительского класса.
+                5. non-static blocks и non-static переменные дочернего класса.
+                6. constructor дочернего класса.
+            - *** && и & в чем разница (false & b++ > 0)
+            - интерфейсы и абс классы
+            - casting
+            - Wrapper classes
+            - ООП
+            - исключения
+            - try/catch throw
+            - lambda
+            - функциональные интерфейсы
+            - Дженерики
+            - Колекции
+            - Стримы Optional
+            - File IO
+            - regex Date LocalDate
+            - Reflection
+            - Annotation
+        2. SQL, PostgreSQL, JDBC, Hibernate    
+            - Statement ResultSet
+            - Транзакции
+            - Entity POJO
+            - JPA
+            - One-to-Many 
+            /Lazy
+    
+        3. OOP, Patterns, SOLID*                               
+        4. Spring, Data,Web,Boot,Security,JPA,Cloud,Spring JDBC
+            Metadata            - совокупность объектов которые конфигурируют
+                            контейнер(создание бинов, управление зависимостями)
+            IoC Container       - контейнер/хранилище объектов(бинов), создает и 
+                                внедряет зависимости в них. Структура - ассоц массив.
+            ApplicationContext  - интерфейс, реализует базовый интерфейс BeanFactory,
+                                реализация ApplicationContext - это и есть Контейнер.
+            POJO                - Plain Old Java Object, объект с полями, свойствами,
+                                конструкторами, не содержит логики(DTO, Entity)                   
+            Bean                - сущность/объект Java класса, создаваемая, хранимая 
+                                в контейнере, которую можно получить из него.
+                                (Component, Controller, Repository, Service...)
+            - @Autowired
+        5. Maven, Git, Jenkins, Jira, Confluence      
+            - pom clean package
+            - add commit merge restore pull push fetch reset --hard push --force
+            - Controller|RestController
+            - REST Jacson ORM JSON    
+            - tomcat
+        6. Kafka, REST/SOAP, JSON/XML/YAML                     
+        7. Docker, Kubernetes(K8s)/OpenShift                   
+        8. Swagger*, JVM*, Multithreading*
 
+        практика:   - вывод списка селекта перепутаны позиции, не так как в строй программе
+                    - при печати документа неверные данные
+                    - неправильно считается сумма при нажатии на кнопку
+                    - выгрузку пациентов женского пола проходивших услугу с кодом 253
+                    - сделать поиск по email с игнором регистра
+                    - сделать API для сайта партнера
+                    - сделать клиент который контактирует с API сайта и посылает ежедневно данные
