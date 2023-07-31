@@ -236,7 +236,7 @@ Hibernate
     name указывается имя столбца в которое будет записано значение поля. 
     Для "ручного" формирования запроса с помощью которого будет построен 
     столбец можно воспользоваться параметром columnDefinition.
-    Здесь же можно указать ограничение NOT NULL (n ullable = false). 
+    Здесь же можно указать ограничение NOT NULL (nullable = false). 
     Чтобы запретить изменение значение какого-либо столбца updatable = false.
     @Column (name = "manual_def_str" , columnDefinition = "VARCHAR(50) NOT NULL
     UNIQUE CHECK (NOT substring(lower(manual_def_str), 0, 5) = 'admin')" )
@@ -245,6 +245,9 @@ Hibernate
     String shortString ;
     @Column (name = "created_at" , updatable = false )
     LocalDateTime createdAt ;
+
+    @Column(name = "gen_uuid" , insertable = false, updatable = false )
+    private UUID gen_uuid;              // не инсертить и не обновлять
 
     @Formula("SELECT AVG(cost)...")     // поле кот авто считается при get запис
 
