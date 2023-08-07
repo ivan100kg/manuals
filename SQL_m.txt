@@ -276,9 +276,32 @@ INNER JOIN students AS s ON p.student_id = s.id
 INNER JOIN subjects AS su ON p.subject_id = su.id;
 
 -- Агрегатные ф-ии
+вычисляет единственное значение, обрабатывая множество строк
+COUNT, SUM, AVG, MIN, MAX
 SELECT max(temp_lo) FROM weather;                       # max
 SELECT city, max(temp_lo) FROM weather GROUP BY city;   # группировка
 HAVING max(temp_lo) < 40;   # сортировка после группировки работает
+
+-- Оконные функции
+SELECT col1, col2, avg(col1) OVER (PARTITION BY col1 ORDER BY col1)
+-- выполняет вычисления для набора строк, связанных с текущ строкой
+-- получают на вход данные после HAVING
+OVER            - обязательный аттрибут оконной функции
+()              - рамка окна - для каждой строки сущ набор строк в ее разделе
+                  По умолчанию с указанием ORDER BY рамка состоит из всех
+                  строк от начала раздела до текущей строки и строк, равных
+                  текущей по значению выражения ORDER BY. Без ORDER BY рамка
+                  по умолчанию состоит из всех строк раздела.
+PARTITION BY fl - группировка значений по полю, идет выборка строк у 
+                  которых значение поля fl равно значению fl текущ строки
+ORDER BY fl     - порядок, в котором строки будут обраб оконными функциями
+                  
+-- средняя цена по по текущему(в строке) депортаменту(PARTITION BY depname)
+SELECT depname, salary, avg(salary) OVER (PARTITION BY depname)
+-- () - все строки таблицы
+SELECT depname, salary, avg(salary) OVER ()
+-- ранг по каждому департаменту начиная с большей зарплаты
+SELECT depname, salary, rank() OVER (PARTITION BY depname ORDER BY salary DESC)
 
 -- Представления
 CREATE VIEW myview AS   # создать 
@@ -417,6 +440,7 @@ FROM book
 WHERE amount < 4;
 
 -- CRUD ----------------------------------------------------------------------
+
 -- INSERT INTO
 -- Добавление данных
 # INSERT synopsis
@@ -431,6 +455,9 @@ VALUES
 INSERT INTO book (title, author, price, amount) 
 SELECT title, author, price, amount FROM supply
 WHERE author NOT IN ( SELECT author FROM book );	# также можно исп влож запр
+-- добавить из файла
+INSERT INTO aircrafts  
+  COPY aircrafts FROM '/home/user/air.txt';         # внести из текстового файла
 
 -- SELECT
 -- Извлечение данных
