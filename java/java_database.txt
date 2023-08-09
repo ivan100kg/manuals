@@ -1,3 +1,21 @@
+Общие понятия
+Entity - это объект, который представляет определенную таблицу в базе данных.
+Он содержит поля, сответствующие столбцам таблицы, и методы для работы с этими
+данными, такие как получение, обновление, удаление и создание записей. Обычно 
+класс Entity содержит аннотации для маппинга с таблицей базы данных.
+
+DTO (Data Transfer Object) - это объект, который используется для передачи данных
+между слоями приложения или между различными приложениями. Он содержит только 
+необходимую информацию для передачи и обычно не содержит методов работы с данными.
+DTO обычно используются для уменьшения количества данных, которые нужно передавать
+по сети, и для повышения производительности.
+
+POJO (Plain Old Java Object) - это простой Java-объект, который не зависит от 
+какой-либо специфической технологии или фреймворка. POJO представляет простой 
+контейнер для данных, не имеет специальной логики и не наследуется от каких-либо 
+специальных классов. POJO обычно используются для абстракции данных и повышения 
+гибкости и переносимости кода.
+
 JDBC
 --- JDBC ---
     Java Database Connectivity
@@ -100,13 +118,13 @@ JDBC
 
 Hibernate
 --- Hibernate basic ---
-    Hibernate - это framework, коткоторый осуществляет CRUD между Java obj и DB.
+    Hibernate - это ORM, framework, коткоторый осуществляет CRUD между Java obj и DB.
     Hibernate - реализация спецификации JPA плюс свои фишки.
     Использует для работы с БД под капотом JDBC.
         Java App <===> Hibernate <===> JDBC <===> Database
 
     CRUD
-    CRERATE - INSERT
+    CREATE  - INSERT
     READ    - SELECT
     UPDATE  - UPDATE
     DELETE  - DELETE
@@ -621,3 +639,11 @@ Hibernate
             mappedBy = "department",
             fetch = FetchType.EAGER)    // так менять тип выборки
     private List<Employee> employees;
+
+--- EntityManager vs SessionFactory
+EntityManagerFactory and EntityManager  - соответствует стандату JPA
+SessionFactory and Session              - hibernate специфика(доп фичи)
+// можно получить хибер сессию из манагера 
+Session session = entityManager.unwrap(Session.class);
+Все медоты EntityManager есть и в Session, всегда используй EntityManager,
+Sesseion нужен для специфических функций, которые врятли понадобятся
