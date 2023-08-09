@@ -1485,6 +1485,11 @@
     // from LocalDate to Date
     java.sql.Date.valueOf(localdate);
 
+    // from Date to String
+    Date currentDate = new Date();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    String dateString = dateFormat.format(currentDate);
+
 --- Random ---
     (int) ((Math.random() * (max - min)) + min);    // генератор инт [min, max)
     new Random().nextInt(3);                        // [0,3)
