@@ -287,14 +287,25 @@ INNER JOIN subjects AS su ON p.subject_id = su.id;
 -- Агрегатные ф-ии
 вычисляет единственное значение, обрабатывая множество строк
 COUNT, SUM, AVG, MIN, MAX
+NULL отбрасываются для всех кроме COUNT(*)
 SELECT max(temp_lo) FROM weather;                       # max
 SELECT city, max(temp_lo) FROM weather GROUP BY city;   # группировка
 HAVING max(temp_lo) < 40;   # сортировка после группировки работает
-агрегатная_функция (выражение [ , ... ] [ предложение_order_by ] ) [ FILTER( WHERE условие_фильтра ) ]
-агрегатная_функция (ALL выражение [ , ... ] [ предложение_order_by ] ) [ FILTER( WHERE условие_фильтра ) ]
-агрегатная_функция (DISTINCT выражение [ , ... ] [ предложение_order_by ] ) [ FILTER( WHERE условие_фильтра ) ]
-агрегатная_функция ( * ) [ FILTER ( WHERE условие_фильтра ) ]
-агрегатная_функция ( [ выражение [ , ... ] ] ) WITHIN GROUP ( предложение_order_by )[ FILTER ( WHERE условие_фильтра ) ]
+
+-- Агрегатные выражения
+agr_foo     - агрегатная функция
+expr        - любое выражение значения, не содержащее в себе агрегатного
+              выражения или вызова оконной функции
+order_by    - некоторые агрегатные функции (такие как array_agg и string_agg)
+              выдают результаты, зависящие от порядка данных.
+              SELECT array_agg(a ORDER BY b DESC) FROM table;
+
+
+1) agr_foo (expr [ , ... ] [ order_by ] ) [ FILTER( WHERE condition ) ]                     // стандартый синтаксис
+2) agr_foo (ALL expr [ , ... ] [ order_by ] ) [ FILTER( WHERE condition ) ]                 // эквивалент 1-го
+3) agr_foo (DISTINCT expr [ , ... ] [ пorder_by ] ) [ FILTER( WHERE condition ) ]           // для различных значений выражения
+4) agr_foo ( * ) [ FILTER ( WHERE condition ) ]                                             // для каждой строки(только для COUNT(*))
+5) agr_foo ( [ expr [ , ... ] ] ) WITHIN GROUP ( order_by )[ FILTER ( WHERE condition ) ]   // сортирующие агр ф-ии
 SELECT max(gc.service_cost_discont) FILTER(WHERE gc.takingdate='2023-08-10') FROM guest_card gc;
 
 -- Оконные функции
