@@ -284,7 +284,7 @@ SELECT s.name, su.name, p.mark FROM progress AS p
 INNER JOIN students AS s ON p.student_id = s.id 
 INNER JOIN subjects AS su ON p.subject_id = su.id;
 
--- Агрегатные ф-ии
+-- Агрегатные ф-ии -----------------------------------------
 вычисляет единственное значение, обрабатывая множество строк
 COUNT, SUM, AVG, MIN, MAX
 NULL отбрасываются для всех кроме COUNT(*)
@@ -307,7 +307,8 @@ order_by    - некоторые агрегатные функции (такие
 5) agr_foo ( [ expr [ , ... ] ] ) WITHIN GROUP ( order_by )[ FILTER ( WHERE condition ) ]   // сортирующие агр ф-ии
 SELECT max(gc.service_cost_discont) FILTER(WHERE gc.takingdate='2023-08-10') FROM guest_card gc;
 
--- Оконные функции
+
+-- Оконные функции ------------------------------------------------
 SELECT col1, col2, avg(col1) OVER (PARTITION BY col1 ORDER BY col1)
 -- выполняет вычисления для набора строк, связанных с текущ строкой
 -- получают на вход данные после HAVING
@@ -338,14 +339,37 @@ WHERE
 ORDER BY 
     "max" DESC;
 
-имя_функции ([выражение [, выражение ... ]]) [ FILTER ( WHERE предложение_фильтра ) ]
-OVER имя_окна
-имя_функции ([выражение [, выражение ... ]]) [ FILTER ( WHERE предложение_фильтра ) ]
-OVER ( определение_окна )
-имя_функции ( * ) [ FILTER ( WHERE предложение_фильтра ) ] OVER имя_окна
-имя_функции ( * ) [ FILTER ( WHERE предложение_фильтра ) ] OVER ( определение_окна )
+-- вызов ф-ий
+foo ([expr [, expr ... ]]) [ FILTER ( WHERE condition ) ] OVER win_name
+foo ([expr [, expr ... ]]) [ FILTER ( WHERE condition ) ] OVER ( win_declare )
+foo ( * ) [ FILTER ( WHERE condition ) ] OVER win_name
+foo ( * ) [ FILTER ( WHERE condition ) ] OVER ( win_declare )
+    foo         - имя_функции
+    expr        - выражение, любое выражение кроме оконных ф-ий
+    win_name    - имя_окна
+    win_declare - определение_окна
+    condition   - предложение_фильтра
+win_declare:
+    [ имя_существующего_окна ]
+    [ PARTITION BY выражение [, ...] ]
+    [ ORDER BY выражение [ ASC | DESC | USING оператор ] [ NULLS { FIRST | LAST } ][, ...] ]
+    [ определение_рамки ]
+    определение_рамки(необязательное):
+        { RANGE | ROWS | GROUPS } начало_рамки [ исключение_рамки ]
+        { RANGE | ROWS | GROUPS } BETWEEN начало_рамки AND конец_рамки [ исключение_рамки ]
+        начало_рамки и конец_рамки:
+            UNBOUNDED PRECEDING
+            смещение PRECEDING
+            CURRENT ROW
+            смещение FOLLOWING
+            UNBOUNDED FOLLOWING
+        исключение_рамки:
+            EXCLUDE CURRENT ROW
+            EXCLUDE GROUP
+            EXCLUDE TIES
+            EXCLUDE NO OTHERS
 
--- Представления
+-- Представления --------------------------------------
 CREATE VIEW myview AS   # создать 
     SELECT name, temp_lo, temp_hi, prcp, date, location
         FROM weather, cities
