@@ -527,6 +527,8 @@ Spring AOP
     @EnableAspectJAutoProxy     // за кулисами используется Spring AOP Proxy
     public class MyConfig {}
 
+    // Для Spring Boot ничего помечать не нужно
+
     // Создадим класс Aspect, он будет отвечать за сквозную ф-ть
     // добавим зависимость в pom
         <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
@@ -571,6 +573,10 @@ Spring AOP
     context.close();
     > beforeGetBookAdvice: trying to get the book   // наш Advice
     > We are getting the book                       // основной метод
+
+    // обработка методов вызываемых другими методами в классе
+    не нашел как обработать например метод save который вызывается
+    не снаружи класса, а внутри класса другим методом
 
 --- Pointcut ---
     Это выражение, описывающее где ложен быть применен Advice.
