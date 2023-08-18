@@ -536,6 +536,14 @@ Hibernate
     @JoinColumn(name = "department_id")
     private Department department;
 
+    // варианты в случае возникновения ошибки EntityNotFoundException
+    @ManyToOne(fetch = FetchType.EAGER)         // заменить LAZY на EAGER
+
+    @ManyToOne(optional = false)                // прописать optional
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NotFound(action = NotFoundAction.IGNORE)   // добавить IGNORE
+
 --- Many-to-Many ---
     Кружок1 \  / Ребенок1
     Кружок2 <==> Ребенок2
