@@ -1490,6 +1490,11 @@
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     String dateString = dateFormat.format(currentDate);
 
+    // сравнение даты(строчной) с текущей
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    Date doomsDay = dateFormat.parse("2023-09-01");
+    new Date().after(doomsday);
+
 --- Random ---
     (int) ((Math.random() * (max - min)) + min);    // генератор инт [min, max)
     new Random().nextInt(3);                        // [0,3)
