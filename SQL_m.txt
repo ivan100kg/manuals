@@ -504,6 +504,9 @@ SELECT concat_lower_or_upper(a := 'Hello', b := 'World');   -- старый си
 SELECT concat_lower_or_upper(a, b => 'World');              -- смешанный
 
 
+-- Регулярные выражения SIMILAR TO -------------
+строка SIMILAR TO шаблон [ESCAPE спецсимвол]
+строка NOT SIMILAR TO шаблон [ESCAPE спецсимвол]
 
 ================================================================================
 
