@@ -343,6 +343,13 @@ Hibernate
             .setParameter("name", name) // подставим свое знач name --+
             .executeUpdate();           // удалить несколько записей
     
+    // подставить вхождение в список
+    List<Long> idList = Arrays.asList(1L, 2L, 3L);
+    String hqlQuery = "FROM Entity WHERE id IN (:idList)";
+    List<Entity> entities = session.createQuery(hqlQuery)
+        .setParameterList("idList", idList)
+        .getResultList();
+
 --- One-to-One ---
     Uni-directional associations - отношения когда одна сторона не знает о них.
     Bi-directional associations - обе стороны имеют ссылки друг на друга.
