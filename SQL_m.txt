@@ -483,6 +483,22 @@ DROP INDEX name_ind;
 агрегатная_функция ( * ) [ FILTER ( WHERE условие_фильтра ) ]
 COUNT(*) FILTER (WHERE id > 0)
 
+-- Процедуры ----------------------------------------------------
+Процедура — объект базы данных, подобный функции, но имеющий следующие отличия:
+- не возвращают значение, могут выдавать данные в вызывающий код
+- вызываются отдельно командой CALL
+- может фиксировать или откатывать транзакции во время её выполнения
+
+-- Syntax
+-- procedure                            -- function
+CREATE PROCEDURE clean_emp() AS '       CREATE FUNCTION clean_emp() RETURNS void AS '
+    DELETE FROM emp                         DELETE FROM emp
+    WHERE salary < 0;                       WHERE salary < 0;
+' LANGUAGE SQL;                         ' LANGUAGE SQL;
+
+-- вызов                                -- вызов
+CALL clean_emp();                       SELECT clean_emp();
+
 -- Функции ---------------------------------------------------------------------------
 -- создать ф-ию имя_ф-ии              параметры...    параметр зо знач по умолчанию
 CREATE FUNCTION concat_lower_or_upper(a text, b text, uppercase boolean DEFAULT false)
