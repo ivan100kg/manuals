@@ -759,6 +759,26 @@ SELECT * FROM most_popular_films;
 			FROM book 
 			GROUP BY author);
 
+-- EXISTS ------------------------------------------------------
+-- возвращает TRUE или FALSE с подзапроса
+-- похож на использование INNER JOIN
+-- если строк > 0 - возвращает TRUE, иначе FALSE
+SELECT
+	first_name,
+	last_name
+FROM
+	customer
+WHERE
+	EXISTS (
+		SELECT
+			1
+		FROM
+			payment
+		WHERE
+			payment.customer_id = customer.customer_id
+	);
+    
+
 -- Индексы ------------------------------------------------------------- 
 -- структура данных в базе для быстрого поиска
 -- СУБД автоматически решает использовать их или нет
