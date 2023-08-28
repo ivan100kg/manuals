@@ -1477,6 +1477,12 @@ sudo -u postgres psql -d mydb -c "SELECT * FROM celebrities;"
 # with root
 psql -U postgres -d mydb -c "SELECT * FROM celebrities;"
 su -c "psql -d mydb -c \"SELECT * FROM celebrities;\"" postgres
+# Подключиться к БД на удаленном сервере
+psql -h <IP/domen> [-p <port>] -U <username> [-d <db_name>] -W
+    IP/domen - IP-адрес или доменное имя сервера
+    username - имя пользователя
+    port     - необяз порт(по умолчанию 5432)
+    db_name  - необяз имя базы данных
 
 # Асинхронное выполнение
 wait pid  # приостановка процесса, пока не завершится pid(какой-то фон.проц) 

@@ -56,6 +56,13 @@ psql --help \? \h       # help for everything
 sudo -u postgres createdb mydb   # создать бд из консоли linux
 sudo -u postgres dropdb mydb     # удалить бд 'mydb'
 
+-- Подключиться к БД на удаленном сервере
+psql -h <IP/domen> [-p <port>] -U <username> [-d <db_name>] -W
+    IP/domen - IP-адрес или доменное имя сервера
+    username - имя пользователя
+    port     - необяз порт(по умолчанию 5432)
+    db_name  - необяз имя базы данных
+
 
 -- Типы данных ---------------------------------------------------------
 Существует 3 вида констант:
