@@ -539,7 +539,9 @@ VALUES
     (val1, val2...),        # значения, соответссвующие столбцам
     (val3, val4...),        # можно вносить неск записей(списки одинак размера)
     ...
-    (valn, valm…);
+    (valn, valm…)
+RETURNING *;                # необяз, заменяет возврат по умолчанию на наш вывод
+                              вместо INSERT 0 3 -> будут допустим * все строки
 -- добавить из др таблицы можно использовать WHERE, GROUP BY, ORDER BY
 INSERT INTO book (title, author, price, amount) 
 SELECT title, author, price, amount FROM supply
@@ -563,12 +565,23 @@ OFFSET m;                   # отступ
 # UPDATE synopsis
 UPDATE table_name           # название таблицы
 SET column1 = 'my var',     # установить новые значения в определенные колонки
-    column2 = 1080...
-WHERE column_name = '...';  # условие, при котором необходимо изменить запись
+    column2 = 1080,
+    ...
+    columnN = 'end'
+WHERE column_name = '...'   # условие, при котором необходимо изменить запись
+RETURNING column1;          # свой показ вывода при update, вместо UPDATE 1
 -- В запросах на обновление можно использовать несколько таблиц
 UPDATE book, supply 		# к полям обращаться через точку
 SET book.amount = book.amount + supply.amount
 WHERE book.title = supply.title AND book.author = supply.author;
+-- Join в UPDATE
+-- Для каждой строки таблицы t1 оператор UPDATE проверяет каждую строку таблицы t2. 
+   Если значение в столбце c2 таблицы t1 равно значению в столбце c2 таблицы t2, 
+   инструкция UPDATE обновляет знач в столбце c1 таблицы t1 новым знач (new_value)
+UPDATE t1
+SET t1.c1 = new_value
+FROM t2                     -- используем для JOIN оператор FROM
+WHERE t1.c2 = t2.c2;        -- поле для слияния таблиц
 
 -- DELETE
 -- Удаление данных
@@ -791,7 +804,7 @@ WHERE salary > ALL (1000, 2000, 3000);
 			FROM book 
 			GROUP BY author);
 
--- EXISTS ------------------------------------------------------
+-- (NOT)EXISTS ------------------------------------------------------
 -- возвращает TRUE или FALSE с подзапроса
 -- похож на использование INNER JOIN
 -- если строк > 0 - возвращает TRUE, иначе FALSE
@@ -804,6 +817,46 @@ WHERE EXISTS (
 SELECT 1
 FROM таблица2 AS t2
 WHERE t1.id = t2.id);
+
+
+-- CTE(common table expressions)----------------------------------------
+-- CTE позволяют создавать временные таблицы и использовать их для выполнения 
+   сложных запросов и манипуляций с данными
+WITH temp_table AS (    -- создать временную таблицу
+    SELECT *
+    FROM some_table
+    WHERE some_column = 'some_value'
+)
+SELECT *
+FROM temp_table         -- использование
+
+-- несколько запросов
+WITH cte1 AS (
+    SELECT id, name
+    FROM table1
+    WHERE condition1
+),
+cte2 AS (
+    SELECT id, name
+    FROM table2
+    WHERE condition2
+)
+SELECT *
+FROM cte1
+JOIN cte2 USING (id)
+
+-- CTE для выполнения рекурсивного запроса
+WITH RECURSIVE recursive_cte (id, name, manager_id) AS (
+    SELECT id, name, manager_id
+    FROM employees
+    WHERE id = 1
+    UNION ALL
+    SELECT e.id, e.name, e.manager_id
+    FROM employees e
+    INNER JOIN recursive_cte rc ON rc.id = e.manager_id
+)
+SELECT *
+FROM recursive_cte
     
 
 -- Индексы ------------------------------------------------------------- 
