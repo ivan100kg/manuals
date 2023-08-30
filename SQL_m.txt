@@ -52,6 +52,9 @@ psql --help \? \h       # help for everything
 \timing on	# включить замер времени выполнения команд
 \du			# all users
 
+-- скопировать данные в файл
+\copy (SELECT * FROM persons) to 'C:\tmp\persons_client.csv' with csv
+
 -- Создать бд
 sudo -u postgres createdb mydb   # создать бд из консоли linux
 sudo -u postgres dropdb mydb     # удалить бд 'mydb'
@@ -198,7 +201,7 @@ CREATE TABLE accounts (
 	username VARCHAR ( 50 ) UNIQUE NOT NULL,
 	password VARCHAR ( 50 ) NOT NULL,
 	email VARCHAR ( 255 ) UNIQUE NOT NULL,
-	created_on TIMESTAMP default current_timestamp, =-
+	created_on TIMESTAMP default current_timestamp,
     last_login TIMESTAMP 
 );
 
@@ -261,6 +264,7 @@ ALTER TABLE students ADD UNIQUE(series, number);
 ALTER TABLE progress ALTER COLUMN student TYPE integer USING (student::integer);
 ALTER TABLE students ALTER COLUMN mark SET DATA TYPE integer USING 
 ( CASE WHEN mark = 'A' THEN 5 WHEN mark = 'B' THEN 3 ELSE 2 END );
+ALTER TABLE contract ADD COLUMN cpp_account int8 REFERENCES cpp_account(id);
 
 -- удалить таблицу -----------------------------------------------------
 DROP TABLE aircrafts;       
@@ -352,15 +356,19 @@ win_declare:
             EXCLUDE NO OTHERS
 
 
--- Транзакции ------------------------------------------------------------
-Последовательность действий в одной операции - либо все вып-ся либо ничего
+-- Транзакции ---------------------------------------------------------------
+-- Последовательность действий в одной операции - либо все вып-ся либо ничего
 
-BEGIN;		# начать транзакцию								        <---+
-UPDATE accounts SET balance = balance - 100.00	# работаем ...			|
-    WHERE name = 'Alice';												|
-			# еще какие-то действия										|
-COMMIT;		# подтвердить изменения										|
-ROLLBACK;	# отменить изменения, вернуть все как до начала транзакции -+
+-- пример перевода денежных средств с одного счета на дргой
+BEGIN;		# также BEGIN TRANSACTION или BEGIN WORK - начать транзакцию <--+
+-- какие-то операции которые должны вып-ся все или не выполниться           |
+UPDATE accounts SET balance = balance - 100.00 WHERE name = 'Alice';		|
+UPDATE accounts SET balance = balance + 100.00 WHERE name = 'Bob';          |
+SELECT id, name, balance FROM accounts;                                     |
+-- транзакция заканчивается либо COMMIT, либо ROLLBACK                      |
+COMMIT;		# подтвердить изменения     									|
+ROLLBACK;	# отменить изменения, вернуть все как до начала транзакции -----+
+-- ROLLBACK также можно писать как ROLLBACK WORK или ROLLBACK TRANSACTION
 
 ACID:
     Atomicity   — Атомарность(транзакция вып-ся полностью или совсем нет)
@@ -546,10 +554,10 @@ RETURNING *;                # необяз, заменяет возврат по
 -- добавить из др таблицы можно использовать WHERE, GROUP BY, ORDER BY
 INSERT INTO book (title, author, price, amount) 
 SELECT title, author, price, amount FROM supply
-WHERE author NOT IN ( SELECT author FROM book );	# также можно исп влож запр
+WHERE author NOT IN ( SELECT author FROM book );	-- также можно исп влож запр
 -- добавить из файла
 INSERT INTO aircrafts  
-  COPY aircrafts FROM '/home/user/air.txt';         # внести из текстового файла
+  COPY aircrafts FROM '/home/user/air.txt';         -- внести из текстового файла
 
 -- SELECT -------------------------------------------------------
 -- Извлечение данных
@@ -606,7 +614,9 @@ WHERE title IN (			# условие - вложенный запрос
         SELECT title 
         FROM book
       );
-TRUNCATE TABLE my_table;    # удаляет все и сбрасывает счетчик
+
+-- удаляет все и сбрасывает счетчик
+TRUNCATE TABLE my_table RESTART IDENTITY;
 
 -- Подзапрос
 DELETE FROM contacts
@@ -619,7 +629,21 @@ USING t2                    -- используем для JOIN оператор
 WHERE t1.id = t2.id         -- поле для слияния таблиц
 
 
--- AS ------------------------------------------------------------------------
+-- Работа с файлами CSV ----------------------------------------------------
+-- из .csv в таблицу
+COPY persons(first_name, last_name) -- в таблицу persons(поля необяз)
+FROM 'C:\sampledb\persons.csv'      -- сам файл
+DELIMITER ','                       -- csv разделитель
+CSV HEADER;                         -- игнорить заголовок в файле
+
+-- из таблицы в .csv
+COPY persons TO                     -- из таблицы в файл
+'C:\tmp\persons_db.csv'             -- сам файл
+DELIMITER ','                       -- csv разделитель
+CSV HEADER;                         -- включить названия колонок в заголовок
+
+
+-- AS ----------------------------------------------------------------------
 -- Alias/псевдонимы
 SELECT column1 AS col FROM table;           # alias/псевдоним поля
 SELECT column1 col FROM table;              # то же самое, AS можно опустить
