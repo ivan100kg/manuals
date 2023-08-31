@@ -288,6 +288,17 @@ CREATE TABLE progress
                                   CASCADE чтобы все ссылки обновить
 );
 
+-- SELECT INTO
+-- создает новую таблицу и вставляет данные на основе запроса
+SELECT
+    select_list                                                 -- названия полей
+INTO [ TEMPORARY | TEMP | UNLOGGED ] [ TABLE ] new_table_name   -- имя новой таблицы
+FROM
+    table_name                                                  -- данные из запроса
+WHERE
+    search_condition;
+
+
 -- изменить таблицу ------------------------------------------------------------
 ALTER TABLE students			# ADD, DROP, RENAME, ALTER, ENABLE...
 ADD COLUMN name INT NOT NULL;
@@ -300,7 +311,7 @@ ALTER COLUMN mark DROP CONSTRAINT name_of_constraint;
 ALTER COLUMN mark SET DATA TYPE REAL;
 ADD FOREIGN KEY (student_id) REFERENCES table2 (id);
 ALTER TABLE students ADD UNIQUE(series, number);
-ALTER TABLE progress ALTER COLUMN student TYPE integer USING (student::integer);
+ALTER TABLE progress ALTER COLUMN student TYPE integer USING student::integer;
 ALTER TABLE students ALTER COLUMN mark SET DATA TYPE integer USING 
 ( CASE WHEN mark = 'A' THEN 5 WHEN mark = 'B' THEN 3 ELSE 2 END );
 ALTER TABLE contract ADD COLUMN cpp_account int8 REFERENCES cpp_account(id);
