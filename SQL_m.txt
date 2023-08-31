@@ -237,12 +237,6 @@ CREATE TABLE [IF NOT EXISTS] accounts (             -- создать табли
     last_login TIMESTAMP                            -- тут можно добавлять из вне
 );                                                     либо с пом функций и триггеров 
 
--- Создать из другой таблицы
-CREATE TABLE ordering AS
-    SELECT author, title, 5 AS amount
-    FROM book
-    WHERE amount < 4;
-
 -- Constraints/ограничения, DEFAULT/значения по умолчанию
 NOT NULL        - не null
 UNIQUE          - уникальное поле
@@ -289,7 +283,8 @@ CREATE TABLE progress
 );
 
 -- SELECT INTO
--- создает новую таблицу и вставляет данные на основе запроса
+-- создает новую таблицу и вставляет данные возвращаемые с запроса
+-- лучше используй CREATE TABLE AS
 SELECT
     select_list                                                 -- названия полей
 INTO [ TEMPORARY | TEMP | UNLOGGED ] [ TABLE ] new_table_name   -- имя новой таблицы
@@ -298,6 +293,10 @@ FROM
 WHERE
     search_condition;
 
+-- CREATE TABLE AS
+-- создает новую таблицу и вставляет данные на основе запроса
+CREATE [ TEMPORARY | TEMP | UNLOGGED ] TABLE new_table_name     -- имя таблицы
+AS query;                                                       -- select
 
 -- изменить таблицу ------------------------------------------------------------
 ALTER TABLE students			# ADD, DROP, RENAME, ALTER, ENABLE...
