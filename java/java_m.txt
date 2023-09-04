@@ -3393,6 +3393,9 @@
     flatMapToLong()                 // -> Stream of long                    (i)
 
     Examples:
+    // сортировка по полю 'name' с типом String
+    stream().sorted(Comparator.comparing(MyClass::getName)
+    
     list.stream().map(element -> element.length()).toList();
     students.stream().filter(student -> student.sex == 'w').toList();
     Arrays.stream(array).forEach(value -> System.out.print(value * 2));
