@@ -54,3 +54,11 @@ declare
    featured_title film_title%type;
    payment    numeric(11,2) := 20.5;
    created_at time := now();
+
+
+-- Select Into -----------------------------------------------------
+-- позволяет выбрать данные из базы данных и присвоить их переменной
+select select_list      -- выборка данных   -------+
+into variable_name      -- имя нашей переменной    |
+from table_expression;  -- из таблицы    <---------+
+                        -- можно юзать join, group by, and having
