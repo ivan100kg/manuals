@@ -234,6 +234,7 @@ du              # показывает сколько занято места о
 file    # тип файла
 stat    # подробная инфо о файле
 cp      # copy -rfuv.. копирование -u --update только тех каких нет либо свежие
+          -p same as --preserve=mode,ownership,timestamps сохр инфу файла
 mv      # move перемещение --force --recursivity
 rm      # remove -rf(удалит каталоги и все внутри без предупреждения)
 mkdir   # make directory -p - можно создать каталог в каталоге...
