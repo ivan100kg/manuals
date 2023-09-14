@@ -267,7 +267,11 @@ Hibernate
     @Column(name = "gen_uuid" , insertable = false, updatable = false )
     private UUID gen_uuid;              // не инсертить и не обновлять
 
-    @Formula("SELECT AVG(cost)...")     // поле кот авто считается при get запис
+    @Transient                          // не сохраняется в бд   
+    public Integer total;
+
+    @Formula(value = " wid * height ")  // тоже не сохранять в бд а при
+    public Integer total;               // чтении вычислять значение
 
     @Temporal(TemporalType.TIMESTAMP)   // поле для хан времени(DATE, TIME, ...)
     @CreationTimestamp                  // созд при созд записи
@@ -275,6 +279,9 @@ Hibernate
             updatable=false)    
 
     @UpdateTimestamp                    // обновляемая отметка времени
+
+    @Basic
+    private localDateTime;              // поле должно быть обработано автоматически
 
     Валидаторы, можно создавать свои - @Constraint
     @Email
