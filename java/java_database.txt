@@ -357,6 +357,10 @@ Hibernate
         .setParameterList("idList", idList)
         .getResultList();
 
+    // IS NOT TRUE не действует в HQL!
+    WHERE field IS NOT TRUE;                // native
+    WHERE field IS NULL OR field = FALSE;   // HQL
+
 --- One-to-One ---
     Uni-directional associations - отношения когда одна сторона не знает о них.
     Bi-directional associations - обе стороны имеют ссылки друг на друга.
