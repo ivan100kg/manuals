@@ -16,13 +16,17 @@ POJO (Plain Old Java Object) - это простой Java-объект, кото
 специальных классов. POJO обычно используются для абстракции данных и повышения 
 гибкости и переносимости кода.
 
+
+===========================================================================
+
 JDBC
 --- JDBC ---
     Java Database Connectivity
     Работа Java с различными СУБД.
 
-    Driver - сущность(класс) необходимая для соединения Java с БД,
-    для разный СУБД свой драйвер.
+    Driver          - сущность(класс) необходимая для соединения Java с БД,
+                      для разный СУБД свой драйвер.
+    DriverManager   - класс с помощью которого выбирается драйвер
     // драйвер(например postgres) можно загрузить с пом maven pom.xml:
     <dependency>
         <groupId>org.postgresql</groupId>
@@ -33,68 +37,94 @@ JDBC
     Class.forName("org.postgresql.Driver");         // загрузка класса загрузчиком
     Class.forName(className, true, currentLoader);  // эквивалент того что выше
 
-    Connection      - класс для настройки подключения к БД
-    DriverManager   - the basic service for managing a set of JDBC drivers.
+    В JDBC есть 3 основных интерфейса:
+    Connection  - отвечает за соединение с базой данных
+    Statement   - отвечает за запрос к базе данных
+    ResultSet   - отвечает за результат запроса к базе данных
+
+    --- Полный цикл ---------------------------------------------------
+    -- подключение к PostgreSQL с помощью JDBC
     Connection conn = DriverManager.getConnection(
                 "jdbc:postgresql://192.168.0.104:5432/mydb",    // url
                 "user",                                         // user
                 "password");                                    // password
+    url - jdbc:protocol://IP:port/db_name
+
+    -- запрос к БД
+    Statement stmt = conn.createStatement();   // создать запрос
     
-    Statement       - объект с пом которого выполняются запросы к БД
-    ResultSet       - результат запроса из БД (AutoCloseable)
-    Statement stmt = conn.createStatement();   // получить obj Statement
-    // SELECT
+    -- выборка данных executeQuery()
+       возвращает собственно данные по запросу в виде ResultSet
     ResultSet res = stmt.executeQuery("SELECT * FROM my_table;");
-    // DML:INSERT/UPDATE/DELETE; DDL:CREATE/ALTER/DROP
+    
+    -- изменение данных executeUpdate()
+       возвращает целое число - кол-во измененных строк
+       DML:INSERT/UPDATE/DELETE; DDL:CREATE/ALTER/DROP
     stmt.executeUpdate("INSERT INTO my_table (name, score) VALUES ('Lisa', 35);");
 
-    // вывод результата
+    -- обработка результата - можно получать любой тип данных (getTimestamp())
     while (resultSet.next()) {  // похож на Iterator
-        String name = resultSet.getString("name");  // выбираем поля
-        int size = resultSet.getInt("size");
-        String country = resultSet.getString("country");
-        System.out.printf("%s\t%d\t%s", name, size, country);
+        int id = resultSet.getInt(1);               // выбираем поля по порядк номеру       
+        String name = resultSet.getString("name");  // либо выбираем поля по имени
     }
 
-    // закрываем все по порядку
+    -- закрываем все по порядку
     stmt.close();
     conn.close();
+    -------------------------------------------------------------------------
 
-    PreparedStatement   - подготовленный запрос, подходит если есть параметры,
-    происх прекомпилляция запроса.
+    -- PreparedStatement 
     Statement: используется для простых случаев запроса без параметров.
-    PreparedStatement: предварительно компилирует запрос, который может содержать
-    входные параметры и выполняться несколько раз с разным набором этих параметров.
-    При повторном использовании с одним или несколькими наборами параметров 
-    позволяет получить преимущества заранее прекомпилированного и кэшированного 
-    запроса, помогая при этом избежать SQL Injection.
-    // создание
-    PreparedStatement preparedStatement;
-    preparedStatement = connection.prepareStatement(
-                "INSERT INTO students (name, score) VALUES (?, ?);");
-    // использование с нашими параметрами
-    preparedStatement.setString(1, "Bob");
-    preparedStatement.setInt(2, 50);
-    preparedStatement.setObject(3, obj) // если тип неизвестен
-    preparedStatement.executeUpdate();  // добавить в БД
+    PreparedStatement позволяет:
+        Заранее подготовить запрос с указанием мест, где будут подставляться параметры
+        Установить параметры определенного типа и выполнить после этого запрос с уже 
+        установленными параметрами
+    // запрос с указанием мест для параметров в виде знака "?"
+    String sql = "INSERT INTO students (name, score) VALUES (?, ?);"
+    PreparedStatement pstms = connection.prepareStatement(sql); // создать запрос
+    // использование с нашими параметрами - типы разнообразные
+    pstms.setString(1, "Bob");                                  // set params
+    pstms.setInt(2, 50);
+    pstms.executeUpdate();                                      // выполнить запрос,
+                                                                   без параметров
+    -- CallableStatement
+    Используется для вызова (Call) хранимых процедур в базе данных
+    CallableStatement cstmt = Connection.prepareCall();         // создать запрос
+    могут возвращать значения в отличие от PreparedStatement
 
-    Транзакции
-    Скорость вставки нескольких значений,
-    если автокоммит не отключить то на каждую вставку строки - одна транзакция,
+    -- Транзакции
+    По умолчанию AutoCommit у объекта Statement = true
+    Можно отключить AutoCommit и обрабатывать транзакции вручную
+    Если автокоммит не отключить то на каждую вставку строки - одна транзакция,
     выходит во много раз дольше. 80000мс против 44мс
+    // пример транзакции вручную
     connection.setAutoCommit(false);    // отключить автокоммит
     for (int i = 0; i < 10000; i++) {
-        preparedStatement.setString(1, "Bob" + i);
-        preparedStatement.setInt(2, 50 + i % 10);
-        preparedStatement.executeUpdate();
+        pstms.setString(1, "Bob" + i);
+        pstms.setInt(2, 50 + i % 10);
+        pstms.executeUpdate();
     }
     connection.commit();                // завершение транзакции
+    connection.rollback();              // откат транзакции
 
-    Savepoint - точка сохранения состояния базы, позволяет откатиться к этой точке.
+    Savepoint - точка сохранения состояния базы, позволяет откатиться к этой точке
     Savepoint sp1 = connection.setSavepoint();  // create
-    connection.rollback(sp1);                   // откат
+    connection.rollback(sp1);                   // откат транзакции к точке
 
-    Example:
+    -- Batching запросов
+    когда необходимо сделать очень много однотипных запросов,
+    можно повысить Производительность
+    // пример транзакции вручную + Batching
+    connection.setAutoCommit(false);    // отключить автокоммит
+    for (int i = 0; i < 10000; i++) {
+        pstms.setString(1, "Bob" + i);
+        pstms.setInt(2, 50 + i % 10);
+        pstms.addBatch();               // помещаем в буфер
+    }
+    pstms.executeBatch();               // выполняем все запросы разом
+    connection.commit();                // завершение транзакции
+
+    -- Example
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
@@ -115,6 +145,7 @@ JDBC
         } catch (SQLException e) {
             e.printStackTrace();
         }
+=====================================================================================
 
 Hibernate
 --- Hibernate basic ---
