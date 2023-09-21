@@ -183,6 +183,7 @@ Hibernate
         get()  <-- Hibernate <-- SELECT ...; возвращает объект Java;
     Меньшее кол-во кода по сравнению JDBC.
 
+
 --- Maven dependencies ---
     Подключить Hibernate with Maven:
     <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
@@ -204,13 +205,9 @@ Hibernate
         с пом XML - устаревший способ
         с пом Java аннотаций
 
---- Configuration ---
-    Сконфигурировать Hibernate 3 способа:
-        - Использовать Properties-файл
-        - Использовать файл hibernate.cfg.xml
-        - Использовать методы бина Configuration
 
-    Все настройки делятся на 3 группы:
+--- Configuration ---
+    Все настройки конфигурации делятся на 3 группы:
     1. Тип СУБД
         - Указываем диалект (тип СУБД), например, Oracle 9.0
         - Указываем имя JDBC-драйвера для работы с данной СУБД
@@ -220,6 +217,12 @@ Hibernate
         - password
     3. Конфигурируем движок Hibernate
         - hibernate.show_sql - вывод в консоль всех запросов
+
+    Способы которыми можно сконфигурировать Hibernate:
+        - Использовать Properties-файл
+        - Использовать файл hibernate.cfg.xml
+        - Задать конфиги в коде при создании SessionFactory/EntityManagerFactory
+        - Использовать методы бина Configuration(Spring)
 
     hibernate.properties
     --------------------------------------------------------------------
@@ -242,6 +245,63 @@ Hibernate
         <property name="hibernate.show_sql ">true</property>        
       </session-factory>	
     </hibernate-configuration>
+
+
+--- SessionFactory / EntityManagerFactory ---
+    SessionFactory          - создается один раз при запуске приложения, применяет конфигурации
+                              и используется для создания сессий Hibernate
+    Session                 - используется для CRUD операций с БД(под капотом используется JDBC)
+    EntityManagerFactory    - создается один раз при запуске приложения, применяет конфигурации
+                              и используется для создания менеджеров EntityManager
+    EntityManager           - управляет жизненным циклом entity и выполняет CRUD операции                      
+    
+    EntityManagerFactory and EntityManager  - соответствует стандату JPA
+    SessionFactory and Session              - Hibernate специфика(доп фичи)
+    // можно получить Session из EntityManager
+    Session session = entityManager.unwrap(Session.class);
+
+
+--- Использование конфигурации ---
+    1. конфигурация с помощью hibernate.properties или кастомного .properties
+    SessionFactory sessionFactory = new Configuration().buildSessionFactory();
+
+    ClassLoader classLoader = Thread.currentThread().getClassLoader();
+    Properties properties = new Properties();
+    properties.load(classLoader.getResourceAsStream("hibernate-dev.properties"));
+    SessionFactory sessionFactory = new Configuration()
+                .addProperties(properties)              // кастомный .properties
+                .addPackage("com.javarush.data")        // пакет с entity
+                .buildSessionFactory();
+
+    2. конфигурация с помощью hibernate.cfg.xml или кастомного .xml
+    SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+    SessionFactory sessionFactory = new Configuration()
+                .configure("hibernate-dev.cfg.xml")     // кастомный .xml
+                .addPackage("com.javarush.data")        // пакет где искать entity
+                .buildSessionFactory();
+
+    3. конфигурации в коде с пом SessionFactory
+    Properties properties = new Properties();                       // спец класс Hibernate
+    properties.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
+    properties.put(Environment.URL, "jdbc:mysql://localhost:3306/supershop");
+    properties.put(Environment.USER, "root");
+    properties.put(Environment.PASS, "password");
+    SessionFactory sessionFactory = new Configuration()             // применяем конфиг
+                .setProperties(properties)
+                .addPackage("com.javarush.data")                    // пакет где искать entity
+                .buildSessionFactory();
+    
+    4. конфигурации в коде с пом EntityManagerFactory
+    Map<String, String> dbProperties = new HashMap<>();             // мэпка с конфигом
+    dbProperties.put("hibernate.connection.url", "jdbc:mysql://localhost:3306/supershop");
+    dbProperties.put("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+    dbProperties.put("hibernate.dialect", "org.hibernate.dialect.DerbyDialect");
+    dbProperties.put("hibernate.default_schema", "APP");
+    dbProperties.put("hibernate.connection.username", "nbuser");
+    dbProperties.put("hibernate.connection.password", "12345");
+    EntityManagerFactory managerFactory = Persistence               // применяем конфиг
+                .createEntityManagerFactory("WorkflowPU", dbProperties);
+
     
 --- Mapping class-table ---
     Аннотации класса:
@@ -323,14 +383,6 @@ Hibernate
     @Version    // Оптимистическое управление параллельным доступом
 
 --- CRUD with Hibernate ---
-    Первое что необходимо - создать сессию:
-    SessionFactory - фабрика по производству сессий.
-    SessionFactory читает файл hibernate.cfg.xml для создания опред-х сессий.
-    SessionFactory достаточно указать 1 раз - потом переиспользовать.
-    Session/сессия - обертка вокруг JDBC для подключ к базе.
-    Session/сессия - основа для работы с БД.
-    Жизненный цикл сессии небольшой - получаем сессию, делаем операции, закрыв.
-
     Добавить Entity в SessionFactory можно либо через конфиг в коде как
     ниже, либо можно добавить классы в hibernate.cfg.xml в <session-factory>
     <mapping class="my_package.MyEntity"/>
@@ -699,12 +751,7 @@ Hibernate
     private List<Employee> employees;
 
 --- EntityManager vs SessionFactory
-EntityManagerFactory and EntityManager  // соответствует стандату JPA
-SessionFactory and Session              // hibernate специфика(доп фичи)
-// можно получить хибер сессию из манагера 
-Session session = entityManager.unwrap(Session.class);
-Все медоты EntityManager есть и в Session, всегда используй EntityManager,
-Sesseion нужен для специфических функций, которые врятли понадобятся
+
 // сравнение методов
 save()      - сохраняет или обновляет объект в базе данных. 
               если объект является новым и не имеет идентификатора, он будет сохранен в базе данных.
