@@ -6,7 +6,7 @@
 
 -- dollar-quoted string constant syntax
 -- используется в функциях, анонимных блоках и процедурах
-select 'String constant';        -- обычный SQL синтаксис
+select 'String constant';         -- обычный SQL синтаксис
 select $tag$String constant$tag$; -- tag - тэг
 select $$String constant$$;       -- можно без тэга
 
@@ -27,14 +27,10 @@ end [ label ];      -- конец блока
 do $$
 <<first_block>>
 declare
-  film_count integer := 0;      -- переменная film_count
+  created_at time := now();      -- переменная created_at
 begin
-   -- get the number of films
-   select count(*)              -- кол-во строк в таб film
-   into film_count              -- присваиваем кол-во в нашу переменную
-   from film;                   -- таблица film
-   -- вывод в консоль, вместо % подставить film_count
-   raise notice 'The number of films is %', film_count;
+   -- вывод в консоль, вместо % подставить created_at
+   raise notice 'now is %', created_at;
 end first_block $$;
 -- $$ относятся к анонимному блоку
 -- вывод
@@ -58,7 +54,5 @@ declare
 
 -- Select Into -----------------------------------------------------
 -- позволяет выбрать данные из базы данных и присвоить их переменной
-select select_list      -- выборка данных   -------+
-into variable_name      -- имя нашей переменной    |
-from table_expression;  -- из таблицы    <---------+
-                        -- можно юзать join, group by, and having
+-- в обычный запрос вставляем INTO переменная и результат сохр в ней
+SELECT f.name INTO vr	FROM filial f WHERE f.id = 131;
