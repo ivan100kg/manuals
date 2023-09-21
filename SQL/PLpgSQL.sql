@@ -23,18 +23,13 @@ end [ label ];      -- конец блока
 
 -- блоки могут быть вложенными друг в друга
 -- пример на анонимном блоке
--- do и $$ относятся к анонимному блоку
-do $$
-<<first_block>>
+do $$                                   -- do и $$ относ к аноним блоку
 declare
-  created_at time := now();      -- переменная created_at
+  created_at time := now();             -- переменная created_at
 begin
    -- вывод в консоль, вместо % подставить created_at
-   raise notice 'now is %', created_at;
-end first_block $$;
--- $$ относятся к анонимному блоку
--- вывод
-NOTICE:  The current value of counter is 1
+   raise notice 'now is %', created_at; -- вывод => now is 2023-09-21
+end $$;                                 -- $$ относ к анонимному блоку
 
 
 -- Переменные ------------------------------------------------------
