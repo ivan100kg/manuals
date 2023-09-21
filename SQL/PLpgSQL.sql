@@ -37,22 +37,35 @@ end first_block $$;
 NOTICE:  The current value of counter is 1
 
 
--- Переменные ------------------------------------------------------------
+-- Переменные ------------------------------------------------------
 -- имя_перем  тип       := или =  по умолчанию NULL
-variable_name data_type [[:]= expression];  -- выбор типа вручную
-variable_name table_name.column_name%type;  -- тип на основе колонки
-variable_name variable%type;                -- тип на основе др переменной
+var1 data_type [[:]= expression];   -- выбор типа вручную
+var2 table_name.column_name%type;   -- тип на основе колонки
+var3 var2%type;                     -- тип на основе др переменной
+var4 table_name%rowtype;            -- переменная содержит всю строку
 
+-- row type
+-- синтаксис переменная имя_таблицы%rowtype
+-- содержит в себе все поля строки
+-- доступ к полям строки осуществляется через точку var.field
 declare
-   counter    integer := 1;
+  fil filial%rowtype;               -- объявить row type
+begin
+	SELECT * FROM filial f INTO fil WHERE f.id = 131;
+    raise notice '% % %', fil.name, fil.address, fil.phone;
+
+-- example
+declare
+   counter    integer := 1;   
    first_name varchar(50) := 'John';
    film_title film.title%type;
    featured_title film_title%type;
    payment    numeric(11,2) := 20.5;
    created_at time := now();
+   fil filial%rowtype;
 
 
 -- Select Into -----------------------------------------------------
 -- позволяет выбрать данные из базы данных и присвоить их переменной
 -- в обычный запрос вставляем INTO переменная и результат сохр в ней
-SELECT f.name INTO vr	FROM filial f WHERE f.id = 131;
+SELECT f.name INTO vr FROM filial f WHERE f.id = 131;
