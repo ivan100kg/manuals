@@ -16,11 +16,21 @@ POJO (Plain Old Java Object) - это простой Java-объект, кото
 специальных классов. POJO обычно используются для абстракции данных и повышения 
 гибкости и переносимости кода.
 
+ORM (Object-Relational Mapping) - маппинг Java-объектов на SQL-запросы. 
+Преобразование объекта в строку в таблице и обратное преобразование.
+Каждой таблице в базе данных должен соответствовать какой-то класс в Java-приложении.
+В Java приложении мы оперируем объектами, а эти объекты уже умеют сами сохранять 
+себя в базу данных.
+
+JPA (Java Persistence API) - Это именно спецификация. Она описывает, как все должно 
+работать и какими аннотациями нужно отмечать различные части класса, если мы хотим, 
+чтобы его объекты сохранялись в базу данных.
+
 
 ===========================================================================
 
 JDBC
---- JDBC ---
+--- Basic ---
     Java Database Connectivity
     Работа Java с различными СУБД.
 
@@ -150,7 +160,7 @@ JDBC
 Hibernate
 --- Hibernate basic ---
     Hibernate - это ORM, framework, коткоторый осуществляет CRUD между Java obj и DB.
-    Hibernate - реализация спецификации JPA плюс свои фишки.
+    Hibernate - реализация спецификации JPA плюс свои фишки, совпадает на 95%.
     Использует для работы с БД под капотом JDBC.
         Java App <===> Hibernate <===> JDBC <===> Database
 
@@ -161,8 +171,7 @@ Hibernate
     DELETE  - DELETE
     
     Плюсы Hibernate:
-    Предоставление технологии ORM(Object-to-Relational Mapping) - преобразование
-    объекта в строку в таблице и обратное преобразование.
+    Предоставление технологии ORM
         class Animal {                              animal(table)
             int id;         <==> Hibernate <==>     INTEGER id
             String name;                            VARCHAR(..) name
@@ -174,7 +183,7 @@ Hibernate
         get()  <-- Hibernate <-- SELECT ...; возвращает объект Java;
     Меньшее кол-во кода по сравнению JDBC.
 
---- Include Hibernate with Maven ---
+--- Maven dependencies ---
     Подключить Hibernate with Maven:
     <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
     <dependency>
@@ -183,7 +192,7 @@ Hibernate
       <version>6.1.0.Final</version>
     </dependency>
     
-    Подключить JDBC драйвер(например postgres) пом maven pom.xml:
+    Подключить JDBC драйвер(например postgres):
     <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
     <dependency>
         <groupId>org.postgresql</groupId>
@@ -191,76 +200,68 @@ Hibernate
         <version>42.4.0</version>
     </dependency>
 
-    Создать файл(если не создался) в ресурсах hibernate.cfg.xml
-    <!DOCTYPE hibernate-configuration PUBLIC
-        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
-    <hibernate-configuration>
-        <session-factory>
-                <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-                <property name="hibernate.connection.username">bestuser</property>
-                <property name="hibernate.connection.password">bestuser</property>
-                <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/my_db</property>
-
-                <property name="current_session_context_class">thread</property>
-                <property name="show_sql">true</property>
-                <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL95Dialect</property>
-
-            </session-factory>
-        </hibernate-configuration>
-
     Конфиг связи между классом и таблицей:
         с пом XML - устаревший способ
         с пом Java аннотаций
+
+--- Configuration ---
+    Сконфигурировать Hibernate 3 способа:
+        - Использовать Properties-файл
+        - Использовать файл hibernate.cfg.xml
+        - Использовать методы бина Configuration
+
+    Все настройки делятся на 3 группы:
+    1. Тип СУБД
+        - Указываем диалект (тип СУБД), например, Oracle 9.0
+        - Указываем имя JDBC-драйвера для работы с данной СУБД
+    2. Указываем данные для авторизации в базе
+        - url базы
+        - username
+        - password
+    3. Конфигурируем движок Hibernate
+        - hibernate.show_sql - вывод в консоль всех запросов
+
+    hibernate.properties
+    --------------------------------------------------------------------
+    hibernate.dialect= org.hibernate.dialect.Oracle9Dialect
+    hibernate.connection.driver_class= oracle.jdbc.driver.OracleDriver 
+    hibernate.connection.url= jdbc:oracle:thin:@localhost:1521:supershop
+    hibernate.connection.username=root
+    hibernate.connection.password=secret
+    hibernate.show_sql=true
+
+    hibernate.cfg.xml
+    ---------------------------------------------------------------------
+    <hibernate-configuration>	
+      <session-factory>                
+        <property name="dialect">org.hibernate.dialect.Oracle9Dialect</property>  	
+        <property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property> 	
+        <property name="connection.url">jdbc:oracle:thin:@localhost:1521:supershop</property>  	
+        <property name="connection.username">root</property>  	
+        <property name="connection.password">secret</property>
+        <property name="hibernate.show_sql ">true</property>        
+      </session-factory>	
+    </hibernate-configuration>
     
---- Entity class ---
-    Entity class - Java class, который отображает инфо определенной таблицы в БД.
-    Entity class - POJO class, в кот исп-ся опред Hibernate аннотации для связии 
-    класса с БД.
-    POJO (Plain Old Java Object) - класс должен удовлетв след условиям:
-        @Id поле                    *                        
-        private поля                *
-        all getters/setters         *
-        Constructor() without args  *
-        Constructor with args (exclude PK 'id') - для создания записей без id
-        toString                                - для удобства
-
-    JPA(Java Persistence API) - стандартная спецификация, которая описывает систему
-    для уравления сохранением Java объектов в таблицы БД.   
-    javax.persistence.*         // пакет для всех аннотаций
-    jakarta.persistence.*       // тоже работает(если верхний не пашет)
-
-    @Entity                     // класс имеет отображение в БД
-    @Table(name="employees")    // имя таблицы БД, если совпадает можно опустить
-    public class Employee {
-        @Id                     // Primary Key
-        @Column(name = "id")    // имя столбца в БД(если такое же можно опустить)
-        @GeneratedValue(strategy = GenerationType.IDENTITY) // автоинкремент по 
-        private int id;                                     // правилам БД
-
-        @Column()
-        private String name;
-
-        ...
-
-        public Employee() {     // без параметров
-        }
-
-        public Employee(String name, String surname, String department, int salary) {
-            this.name = name;
-            this.surname = surname;
-            this.department = department;
-            this.salary = salary;
-            // id будет генерироваться автоматически
-        }
-
-        ... 
-        // далее все геттеры, сеттеры на все поля
-    }
-    GenerationType.IDENTITY     // автоинкремент по правилам БД (лучший выбор)
-    GenerationType.SEQUENCE     // полагается на работу Sequence, созданного в БД
-    GenerationType.TABLE        // полагается на знач столбца таблицы БД(плох выбор)
-    GenerationType.AUTO         // автовыбор - лучше не ставить.
+--- Mapping class-table ---
+    Аннотации класса:
+    @Entity         - класс объекты которого нужно хранить в базе данных
+    @Table          - связь класса с таблицей, аттрибуты:
+                      name      - String, имя таблицы, если совпадает можно опустить
+    @Column         - настройки поля класса и связь его с полем таблицы:
+                      name      - String, имя колонки таблицы для поля класса(если имена
+                                  совпадают можно опустить)
+                      unique    - boolean, все значения поля должны быть уникальны
+                      nullable  - boolean, поле может принимать значение null
+                      length    - int, максимальная длина (для строк)
+    @Id             - первичный ключ, задавать обязательно над полем класса
+    @GeneratedValue - автоинкремент первичного ключа, размещаем под @Id,
+                      можно указать по каким правилам идет автоинкремент с пом аттрибута:
+                      strategy  - стратегия автоинкремента:
+                      GenerationType.IDENTITY - автоинкремент по правилам БД (лучший выбор)
+                      GenerationType.SEQUENCE - полагается на работу Sequence, созданного в БД
+                      GenerationType.TABLE    - полагается на знач столбца таблицы БД(плох выбор)
+                      GenerationType.AUTO     - автовыбор - лучше не ставить
 
     Состояния POJO классов:
     Все взаимодействия делаются с пом Session, после откр транзакции.
