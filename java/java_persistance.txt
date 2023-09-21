@@ -257,7 +257,7 @@ Hibernate
     
     EntityManagerFactory and EntityManager  - соответствует стандату JPA
     SessionFactory and Session              - Hibernate специфика(доп фичи)
-    // можно получить Session из EntityManager
+    Конвертация Session из EntityManager
     Session session = entityManager.unwrap(Session.class);
 
 
