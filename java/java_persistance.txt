@@ -289,6 +289,7 @@ Hibernate
     SessionFactory sessionFactory = new Configuration()             // применяем конфиг
                 .setProperties(properties)
                 .addPackage("com.javarush.data")                    // пакет где искать entity
+                .configure()                                        // применить конфиги
                 .buildSessionFactory();
     
     4. конфигурации в коде с пом EntityManagerFactory
