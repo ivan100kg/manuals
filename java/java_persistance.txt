@@ -1,8 +1,8 @@
 Общие понятия
-Entity - это объект, который представляет определенную таблицу в базе данных.
-Он содержит поля, сответствующие столбцам таблицы, и методы для работы с этими
-данными, такие как получение, обновление, удаление и создание записей. Обычно 
-класс Entity содержит аннотации для маппинга с таблицей базы данных.
+Entity - Entity это легковесный хранимый объект бизнес логики (persistent domain object).
+Основная программная сущность это entity класс, который так же может использовать 
+дополнительные классы, который могут использоваться как вспомогательные классы или 
+для сохранения состояния еntity.
 
 DTO (Data Transfer Object) - это объект, который используется для передачи данных
 между слоями приложения или между различными приложениями. Он содержит только 
@@ -302,7 +302,7 @@ Hibernate
     EntityManagerFactory managerFactory = Persistence               // применяем конфиг
                 .createEntityManagerFactory("WorkflowPU", dbProperties);
 
-    
+
 --- Mapping class-table ---
     Аннотации класса:
     @Entity         - класс объекты которого нужно хранить в базе данных
@@ -314,6 +314,8 @@ Hibernate
                       unique    - boolean, все значения поля должны быть уникальны
                       nullable  - boolean, поле может принимать значение null
                       length    - int, максимальная длина (для строк)
+                      insertable- bollean, не инсертить
+                      updatable - boolean, не апдейтить
     @Id             - первичный ключ, задавать обязательно над полем класса
     @GeneratedValue - автоинкремент первичного ключа, размещаем под @Id,
                       можно указать по каким правилам идет автоинкремент с пом аттрибута:
@@ -382,28 +384,23 @@ Hibernate
 
     @Version    // Оптимистическое управление параллельным доступом
 
---- CRUD with Hibernate ---
-    Добавить Entity в SessionFactory можно либо через конфиг в коде как
-    ниже, либо можно добавить классы в hibernate.cfg.xml в <session-factory>
-    <mapping class="my_package.MyEntity"/>
+    
+--- Transaction/Транзакции ---
+Если Hibernate выполняет запрос на получение данных, то явно транзакцию открывать не нужно. 
+Hibernate сам это сделает, если посчитает нужным: у него есть его настройки, 
+а также настройки SQL-сервера.
 
-    public static void main(String[] args) {
-        Employee emp = new Employee("Igor", "Bob", "IT", 450);
-        try(SessionFactory factory = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .addAnnotatedClass(Employee.class)  // 1 или неск Entity
-                .buildSessionFactory(); 
-            Session session = factory.getCurrentSession()) {
-            
-            // открытие и закрытие транзакции - обязательны
-            session.beginTransaction();                     // BEGIN transaction
-            session.save(emp);                              // INSERT
-            Employee emp2 = session.get(Employee.class, 3); // SELECT id=3;
-            emp.setSalary(750);                             // UPDATE 1 поле
-            session.delete(emp);                            // DELETE 1 запись
-            session.getTransaction().commit();              // COMMIT
-        }
-    }
+
+--- CRUD with Hibernate ---
+    SELECT - явно транзакцию открывать не нужно, Hibernate сам откроет если нужно
+    Person person = session.get(Person.class, 100); // получить 1 запись из таблицы связанной
+                                                       с entity Person id = 100;
+    INSERT - обязательно открываем-закрываем транзакцию
+    Transaction transaction = session.beginTransaction();
+    session.persist(person);                        // инсертит новую запись в связанную таблицу
+    transaction.commit();                           // выполняем транзакцию
+    
+                                                       
 
 --- HQL (Hibernate Query Language) CRUD ---
     Используется для вз-ия с БД.
