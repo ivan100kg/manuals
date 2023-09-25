@@ -439,14 +439,19 @@ Hibernate
     // выбрать 1 запись по id (find и getSingleResult - стандарт JPA)
     person = session.get(Person.class, id);
     person = session.find(Person.class, id);
-    person = session.createQuery("FROM Person WHERE id = " + id, Person.class).uniqueResult();
-    person = session.createQuery("FROM Person WHERE id = " + id, Person.class).getSingleResult();
+    person = session.createQuery("FROM Person WHERE id = :id", Person.class).uniqueResult();
+    person = session.createQuery("FROM Person WHERE id = :id", Person.class).getSingleResult();
 
     // выбрать отдельное поле(можно с distinct)
     List<String> names = session.createQuery("SELECT name FROM Person", String.class);
 
     // выбрать DTO лучше с помощью getResultStream() или обработать обычный список с entity
     forEach(person -> personDTOS.add(new PersonDTO(person.getName(), person.getAge())));
+
+    // LIMIT OFFSET
+    query.setFirstResult(10);   // аналог OFFSET
+    query.setMaxResults(1);     // аналог LIMIT
+    query.getResultList();      // далее делаем выборку
     
     INSERT:
     Transaction transaction = session.beginTransaction();
