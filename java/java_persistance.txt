@@ -383,20 +383,67 @@ Hibernate
 
     
 --- Transaction/Транзакции ---
-Если Hibernate выполняет запрос на получение данных, то явно транзакцию открывать не нужно. 
-Hibernate сам это сделает, если посчитает нужным: у него есть его настройки, 
-а также настройки SQL-сервера.
-Для остальных операций открываем-закрываем транзакции вручную
-Transaction transaction = session.beginTransaction();   // открыть транзакцию
-transaction.commit();                                   // выполняем транзакцию
-transaction.rollback();                                 // либо откатываем
+    Если Hibernate выполняет запрос на получение данных, то явно транзакцию открывать не нужно
+    Hibernate сам это сделает, если посчитает нужным: у него есть его настройки, 
+    а также настройки SQL-сервера.
+    Для остальных операций открываем-закрываем транзакции вручную
+    Transaction transaction = session.beginTransaction();   // открыть транзакцию
+    transaction.commit();                                   // выполняем транзакцию
+    transaction.rollback();                                 // либо откатываем
+
+
+--- HQL (Hibernate Query Language) ---
+    это SQL переделанный под написание запросов в Hibernate для удобства
+    Вместо имени таблицы используется имя entity класса, 
+    вместо полей БД используются именя полей класса
+    
+    Native                                            | HQL
+    --------------------------------------------------+---------------------------------------
+    SELECT * FROM employee                            | FROM Employee
+    SELECT * FROM employee WHERE first_name = 'Inna'; | FROM Employee WHERE firstName = 'Inna'
+    UPDATE employee SET salary = 0;                   | UPDATE Employee SET salary = 0;
+    DELETE employee WHERE name='Inna'                 | DELETE Employee WHERE name='Inna'
+    WHERE field IS NOT TRUE;                          | WHERE field IS NULL OR field = FALSE;
 
 
 --- CRUD with Hibernate ---
+    Query - интерфейс, с помощью которого получаем запрос к БД:
+        Query<Employee> query = session.createQuery("from Employee", Employee.class);
+    Для обработки запроса используются различные методы:
+        query.getResultList();      // все записи запроса
+        query.getSingleResult();    // 1 запись запроса
+        query.getResultStream();    // все записи в виде потока(стрима)
+        query.executeUpdate();      // выполнить запрос на изменение БД(не SELECT)
+        query.scroll();             // позволяет перемещаться по списку результатов
+    
+    Подстановка параметров:
+    // именованные параметры
+    session.createQuery("DELETE Employee WHERE name = :name AND age = :age")
+            .setParameter("name", myName)   // ---------^              ^
+            .setParameter("age", myAge)     // ------------------------+
+    // вхождение в список IN
+    session.createQuery("FROM Entity WHERE id IN (:idList)")
+            .setParameterList("idList", myIdList)
+
     SELECT:
     // явно транзакцию открывать не нужно, Hibernate сам откроет если нужно
-    Person person = session.get(Person.class, 100); // получить 1 запись из таблицы связанной
-                                                       с entity Person id = 100;
+    // выбрать все записи в список
+    Query<Person> query = session.createQuery("FROM Person", Person.class); // запрос SELECT *
+    List<Person> people = query.list();                                     // результат
+    List<Person> people = query.getResultList();                            // результат JPA std
+
+    // выбрать 1 запись по id (find и getSingleResult - стандарт JPA)
+    person = session.get(Person.class, id);
+    person = session.find(Person.class, id);
+    person = session.createQuery("FROM Person WHERE id = " + id, Person.class).uniqueResult();
+    person = session.createQuery("FROM Person WHERE id = " + id, Person.class).getSingleResult();
+
+    // выбрать отдельное поле(можно с distinct)
+    List<String> names = session.createQuery("SELECT name FROM Person", String.class);
+
+    // выбрать DTO лучше с помощью getResultStream() или обработать обычный список с entity
+    forEach(person -> personDTOS.add(new PersonDTO(person.getName(), person.getAge())));
+    
     INSERT:
     Transaction transaction = session.beginTransaction();
     session.persist(person);                        // инсертит новую запись в связанную таблицу
@@ -407,47 +454,6 @@ transaction.rollback();                                 // либо откаты
     session.remove(person);                         // удалить из базы связанную запись с person
     transaction.commit();
     
-                                                       
-
---- HQL (Hibernate Query Language) CRUD ---
-    Используется для вз-ия с БД.
-    Общий синтаксис:
-    session.createQuery("Query", Class); // запрос + класс нашего Entity
-
-    // SELECT * FROM employees;
-    List<Employee> emps = session.createQuery("FROM Employee", Employee.class)
-            .getResultList();   // получить список объектов Employee из БД
-    "from Employee" // Employee - название класса привяз к таблице
-    // SELECT * FROM employees WHERE name = 'Inna';
-    "FROM Employee WHERE = 'Inna'"
-    // SELECT * FROM employees WHERE  salary > 100 ORDER BY salary DESC;
-    "FROM Employee WHERE salary > 100 ORDER BY salary DESC"
-
-    // UPDATE employees SET SET salary=salary+10 WHERE name LIKE '%nn%';
-    session.createQuery("UPDATE Employee SET salary=100 WHERE name LIKE '%nn%'",
-            Employee.class)
-            .executeUpdate();   // изменить несколько полей
-
-    // DELETE employees WHERE name='Inna';
-    session.createQuery("DELETE Employee WHERE name='Inna'", Employee.class)
-            .executeUpdate();   // удалить несколько записей
-
-    // подставить свои значения
-    String name = "Inna";
-    session.createQuery("DELETE Employee WHERE name = :name")       <-+
-            .setParameter("name", name) // подставим свое знач name --+
-            .executeUpdate();           // удалить несколько записей
-    
-    // подставить вхождение в список
-    List<Long> idList = Arrays.asList(1L, 2L, 3L);
-    String hqlQuery = "FROM Entity WHERE id IN (:idList)";
-    List<Entity> entities = session.createQuery(hqlQuery)
-        .setParameterList("idList", idList)
-        .getResultList();
-
-    // IS NOT TRUE не действует в HQL!
-    WHERE field IS NOT TRUE;                // native
-    WHERE field IS NULL OR field = FALSE;   // HQL
 
 --- One-to-One ---
     Uni-directional associations - отношения когда одна сторона не знает о них.
