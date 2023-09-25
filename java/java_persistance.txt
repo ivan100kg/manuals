@@ -401,9 +401,13 @@ Hibernate
     --------------------------------------------------+---------------------------------------
     SELECT * FROM employee                            | FROM Employee
     SELECT * FROM employee WHERE first_name = 'Inna'; | FROM Employee WHERE firstName = 'Inna'
+    SELECT name FROM employee;                        | SELECT name FROM Employee
     UPDATE employee SET salary = 0;                   | UPDATE Employee SET salary = 0;
     DELETE employee WHERE name='Inna'                 | DELETE Employee WHERE name='Inna'
     WHERE field IS NOT TRUE;                          | WHERE field IS NULL OR field = FALSE;
+    ...JOIN employee ON task.employee = employee.id;  | FROM Task WHERE employee.name = 'Igor'
+    ...JOIN employee ON task.employee = employee.id;  | SELECT employee FROM Task where id = 2
+    в джоинах обращаемся к полям связной таблицы через точку
 
 
 --- CRUD with Hibernate ---
@@ -454,6 +458,22 @@ Hibernate
     session.remove(person);                         // удалить из базы связанную запись с person
     transaction.commit();
     
+
+--- SQL Injection ---
+    Атака на веб-приложение, которая позволяет злоумышленнику внедрять 
+    вредоносный SQL-код в запросы к базе данных
+
+    Правильный подход добавлять переменные в виде параметров:
+    String hql = "from EmployeeTask where employee.name = :username";   // правильно
+    Query<EmployeeTask> query = session.createQuery( hql, EmployeeTask.class);
+    query.setParameter("username", "Иван Иванович");                    // правильно
+
+    Нельзя склеивать запрос из нескольких частей !!!
+    String hql = "from EmployeeTask where employee.name = " + myName;   // так делать нельзя!
+    Query<EmployeeTask> query = session.createQuery( hql, EmployeeTask.class);
+    Потому что в myName может попасть не ожидаемая строка, например
+    myName = "'Иван;' DROP TABLE user;";    // удалит еще и таблицу user
+
 
 --- One-to-One ---
     Uni-directional associations - отношения когда одна сторона не знает о них.
