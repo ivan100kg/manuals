@@ -1398,6 +1398,7 @@
     getDayOfYear()                  // --> int, сначала года
     getMonth()                      // --> Month
     getYear()                       // --> int
+    withDayOfMonths(int i)          // --> LocalDate, выставить день/месяц/год
     
     LocalTme methods:
     plusHours(long hours)           // --> LocalTime, добавить часы
