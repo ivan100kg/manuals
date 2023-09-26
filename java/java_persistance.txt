@@ -337,6 +337,53 @@ Hibernate
     Обновить БД, если кто-то из вне изменил БД - refresh(obj)
     Откатить удаление до закр транзакции - merge(obj)
 
+
+--- Жизненный цикл Hibernate Entity-объектов ---
+    Состояния:
+    Transient   - (прозрачный) новый созданный POJO, не влияет ни на что
+                  Client <==> POJO
+    Persistent  - объекты, связанные с Hibernate, 2 способа получить:
+                    - загрузить объект из Hibernate
+                    - сохранить объект в Hibernate
+                  Client <==> POJO <==> Session <==> DB +--+ POJOTable
+    Detached    - объект был отсоединен от сессии, закрылась сессия, либо 
+                  завершилась транз, Hiber больше не следит за объектом. 
+                  session.close();          // закрылась сессия
+                  session.evict(entity);    // явно отсоединить объект
+                  Client <==> POJO  DB +--+ POJOTable
+    Removed     - состояние объекта, на котором вызван метод remove()
+                  запись из BD удалена, Java-объект перех в это состояние
+                  session.remove(employee); // у объекта состояние Removed
+                  Client <==> POJO
+    
+    Employee employee = session.load(Employee.class, 1);    // Persisted
+    session.remove(employee);                               // Removed
+    session.persist(employee);                              // Persisted
+    session.close();                                        // Detached
+    session.merge(employee);                                // Persisted
+    Employee emp = new Employee();                          // Transient
+    session.persist(emp);                                   // Persisted
+                    
+
+                                         Detached
+                                          ^   |
+                                detach()  |   |
+                                evict()   |   | merge()
+                                clear()   |   | update()
+                                close()   |   |
+                                          |   |                           D
+                            persist()     |   v     find() get() load()   a
+    New POJO --> Transient -----------> Persistent <--------------------- t
+                            save()        |   ^  \----------------------> a
+                                          |   |           flush()         b
+                                          |   | persist()                 a
+                                 remove() |   | save()             +----> s
+                                          v   |                    |      e
+                                         Removed ------------------+
+                                                       flush()
+
+
+
 --- Entity Annotations ---
     Индексы
     @Table (name = "demo_annotated" , indexes = {
@@ -456,7 +503,7 @@ Hibernate
     INSERT:
     Transaction transaction = session.beginTransaction();
     session.persist(person);                        // инсертит новую запись в связанную таблицу
-    transaction.commit();                           // выполняем транзакцию
+    transaction.commit();                           // выполняем транзакцию и саму вставку
 
     REMOVE:
     Transaction transaction = session.beginTransaction();
@@ -487,7 +534,7 @@ Hibernate
     @org.hibernate.annotations.NamedQueries({                   // список запросов
             @org.hibernate.annotations.NamedQuery(              // 1 именов запрос
                     name = "Person_GetById",                    // имя запроса
-                    query = "FROM Person WHERE id = :id"),      // SQL/HQL запрос
+                    query = "FROM Person WHERE id = :id"),      // SQL запрос
             @org.hibernate.annotations.NamedQuery(              // 2 именов запрос
                     name = "Person_GetByName",
                     query = "FROM Person WHERE name = :name",
@@ -499,6 +546,21 @@ Hibernate
 
     // использование в коде, просто вместо стринг запроса используем имя запроса
     session.createNamedQuery("Person_GetById", Person.class).setParameter("id", id).getSingleResult();
+
+
+--- NativeQuery ---
+    Нативные запросы на SQL
+
+    // так же можно хранить именованные запросы на SQL
+    @org.hibernate.annotations.NamedNativeQueries(
+            @org.hibernate.annotations.NamedNativeQuery(name = "Employee_GetAll",
+                    query = "select * from employee",
+                    resultClass = Employee.class)
+    )
+
+    // использование, получаем объект запроса NativeQuery() и обрабатываем результат
+    NativeQuery<Employee> query = session.createNativeQuery("select * from employee", Employee.class);
+    List<Employee> resultLIst = query.list();   // те же методы обработки что и для Query
 
 
 --- One-to-One ---
