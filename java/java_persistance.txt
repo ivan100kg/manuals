@@ -480,6 +480,27 @@ Hibernate
     myName = "'Иван;' DROP TABLE user;";    // удалит еще и таблицу user
 
 
+--- Named Queries ---
+    Hibernate позволяет хранить именованные запросы в виде аннотаций, можно обращаться к ним из кода
+    Аннотации можно добавить перед любым Entity-классом: имена запросов не привяз ни к какому Entity
+
+    @org.hibernate.annotations.NamedQueries({                   // список запросов
+            @org.hibernate.annotations.NamedQuery(              // 1 именов запрос
+                    name = "Person_GetById",                    // имя запроса
+                    query = "FROM Person WHERE id = :id"),      // SQL/HQL запрос
+            @org.hibernate.annotations.NamedQuery(              // 2 именов запрос
+                    name = "Person_GetByName",
+                    query = "FROM Person WHERE name = :name",
+                    timeout = 1,                                // доп параметры
+                    fetchSize = 10,
+                    cacheable = true,
+                    cacheMode = CacheModeType.GET)
+    })
+
+    // использование в коде, просто вместо стринг запроса используем имя запроса
+    session.createNamedQuery("Person_GetById", Person.class).setParameter("id", id).getSingleResult();
+
+
 --- One-to-One ---
     Uni-directional associations - отношения когда одна сторона не знает о них.
     Bi-directional associations - обе стороны имеют ссылки друг на друга.
