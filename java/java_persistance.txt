@@ -306,7 +306,7 @@ Hibernate
 
 
 --- Mapping class-table ---
-    Аннотации класса:
+    Необходимые составляющие Entity класса:
     @Entity         - класс объекты которого нужно хранить в базе данных
     @Table          - связь класса с таблицей, аттрибуты:
                       name      - String, имя таблицы, если совпадает можно опустить
@@ -326,16 +326,7 @@ Hibernate
                       GenerationType.SEQUENCE - полагается на работу Sequence, созданного в БД
                       GenerationType.TABLE    - полагается на знач столбца таблицы БД(плох выбор)
                       GenerationType.AUTO     - автовыбор - лучше не ставить
-
-    Состояния POJO классов:
-    Все взаимодействия делаются с пом Session, после откр транзакции.
-    Чтобы связать объект с БД нужно его сохранить - save(obj), persist(obj)
-    Чтобы вытащить объект из БД  - get(obj.getClass(), id)
-    После связи можно апдейтить прямо сам класс с пом сеттеров obj.setNum="10"
-    Удалять объект из БД - remove(obj), delete(obj)
-    Отвязать можно так detach(obj)
-    Обновить БД, если кто-то из вне изменил БД - refresh(obj)
-    Откатить удаление до закр транзакции - merge(obj)
+    Плюс должен быть конструктор по умолчанию и геттеры-сеттеры на все поля
 
 
 --- Жизненный цикл Hibernate Entity-объектов ---
@@ -363,6 +354,9 @@ Hibernate
     session.merge(employee);                                // Persisted
     Employee emp = new Employee();                          // Transient
     session.persist(emp);                                   // Persisted
+
+    Когда объект Persisted можно менять его поля у Java объекта и 
+    автоматически поменяется значение в записи БД
                     
 
                                          Detached
@@ -383,58 +377,15 @@ Hibernate
                                                        flush()
 
 
-
---- Entity Annotations ---
-    Индексы
-    @Table (name = "demo_annotated" , indexes = {
-    @Index (name = "name_idx" , columnList = "name" ),          // индекс
-    @Index (name = "id_name_idx" , columnList = "id, name" ),   // 2 столбца
-    @Index (name = "unique_name_idx" , columnList = "name" , unique = true )
-    })
-
-    @Column 
-    Отвечает за настройки столбца в таблице. С помощью параметра 
-    name указывается имя столбца в которое будет записано значение поля. 
-    Для "ручного" формирования запроса с помощью которого будет построен 
-    столбец можно воспользоваться параметром columnDefinition.
-    Здесь же можно указать ограничение NOT NULL (nullable = false). 
-    Чтобы запретить изменение значение какого-либо столбца updatable = false.
-    @Column (name = "manual_def_str" , columnDefinition = "VARCHAR(50) NOT NULL
-    UNIQUE CHECK (NOT substring(lower(manual_def_str), 0, 5) = 'admin')" )
-    String manualDefinedString ;
-    @Column (name = "short_str" , nullable = false , length = 10 ) // varchar(10)
-    String shortString ;
-    @Column (name = "created_at" , updatable = false )
-    LocalDateTime createdAt ;
-
-    @Column(name = "gen_uuid" , insertable = false, updatable = false )
-    private UUID gen_uuid;              // не инсертить и не обновлять
-
-    @Transient                          // не сохраняется в бд   
-    public Integer total;
-
-    @Formula(value = " wid * height ")  // тоже не сохранять в бд а при
-    public Integer total;               // чтении вычислять значение
-
-    @Temporal(TemporalType.TIMESTAMP)   // поле для хан времени(DATE, TIME, ...)
-    @CreationTimestamp                  // созд при созд записи
-    @UpdateTimestamp                    // обновляемая отметка времени
-    @Basic                              // поле должно быть обработано автоматически
-
-    Валидаторы, можно создавать свои - @Constraint
-    @Email
-    @NotNull
-    @Size(min=1, max=9)
-
-    @Version    // Оптимистическое управление параллельным доступом
-
-    
 --- Transaction/Транзакции ---
     Если Hibernate выполняет запрос на получение данных, то явно транзакцию открывать не нужно
     Hibernate сам это сделает, если посчитает нужным: у него есть его настройки, 
     а также настройки SQL-сервера.
     Для остальных операций открываем-закрываем транзакции вручную
     Transaction transaction = session.beginTransaction();   // открыть транзакцию
+    session.persist(obj);                                   // какие-то действия
+    session.flush(obj);
+    session.refresh(obj);
     transaction.commit();                                   // выполняем транзакцию
     transaction.rollback();                                 // либо откатываем
 
@@ -484,8 +435,9 @@ Hibernate
     List<Person> people = query.getResultList();                            // результат JPA std
 
     // выбрать 1 запись по id (find и getSingleResult - стандарт JPA)
-    person = session.get(Person.class, id);
-    person = session.find(Person.class, id);
+    person = session.get(Person.class, id);     // вернет объект или null если нет записи
+    person = session.find(Person.class, id);    // (JPA)вернет объект или null если нет записи
+    person = session.load(Person.class, id);    // возвращает proxy объект, лучше не юзать
     person = session.createQuery("FROM Person WHERE id = :id", Person.class).uniqueResult();
     person = session.createQuery("FROM Person WHERE id = :id", Person.class).getSingleResult();
 
@@ -506,13 +458,52 @@ Hibernate
     transaction.commit();                           // выполняем транзакцию и саму вставку
 
     UPDATE:
-
+    Transaction transaction = session.beginTransaction();
+    session.merge(person);                          // обновить запись, возвращ обновленный obj
+    transaction.commit();
 
     REMOVE:
     Transaction transaction = session.beginTransaction();
-    session.remove(person);                         // удалить из базы связанную запись с person
+    session.remove(person);                                 // удалить из базы связанную запись
+    session.createQuery("delete from User where id = :id")  // либо так через запрос
+        .setParameter("id", user.getId())          
+        .executeUpdate();                                   // executeUpdate() выполнить
     transaction.commit();
     
+
+--- Comparison CRUD methods ---
+    // сравнение методов session/entityManager
+    get()       - вернет объект или null если нет записи
+    find()      - (JPA)вернет объект или null если нет записи
+    load()      - возвращает proxy объект, лучше не юзать
+    flush()     - принудительно вызвать SQL команду и вызов триггеров
+                обнаруживает изменения в контексте сессии и обновляет БД
+                замена transaction.commit() - если что-то делаем вне транзакции
+    refresh()   - обновляет существующий объект на основе БД
+                полезно перечитать объект из базы, если есть вероятность, что он изменился
+                после обработке в самой БД различными триггерами/процедурами
+    save()      - лучше использовать persist()
+                не требует транзакции, сохраняет или обновляет объект в базе данных
+                если объект Transient - инсертит новую запись
+                если у объекта уже есть идентификатор - обновится объект
+                Возвращает Serializable, id строки(тип id по спецификации может быть любым)
+    persist()   - (JPA) инсертит новую запись согласно объекту, требует активной транзакции,
+                не работает с Detached объектами, объект не должен иметь id
+                После выполнения persist() объекту автоматом присваивается id
+    update()    - обновляет запись в бд уже существующего объекта, не меняет текущий объект
+                работает только с Persisted и Detached объектами
+                не возвращает ничего 
+    merge()     - (JPA)также обновляет запись в бд объекта, не меняет текущий объект
+                Может работать с Transient(без id) объектами - создает новую запись - persist()
+                Может работать с Detached объектами - обновляет запись
+                возвращает измененный объект
+    saveOrUpdate- Обновить существующий объект, либо создать новый, если объект Transient
+                всегда используют вместо методов save() и update(), но лучше исп merge()
+    remove()    - (JPA) удаляет запись из БД, сам объект не меняется, не возвращает значения
+                можно использовать как внутри, так и вне транзакции
+    delete()    - удаляет запись из БД, сам объект не меняется, возвращает удаленную сущность 
+                или null если сущность не найдена, требует наличия активной транзакции
+
 
 --- SQL Injection ---
     Атака на веб-приложение, которая позволяет злоумышленнику внедрять 
@@ -564,6 +555,34 @@ Hibernate
     // использование, получаем объект запроса NativeQuery(можно Query) и обрабатываем результат
     NativeQuery<Employee> query = session.createNativeQuery("select * from employee", Employee.class);
     List<Employee> resultLIst = query.list();   // те же методы обработки что и для Query
+
+
+--- Entity Annotations ---
+    @Column(name = "gen_uuid" , insertable = false, updatable = false )
+    private UUID gen_uuid;              // не инсертить и не обновлять(генерирует база)
+
+    @Transient                          // игнорируемое поле - не свзывается с БД
+    public Integer total;
+
+    @Formula(value = " wid * height ")  // игнорируемое поле - при чтении из БД
+    public Integer total;                  значение вычисляется на лету
+
+    @Temporal(TemporalType.TIMESTAMP)   // для старых типов дат(Date, Time)
+    @CreationTimestamp                  // временная отметка созд при созд записи
+    @UpdateTimestamp                    // обновляемая отметка времени
+    
+    @Basic                              // поле должно быть обработано автоматически
+
+    @Lob                                // в поле хранится Large Object
+	@Column(name = "photo", columnDefinition="BLOB")    // как сохранить в базе
+    private byte[] photo;                               // документ, картинка
+
+    Валидаторы, можно создавать свои - @Constraint
+    @Email
+    @NotNull
+    @Size(min=1, max=9)
+
+    @Version    // Оптимистическое управление параллельным доступом
 
 
 --- One-to-One ---
@@ -871,28 +890,6 @@ Hibernate
             fetch = FetchType.EAGER)    // так менять тип выборки
     private List<Employee> employees;
 
---- EntityManager vs SessionFactory
-// сравнение методов
-save()      - лучше использовать persist()
-              не требует транзакции, сохраняет или обновляет объект в базе данных
-              если объект является новым и не имеет идентификатора, он будет сохранен в базе данных.
-              если у объекта уже есть идентификатор, Hibernate выполнит обновление объекта в базе данных.
-              Возвращает Serializable, id строки(тип id по спецификации может быть любым)
-persist()   - (JPA) инсертит новую запись согласно объекту, требует активной транзакции,
-              не работает с Detached объектами, объект не должен иметь id
-              После выполнения persist() объекту автоматом присваивается id
-update()    - обновляет запись в бд уже существующего объекта, не меняет текущий объект
-              работает только с Persisted и Detached объектами
-              не возвращает ничего 
-merge()     - (JPA)также обновляет запись в бд объекта, не меняет текущий объект
-              Может работать с Transient(без id) объектами - создает новую запись - persist()
-              Может работать с Detached объектами - обновляет запись
-              возвращает измененный объект
-saveOrUpdate- Обновить существующий объект, либо создать новый, если объект Transient
-              всегда используют вместо методов save() и update(), но лучше исп merge()
-remove()    - (JPA) удаляет запись из БД, сам объект не меняется, не возвращает значения
-              можно использовать как внутри, так и вне транзакции
-delete()    - удаляет запись из БД, сам объект не меняется, возвращает удаленную сущность 
-              или null если сущность не найдена, требует наличия активной транзакции
+
               
      
