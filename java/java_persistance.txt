@@ -351,7 +351,7 @@ Hibernate
     session.remove(employee);                               // Removed
     session.persist(employee);                              // Persisted
     session.close();                                        // Detached
-    session.merge(employee);                                // Persisted
+    employee = session.merge(employee);                     // Persisted
     Employee emp = new Employee();                          // Transient
     session.persist(emp);                                   // Persisted
 
@@ -384,8 +384,6 @@ Hibernate
     Для остальных операций открываем-закрываем транзакции вручную
     Transaction transaction = session.beginTransaction();   // открыть транзакцию
     session.persist(obj);                                   // какие-то действия
-    session.flush(obj);
-    session.refresh(obj);
     transaction.commit();                                   // выполняем транзакцию
     transaction.rollback();                                 // либо откатываем
 
