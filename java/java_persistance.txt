@@ -201,10 +201,6 @@ Hibernate
         <version>42.4.0</version>
     </dependency>
 
-    Конфиг связи между классом и таблицей:
-        с пом XML - устаревший способ
-        с пом Java аннотаций
-
 
 --- Configuration ---
     Все настройки конфигурации делятся на 3 группы:
@@ -220,7 +216,7 @@ Hibernate
         - show_sql - вывод в консоль всех запросов
 
     Способы которыми можно сконфигурировать Hibernate:
-        - Использовать Properties-файл
+        - Использовать файл hibernate.properties
         - Использовать файл hibernate.cfg.xml
         - Задать конфиги в коде при создании SessionFactory/EntityManagerFactory
         - Использовать методы бина Configuration(Spring)
@@ -251,7 +247,7 @@ Hibernate
 --- SessionFactory / EntityManagerFactory ---
     SessionFactory          - создается один раз при запуске приложения, применяет конфигурации
                               и используется для создания сессий Hibernate
-    Session                 - используется для CRUD операций с БД(под капотом используется JDBC)
+    Session                 - используется для CRUD операций с БД
     EntityManagerFactory    - создается один раз при запуске приложения, применяет конфигурации
                               и используется для создания менеджеров EntityManager
     EntityManager           - управляет жизненным циклом entity и выполняет CRUD операции                      
@@ -283,26 +279,27 @@ Hibernate
 
     3. конфигурации в коде с пом SessionFactory
     Properties properties = new Properties();                       // спец класс Hibernate
-    properties.put(Environment.DRIVER, "org.postgresql.Driver");
+    properties.put(Environment.DRIVER, "org.postgresql.Driver");    // конфиги
     properties.put(Environment.URL, "jdbc:postgresql://localhost:5432/mydb");
     properties.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL10Dialect");
     properties.put(Environment.USER, "root");
     properties.put(Environment.PASS, "password");
+    properties.put(Environment.SHOW_SQL, true);
     SessionFactory sessionFactory = new Configuration()             // применяем конфиг
                 .setProperties(properties)
                 .addAnnotatedClass(Person.class)                    // указать классы
                 .buildSessionFactory();
     
     4. конфигурации в коде с пом EntityManagerFactory
-    Map<String, String> dbProperties = new HashMap<>();             // мэпка с конфигом
-    dbProperties.put("hibernate.connection.url", "jdbc:mysql://localhost:3306/supershop");
-    dbProperties.put("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-    dbProperties.put("hibernate.dialect", "org.hibernate.dialect.DerbyDialect");
-    dbProperties.put("hibernate.default_schema", "APP");
-    dbProperties.put("hibernate.connection.username", "nbuser");
-    dbProperties.put("hibernate.connection.password", "12345");
+    Map<String, String> properties = new HashMap<>();             // мэпка с конфигом
+    properties.put("hibernate.connection.url", "jdbc:mysql://localhost:3306/supershop");
+    properties.put("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+    properties.put("hibernate.dialect", "org.hibernate.dialect.DerbyDialect");
+    properties.put("hibernate.default_schema", "APP");
+    properties.put("hibernate.connection.username", "nbuser");
+    properties.put("hibernate.connection.password", "12345");
     EntityManagerFactory managerFactory = Persistence               // применяем конфиг
-                .createEntityManagerFactory("WorkflowPU", dbProperties);
+                .createEntityManagerFactory("unitName", properties);// имя фабрики, проп
 
 
 --- Mapping class-table ---
@@ -332,6 +329,7 @@ Hibernate
 --- Жизненный цикл Hibernate Entity-объектов ---
     Состояния:
     Transient   - (прозрачный) новый созданный POJO, не влияет ни на что
+                  id не присваиваем - должен быть null
                   Client <==> POJO
     Persistent  - объекты, связанные с Hibernate, 2 способа получить:
                     - загрузить объект из Hibernate
@@ -385,7 +383,7 @@ Hibernate
     Transaction transaction = session.beginTransaction();   // открыть транзакцию
     session.persist(obj);                                   // какие-то действия
     transaction.commit();                                   // выполняем транзакцию
-    transaction.rollback();                                 // либо откатываем
+    // transaction.rollback();                              // либо откатываем
 
 
 --- HQL (Hibernate Query Language) ---
@@ -407,11 +405,17 @@ Hibernate
 
 
 --- CRUD with Hibernate ---
-    Query - интерфейс, с помощью которого получаем запрос к БД:
+    Query - интерфейс, с помощью которого получаем запрос к БД имеет множество реализаций,
+    которые возвращаются различными методами класса Session:
         Query<Employee> query = session.createQuery("from Employee", Employee.class);
-    Для обработки запроса используются различные методы:
-        query.getResultList();      // все записи запроса
-        query.getSingleResult();    // 1 запись запроса
+        query = session.createNamedQuery("Person_GetById", Person.class);
+        query = session.createNativeQuery("SELECT * FROM employee", Employee.class);
+
+    Для обработки запроса Query имеет различные методы:
+        query.getResultList();      // (JPA) получить все записи выборки из таблицы
+        query.list();               // получить все записи выборки из таблицы
+        query.getSingleResult();    // (JPA) 1 запись из таблицы
+        query.uniqueResult();       // 1 запись из таблицы
         query.getResultStream();    // все записи в виде потока(стрима)
         query.executeUpdate();      // выполнить запрос на изменение БД(не SELECT)
         query.scroll();             // позволяет перемещаться по списку результатов
@@ -433,17 +437,20 @@ Hibernate
     List<Person> people = query.getResultList();                            // результат JPA std
 
     // выбрать 1 запись по id (find и getSingleResult - стандарт JPA)
-    person = session.get(Person.class, id);     // вернет объект или null если нет записи
     person = session.find(Person.class, id);    // (JPA)вернет объект или null если нет записи
-    person = session.load(Person.class, id);    // возвращает proxy объект, лучше не юзать
-    person = session.createQuery("FROM Person WHERE id = :id", Person.class).uniqueResult();
-    person = session.createQuery("FROM Person WHERE id = :id", Person.class).getSingleResult();
+    
+    // выбрать с фильтром по другому полю
+    person = session.createQuery("FROM Person WHERE name = :name", Person.class)
+                .setParameter("name", name).getResultList();
 
     // выбрать отдельное поле(можно с distinct)
-    List<String> names = session.createQuery("SELECT name FROM Person", String.class);
+    List<String> names = session.createQuery("SELECT name FROM Person", String.class)
+                ..getResultList();
 
     // выбрать DTO лучше с помощью getResultStream() или обработать обычный список с entity
-    forEach(person -> personDTOS.add(new PersonDTO(person.getName(), person.getAge())));
+    List<PersonDTO> personDTOS = new ArrayList<>();
+    session.createQuery("FROM Person", Person.class)
+        .forEach(person -> personDTOS.add(new PersonDTO(person.getName(), person.getAge())));
 
     // LIMIT OFFSET
     query.setFirstResult(10);   // аналог OFFSET
@@ -486,7 +493,7 @@ Hibernate
                 если у объекта уже есть идентификатор - обновится объект
                 Возвращает Serializable, id строки(тип id по спецификации может быть любым)
     persist()   - (JPA) инсертит новую запись согласно объекту, требует активной транзакции,
-                не работает с Detached объектами, объект не должен иметь id
+                не работает с Detached объектами, объект не должен иметь id (Transient)
                 После выполнения persist() объекту автоматом присваивается id
     update()    - обновляет запись в бд уже существующего объекта, не меняет текущий объект
                 работает только с Persisted и Detached объектами
@@ -582,6 +589,16 @@ Hibernate
 
     @Version    // Оптимистическое управление параллельным доступом
 
+
+--- Связь на уровне таблиц ---
+    четыре вида отношений:
+
+    связь          | тип по умолч  | инфо
+    ---------------+---------------+------------------------------------------
+    One-to-One     | Eager         | одна запись - нетелпеливая - легко
+    One-to-Many    | Lazy          | может быть много связей - поэтому ленивая
+    Many-to-One    | Eager         | одна связь - нетерпеливая - просто
+    Many-to-Many   | Lazy          | может быть много связей - поэтому ленивая
 
 --- One-to-One ---
     Uni-directional associations - отношения когда одна сторона не знает о них.
