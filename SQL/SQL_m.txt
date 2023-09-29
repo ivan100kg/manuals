@@ -819,6 +819,11 @@ FULL OUTER      FULL            все строки с совпадением и
 CROSS           CROSS           
 NATURAL         NATURAL
 
+SELECT *            -- все поля из всех связанных таблиц
+SELECT table1.*     -- все поля из определенной таблицы
+SELECT table2.*     -- все поля из определенной таблицы
+
+
 -- USING
 -- неявная связь двух таблиц имеющих одинаковое поле
 JOIN departments USING (department_id); # обе таблицы имеют поле department_id
