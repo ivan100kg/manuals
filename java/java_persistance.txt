@@ -577,6 +577,7 @@ Hibernate
     @UpdateTimestamp                    // обновляемая отметка времени
     
     @Basic                              // поле должно быть обработано автоматически
+    @Basic(optional = false)            // поле не должно быть равно null
 
     @Lob                                // в поле хранится Large Object
 	@Column(name = "photo", columnDefinition="BLOB")    // как сохранить в базе
@@ -592,103 +593,86 @@ Hibernate
 
 --- Связь на уровне таблиц ---
     четыре вида отношений:
+    1. One-to-One      - один к одному      - аннотация @OneToOne
+    2. One-to-Many     - один ко многим     - аннотация @OneToMany
+    3. Many-to-One     - многие к одному    - аннотация @ManyToOne
+    4. Many-to-Many    - многие ко многим   - аннотация @ManyToMany
 
-    связь          | тип по умолч  | инфо
+    настройка типов отношений в Hibernate(В БД все одинаково всегда):
+    Uni-directional associations    - отношения когда одна сторона не знает о них
+                                      допустим настроить только @ManyToOne или 
+                                      настроить только @OneToMany
+    Bi-directional associations     - обе стороны имеют ссылки друг на друга
+                                      @ManyToOne настроено на одной таблице
+                                      @OneToMany настроено на другой талице
+
+    отношение      | тип выборки   | инфо
     ---------------+---------------+------------------------------------------
     One-to-One     | Eager         | одна запись - нетелпеливая - легко
     One-to-Many    | Lazy          | может быть много связей - поэтому ленивая
     Many-to-One    | Eager         | одна связь - нетерпеливая - просто
     Many-to-Many   | Lazy          | может быть много связей - поэтому ленивая
 
---- One-to-One ---
-    Uni-directional associations - отношения когда одна сторона не знает о них.
-    Bi-directional associations - обе стороны имеют ссылки друг на друга.
 
-    public enum CascadeType {   // виды каскадов
-        ALL,
-        PERSIST,
-        MERGE,
-        REMOVE,
-        REFRESH,
-        DETACH
+--- Many-To-One / One-To-Many ---
+    Примеры таблиц:
+        employee:                   task:
+        +---------------+           +-----------------+
+        | id serial(PK) + <--+      | id serial       |
+        | name varchar  |    |      | name varchar    |
+        | age int       |    +------+ employee int(FK)|
+        +---------------+           +-----------------+
+        One-To-Many                 Many-To-One
 
-    Uni
-    Employee --> Details(детали не знают о существовании Employee)
+    Определение:
+    много записей таблицы Task могут ссылаться на 1 запись таблицы Employee
 
-    // Поле 'details_id' в табл employees которое является внешним ключем на
-       поле 'id' таблицы details.
-    // Добавим в класс Employee поле - внешний ключ на Detail(табл details)
-    // Естесственно в БД должны быть соотв таблицы и настроенный связи.
-    @OneToOne(cascade = CascadeType.ALL)// тип отношений, cascade -типа как в БД
-                                        // при del/upd в связ таблице тоже удал
-    @JoinColumn(name = "details_id")    // столбец кот осущ связь с др таблицей
-    private Detail empDetail;           // тип - класс кот связан с др таблицей
+    Можно настроить как одностороннюю связь так и двустороннюю, т.е можно
+    определить @ManyToOne либо @OneToMany либо сразу обе для двустрон связи,
+    в базе все остается преждним, связь от этого не меняется
 
-    public static void main(String[] args) {
-        try(SessionFactory factory = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .addAnnotatedClass(Employee.class)
-                .addAnnotatedClass(Detail.class)    // добавим еще класс
-                .buildSessionFactory()); 
-            Session session = factory.getCurrentSession() {
-            
-            Employee emp = new Employee("Ivan", "Bond", "IT", 750);
-            Detail detail = new Detail("Samara", "+70096", "ivan@gmail.com");
-            emp.setEmpDetail(detail);
-            session.beginTransaction();
+    // class Task, поле - внешний ключ на объект Employee
+    // во втором классе Employee можно не объявлять связь OneToMany
+    @ManyToOne()                        // много task ссылаются на 1 employee
+    @JoinColumn(name = "employee")      // имя колонки в task где хранится FK
+    private Employee employee;             на таблицу employee
 
-            // в итоге транзакции создадутся записи как в employees так и 
-               запись в details автоматом(из за cascade = CascadeType.ALL)
-            session.save(emp);
-            // так можно получить запись из таблицы через др таблицу         
-            session.get(Employee.class, 9).getEmpDetail()
-            // так удалятся данные работника + автоматом детали
-            Employee emp = session.get(Employee.class, 10);
-            session.delete(emp);
+    Запросы с выборкой по 2-м таблицам и выводом инфо из одной таблицы:
+    // 1 список задач по имени работника 
+    SELECT t.* FROM task t JOIN employee e ON e.id = t.employee WHERE e.name = 'Ivan';
+    -- hql
+    String hql = "FROM Task WHERE employee.name = :username";
+    // 2 список сотрудников с просроченной задачей
+    SELECT DISTINCT employee.*
+    FROM task JOIN employee ON task.employee = employee.id
+    WHERE task.deadline < NOW();
+    -- hql
+    String hql = "SELECT DISTINCT employee FROM Task WHERE deadline < NOW()";
+    // Обновить задачи где работник null - заменить на директора
+    UPDATE task SET employee = 4 WHERE employee IS NULL;
+    -- hql
+    String hql = "UPDATE Task set employee = :user WHERE employee IS NULL";
 
-            session.getTransaction().commit();
-        }
-    }
+    // class Employee, поле - список всех task которые ссылаются на это поле
+    // во втором классе Task можно не указывать поле employee - тогда оно будет
+       считаться служебным и его значением будет управлять Hibernate
+    @OneToMany(cascade = CascadeType.ALL)   // на это поле ссылаются много task
+    @JoinColumn(name = "employee")          // в какой кол табл task находится FK   
+    private Set<Task> tasks = new HashSet<Task>();
 
-    Bi
-    Employee <==> Detail, оба класса знают друг о друге.
-    // добавим в Detail поле 
-    @OneToOne(mappedBy = "empDetail",   // указыаем уже готовую связь one-to-one
-              cascade = CascadeType.ALL)// также делаем зависимости 
-    private Employee employee;     
+    Добавить работнику задачу:
+    Task task1 = new Task();                                // создаем задачку
+    task1.description = "Сделать что-то важное";
+    session.persist(task1);                                 // сохраняем
+    session.flush();                                        // инсертим
+    Employee director = session.find(Employee.class, 4);    // ищем employee
+    director.tasks.add(task1);                              // сохраняем ему 
+    session.merge(director);
+    session.flush();
 
-    public static void main(String[] args) {
-        try(SessionFactory factory = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .addAnnotatedClass(Employee.class)
-                .addAnnotatedClass(Detail.class)
-                .buildSessionFactory();
-            Session session = factory.getCurrentSession()) {
-            Employee emp = new Employee("Petr", "Pacman", "Security", 260);
-            Detail detail = new Detail("Samara", "+79172076", "oleg@gmail.com");
+==========
 
-            emp.setEmpDetail(detail);
-            detail.setEmployee(emp);
 
-            session.beginTransaction();
-            session.save(detail);   // создается записи в 2-х таблицах
-            session.getTransaction().commit();
-
-            // удаление и получение данных как и в Uni, только можно работать
-               с обоими классами, так как они связаны как Bi.
-        }
-    }
-
-    Если необходимо удалить только записи в одной таблице, но не удалять
-    автоматом запись из другой:
-    @OneToOne(mappedBy = "empDetail",   // меняем CascadeType с ALL на неск-ко
-              cascade = {CascadeType.PERSIST, CascadeType.REFRESH}) 
-    // далее получаем детали, получаем работкника и обнуляем ссылку на детали
-    detail detail = session.get(Detail.class, 1);
-    detail.getEmployee().setEmpDetail(null);    // обнуляем ссылку на Detail
-    session.delete(detail); 
-
---- One-to-Many ---
     Bi-directional
     Employee1 <=\ 
     Employee2 <==> Department
@@ -698,10 +682,7 @@ Hibernate
     работников через департамент, при удалении/изменении можно настроить
     по разному - как угодно.
 
-    // Employee, внешний ключ на 1 Department(departments table)
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "department_id")
-    private Department department;
+    
 
     // Department, может иметь список работников
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "department")
@@ -800,6 +781,94 @@ Hibernate
 
     @ManyToOne(fetch = FetchType.LAZY)
     @NotFound(action = NotFoundAction.IGNORE)   // добавить IGNORE
+
+
+--- One-to-One ---
+    public enum CascadeType {   // виды каскадов
+        ALL,
+        PERSIST,
+        MERGE,
+        REMOVE,
+        REFRESH,
+        DETACH
+
+    Uni
+    Employee --> Details(детали не знают о существовании Employee)
+
+    // Поле 'details_id' в табл employees которое является внешним ключем на
+       поле 'id' таблицы details.
+    // Добавим в класс Employee поле - внешний ключ на Detail(табл details)
+    // Естесственно в БД должны быть соотв таблицы и настроенный связи.
+    @OneToOne(cascade = CascadeType.ALL)// тип отношений, cascade -типа как в БД
+                                        // при del/upd в связ таблице тоже удал
+    @JoinColumn(name = "details_id")    // столбец кот осущ связь с др таблицей
+    private Detail empDetail;           // тип - класс кот связан с др таблицей
+
+    public static void main(String[] args) {
+        try(SessionFactory factory = new Configuration()
+                .configure("hibernate.cfg.xml")
+                .addAnnotatedClass(Employee.class)
+                .addAnnotatedClass(Detail.class)    // добавим еще класс
+                .buildSessionFactory()); 
+            Session session = factory.getCurrentSession() {
+            
+            Employee emp = new Employee("Ivan", "Bond", "IT", 750);
+            Detail detail = new Detail("Samara", "+70096", "ivan@gmail.com");
+            emp.setEmpDetail(detail);
+            session.beginTransaction();
+
+            // в итоге транзакции создадутся записи как в employees так и 
+               запись в details автоматом(из за cascade = CascadeType.ALL)
+            session.save(emp);
+            // так можно получить запись из таблицы через др таблицу         
+            session.get(Employee.class, 9).getEmpDetail()
+            // так удалятся данные работника + автоматом детали
+            Employee emp = session.get(Employee.class, 10);
+            session.delete(emp);
+
+            session.getTransaction().commit();
+        }
+    }
+
+    Bi
+    Employee <==> Detail, оба класса знают друг о друге.
+    // добавим в Detail поле 
+    @OneToOne(mappedBy = "empDetail",   // указыаем уже готовую связь one-to-one
+              cascade = CascadeType.ALL)// также делаем зависимости 
+    private Employee employee;     
+
+    public static void main(String[] args) {
+        try(SessionFactory factory = new Configuration()
+                .configure("hibernate.cfg.xml")
+                .addAnnotatedClass(Employee.class)
+                .addAnnotatedClass(Detail.class)
+                .buildSessionFactory();
+            Session session = factory.getCurrentSession()) {
+            Employee emp = new Employee("Petr", "Pacman", "Security", 260);
+            Detail detail = new Detail("Samara", "+79172076", "oleg@gmail.com");
+
+            emp.setEmpDetail(detail);
+            detail.setEmployee(emp);
+
+            session.beginTransaction();
+            session.save(detail);   // создается записи в 2-х таблицах
+            session.getTransaction().commit();
+
+            // удаление и получение данных как и в Uni, только можно работать
+               с обоими классами, так как они связаны как Bi.
+        }
+    }
+
+    Если необходимо удалить только записи в одной таблице, но не удалять
+    автоматом запись из другой:
+    @OneToOne(mappedBy = "empDetail",   // меняем CascadeType с ALL на неск-ко
+              cascade = {CascadeType.PERSIST, CascadeType.REFRESH}) 
+    // далее получаем детали, получаем работкника и обнуляем ссылку на детали
+    detail detail = session.get(Detail.class, 1);
+    detail.getEmployee().setEmpDetail(null);    // обнуляем ссылку на Detail
+    session.delete(detail); 
+
+
 
 --- Many-to-Many ---
     Кружок1 \  / Ребенок1
