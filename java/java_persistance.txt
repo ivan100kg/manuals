@@ -326,21 +326,6 @@ Hibernate
     Плюс должен быть конструктор по умолчанию и геттеры-сеттеры на все поля
 
 
---- DTO mapping ---
-    Маппинг результата не Entity-классов, у DTO нет никаких аннотаций, и связ таблиц
-    Имена колонок в SQL-запросе должны точно совпадать с именами полей DTO класса
-    
-    public class PersonDTO {    // DTO
-        private String name;
-        private Integer age;
-        // ... getters, setters + default constructor
-    }
-    List<PersonDTO> dtos = session.createNativeQuery(
-        "SELECT p.id as \"id\", p.name as \"name\" FROM Person p")          // следим за именами
-        .setResultTransformer(Transformers.aliasToBean(PersonDTO.class))    // используем маппинг
-        .list();
-
-
 --- Жизненный цикл Hibernate Entity-объектов ---
     Состояния:
     Transient   - (прозрачный) новый созданный POJO, не влияет ни на что
@@ -583,6 +568,23 @@ Hibernate
         Number id = (Number) person[0];     // как в JDBC маппим вручную
         String name = (String) person[1];
     }
+
+
+--- DTO mapping ---
+    Маппинг результата не Entity-классов, у DTO нет никаких аннотаций, и связ таблиц
+    Имена колонок в SQL-запросе должны точно совпадать с именами полей DTO класса
+    
+    public class PersonDTO {    // DTO
+        private String name;
+        private Integer age;
+        // ... getters, setters + default constructor
+    }
+    List<PersonDTO> dtos = session.createNativeQuery(
+        "SELECT p.id as \"id\", p.name as \"name\" FROM Person p")          // следим за именами
+        .setResultTransformer(Transformers.aliasToBean(PersonDTO.class))    // используем маппинг
+        .list();
+
+    Также можно просто вытащить запрос по entity и стримом смапить на DTO
 
 
 --- Entity Annotations ---
