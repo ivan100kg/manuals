@@ -326,6 +326,21 @@ Hibernate
     Плюс должен быть конструктор по умолчанию и геттеры-сеттеры на все поля
 
 
+--- DTO mapping ---
+    Маппинг результата не Entity-классов, у DTO нет никаких аннотаций, и связ таблиц
+    Имена колонок в SQL-запросе должны точно совпадать с именами полей DTO класса
+    
+    public class PersonDTO {    // DTO
+        private String name;
+        private Integer age;
+        // ... getters, setters + default constructor
+    }
+    List<PersonDTO> dtos = session.createNativeQuery(
+        "SELECT p.id as \"id\", p.name as \"name\" FROM Person p")          // следим за именами
+        .setResultTransformer(Transformers.aliasToBean(PersonDTO.class))    // используем маппинг
+        .list();
+
+
 --- Жизненный цикл Hibernate Entity-объектов ---
     Состояния:
     Transient   - (прозрачный) новый созданный POJO, не влияет ни на что
@@ -447,10 +462,11 @@ Hibernate
     List<String> names = session.createQuery("SELECT name FROM Person", String.class)
                 ..getResultList();
 
-    // выбрать DTO лучше с помощью getResultStream() или обработать обычный список с entity
-    List<PersonDTO> personDTOS = new ArrayList<>();
-    session.createQuery("FROM Person", Person.class)
-        .forEach(person -> personDTOS.add(new PersonDTO(person.getName(), person.getAge())));
+    // выбрать DTO
+    List<PersonDTO> dtos = session.createNativeQuery(
+        "SELECT p.id as \"id\", p.name as \"name\" FROM Person p")          // следим за именами
+        .setResultTransformer(Transformers.aliasToBean(PersonDTO.class))    // используем маппинг
+        .list();
 
     // LIMIT OFFSET
     query.setFirstResult(10);   // аналог OFFSET
@@ -561,6 +577,13 @@ Hibernate
     NativeQuery<Employee> query = session.createNativeQuery("select * from employee", Employee.class);
     List<Employee> resultLIst = query.list();   // те же методы обработки что и для Query
 
+    // можно получить также похожий на JDBC ResultSet
+    List<Object[]> persons = session.createNativeQuery("SELECT id, name FROM Person").getResultList();
+    for(Object[] person : persons) {        
+        Number id = (Number) person[0];     // как в JDBC маппим вручную
+        String name = (String) person[1];
+    }
+
 
 --- Entity Annotations ---
     @Column(name = "gen_uuid" , insertable = false, updatable = false )
@@ -582,6 +605,9 @@ Hibernate
     @Lob                                // в поле хранится Large Object
 	@Column(name = "photo", columnDefinition="BLOB")    // как сохранить в базе
     private byte[] photo;                               // документ, картинка
+
+    @NotFound(action = NotFoundAction.IGNORE)   // можно ставить над колонками ManyToOne
+                                                   для предотвращения ошибок
 
     Валидаторы, можно создавать свои - @Constraint
     @Email
@@ -670,106 +696,11 @@ Hibernate
     session.merge(director);
     session.flush();
 
-==========
-
-
-    Bi-directional
-    Employee1 <=\ 
-    Employee2 <==> Department
-    Employee3 <=/ 
-    Работников много к 1 департаменту
-    Двусторонняя связь, можно получать департамент через работников, так и
-    работников через департамент, при удалении/изменении можно настроить
-    по разному - как угодно.
-
-    
-
-    // Department, может иметь список работников
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "department")
-    private List<Employee> employees;
-    // плюс создадим метод для добавления работника в департамент
-    // и установка у этого работника выбранного департамента
-    public void addEmployeeToDepartment(Employee employee) {
-        if (employees == null) {
-            employees = new ArrayList<>();
-        }
-        getEmployees().add(employee);
-        employee.setDepartment(this);
-    }
-
-    public static void main(String[] args) {
-        try(SessionFactory factory = new Configuration()
-                .configure("hibernate.cfg.xml")
-                .addAnnotatedClass(Employee.class)
-                .addAnnotatedClass(Department.class)
-                .buildSessionFactory();
-            Session session = factory.getCurrentSession()) {
-            session.beginTransaction();
-            // создадим департамент
-            Department department1 = new Department("IT",1500, 300);
-            // созд работников
-            Employee employee1 = new Employee("Ivan", "Bond", 1300);
-            Employee employee2 = new Employee("Efim", "Bird", 980);
-            // добавим в департамент
-            department1.addEmployeeToDepartment(employee1);
-            department1.addEmployeeToDepartment(employee2);
-            
-            // сохраняем департамент и он и работники авто добавятся в БД
-            session.save(department1);
-
-            // также можно получить связ записи одной таблицы через другую
-            // причем в обе стороны так как Bi
-            Department department = session.get(Department.class, 1);
-            System.out.println(department);
-            System.out.println(department.getEmployees());
-            Employee employee = session.get(Employee.class, 12);
-            System.out.println(employee.getDepartment());
-
-            // удалятся запись работника, департамента и всех работников деп
-            session.delete(employee);
-            // перенастроим каскады(уберем REMOVE)
-            @ManyToOne(cascade = {CascadeType.PERSIST,
-            CascadeType.DETACH,
-            CascadeType.REFRESH,
-            CascadeType.MERGE})
-            @JoinColumn(name = "department_id")
-            private Department department;
-
-            @OneToMany(cascade = {CascadeType.PERSIST,
-            CascadeType.DETACH,
-            CascadeType.REFRESH,
-            CascadeType.MERGE}, mappedBy = "department")
-            private List<Employee> employees;
-
-
-            session.getTransaction().commit();
-        }
-    }
-
-    Uni-directional
-    Employee1 <-\ 
-    Employee2 <-- Department
-    Employee3 <-/
-    Работников много к 1 департаменту
-    Через работников нельзя получить данные департамента, также при удалениии
-    работника - в табл departments ничего не произойдет. 
-    Через департамент можно получить работников, при удалении департамента
-    каскадом удаляются все его работники.
-
-    // Employee - убираем поле(внешний ключ на departsments) department
-       в самой таблице ничего не переделываем - department_id остается
-
-    // Department - добавляем @JoinColumn с внешн ключом с таблицы из которой
-       ссылаются на эту таблицу(из employees), т.е. "department_id", из 
-       за того что связь @OneToMany, еслли бы @ManyToOne - то указали бы
-       внеш ключ из своей же таблицы.
-    @OneToMany(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "department_id") // ссылка на поле в таблице employees
-    private List<Employee> employees;
-
 
 --- CascadeType ---
     Управление каскадными операциями между связанными сущностями
+    Параметр cascade описывает, что должно происходить с зависимыми объектами, 
+    если мы меняем их родительский (главный объект)
     ALL:        все операции (сохранение, обновление, удаление) выполняются каскадно
                 от родительской сущности к связанным сущностям. Если, например, вы 
                 сохраняете или удаляете родительскую сущность, все связанные с ней 
@@ -789,32 +720,14 @@ Hibernate
     DETACH:     операция отсоединения (отсоединения от контекста сеанса) выполняется 
                 каскадно от родительской сущности к связанным сущностям.
 
-
---- Many-to-One ---
-    // все в примере One-to-Many выше
-    // в ManyToOne располагается внешний ключ на связ таблицу
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "department_id")
-    private Department department;
-
-    // варианты в случае возникновения ошибки EntityNotFoundException
-    @ManyToOne(fetch = FetchType.EAGER)         // заменить LAZY на EAGER
-
-    @ManyToOne(optional = false)                // прописать optional
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @NotFound(action = NotFoundAction.IGNORE)   // добавить IGNORE
+    Использование:
+    @OneToOne(cascade = CascadeType.ALL)                    // один каскад тайп
+    @ManyToMany(cascade = {CascadeType.PERSIST,             // множество, точная настройка
+                           CascadeType.MERGE})
+    @Cascade({ org.hibernate.annotations.CascadeType.ALL }) // отдельная аннотация
 
 
 --- One-to-One ---
-    public enum CascadeType {   // виды каскадов
-        ALL,
-        PERSIST,
-        MERGE,
-        REMOVE,
-        REFRESH,
-        DETACH
-
     Uni
     Employee --> Details(детали не знают о существовании Employee)
 
@@ -892,7 +805,6 @@ Hibernate
     session.delete(detail); 
 
 
-
 --- Many-to-Many ---
     Кружок1 \  / Ребенок1
     Кружок2 <==> Ребенок2
@@ -905,24 +817,19 @@ Hibernate
     Создадим 3 таблицы в БД: children, section, child_section
 
     // class Child, поле - внешний ключ, список секций
-    @ManyToMany(cascade = {CascadeType.PERSIST,
-            CascadeType.DETACH,
-            CascadeType.REFRESH,
-            CascadeType.MERGE})
+    @ManyToMany()
     @JoinTable(name = "child_section",  // имя 3-й связной таблицы/Join Table
-            joinColumns = @JoinColumn(name = "child_id"),   // sourse PK 
-            inverseJoinColumns = @JoinColumn(name = "section_id") // target PK
-    )
+            joinColumns = @JoinColumn(name = "child_id"),           // поле в связной 3-й таблице
+                                                                       кот ссылается на id child
+            inverseJoinColumns = @JoinColumn(name = "section_id")   // поле в сязной 3-й таблице
+    )                                                                  кот ссыл на 2-ю таблицу()
     private List<Section> sections;
 
     // class Section, список детей, все то же, но поменять колонки местами
-    @ManyToMany(cascade = {CascadeType.PERSIST,
-            CascadeType.DETACH,
-            CascadeType.REFRESH,
-            CascadeType.MERGE})
+    @ManyToMany()
     @JoinTable(name = "child_section",
-            joinColumns = @JoinColumn(name = "section_id"),         // <=+
-            inverseJoinColumns = @JoinColumn(name = "child_id")     // <=+
+            joinColumns = @JoinColumn(name = "section_id"),
+            inverseJoinColumns = @JoinColumn(name = "child_id")
     )
     private List<Child> children;
 
