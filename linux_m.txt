@@ -172,6 +172,9 @@ unit    - модули(юниты), сущность которой управл
     reboot          - перезап компа
     daeman-reload   - перезагр файлы модулей и конфигурацию systemd
 	
+# journalctl
+
+
 # WSL
 	sudo service postgresql start
 
