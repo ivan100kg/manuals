@@ -292,8 +292,8 @@ CREATE TABLE progress
                                   (по умолчанию NO ACTION)
         SET NULL                # устанавливает NULL, поле долж быть не NOT NULL
         SET DEFAULT             # устан default, он должен быть определен в поле
-    ON UPDATE ...               # изменение - те же варианты что и при удалении
-                                  CASCADE чтобы все ссылки обновить
+    ON UPDATE ...               # изменение значения ключа - те же варианты что
+                                  и при удал - CASCADE чтобы все ссылки обновить
 );
 
 -- SELECT INTO
