@@ -133,14 +133,47 @@
 
 
 --- Фазы сборки проекта ---
-    0   clean       
+    0   clean       олностью очистить папку target
     1	validate	проверяет корректность метаинформации о проекте
     2	compile	    компилирует исходники
     3	test	    прогоняет тесты классов из предыдущего шага
     4	package	    упаковывает скомпилированные классы в новый артефакт: jar, war, zip, …
     5	verify	    проверяет корректность артефакта и удовлетворение требованиям качества
     6	install	    кладет артефакт в локальный репозиторий
-    7	deploy	    заливает артефакт на production-сервер или удаленный репозиторий
+    7   site        создать документацию проекта
+    8	deploy	    заливает артефакт на production-сервер или удаленный репозиторий
+
+
+--- Циклы работы/Lifecycles ---
+    Все команды maven делятся на три группы – lifecycles.
+    Их называют жизненными циклами, так как они задают порядок фаз,
+    которые выполняются во время сборки или определенного жизненного цикла,
+    потому что не все действия Maven являются сборкой.
+    
+    цикл        | Фаза
+    ------------+----------------
+    clean       | pre-clean
+                | clean
+                | post-clean
+    ------------+----------------
+    default     | validate
+                | generate-sources
+                | process-sources
+                | generate-resources
+                | process-resources
+                | compile
+                | process-test-sources
+                | process-test-resources
+                | test-compile
+                | test
+                | package
+                | install
+                | deploy
+    ------------+----------------
+    site        | pre-site
+                | site
+                | post-site
+                | site-deploy
 
 
 Deploy:
