@@ -1679,3 +1679,8 @@ pass        - пароль
 IP          - ip компьютера с сетевой папкой
 folder      - имя сетевой папки
 umount /mnt - umount
+
+
+--- keyboard Language ---
+# сменить язык клавиатуры
+gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "['<Alt>Shift_L']"
