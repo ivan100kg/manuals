@@ -376,14 +376,44 @@ Hibernate
 
 
 --- Transaction/Транзакции ---
+    Hibernate транзакция это JDBC транзакция
+    Транзакция - руппа действий, которые должны быть выполнены только все вместе
     Если Hibernate выполняет запрос на получение данных, то явно транзакцию открывать не нужно
     Hibernate сам это сделает, если посчитает нужным: у него есть его настройки, 
     а также настройки SQL-сервера.
-    Для остальных операций открываем-закрываем транзакции вручную
+    Для остальных операций открываем-закрываем транзакции вручную:
     Transaction transaction = session.beginTransaction();   // открыть транзакцию
     session.persist(obj);                                   // какие-то действия
     transaction.commit();                                   // выполняем транзакцию
     // transaction.rollback();                              // либо откатываем
+
+    Методы Transaction:
+    begin()	                    Стартует новую транзакцию
+    commit()	                Заканчивает транзакцию, пушит/комитит все изменения
+    rollback()	                Откатывает текущую транзакцию
+    setTimeout(int seconds)     Устанавливает максимальное время выполнения транзакции
+    isActive()	                Проверяет активная транзакция или нет
+    wasRolledBack()             Проверяет нормально ли откатилась транзакция
+    wasCommitted()	            Проверяет нормально ли транзакция закомитилась
+    registerSynchronization()	Регистрирует callback для контроля транзакции
+
+    // example
+    Session session = sessionFactory.openSession();
+    Transaction transaction = session.getTransaction();
+    try {
+        transaction.begin();
+        Long count = session.createQuery("select count(*) from Employee", Long.class).uniqueResult();
+        transaction.commit();
+    }
+    catch (Exception e) {
+        if (transaction.getStatus() == ACTIVE || transaction.getStatus() == MARKED_ROLLBACK) {
+        transaction.rollback();
+        }
+    }
+    finally {
+        session.close();
+        sessionFactory.close();
+    }
 
 
 --- HQL (Hibernate Query Language) ---
