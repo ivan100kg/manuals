@@ -1,39 +1,51 @@
 # Maven
 
 Описание
-    Maven - framework для автоматизации сборки проектов.
-    Позволяеет генерировать каркас проекта.
+    Maven - framework для автоматизации сборки проектов
+    Позволяеет генерировать каркас проекта
     Управляет зависимостями как внутри проекта, так и импорта сторонних
-    библиотек из огромного репозитория.
+    библиотек из огромного репозитория
 
-Structure of Project:
-    Create a Project:
-    mvn archetype:generate [n]  // generate the project, n - вид каркаса
-                                   оставляем по умолчанию без параметров.
-        groupId     // название организации  - io.github.ivan100kg
-        artifactId  // уник название проекта - myProject
-        version     // оставляем по умолч    - 1.0-SNAPSHOT (SNAPSHOT - в разраб)
+Локальный репозиторий Maven
+    ~/home/.m2
+
+--- Структура проекта ---
+    Создать структуру проекта из консоли:
+    mvn archetype:generate [n]  // generate the project, n - id архетипа
+    виды архетипов:
+        1.  archetype	sample archetype project
+        2.  j2ee-simple	simplifed sample J2EE application
+        3.  mojo	    sample a sample Maven plugin
+        4.  plugin	    sample Maven plugin
+        5.  plugin-site	sample Maven plugin site
+        6.  portlet	    sample JSR-268 Portlet
+        7.  quickstart  sample Maven project
+        8.  simple	    simple Maven project
+        9.  site	    sample Maven site
+        10. site-simple	sample Maven site
+        11. webapp	    sample Maven Webapp project
+    далее ввод доп параметров интерактивно:
+        groupId         название организации  - io.github.ivan100kg
+        artifactId      уник название проекта - myProject
+        version         оставляем по умолч    - 1.0-SNAPSHOT (SNAPSHOT - в разраб)
+
+    создастся примерно такая структура проекта:
+        myProject
+        ├── pom.xml                         инфо о проекте
+        └── src                             исходники(основные и для тестирования)
+            ├── main                        исходники проекта
+            │   ├── java                    корень для всех Java-классов проекта
+            │   │   └── mygroup             пакеты проекта
+            │   │       └── App.java        классы проекта
+            │   └── resources               ресурсы проекта
+            └── test                        тесты, аналогичная структура как и main
+                ├── java
+                │   └── mygroup
+                │       └── AppTest.java
+                └── resources
     
-    Структура of Default Project archetype, плюс создали директории resources:
-        my-app
-        ├── pom.xml                             // pom.xml file
-        └── src
-            ├── main
-            │   ├── java                        // sourses rooot
-            │   │   └── io
-            │   │       └── github
-            │   │           └── ivan100kg       // your classes
-            │   │               └── App.java
-            │   └── resources                   // resources root
-            └── test
-                ├── java                        // sourse dir for tests
-                │   └── io
-                │       └── github
-                │           └── ivan100kg       // tests sourses root
-                │               └── AppTest.java
-                └── resources                   // resources for your tests
-    
-Project Object Model:
+
+--- Project Object Model ---
     pom.xml -       детальное описание проекта, инфо о различных свойствах,
                     настройка сборки(плагины, цели, профили), наследуемость.
                     Наследуется от Parent pom и переопределяет разл. настройки.
@@ -44,11 +56,17 @@ Project Object Model:
 
     effectiv-pom -  огромный размер, все зависимости всех зависимостей расписаны
 
+    Артефакт -      это любая сущность в maven, описывается с помощью:
+                    groupId     - пакет, к кот принадл приложение + имя домена
+                    artifactId  - уникальный строковый ключ (id проекта)
+                    version     - версия проекта 
+
     // pom.xml
     <?xml version="1.0" encoding="UTF-8"?>                  
     <project xmlns="http://maven.apache.org/POM/4.0.0"      
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        
         <modelVersion>4.0.0</modelVersion>
 
         <groupId>io.github.ivan100kg</groupId>
@@ -60,9 +78,23 @@ Project Object Model:
 
         <properties>    // свойства
             <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-            <maven.compiler.source>1.7</maven.compiler.source>
-            <maven.compiler.target>1.7</maven.compiler.target>
+            <maven.compiler.source>1.8</maven.compiler.source>
+            <maven.compiler.target>1.8</maven.compiler.target>
         </properties>
+
+        <repositories>  // сторонние репозитории помимо глобального Maven-репозитория
+            <repository>
+                <id>public-javarush-repo</id>
+                <name>Public JavaRush Repository</name>
+                <url>http://maven.javarush.com</url>
+            </repository>
+            
+            <repository>
+                <id>private-javarush-repo</id>
+                <name>Private JavaRush Repository</name>
+                <url>http://maven2.javarush.com</url>
+            </repository>
+        </repositories>
 
         <dependencies>  // зависимости 
             <dependency>
@@ -83,13 +115,13 @@ Project Object Model:
     
     <?xml>          - тэг xml, тип документа
     <project>       - главный тэг для всех, аттрибуты - всякие правила для xml
+
     <modelVersion>  - версия POM, не меняется после создания
-    <groupId>       - название организации - io.github.ivan100kg
+    <groupId>       - пакет+домен - io.github.ivan100kg
     <artifactId>    - уник название проекта - myProject
     <version>       - номер нашей версии проекта - 5.0-RELEASE
 
     project         - the top-level element in all Maven pom.xml files.
-    modelVersion    - version of the object model this POM is using. 
     groupId         - the unique identifier of the organization or group.
     artifactId      - the unique base name of the primary artifact.
     version         - version of the artifact generated by the project.
