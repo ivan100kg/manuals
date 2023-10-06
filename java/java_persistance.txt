@@ -202,7 +202,7 @@ Hibernate
     </dependency>
 
 
---- Configuration ---
+--- Configuration SessionFactory / EntityManagerFactory ---
     Все настройки конфигурации делятся на 3 группы:
     1. Тип СУБД
         - Указываем диалект (тип СУБД), например, Oracle 9.0
@@ -244,7 +244,7 @@ Hibernate
     </hibernate-configuration>
 
 
---- SessionFactory / EntityManagerFactory ---
+--- Comparison SessionFactory / EntityManagerFactory ---
     SessionFactory          - создается один раз при запуске приложения, применяет конфигурации
                               и используется для создания сессий Hibernate
     Session                 - используется для CRUD операций с БД
@@ -300,6 +300,19 @@ Hibernate
     properties.put("hibernate.connection.password", "12345");
     EntityManagerFactory managerFactory = Persistence               // применяем конфиг
                 .createEntityManagerFactory("unitName", properties);// имя фабрики, проп
+
+
+--- Session / EntityManager ---
+    В Hibernate существует два способа получения объекта Session и 1 способ EntityManager
+    getCurrentSession   - возвращает текущую сессию для данного контекста,
+                          если текущей сессии нет, то Hibernate создает новую сессию
+                          и связывает ее с текущим контекстом
+                          Жизненный цикл сессии управляется автоматически, закрывается 
+                          после завершения транзакции
+    openSession         - создает новую сессию каждый раз, когда он вызывается.
+                          Управление жизненным циклом сессии вручную.
+    createEntityManager - аналогичен методу openSession() в Hibernate. Он создает новый 
+                          экземпляр EntityManager, кот должен быть закрыт после использ
 
 
 --- Mapping class-table ---
@@ -383,9 +396,12 @@ Hibernate
     а также настройки SQL-сервера.
     Для остальных операций открываем-закрываем транзакции вручную:
     Transaction transaction = session.beginTransaction();   // открыть транзакцию
+    Transaction transaction = em.beginTransaction();   // открыть транзакцию
     session.persist(obj);                                   // какие-то действия
     transaction.commit();                                   // выполняем транзакцию
     // transaction.rollback();                              // либо откатываем
+
+
 
     Методы Transaction:
     begin()	                    Стартует новую транзакцию
@@ -615,6 +631,61 @@ Hibernate
         .list();
 
     Также можно просто вытащить запрос по entity и стримом смапить на DTO
+
+
+--- DAO (Data Access Object) ---
+    DAO - объект для работы с БД
+
+    Best practices:
+    Допустим у нас много сущностей и чтобы создать под каждую сущность 
+    свой DAO + Service нужно много написать, но можно сократить код:
+    1. Создадим единый абстрактный класс для всех DAO с обобщ методами:
+        T getById(final long id)	            Получить объект по его id
+        List<T> getAll()	                    Получить все объекты данного типа
+        int getCount()	                        Узнать количество объектов
+        T save(final T entity)	                Сохранить объект в базу
+        T update(final T entity)	            Обновить объект в базе
+        void delete(final T entity)	            Удалить объект из базы
+        void deleteById(final long entityId)    Удалить объект из базы по id
+       
+        abstract public class BaseDAO<T> {
+            private final Class<T> clazz;                   // класс entity
+            private final SessionFactory sessionFactory;    // фабрика
+
+            protected BaseDAO(Class<T> clazz) {             // конструктор принимает класс
+                this.clazz = clazz;
+                this.sessionFactory = HibernateUtil.getSessionFactory();
+            }
+
+            public List<T> findAll() {                      // метод найти все записи
+                List<T> list = null;
+                try (Session session = sessionFactory.openSession()){
+                    Query<T> query = session.createQuery("FROM " + clazz.getSimpleName(), clazz);
+                    list = query.getResultList();
+                } catch (Exception ex)
+                    log.severe(ex.getMessage());
+                return list;
+            }
+            
+            // остальные методы
+        }
+    2. Далее создаем DAO и экстендимся от базового, если нужно добавляем свои методы
+        public class PersonDAO extends BaseDAO<Person> {
+            private static PersonDAO personDAO;
+
+            private PersonDAO() {
+                super(Person.class);
+            }
+
+            public static PersonDAO getInstance() {
+                if (personDAO == null) {
+                    personDAO = new PersonDAO();
+                }
+                return personDAO;
+            }
+        }
+    3. Так же с сервисами - создаем абстрактный сервис
+    4. Создаем собственно сервисы наследуемся от базового сервиса
 
 
 --- Entity Annotations ---
