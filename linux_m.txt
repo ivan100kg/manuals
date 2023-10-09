@@ -1685,3 +1685,33 @@ umount /mnt - umount
 --- keyboard Language ---
 # сменить язык клавиатуры
 gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "['<Alt>Shift_L']"
+
+
+--- Maven settings ---
+    Deploy:
+        ~/.m2/settings.xml
+        или
+        /etc/maven/settings.xml
+        Вставить блок:
+        <servers>
+        <server>
+            <id>myServer</id>
+            <username>tomcat</username>
+            <password>*******</password>
+            </server>
+        </servers>
+
+        pom.xml
+        <plugin>
+            <groupId>org.apache.tomcat.maven</groupId>
+            <artifactId>tomcat7-maven-plugin</artifactId>
+            <version>2.2</version>
+            <configuration>
+                <url>http://172.16.0.246:8080/manager/text</url>
+                <server>naukaServer</server>
+                <path>/medserver${tomcatPathSuffix}##${project.version}</path> <-+ 
+            </configuration>            +                      +-----------------+
+        </plugin>                       |                                        |
+                                        +----------------------------------+     |
+        <version>0.9.8</version>                    # меняем версию +1 >---|-----+
+        mvn clean install tomcat7:redeploy -P prod  # prod - имя профиля >-+
