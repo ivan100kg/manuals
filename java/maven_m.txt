@@ -218,3 +218,30 @@
         ...
       </plugins>
     </build>
+
+
+--- Properties / свойства(переменные) ---
+    Часто встречающиеся параметры Maven позволяет вынести в переменные
+    В переменную можно вынести версию Java, версии библиотеки, пути к опред ресурсам ...
+
+    <properties>                                                - блок с переменными
+        <junit.version>5.2</junit.version>                      - объявление перем   <--+
+        <project.artifactId>new-app</project.artifactId>                                |
+        <maven.compiler.source>1.13</maven.compiler.source>                             |
+        <maven.compiler.target>1.15</maven.compiler.target>                             |
+    </properties>                                                                       |
+                                                                                        |
+    <version>${junit.version}</version>                         - обращение к перем ----+
+
+    Встроенные свойства проекта(можно писать через project. или pom.):
+    ${basedir}  - корневой каталог проекта, где располагается pom.xml
+    ${version}	- версия артефакта
+
+    Свойства проекта:
+    ${project.build.directory}          - target директория проекта
+    ${project.build.outputDirectory}	- target директория компилятора. По умолчанию target/classes
+    ${project.name}                     - наименование проекта
+    ${project.version}                  - версия проекта
+
+    Свойства настроек:
+    ${settings.localRepository}         - какой-то путь определенный в settings.xml
