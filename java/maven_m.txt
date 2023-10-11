@@ -60,63 +60,29 @@
                     version     - версия проекта (данного артефакта/библиотеки)
 
     // pom.xml
-    <?xml version="1.0" encoding="UTF-8"?>                  
-    <project xmlns="http://maven.apache.org/POM/4.0.0"      
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-        
-        <modelVersion>4.0.0</modelVersion>
+    <project>
+        <!—Описание текущего проекта(обязательная секция) -->
+        <groupId>...</groupId>
+        <artifactId>...</artifactId>
+        <packaging>...</packaging>
+        <version>...</version>
 
-        <groupId>io.github.ivan100kg</groupId>
-        <artifactId>myProject</artifactId>
-        <version>1.0-SNAPSHOT</version>
-
-        <name>my-app</name>
-        <url>http://www.example.com</url>
-
-        <properties>    // свойства
-            <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-            <maven.compiler.source>1.8</maven.compiler.source>
-            <maven.compiler.target>1.8</maven.compiler.target>
+        <properties>
+            <!-- Секция свойств -->
         </properties>
 
-        <repositories>  // сторонние репозитории помимо глобального Maven-репозитория
-            <repository>
-                <id>public-javarush-repo</id>
-                <name>Public JavaRush Repository</name>
-                <url>http://maven.javarush.com</url>
-            </repository>
-            
-            <repository>
-                <id>private-javarush-repo</id>
-                <name>Private JavaRush Repository</name>
-                <url>http://maven2.javarush.com</url>
-            </repository>
+        <repositories>
+            <!-- Секция репозиториев -->
         </repositories>
 
-        <dependencies>  // зависимости 
-            <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-            </dependency>
+        <dependencies>
+            <!-- Секция зависимостей -->
         </dependencies>
-        
-        <build>         // плагины
-            <pluginManagement><!-- lock down plugins versions to avoid using 
-            Maven defaults (may be moved to parent pom) -->
-            ... lots of helpful plugins
-            </pluginManagement>
-        </build>
-    </project> 
-    
-    
-    <?xml>          - тэг xml, тип документа
-    <project>       - главный тэг для всех, аттрибуты - всякие правила для xml
 
-    <?xml>          - тэг xml, тип документа
-    <project>       - главный тэг для всех, аттрибуты - всякие правила для xml
+        <build>
+            <!-- Секция сборки -->
+        </build>
+    </project>
 
 
 --- Dependency/зависимости (подключение библиотек) ---
@@ -192,8 +158,42 @@
     Стандартные жизненные циклы могут быть дополнены функционалом с помощью Maven-плагинов
 
 
+--- build, настройка сборки ---
+    Секция содержит основную информацию по сборке: где расположены Java-файлы,
+    файлы ресурсов, какие плагины используются, куда складывать собранный проект
+    
+    <build>
+        <finalName>projectName</finalName>
+        <sourceDirectory>${basedir}/src/java</sourceDirectory>
+        <outputDirectory>${basedir}/targetDir</outputDirectory>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/java/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+                . . .
+        </plugins>
+    </build>
+
+    <finalName>         - имя результирующего файла сборки (jar, war, ear..), 
+                          который создается в фазе package. Если параметр не задан,
+                          то используется значение по умолчанию — artifactId-version
+    <sourceDirectory>   - переопределить месторасположения файлов с исходным кодом. 
+                          По умолчанию файлы в ${basedir}/src/main/java
+    <outputDirectory>   - куда компилятор будет сохранять результаты 
+                          компиляции - *.class файлы. По умолчанию target/classes
+    <resources>         - и вложенные в нее тэги <resource> определяют местоположение
+                          файлов ресурсов. Файлы ресурсов при сборке просто копируются
+                          в директорию outputDirectory. Значение по умолчанию 
+                          директории с ресурсами равно src/main/resources
+
+
 --- Plugin/Плагины ---
-    Плагины позволяют вставлять в стандартный цикл новые шаги 
+    Плагины позволяют вставлять в стандартный цикл новые шаги
     (например, распределение на сервер приложений) или расширять существующие шаги
     Можно указывать какой плагин запускать, в какой фазе и с какими параметрами
 
