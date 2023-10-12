@@ -85,6 +85,33 @@
     </project>
 
 
+--- Properties / свойства(переменные) ---
+    Часто встречающиеся параметры Maven позволяет вынести в переменные
+    В переменную можно вынести версию Java, версии библиотеки, пути к опред ресурсам ...
+
+    <properties>                                                - блок с переменными
+        <junit.version>5.2</junit.version>                      - объявление перем   <--+
+        <project.artifactId>new-app</project.artifactId>                                |
+        <maven.compiler.source>1.13</maven.compiler.source>                             |
+        <maven.compiler.target>1.15</maven.compiler.target>                             |
+    </properties>                                                                       |
+                                                                                        |
+    <version>${junit.version}</version>                         - обращение к перем ----+
+
+    Встроенные свойства проекта(можно писать через project. или pom.):
+    ${basedir}  - корневой каталог проекта, где располагается pom.xml
+    ${version}	- версия артефакта
+
+    Свойства проекта:
+    ${project.build.directory}          - target директория проекта
+    ${project.build.outputDirectory}	- target директория компилятора. По умолчанию target/classes
+    ${project.name}                     - наименование проекта
+    ${project.version}                  - версия проекта
+
+    Свойства настроек:
+    ${settings.localRepository}         - какой-то путь определенный в settings.xml
+
+
 --- Dependency/зависимости (подключение библиотек) ---
     Maven сначала будет искать указанную библиотеку (артефакт) в локальном репозитории
     Если он там ее не найдет, то затем будет искать в глобальном Maven-репозитории
@@ -170,7 +197,7 @@
             <resource>
                 <directory>${basedir}/src/java/resources</directory>
                 <includes>
-                    <include>**/*.properties</include>
+                    <include>**/*.properties</include>  - ** - любое кол-во дир-ий
                 </includes>
             </resource>
         </resources>
@@ -220,28 +247,63 @@
     </build>
 
 
---- Properties / свойства(переменные) ---
-    Часто встречающиеся параметры Maven позволяет вынести в переменные
-    В переменную можно вынести версию Java, версии библиотеки, пути к опред ресурсам ...
+--- плагины для сборки ---
+    Все полные возможности плагинов смотреть на https://maven.apache.org/plugins/
 
-    <properties>                                                - блок с переменными
-        <junit.version>5.2</junit.version>                      - объявление перем   <--+
-        <project.artifactId>new-app</project.artifactId>                                |
-        <maven.compiler.source>1.13</maven.compiler.source>                             |
-        <maven.compiler.target>1.15</maven.compiler.target>                             |
-    </properties>                                                                       |
-                                                                                        |
-    <version>${junit.version}</version>                         - обращение к перем ----+
+    maven-compiler-plugin	    Управляет Java-компиляцией, различные манипуляции
+                                можно передавать различные параметры комп-ру,
+                                память, версия Java, связка с фазами ...
+    maven-resources-plugin	    Управляет включением ресурсов в сборку
+    maven-source-plugin	        Управляет включением исходного кода в сборку
+    maven-dependency-plugin     Управляет процессом копирования библиотек зависимостей
+    maven-jar-plugin	        Плагин для создания итогового jar-файла(библиотеки)
+                                необходимо создать манифест и указать путь до него,
+                                либо можно авто генерировать манифест(<manifest>),
+                                выбор файлов попадающих в jar, главный класс ...
+    maven-war-plugin	        Плагин для создания итогового war-файла
+    maven-surefire-plugin	    Управляет запуском тестов
+    buildnumber-maven-plugin	Генерирует номер сборки
 
-    Встроенные свойства проекта(можно писать через project. или pom.):
-    ${basedir}  - корневой каталог проекта, где располагается pom.xml
-    ${version}	- версия артефакта
 
-    Свойства проекта:
-    ${project.build.directory}          - target директория проекта
-    ${project.build.outputDirectory}	- target директория компилятора. По умолчанию target/classes
-    ${project.name}                     - наименование проекта
-    ${project.version}                  - версия проекта
+--- jar war ---
+    jar-файл может запустить просто java-машина
+    war-файл нужно загрузить на веб-сервер. Самостоятельно он не запускается
+    
+    jar-библиотека (Java Archive) - это просто zip архив содержит:
+        - скомпилированные классы
+        - ресурсы: properties-файлы и тому подобное
+        - манифест MANIFEST.MF
+        - другие jar-библиотеки (редко)
 
-    Свойства настроек:
-    ${settings.localRepository}         - какой-то путь определенный в settings.xml
+    Cтруктура архива jar:
+        META-INF/
+            MANIFEST.MF
+        com/
+            javarush/
+                MyApplication.class
+        application.properties
+
+    war-файл (Web Archive) - тоже просто архив, содержит:
+        Java-часть:
+            - скомпилированные классы
+            - ресурсы для java-классов: properties-файлы и тому подобное
+            - другие jar-библиотеки (часто)
+            - манифест MANIFEST.MF
+        Web-часть:
+            - web-xml – дескриптор развертывания веб-сервиса
+            - jsp-сервелеты
+            - статические веб-ресурсы: HTML, CSS, JS-файлы
+    
+    Пример типичного war-файла:
+    META-INF/
+        MANIFEST.MF
+    WEB-INF/
+        web.xml
+        jsp/
+            helloWorld.jsp
+        classes/
+            static/
+            templates/
+            application.properties
+        lib/
+            // *.jar files as libs
