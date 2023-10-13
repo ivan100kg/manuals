@@ -388,4 +388,38 @@
     </repositories>
 
 
---- 
+--- Запаковка сборки в Docker ---
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.10</version>
+                <configuration>
+                    <dockerDirectory>${project.basedir}</dockerDirectory>   путь Dockerfile
+                    <imageName>javarush/${project.artifactId}</imageName>   имя образа
+                </configuration>
+                <executions>
+                    <execution>                     сборка docker(mvn docker:build)
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    Dockerfile для jar:
+    -------------------
+    FROM java:11
+    EXPOSE 8080
+    ADD /target/demo.jar demo.jar
+    ENTRYPOINT ["java","-jar","demo.jar"]
+
+    Dockerfile для war:
+    -------------------
+    FROM tomcat8
+    ADD sample.war ${CATALINA_HOME}/webapps/ROOT.war
+    CMD ${CATALINA_HOME}/bin/catalina.sh run
