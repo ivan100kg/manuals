@@ -307,3 +307,85 @@
             application.properties
         lib/
             // *.jar files as libs
+
+
+--- свой репозиторий на GitHub ---
+    site-maven-plugin - плагин, для загрузки своей библиотеки на GitHub
+
+    1. Конфигурируем pom.xml
+    <project>
+        <properties>
+            <github.global.server>github</github.global.server>
+            <github.maven-plugin>0.9</github.maven-plugin>
+        </properties>
+    
+        <distributionManagement>                                            временный локальный репозиторий
+            <repository>                                                    технически это просто папка
+                <id>internal.repo</id>
+                <name>Temporary Staging Repository</name>
+                <url>file://${project.build.directory}/mvn-repo</url>
+            </repository>
+        </distributionManagement>
+    
+        <build>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>            указание плагину класть собранную
+                    <version>2.8.1</version>                                сборку во временный репозиторий
+                    <configuration>
+                        <altDeploymentRepository>
+                            internal.repo::default::file://${project.build.directory}/mvn-repo
+                        </altDeploymentRepository>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.github</groupId>                    размещение репозитория с пом 
+                    <artifactId>site-maven-plugin</artifactId>              коммита на GitHub
+                    <version>${github.maven-plugin}</version>
+                    <configuration>
+                        <message>Maven artifacts for ${project.version}</message>
+                        <noJekyll>true</noJekyll>
+                        <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+                        <branch>refs/heads/mvn-repo</branch>
+                        <includes>**/*</includes>
+                        <repositoryName>[name-project]</repositoryName>
+                        <repositoryOwner>[my-name]</repositoryOwner>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>site</goal>
+                            </goals>
+                            <phase>deploy</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </project>
+
+    2. Конфигурируем setting.xml. Указать логин и пароль к своему репозиторию в Maven setting.xml:
+    <settings>
+        <servers>
+            <server>
+            <id>github</id>
+            <username>[username]</username>
+            <password>[password]</password>
+            </server>
+        </servers>
+    </settings>
+
+    3. Использование сторонними пользователями
+    <repositories>
+        <repository>
+            <id>[name-project]-mvn-repo</id>
+            <url>https://raw.github.com/[username]/[name-project]/mvn-repo/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+
+--- 
