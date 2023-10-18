@@ -1,21 +1,26 @@
 JUnit5
 
-Уровни тестирования:
+
+--- About ---
+    среда тестирования для приложений Java
+
+    Уровни тестирования:
     1. Unit testing         - тестирование функции, изоляция от др компонентов
     2. Integration testing  - несколько функций(units) вместе
     3. Acceptance testing   - все прилож в целом(функциональное тестирование)
 
-JUnit5 состоит из подпроектов:
+    JUnit5 состоит из подпроектов:
     JUnit Platform          - запуск тестов на JVM, консоли, IDE
     JUnit Jupiter           - набор классов для написания тестов
     JUnit Vintage           - обрат совместимость со старыми версиями
 
-Maven зависимости:
+
+--- Maven зависимости ---
     junit-jupiter-engine    - включает все зависимости(api,platform)
     junit-platform-launcher - для своего launcher
     spring-boot-starter-test  для spring-boot
 
-    # плагин для запуска тестов с помощью maven
+    # плагин для запуска тестов с помощью Maven в фазе test
     <plugin>    
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -37,14 +42,9 @@ Maven зависимости:
         <scope>test</scope>
     </dependency>
 
-Example:
-    public class AppTest {  - тест-класс класса App, обычно так называют
-        @Test               - методы с такой аннотацией учавствуют в тестах
-        void userEmptyIfNoUserAdded() {                 - пр-ка метода getAll
-        App app = new App();                                
-        Assertions.assertTrue(app.getAll().isEmpty());  - класс с ассертами
 
-Assertions:
+--- Assertions ---
+    Проверки истины используемые в тестах:
     assertTrue(booleean, String)    - можно передавать String(вывод в случ ош)
     assertFalse(booleean)           - ожидается ложь
     assertEquals(expected, actual)  - ожидалось, получено
@@ -56,14 +56,17 @@ Assertions:
     Во всех ассертах можно передавать вторым значением строку для уточнения
     ошибки при выполнении ассерта.
 
-Life cycle:
+
+--- Life cycle ---
     @BeforeAll -> @BeforeEach -> @Test -> @AfterEach -> @AfterAll
-                       <-----------------------+
+                       ^                       |
+                       | все методы @Test      |
+                       +-----------------------+
     Можно с пом аннотаций перед каждым тестом и после вып какие-то действия.
     Также можо что-то вып перед всеми тестами и после всех(static).
     
     public class AppTest {
-        private App app;    
+        private App app;
 
         @BeforeAll
         static void before() {
@@ -100,6 +103,15 @@ Life cycle:
             System.out.println("After all");
         }
     }
+
+
+--- Другие аннотации ---
+    @Disabled("Тест временно отключен")                 - можно ставить на классе или на методах
+                                                          тест не выполняется
+    @Nested                                             - тест вложенных классов
+    @ExtendWith(MockitoExtension.class)                 - добавить какие-то расширения
+    @Timeout(value = 100, unit = TimeUnit.MILLISECONDS) - задать время на выполнение теста
+
 
 Свой Launcher:
     Тесты запускаются с помощью лаунчера, под капотом Idea/Maven использует его,
@@ -187,15 +199,15 @@ Spring Boot MVC test
  
 
 --- Best practces ---
-1. хранить тесты отдельно от бизнесс классов - src/main/test
-2. название пакета должно быть такое же как у основных классов
-3. называем тесты согласно given_when_then 
-    givenRadius_whenCalculateArea_thenReturnArea()
-4. ожидание/реальность - вставляем assertions внутрь методов
-5. используем простейшие тесты с захардкоденными результатами,
-    не используем бизнесс логику в тестах.
-6. для 1 ассерта используем 1 тест, не стоит объединять
-7. придумываем для тестов правдивые задачи, совпадающие с реальностью
-8. используем Mockito, EasyMock and JMockit если требуется
-9. с пом аннотаций @BeforeEach @AfterEach создаем/удаляем объекты 
-    для тестирования под каждый случай
+    1. хранить тесты отдельно от бизнесс классов - src/main/test
+    2. название пакета должно быть такое же как у основных классов
+    3. называем тесты согласно given_when_then 
+       givenRadius_whenCalculateArea_thenReturnArea()
+    4. ожидание/реальность - вставляем assertions внутрь методов
+    5. используем простейшие тесты с захардкоденными результатами,
+       не используем бизнесс логику в тестах.
+    6. для 1 ассерта используем 1 тест, не стоит объединять
+    7. придумываем для тестов правдивые задачи, совпадающие с реальностью
+    8. используем Mockito, EasyMock and JMockit если требуется
+    9. с пом аннотаций @BeforeEach @AfterEach создаем/удаляем объекты 
+       для тестирования под каждый случай
