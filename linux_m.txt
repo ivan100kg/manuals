@@ -853,6 +853,7 @@ scp         # -P port user@ip:/file ./ передача файлов сюда
 scp         # -P port ./ user@ip:/file передача файлов туда
 ftp/sftp    # передача файлов get put вход как по ssh                          
 
+
 # ssh настройка сервера --------------------------------------------------------+
 sudo apt install openssh-server  # установка сервера
 sudo systemctl enable sshd       # автозагрузка
@@ -863,12 +864,14 @@ PubkeyAuthentication yes
 PasswordAuthentication  - yes # авторизация по паролю
 sudo systemctl restart ssh # рестарт юнита
  
+подключение к серверу по ssh
 ssh-keygen # запустить на клиенте генератор ключа
+ssh-copy-id -i ~/.ssh/id_rsa.pub user@77.134.54.101 -p 22 # разместить public key на сервере
+либо
 id_rsa.pub # скопировать на сервер в .ssh/authorized_keys
 id_rsa     # остается на клиентской машине
 cat ~/.ssh/id_rsa.pub | ssh username@remote_host "cat >> ~/.ssh/authorized_keys"
-PasswordAuthentication - no # авторизацию по паролю отключить                   
-sudo systemctl restart ssh # рестарт юнита                                    --+
+
 
 # Поиск файлов ----------------------------------------------------------------+
 locate # поиск в базе данных имен locate zip, locatedb - обновить бд. 
