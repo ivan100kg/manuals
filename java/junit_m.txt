@@ -160,17 +160,70 @@ JUnit5
             @Spy
             List mockList = new ArrayList<String>();
 
-
-    Определить что этот объект представляет собой с точки зрения Mockito:
-    является ли он mock, spy, как использовался, как был создан и прочее
-    Mockito.mockingDetails(obj);
-
     Мокирование объектов:
-    Mockito.doReturn(результат).when(объект).имяМетода();
+        По умолчанию методы мок объектов ничего не делают, если методы класса возвращают
+        какие либо объекты то мок возвращает null для ссылочных или стандартные знач для
+        примитивов или пустые коллекции для коллекций
+        
+        Переопределение стандартного поведения методов у mock/spy:
+        Mockito.when(mockList.size()).thenReturn(10);       - вернет 10 при вызове mockList.size()
+        Mockito.doReturn(10).when(mockList).size();         - аналогично
+        Mockito.when(mockList.size()).thenThrow(IllegalStateException.class);   - исключение
+        Mockito.when(mockList.get(2)).thenReturn("hui");    - использование параметров get(2)
+        Mockito.when(mockList.get(2)).thenReturn(anyInt()); - для метода с любыми аргументами
+        Mockito.doAnswer(invocation -> {                    - хитрая логика возвр значения
+            int parameter = invocation.getArgument(0);
+            return parameter * parameter;
+        }).when(mockList).get(anyInt());
 
+        Функции для параметров разных типов:
+        any()	                Object, включая null
+        any(ClassName.class)	ClassName
+        anyInt()	            int
+        anyBoolean()	        boolean
+        anyDouble()	            double
+        anyList()	            List
 
+        // вызов метода
+        String name = mockList.get(10);
+        // проверяем вызывался ли метод
+        Mockito.verify(mockList).get(10);
 
+        String name1 = mockList.get(1);  //вызов метода
+        String name2 = mockList.get(2);  //вызов метода
+        String name3 = mockList.get(3);  //вызов метода
+        // проверяем, что метод get() вызывался 3 раза
+        Mockito.verify(mockList, times(3)).get(anyInt());
 
+        Функции на проверку кол-ва вызовов:
+        never()	        Метод никогда не должен вызываться
+        times(n)	    n раз
+        atLeast(n)	    n или больше раз
+        atLeastOnce()	1 или больше раз
+        atMost(n)	    n или меньше раз
+        only()	        Должен быть только один вызов и только к этому методу
+
+        // задаем поведение метода (нужно только для демонстрации)
+        Mockito.when(mockList.size()).thenThrow(IllegalStateException.class);
+        // проверяем бросится ли IllegalStateException при вызове метода size
+        assertThrows(IllegalStateException.class, () -> mockList.size());
+        
+    Мокирование статического метода:
+        Зависимость:
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
+            <version>4.2.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        try (MockedStatic<StaticUtils> utilities =  Mockito.mockStatic(StaticUtils.class)) {
+            //добавляем правило
+            utilities.when(StaticUtils::name).thenReturn("Привет");
+            //проверяем, что правило работает
+            assertEquals("Привет", StaticUtils.name());
+        }
+    
 
 Spring Boot MVC test
     тестирование главной страницы spring-boot MVC приложения, а именно
