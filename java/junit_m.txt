@@ -52,7 +52,8 @@ JUnit5
     assertAll()                     - неск ассертов в методе
     assertThrows(Excep.class, lamb) - класс ошибки и код завернуть в lambda
     assertNull()                    - null - right
-    ...
+    assertNotNull()	                - проверяет, что аргумент не равен null
+    
     Во всех ассертах можно передавать вторым значением строку для уточнения
     ошибки при выполнении ассерта.
 
@@ -111,23 +112,65 @@ JUnit5
     @Nested                                             - тест вложенных классов
     @ExtendWith(MockitoExtension.class)                 - добавить какие-то расширения
     @Timeout(value = 100, unit = TimeUnit.MILLISECONDS) - задать время на выполнение теста
+    
+    @ParameterizedTest                                  - вызвать тест несколько раз с различными параметрами
+    @ValueSource(ints = { 1, 2, 3 })                    - указать параметры
+    @NullSource                                         - параметр null
+    @EnumSource                                         - параметры enum
+    @MethodSource("argsProviderFactory")                - передавать в качестве параметров объекты
+    @CsvSource({                                        - несколько параметров
+        "alex, 30, Программист, Работает",
+        "brian, 35, Тестировщик, Работает",
+        "charles, 40, Менеджер, Пинает"
+    })
+
+    @Order                                              - порядок выполнения тестов
+    @DisplayName("Понятное имя для теста")              - Понятное имя для теста
 
 
-Свой Launcher:
-    Тесты запускаются с помощью лаунчера, под капотом Idea/Maven использует его,
-    можно создать свой лаунчер и запустить тесты.
-    public class TestLauncher {
-        public static void main(String[] args) {
-            Launcher launcher = LauncherFactory.create();
-            SummaryGeneratingListener listener = new SummaryGeneratingListener();
-            LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder
-                    .request()
-                    .selectors(DiscoverySelectors.selectPackage("io.github.ivan100kg"))
-                    .build();
-            launcher.execute(request,listener);
-            listener.getSummary().printTo(new PrintWriter(System.out));
-        }
-    }
+--- Mockito ---
+    Mockito - фреймворк для работы с заглушками, mock - макет
+    
+    mock    - новый прокси(вертуальный) объект для любого класса, который игнорируется компиллятором
+              будет принят любым методом или конструктором, которому требуется параметр такого типа
+              проходит проверки instanceof а также .getClass() вернет класс настоящего класса
+    spy     - обертка над существующим объектом, в остальном такой же как mock
+
+    Зависимость:
+    <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>4.2.0</version>
+        <scope>test</scope>
+    </dependency>
+
+    Использование в тестах 2 варианта:
+        @ExtendWith(MockitoExtension.class)         @BeforeEach
+        public class MockitoAnnotationTest {        public void init() {
+            ...                                         MockitoAnnotations.openMocks(this);
+        }                                           }
+
+    Создать mock/spy (на примере класса ArrayList):
+        1 способ:
+            List mockList = Mockito.mock(ArrayList.class);
+            List<String> mockList = Mockito.spy(new ArrayList<String>());
+        2 способ:
+            @Mock
+            List mockList;
+            @Spy
+            List mockList = new ArrayList<String>();
+
+
+    Определить что этот объект представляет собой с точки зрения Mockito:
+    является ли он mock, spy, как использовался, как был создан и прочее
+    Mockito.mockingDetails(obj);
+
+    Мокирование объектов:
+    Mockito.doReturn(результат).when(объект).имяМетода();
+
+
+
+
 
 Spring Boot MVC test
     тестирование главной страницы spring-boot MVC приложения, а именно
