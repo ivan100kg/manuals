@@ -484,6 +484,9 @@ Spring Core
         System.out.println("class Dog: destroy method");
     }
 
+
+===========================================================================
+
 Spring AOP
 --- AOP Aspect Oriented Programming ---
     Это парадигма программирования, основанная на идее разделения основного
@@ -780,6 +783,8 @@ Spring AOP
         System.out.println("After target method");
         return targetResult;
 
+===============================================================================
+
 Spring MVC
 --- MVC ---
     Model View Controller - шаблон проектирования web приложений.
@@ -801,12 +806,12 @@ Spring MVC
                    +---------------- |Template|
                                     return control
     
-    Front Controller(DispatcherServlet) - явл частью Spring, делегирует 
-    HTTP-запросы обычным контроллерам(может быть 1+ контроллеров).
-    Controller - центр управленияб моззг Spring MVC приложения.
-    Model - контейнер для хранения данных.
-    View - web страница, кот можно создать с пом HTML, JSP, Thymeleaf и т.д.,
-    часто при отображении View используют данные из Model.
+    Front Controller    - (DispatcherServlet(Tomcat)) - делегирует 
+                          HTTP-запросы обычным контроллерам
+    Controller          - центр управленияб мозг Spring MVC приложения.
+    Model               - контейнер для хранения данных.
+    View                - web страница, кот можно создать с пом HTML, JSP, Thymeleaf и т.д.,
+                          часто при отображении View используют данные из Model.
 
     Для создания web-страниц можно использовать:
     JSP (Java Server Page) - спецификация: HTML + Java code.
@@ -1658,6 +1663,9 @@ Spring MVC + Hibernate + AOP
         }
     }
 
+
+=======================================================================
+
 REST
 --- About ---
     REST - REpresentational State Transfer.
@@ -2002,6 +2010,9 @@ REST
         }
     }
 
+
+==============================================================================
+
 Spring Security
 --- About ---
     Spring Security предоставляет функционал для обеспеч без-ти приложения.
@@ -2185,6 +2196,9 @@ Spring Security
             auth.jdbcAuthentication().dataSource(dataSource);
         }
         ...
+
+
+===================================================================
 
 Spring Boot
 --- About ---

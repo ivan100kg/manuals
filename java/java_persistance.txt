@@ -450,6 +450,22 @@ Hibernate
     в джоинах обращаемся к полям связной таблицы через точку
 
 
+--- JPQL (Jakarta Persistence Query Language) ---
+    платформенно-независимый объектно-ориентированный язык запросов, являющийся частью 
+    спецификации Java Persistence API (JPA)
+    
+    Native                                            | HQL
+    --------------------------------------------------+---------------------------------------
+    SELECT * FROM employee                            | SELECT e FROM Employee e
+    SELECT * FROM employee WHERE first_name = 'Inna'; | SELECT e FROM Employee e WHERE e.name = 'Inna'
+    SELECT name FROM employee;                        | SELECT e.name FROM Employee e
+    UPDATE employee SET salary = 0;                   | не поддерживается
+    DELETE employee WHERE name='Inna'                 | DELETE FROM Employee e WHERE e.id = :id
+    WHERE field IS NOT TRUE;                          | WHERE field IS NULL OR field IS FALSE;
+    ...JOIN employee ON task.employee = employee.id;  | SELECT t FROM Task e JOIN t.employee e 
+                                                      |     WHERE e.name = :name
+
+
 --- CRUD with Hibernate ---
     Query - интерфейс, с помощью которого получаем запрос к БД имеет множество реализаций,
     которые возвращаются различными методами класса Session:
