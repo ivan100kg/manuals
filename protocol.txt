@@ -197,6 +197,32 @@
     </note>
 
 
+--- XML WSDL ---
+    WSDL - Web Services Description Language.
+    WSDL Document используется для описания API веб сервиса, пишется на XML
+    Методы сервиса используют основные элементы:
+        <types>	    Defines the (XML Schema) data types used by the web service
+        <message>	Определяет элементы данных для каждой операции
+        <portType>	Описывает операции, которые могут быть выполнены, и соответствующие сообщения.
+        <binding>	Defines the protocol and data format for each port type
+
+    Структура:
+    <definitions>
+        <types>
+            определение типов данных - опред вида отправляемых и получаемых сервисом XML-сообщений
+        </types>
+        <message>
+            элементы данных - сообщения, используемые web-сервисом
+        </message>
+        <portType>
+            абстрактные операции - список операций, которые могут быть выполнены с сообщениями
+        </portType>
+        <binding>
+            связывание сервисов - способ, которым сообщение будет доставлено
+        </binding>
+    </definitions>
+
+
 --- SOAP ---
     SOAP - Simple Object Access Protocol (простой протокол доступа к объектам)
     Это протокол, по которому веб-сервисы взаимодействуют друг с другом или с клиентами
