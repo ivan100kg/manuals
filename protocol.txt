@@ -123,7 +123,36 @@
         </xs:restriction>
     </xs:simpleType>
 
+    Пустой элемент:
+    <product prodid="1345" />
+    определение:
+    <xs:element name="product">
+        <xs:complexType>
+            <xs:attribute name="prodid" type="xs:positiveInteger"/>
+        </xs:complexType>
+    </xs:element>
 
+    Индикаторы:
+        Индикаторы связанные с порядком очереди:
+            all                                     - все доч элем встреч 1 раз в люб порядке
+            choice                                  - может встреч либо один доч эл, либо другой
+            sequence                                - доч элементы в определенном порядке
+        Индикаторы встречаемости:
+            maxOccurs                               - default=1, maxOccurs="unbounded" - бесчисл
+            minOccurs                               - default=1
+        Индикаторы групп:
+            group
+            attributeGroup
+
+    <xs:element name="person">
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element name="full_name" type="xs:string"/>
+            <xs:element name="child_name" type="xs:string"
+            maxOccurs="10" minOccurs="0"/>          - 0 <= child_name <= 10 
+        </xs:sequence>
+    </xs:complexType>
+    </xs:element>
 
     Оределение SOAP метода в схеме:
     Указываем:
@@ -166,7 +195,6 @@
         <heading>Reminder</heading>
         <body>Don't forget me this weekend!</body>
     </note>
-
 
 
 --- SOAP ---
