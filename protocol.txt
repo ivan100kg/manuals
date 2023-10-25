@@ -222,6 +222,21 @@
         </binding>
     </definitions>
 
+    <message name="getTermRequest">  <-----------------------------------+
+        <part name="term" type="xs:string"/>    - части сообщения        |
+    </message>                                                           |
+                                                                         |
+    <message name="getTermResponse">  <------------------------------+   |
+        <part name="value" type="xs:string"/>   - части сообщения    |   |
+    </message>                                                       |   |
+                                                                     |   |
+    <portType name="glossaryTerms">             - имя порта          |   |
+    <operation name="getTerm">                  - операция           |   |
+        <input message="getTermRequest"/>       - входное сообщение -+   |
+        <output message="getTermResponse"/>     - выходное сообщение ----+
+    </operation>
+    </portType>
+
 
 --- SOAP ---
     SOAP - Simple Object Access Protocol (простой протокол доступа к объектам)
