@@ -13,6 +13,22 @@
     Java SE 17  Sep 2021    Sep 2029
     Java SE 21  Sep 2023    Sep 2031
 
+    8.  лямбды, коллекции, стримы
+    9.  of для коллекций, takeWhile(стримы), ifPresentOrElse(optional), JShell, HTTPClient
+    10. var(внутри методов), запуск java MyScript.java
+    11. isBlank(), strip(), (var firstName, var lastName) -> firstName + lastName
+    12. Unicode 11
+    13. Unicode 12.1
+    14. новый switch, jpackage, NPE с разшиыровкой
+    15. """многострочный блок""", Z Garbage Collector 
+    16. (obj instanceof String s) s уже приведен, Records
+    17. sealed class
+    18. UTF-8 по умолчанию, jwebserver
+    19. очередные preview
+    20. очередные preview
+    21. Паттерн-матчинг для switch, паттерны записей, Virtual Threads, Sequenced Collections
+
+
 --- How it works ---
     "Write Once, Run Anywhere"
     human.java  // сохраненный файл с исх кодом с расширением .java
