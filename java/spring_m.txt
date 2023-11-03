@@ -156,7 +156,7 @@ Spring Core
             return new Person(catBean());   // DI прописываем зависимость
         }
     }
-    // все работает также
+    // все работает также, бины попадают в контекст и можно их достать
     AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext(MyConfig.class);
     Person person = context.getBean("personBean", Person.class);
