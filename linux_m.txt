@@ -1692,8 +1692,12 @@ umount /mnt - umount
 
 
 --- keyboard Language ---
-# сменить язык клавиатуры
+# сменить язык клавиатуры на Shift-Alt левые
+gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "['<Shift>Alt_L']"
+# сменить язык клавиатуры на Alt-Shift левые
 gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "['<Alt>Shift_L']"
+# сменить язык клавиатуры на Ctrl-Shift левые
+gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "['<Ctrl>Shift_L']"
 
 
 --- Maven settings ---
