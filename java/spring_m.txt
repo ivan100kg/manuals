@@ -2810,3 +2810,36 @@ Setting examples
         ./mvnw clean package
     And then run the JAR file, as follows:
         java -jar target/gs-rest-service-0.1.0.jar
+
+
+--- Rest Template ---
+    HTTP client более высокого уровня
+    
+    методы
+    -----------------------------------------------------------------------------------------------------
+    getForObject        Получает представление через метод GET.
+    getForEntity        Получает ResponseEntity (то есть статус, заголовки и тело) через GET.
+    headForHeaders      Получает все заголовки для ресурса через метод HEAD.
+    postForLocation     Создает новый ресурс через метод POST и возвращает заголовок Location из ответа.
+    postForObject       Создает новый ресурс через метод POST и возвращает представление из ответа.
+    postForEntity       Создает новый ресурс через метод POST и возвращает представление из ответа.
+    put                 Создает или обновляет ресурс через метод PUT.
+    delete              Удаляет ресурсы по указанному URI-идентификатору через метод DELETE.
+    optionsForAllow     Получает допустимые HTTP-методы для ресурса через метод ALLOW.
+    exchange            Более обобщенная (и менее консервативная) версия предыдущих методов, 
+                        которая обеспечивает дополнительную гибкость, если это необходимо. 
+                        Он принимает RequestEntity (включая HTTP-метод, URL-адрес, заголовки и тело в 
+                        качестве вводных данных) и возвращает ResponseEntity. Эти методы позволяют 
+                        использовать ParameterizedTypeReference вместо Class для задания типа ответа 
+                        с помощью дженериков.
+    execute             Наиболее обобщенный способ выполнения запроса, с полным контролем над подготовкой
+                        запроса и извлечением ответа через интерфейсы обратного вызова.
+
+    Объект:
+    RestTemplate restTemplate = new RestTemplate();     // HttpURLConnection по умолч, можно сменить 
+    
+    Заголовки:
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Authorization", "token");
+    headers.set("Content-Type", "application/json");
+
