@@ -2843,3 +2843,47 @@ Setting examples
     headers.set("Authorization", "token");
     headers.set("Content-Type", "application/json");
 
+    Параметры:
+
+
+--- WSDL SOAP клиент ---
+    Сервис с которым необходимо работать по SOAP имеет адрес:
+        http://b2b-demo.n3health.ru/emk/PixService.svc
+    Схема wsdl может быть представлена файлом или ссылкой:
+        http://b2b-demo.n3health.ru/emk/PixService.svc?wsdl
+        ./scheme.wsdl
+    
+    1. подключаем зависимости:
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+
+    2. генерируем классы по схеме:
+        можно использовать любой из этих инструментов
+        wsimport    - из коробки, подключить доп либы
+        wsdl2java   - докачать отдельно, без доп либ
+        Примеры:
+        wsimport -keep -p sciencelab.wsdlpac  http://b2b-demo.n3health.ru/emk/PixService.svc?wsdl
+        wsdl2java -d ~/Projects/test -p sciencelab.wsdlpac http://b2b-demo.n3health.ru/emk/PixService.svc?wsdl
+
+    3. Создаем конфиг файл в проекте
+        @Configuration
+        public class CxfConfig {
+            @Bean
+            public PixService pixService() throws MalformedURLException {   // создаем бин pixService
+                return new PixService(new URL("адрес сервиса"));            // PixService - это сгенеренный класс
+            }                                                               // для вз-ия с сервисом
+        ...
+        }
+
+    4. Создаем свои сервисы для работы с сервером
+        private final IEmkService emkService;                               // IEmkService - сгенеренный интерфейс
+
+        @Autowired
+        public EgiszServiceImpl(PixService pixService) {                    // берем наш бин созданный выше
+            this.pixService = pixService.getSoap12PixService();             // выдергиваем из него сервис по soap
+        }                                                                   // и уже работаем с ним по api
+
+    5. Смотрим api, наполняем сущности, взаимодействуем с сервисом

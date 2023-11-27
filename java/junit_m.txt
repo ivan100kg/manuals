@@ -41,6 +41,13 @@ JUnit5
         <version>5.9.0</version>
         <scope>test</scope>
     </dependency>
+    
+    # Spring boot
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
 
 
 --- Assertions ---
