@@ -2836,14 +2836,30 @@ Setting examples
                         запроса и извлечением ответа через интерфейсы обратного вызова.
 
     Объект:
-    RestTemplate restTemplate = new RestTemplate();     // HttpURLConnection по умолч, можно сменить 
+    RestTemplate restTemplate = new RestTemplate();         // HttpURLConnection по умолч, можно сменить 
     
     Заголовки:
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", "token");
     headers.set("Content-Type", "application/json");
 
-    Параметры:
+    Параметры в адресной строке:    
+    UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://example.com"); // builder
+    builder.queryParam("name", "Egor");                     // устанавливаем параметры
+    builder.queryParam("age", 13);                          // ..
+    String url = builder.toUriString();                     // получаем url с параметрами
+    HttpEntity<Void> entity = new HttpEntity<>(headers);    // request entity с нашими заголовками
+    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class); // запрос
+    response.getStatusCode();                               // обрабытываем статус
+    
+    Получение ответа в виде JSON из ResponseEntity:
+    ObjectMapper mapper = new ObjectMapper();
+    PassportResponse result = null;
+    try {
+        result = mapper.readValue(response.getBody(), PassportResponse.class);
+    } catch (JsonProcessingException e) {
+        log.error(e.getMessage());
+    }
 
 
 --- WSDL SOAP клиент ---
