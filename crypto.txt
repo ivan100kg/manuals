@@ -175,5 +175,5 @@ Certificate[] chain;    // цепочка сертификатов, начина
 
 
 // --- Чтение ключей электронной подписи и ключевого обмена ------------------------------------------------
-alias = "9fe304f4-0bde-436f-8b6d-672e2a04d04c копия";   // имя ключа
-Key naukaKey = keyStore.getKey(alias, null);
+alias = "9fe304f4-0b4e-436f-8b6d-672f2a04d04c";   // имя ключа
+Key key = keyStore.getKey(alias, null);
