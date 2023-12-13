@@ -160,7 +160,10 @@ SELECT (date_trunc('hour', CURRENT_TIMESTAMP)); # до часа 2016-09-27 22:00
 -- извлечение отдельных полей времени
 SELECT extract( 'mon' FROM timestamp '1999-11-27 12:34:56.123459' );    # 11
 SELECT EXTRACT(YEAR FROM birthday)		# извлечь год из поля birthday
-SELECT AGE('2017-01-01','2011-06-24');	# 5 years 6 mons 7 days
+SELECT AGE('2017-01-01');	            # возраст от текущей даты в формате (y m d)
+SELECT AGE('2017-01-01','2024-06-24');	# возраст относительно другой даты
+EXTRACT(YEAR FROM AGE(pp.datebirth))    # только количество лет
+
 
 -- Логический тип Boolean
 TRUE    't' 'true'  'yes'   'on'    1   # истина
