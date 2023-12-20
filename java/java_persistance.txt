@@ -454,7 +454,7 @@ Hibernate
     платформенно-независимый объектно-ориентированный язык запросов, являющийся частью 
     спецификации Java Persistence API (JPA)
     
-    Native                                            | HQL
+    Native                                            | JPQL
     --------------------------------------------------+---------------------------------------
     SELECT * FROM employee                            | SELECT e FROM Employee e
     SELECT * FROM employee WHERE first_name = 'Inna'; | SELECT e FROM Employee e WHERE e.name = 'Inna'
