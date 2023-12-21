@@ -443,7 +443,7 @@ Hibernate
     SELECT * FROM employee WHERE first_name = 'Inna'; | FROM Employee WHERE firstName = 'Inna'
     SELECT name FROM employee;                        | SELECT name FROM Employee
     UPDATE employee SET salary = 0;                   | UPDATE Employee SET salary = 0;
-    DELETE employee WHERE name='Inna'                 | DELETE Employee WHERE name='Inna'
+    DELETE employee WHERE first_name='Inna'           | DELETE Employee WHERE firstName='Inna'
     WHERE field IS NOT TRUE;                          | WHERE field IS NULL OR field IS FALSE;
     ...JOIN employee ON task.employee = employee.id;  | FROM Task WHERE employee.name = 'Igor'
     ...JOIN employee ON task.employee = employee.id;  | SELECT employee FROM Task where id = 2
@@ -457,7 +457,7 @@ Hibernate
     Native                                            | JPQL
     --------------------------------------------------+---------------------------------------
     SELECT * FROM employee                            | SELECT e FROM Employee e
-    SELECT * FROM employee WHERE first_name = 'Inna'; | SELECT e FROM Employee e WHERE e.name = 'Inna'
+    SELECT * FROM employee WHERE first_name = 'Inna'; | SELECT e FROM Employee e WHERE e.firstName = 'Inna'
     SELECT name FROM employee;                        | SELECT e.name FROM Employee e
     UPDATE employee SET salary = 0;                   | не поддерживается
     DELETE employee WHERE name='Inna'                 | DELETE FROM Employee e WHERE e.id = :id
