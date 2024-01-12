@@ -1494,6 +1494,7 @@
     // from LocalDate to format String
     LocalDate localDate = LocalDate.now();//For reference
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmZ"); // 202107251100+0300
     String formattedString = localDate.format(formatter);
 
     // from Date to LocalDate
