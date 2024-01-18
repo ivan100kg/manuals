@@ -1503,6 +1503,9 @@
     // from LocalDate to Date
     java.sql.Date.valueOf(localdate);
 
+    // from LocalDateTime to Date
+    java.sql.Timestamp.valueOf(localDateTime);
+
     // from Date to String
     Date currentDate = new Date();
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
