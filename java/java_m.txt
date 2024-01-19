@@ -1491,6 +1491,11 @@
     // from String to localDate
     LocalDate date = LocalDate.parse("2018-05-05");
 
+    // from String to Date
+    String dateString = "2000-01-01";
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+    Date date = format.parse(dateString);
+
     // from LocalDate to format String
     LocalDate localDate = LocalDate.now();//For reference
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
