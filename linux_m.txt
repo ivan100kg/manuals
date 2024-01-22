@@ -1728,3 +1728,19 @@ gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "['<
                                         +----------------------------------+     |
         <version>0.9.8</version>                    # меняем версию +1 >---|-----+
         mvn clean install tomcat7:redeploy -P prod  # prod - имя профиля >-+
+
+
+--- настройка статического IP ---------
+sudo vim /etc/netplan/01-network-manager-all.yaml
+
+  network:
+    version: 2
+    renderer: NetworkManager
+    ethernets:
+      enp34s0:                                  - интерфейс
+        addresses:
+          - 192.168.0.229/22                    - нужный ip
+        gateway4: 192.168.0.248                 - шлюз
+        dhcp4: false                            - откл dhcp
+        nameservers:    
+          addresses: [192.168.0.247, 8.8.8.8]   - DNS сервера
