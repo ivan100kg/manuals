@@ -1043,8 +1043,13 @@ CREATE USER bestuser WITH PASSWORD 'bestuser';
 ALTER ROLE bestuser SET client_encoding TO 'utf8';
 ALTER ROLE bestuser SET default_transaction_isolation TO 'read committed';
 ALTER ROLE bestuser SET timezone TO 'UTC';
-GRANT ALL PRIVILEGES ON DATABASE mydb TO bestuser;
-\q
+GRANT ALL PRIVILEGES ON DATABASE mydb TO bestuser;  -- все права на базу
+-- разрешить только CRUD операции на определенную таблицу
+GRANT CONNECT ON DATABASE "Vega" TO bestuser;
+GRANT SELECT ON my_table TO bestuser;
+GRANT INSERT ON my_table TO bestuser;
+GRANT UPDATE ON my_table TO bestuser;
+GRANT DELETE ON my_table TO bestuser;
 
 -- Tips/Triks ----------------------
 -- группировка по дням недели
