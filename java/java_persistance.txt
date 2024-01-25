@@ -216,10 +216,31 @@ Hibernate
         - show_sql - вывод в консоль всех запросов
 
     Способы которыми можно сконфигурировать Hibernate:
-        - Использовать файл hibernate.properties
-        - Использовать файл hibernate.cfg.xml
-        - Задать конфиги в коде при создании SessionFactory/EntityManagerFactory
-        - Использовать методы бина Configuration(Spring)
+        1 - JPA-standart с пом файла META-INF/persistence.xml - получим EntityManagerFactory
+        2 - Hibernate API с пом класса Configuration, весь конфиг в коде - получим SessionFactory
+        3 - Hibernate API с пом класса Configuration, с пом файла hibernate.properties - получим SessionFactory
+        4 - Использовать методы бина Configuration(Spring)
+
+    persistence.xml
+    --------------------------------------------------------------------
+    <persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="2.0">
+
+        <persistence-unit name="example">                   # набор сущностей и настроек для фабрики
+            <class>org.hibernate.example.Book</class>       # классы(можно не указывать, находит сам все @Entity)
+            <class>org.hibernate.example.Author</class>
+            <properties>                                    # настройки Postgres/Hibernate/SQL
+                <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost/example"/>
+                <property name="jakarta.persistence.jdbc.user" value="gavin"/>
+                <property name="jakarta.persistence.jdbc.password" value="hibernate"/>
+                <property name="hibernate.show_sql" value="true"/>
+                <property name="hibernate.format_sql" value="true"/>
+                <property name="hibernate.highlight_sql" value="true"/>
+            </properties>
+        </persistence-unit>
+    </persistence>
 
     hibernate.properties
     --------------------------------------------------------------------
@@ -230,18 +251,7 @@ Hibernate
     hibernate.connection.password=secret
     hibernate.show_sql=true
 
-    hibernate.cfg.xml
-    ---------------------------------------------------------------------
-    <hibernate-configuration>	
-      <session-factory>                
-        <property name="dialect">org.hibernate.dialect.Oracle9Dialect</property>  	
-        <property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property> 	
-        <property name="connection.url">jdbc:oracle:thin:@localhost:1521:supershop</property>  	
-        <property name="connection.username">root</property>  	
-        <property name="connection.password">secret</property>
-        <property name="hibernate.show_sql ">true</property>        
-      </session-factory>	
-    </hibernate-configuration>
+
 
 
 --- Comparison SessionFactory / EntityManagerFactory ---
@@ -264,7 +274,7 @@ Hibernate
 
     ClassLoader classLoader = Thread.currentThread().getClassLoader();
     Properties properties = new Properties();
-    properties.load(classLoader.getResourceAsStream("hibernate-dev.properties"));
+    properties.load(classLoader.getResourceAsStream("hibernate.properties"));
     SessionFactory sessionFactory = new Configuration()
                 .addProperties(properties)              // кастомный .properties
                 .addPackage("com.javarush.data")        // пакет с entity
@@ -291,7 +301,10 @@ Hibernate
                 .buildSessionFactory();
     
     4. конфигурации в коде с пом EntityManagerFactory
-    Map<String, String> properties = new HashMap<>();             // мэпка с конфигом
+    EntityManagerFactory managerFactory = Persistence               // применяем конфиг из persistence.xml
+                .createEntityManagerFactory("example");             // имя persistence-unit
+    // Можно переопределить часть конфига в мэп, а остальной в persistence.xml
+    Map<String, String> properties = new HashMap<>();               // мэпка с конфигом
     properties.put("hibernate.connection.url", "jdbc:mysql://localhost:3306/supershop");
     properties.put("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
     properties.put("hibernate.dialect", "org.hibernate.dialect.DerbyDialect");
@@ -299,7 +312,7 @@ Hibernate
     properties.put("hibernate.connection.username", "nbuser");
     properties.put("hibernate.connection.password", "12345");
     EntityManagerFactory managerFactory = Persistence               // применяем конфиг
-                .createEntityManagerFactory("unitName", properties);// имя фабрики, проп
+                .createEntityManagerFactory("example", properties); // + кидаем мэпку
 
 
 --- Session / EntityManager ---
