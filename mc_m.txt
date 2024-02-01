@@ -1,0 +1,40 @@
+Midnight commander
+
+File panel actions:
+-----------------------------------------------
+Action	        Default shortcut	Description
+---------------------------------------------------------------------------------------------
+Up	            Up, C-p	            move the selection bar to the previous entry in the panel
+Down	        Down, C-n	        move the selection bar to the next entry in the panel
+Left	        Left	            move the selection bar to the left
+Right	        Right	            move the selection bar to the right
+PageUp	        PgUp, Alt-v	        move the selection bar one page up
+PageDown	    PgDn, Alt-p	        move the selection bar one page down
+Top	            Home, a1, Alt-<	    move the selection bar to the first entry in the panel
+Bottom	        End, c1, Alt->	    move the selection bar to the last entry in the panel
+TopOnScreen	    Alt-g	            move the selection bar to the first visible entry in the panel
+MiddleOnScreen	Alt-r	            move the selection bar to the middle visible entry in the panel
+BottomOnScreen	Alt-j	            move the selection bar to the last visible entry in the panel
+CopySingle	    Shift-F5, F15	
+MoveSingle	    Shift-F6, F16	
+DeleteSingle	Shift-F8, F18	
+Search	        Ctrl-s, Alt-s	    start a quick filename search in the directory listing
+SelectCodepage	Alt-e	            change charset of current panel
+History	        Alt-H	            show the directory history
+HistoryNext	    Alt-u	            move to the next directory in the history
+HistoryPrev	    Alt-y	            move to the previous directory in the history
+EditNew	        Shift-F4, F14	
+ViewRaw	        Shift-F3, F13	
+Select	        + ('plus' key)	    select (tag) a group of files
+Unselect	    \ ('backslash' key)	unselect a group of files
+SelectInvert	Alt-*	            invert selection on the current panel
+PanelOtherSync	Alt-i	            make the current directory of the current panel also the current directory of the other panel
+PanelOtherCd	Alt-o	            If the currently selected file is a directory, load that directory on the other panel and moves the selection to the next file.
+                                    If the currently selected file is not a directory, load the parent directory on the other panel and moves the selection to the next file
+PanelOtherCdLink	Alt-l	        If the currently selected file is a link to the directory, load that directory on the other panel and moves the selection to the next file
+CdChild	        Ctrl-PgDn	        move to the child directory
+CdParent	    Ctrl-PgUp	        move to the parent directory
+Mark	        Ins, Ctrl-t	        tag or untag files. To untag files, just retag a tagged file
+MarkDown	    Shift-Down	        tag file and move the selection bar to the next entry
+MarkUp	        Shift-Up	        tag file and move the selection bar to the previous entry
+Enter	        Enter	
