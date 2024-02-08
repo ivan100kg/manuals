@@ -1510,6 +1510,54 @@ test(2000).then(() => console.log('ok!'));
 Promise.all([test(1000), test(2000)]).then(() => console.log('success'));
 
 
+--- async await -------------------------------------------------------------------------------
+Механизм пришедший после промисов, работает поверх их, более удобен
+
+Пример на промисе:
+function sleep(time) {                          // функция возвращающая Promise
+    return new Promise((resolve, reject) => {
+        if (time <= 500) {
+            reject(`${time} is too litle!`);
+        }
+        setTimeout(() => resolve(`поспал ${time}`), time);
+    });
+}
+
+// имитация синхронного кода с пом промисов и цепочки .then
+sleep(1500).then(res => {                       // цепочка промисов - каждый в итоге ждет
+    console.log(res)                               выполнения предыдущего
+    return sleep(1000)
+}).then(res => {
+    console.log(res)
+    return sleep(500)
+}).then(res => {
+    console.log(res)
+    return sleep(200)
+}).then(res => 
+    console.log(res)
+).catch(err => console.log(`Ошибка ${err}`));
+
+// имитация синхронного кода на async await:
+const sleepFoo = async () => {
+    try {
+        const sleep1 = await sleep(1500);
+        console.log(sleep1);
+        const sleep2 = await sleep(1000);
+        console.log(sleep2);
+        const sleep3 = await sleep(500);
+        console.log(sleep3);
+        const sleep4 = await sleep(300);
+        console.log(sleep4);
+        const sleep5 = await sleep(200);
+        console.log(sleep5);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+sleepFoo();
+
+
 --- fetch -------------------------------------------------------------------------------------
 Fetch - это новый стандарт JavaScript для выполнения запросов на сервер.
 Он заменяет устаревшие методы XMLHttpRequest и jQuery Ajax.
@@ -1550,9 +1598,7 @@ async function getData(url){
 }
 
 // вызов GET из кода
-getData('/api')                             // просто fetch завернули в это
-.then(data => console.log(data))            // обработка успешного результата
-.catch(err => console.log(err));            // обработка ошибки
+const data = getData('/api')                // просто вызывем из кода
 
 // пример универсального метода, исп POST запрос с данными
 async function postData(url="", data={}) {
@@ -1570,16 +1616,14 @@ async function postData(url="", data={}) {
         referrerPolicy: "no-referrer",      // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
         body: JSON.stringify(data),         // body data type must match "Content-Type" header
     });
-    return response.json();                 // parses JSON response into native JavaScript objects
+    return await response.json();           // parses JSON response into native JavaScript objects
     } catch(err) {
         throw err;                          // в случае неудачи
     }
 }
 
 // вызов POST из кода
-postData("https://exmpl.com/aner", someObj) // кидаем url и какой-то объект
-.then(data => console.log(data))            // обрабатываем полученные данные
-.catch(err => console.log(err));            // обработка ошибки                
+postData("https://exmpl.com/aner", obj);    // кидаем url и какой-то объект
 
 
 --- Asynchronous vs synchronous--------------------------------------------------------------------

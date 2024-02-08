@@ -1,31 +1,46 @@
-function delay(ms) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms);
+'use strict';
+
+function sleep(time) {
+    return new Promise((resolve, reject) => {
+        if (time <= 500) {
+            reject(`${time} is too litle!`);
+        }
+        setTimeout(() => resolve(`поспал ${time}`), time);
     });
 }
 
-async function exampleAsyncFunction() {
-    console.log('Начало асинхронной функции');
-    
-    // Ожидаем 2 секунды
-    await delay(2000);
-    
-    console.log('Прошло 2 секунды');
-    
-    // Ожидаем еще 1 секунду
-    await delay(1000);
-    
-    console.log('Прошло еще 1 секунда');
-    
-    return 'Выполнение завершено';
-}
+// sleep(1600).then(res => console.log(res));  
 
-async function runExample() {
-    console.log('Старт выполнения примера');
-    
-    const result = await exampleAsyncFunction();
-    
-    console.log(result);
-}
+// sleep(1500).then(res => {
+//     console.log(res)
+//     return sleep(1000)
+// }).then(res => {
+//     console.log(res)
+//     return sleep(500)
+// }).then(res => {
+//     console.log(res)
+//     return sleep(200)
+// }).then(res => 
+//     console.log(res)
+// ).catch(err => console.log(`Ошибка ${err}`));
 
-runExample();
+
+// имитация синхронного кода на async await:
+const sleepFoo = async () => {
+    try {
+        const sleep1 = await sleep(1500);
+        console.log(sleep1);
+        const sleep2 = await sleep(1000);
+        console.log(sleep2);
+        const sleep3 = await sleep(500);
+        console.log(sleep3);
+        const sleep4 = await sleep(300);
+        console.log(sleep4);
+        const sleep5 = await sleep(200);
+        console.log(sleep5);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+sleepFoo();
