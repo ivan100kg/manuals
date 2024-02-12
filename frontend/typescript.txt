@@ -41,95 +41,111 @@ tsc index.ts            // скомпилить 1 файл в index.js
     age = 'hi';             // ERROR, в любом случае объявления, после присваивания невозможно изменить тип
 
 
---- Type: any ---
-// лучше стараться не использовать
-let result: any = true;     // переменная может принимать любой тип
-result = 'hi';              // string
-result = 12;                // number
-result += 1;                // какие-то действия
+--- Special types ---
+    Type: any
+    // лучше стараться не использовать
+    let result: any = true;     // переменная может принимать любой тип
+    result = 'hi';              // string
+    result = 12;                // number
+    result += 1;                // какие-то действия
 
---- Type: unknown ---
-// если есть значение, тип которого неизвестен, лучше использовать unknown
-let unk: unknown = true;    // переменная может принимать любой тип
-unk = 13;                   // можно менять
-unk += 1;                   // ERROR, сначала нужно привести тип, потом действия
-unk = unk as number + 1;    // привести тип с помощью 'as'
+    Type: unknown
+    // если есть значение, тип которого неизвестен, лучше использовать unknown
+    let unk: unknown = true;    // переменная может принимать любой тип
+    unk = 13;                   // можно менять
+    unk += 1;                   // ERROR, сначала нужно привести тип, потом действия
+    unk = unk as number + 1;    // привести тип с помощью 'as'
 
-Object types:
-let person: {           // объявляем объект, специфицурем какие поля какого типа
-   name: string;
-   age: number
-}
-person = {              // инициализация
-   name: 'John',
-   age: 25
-};
-let vacant: {} = {};    // объявить + инициализация, пустой объект(можно с не пустыми)
-const user = {          // либо объявляем как в js - компилятор авто определит типы
-    name: 'John', 
-    age: 25
-};
+    Type: never
+    // выдает ошибку всякий раз, когда она определена(редко используется)
+    let x: never = true;        // Error: Type 'boolean' is not assignable to type 'never'
+    function raiseError(message: string): never { // может использ в функциях которые всегда 
+        throw new Error(message);                    заверш ошибкой, либо бесконечным циклом
+    }
+
+    Type: void
+    отсутствие типа
+    function log(message): void {   // обычное применеиние в ф-ях без возвр знач
+        console.log(messsage);
+    }
+    let useless: void = undefined;  // к void можно присвоить только undefined
 
 
-Array:
-let names: string[];    // могут содержаться только строки
-names = ['John','Jane'];
-names.push('Ivan');
-работают все методы forEach() map() reduce() filter()
-// микс различных типов
-let scores : (string | number)[];
-scores = ['Programming', 5, 'Software Design', 4];
+--- Object types ---
+    Object:
+    let person: {           // объявляем объект, специфицурем какие поля какого типа
+        name: string;
+        age: number
+    }
+    person = {              // инициализация
+        name: 'John',
+        age: 25
+    };
+    let vacant: {} = {};    // объявить + инициализация, пустой объект(можно с не пустыми)
+    const user = {          // либо объявляем как в js - компилятор авто определит типы
+        name: 'John', 
+        age: 25
+    };
 
-Tupple:
-массив только фиксированного числа эл, опред типов
-let tup: [number, boolean] = [1, false];
-tup[0].toFixed(2);      // спец методы типо
-let rgb: [number, number, number] = [255, 0, 0];
+    Array:
+    let names: string[];    // могут содержаться только строки
+    names = ['John','Jane'];
+    names.push('Ivan');
+    // работают все методы forEach() map() reduce() filter()
+    // микс различных типов
+    let scores : (string | number)[];
+    scores = ['Programming', 5, 'Software Design', 4];
+    // неизменяемый массив
+    const names: readonly string[] = ["Dylan"];
+    names.push("Jack");     // Error: Property 'push' does not exist on type 'readonly string[]'.
 
-Enum:
-константы, под капотом это числа от 0
-enum ApprovalStatus {   // enum
-    draft = 1,          // по умолчанию от 0, можно поменять          
-    submitted,
-    approved,
-    rejected
-};
-ApprovalStatus.draft    // обращения к константам
+    Tupple:
+    // массив только фиксированного числа эл, опред типов
+    let tup: [number, boolean] = [1, false];
+    tup[0].toFixed(2);      // спец методы типов
+    // лучше делать readonly, чтобы заблокировать методы типа push()
+    let rgb: readonly [number, number, number] = [255, 0, 0];
+    // Named Tuples, именные массивы
+    const graph: [x: number, y: number] = [55.2, 41.3];
 
-Void:
-отсутствие типа
-function log(message): void {   // обычное применеиние в ф-ях без возвр знач
-    console.log(messsage);
-}
-let useless: void = undefined;  // к void можно присвоить только undefined
 
-Never:
-тип не содержащий никаких занчений используется в функциях
-которые всегда завершаются ошибкой, либо бесконечным циклом
-function raiseError(message: string): never {
-    throw new Error(message);
-}
+    Enum:
+    константы, под капотом это числа от 0
+    enum ApprovalStatus {   // enum
+        draft = 1,          // по умолчанию от 0, можно поменять          
+        submitted,
+        approved,
+        rejected
+    };
+    ApprovalStatus.draft    // обращения к константам
 
-Union of types:
-let result: number | string;    // можно присвоить только строку или число
-function add(a: number | string, b: number | string)    // в параметрах
+    Void:
+    отсутствие типа
+    function log(message): void {   // обычное применеиние в ф-ях без возвр знач
+        console.log(messsage);
+    }
+    let useless: void = undefined;  // к void можно присвоить только undefined
 
-Alias:
-шаблон для типа
-type chars = string;    // шаблон для string
-let messsage: chars;    // same as string type
+    Union of types:
+    let result: number | string;    // можно присвоить только строку или число
+    function add(a: number | string, b: number | string)    // в параметрах
 
-String Literal:
-let click: 'click';     // click - string literal type = 'click'
-click = 'click';        // valid
-click = 'dblclick';     // compiler error
-string literal type может иметь одно из неск значений
-let mouseEvent: 'click' | 'dblclick' | 'mouseup' | 'mousedown';
-mouseEvent = 'click';       // valid
-mouseEvent = 'dblclick';    // valid
-mouseEvent = 'mouseup';     // valid
-mouseEvent = 'mousedown';   // valid
-mouseEvent = 'mouseover';   // compiler error
+    Alias:
+    шаблон для типа
+    type chars = string;    // шаблон для string
+    let messsage: chars;    // same as string type
+
+    String Literal:
+    let click: 'click';     // click - string literal type = 'click'
+    click = 'click';        // valid
+    click = 'dblclick';     // compiler error
+    string literal type может иметь одно из неск значений
+    let mouseEvent: 'click' | 'dblclick' | 'mouseup' | 'mousedown';
+    mouseEvent = 'click';       // valid
+    mouseEvent = 'dblclick';    // valid
+    mouseEvent = 'mouseup';     // valid
+    mouseEvent = 'mousedown';   // valid
+    mouseEvent = 'mouseover';   // compiler error
 
 
 --- Basic constructions ----------------------------------------------
