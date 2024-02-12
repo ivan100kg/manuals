@@ -65,10 +65,16 @@ tsc index.ts            // скомпилить 1 файл в index.js
 
     Type: void
     отсутствие типа
-    function log(message): void {   // обычное применеиние в ф-ях без возвр знач
+    function log(message): void {       // обычное применеиние в ф-ях без возвр знач
         console.log(messsage);
     }
-    let useless: void = undefined;  // к void можно присвоить только undefined
+    let useless: void = undefined;      // к void можно присвоить только undefined
+
+
+--- Casting/приведение типов ---
+    let x: unknown = 'hello';           // неизвестный тип который потом нужно привести
+    console.log((x as string).length);  // приведение с помощью 'as type'
+    console.log((<string>x).length);    // приведение с помощью '<type>'
 
 
 --- Object types ---
@@ -227,12 +233,16 @@ function multiply(a: number, b?: number)        // опционаяльный п
 function multiply(a: number, b: number = 5)     // значение параметра по умолчанию
 function getTotal(...numbers: number[])         // rest параметры(распаковка массива)
 
-overloading:
+// overloading
 function add(a: number, b: number): number;
 function add(a: string, b: string): string;
 function add(a: any, b: any): any {
    return a + b;
 }
+
+// Alias
+type Negate = (value: number) => number;        // алиас из функции
+const foo: Negate = (value) => value * -1;      // функция с типом Negate
 
 --- Class ---------------------------------------------------------
 добавляются типы в поля, конструктор, методы
