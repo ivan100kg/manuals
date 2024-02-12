@@ -134,23 +134,35 @@ tsc index.ts            // скомпилить 1 файл в index.js
         West = "West"
     };
 
-    Void:
-    отсутствие типа
-    function log(message): void {   // обычное применеиние в ф-ях без возвр знач
-        console.log(messsage);
-    }
-    let useless: void = undefined;  // к void можно присвоить только undefined
 
-    Union of types:
-    let result: number | string;    // можно присвоить только строку или число
+--- Alias ---
+    // можно создать свой псевдоним для типа как на основе примитива так и ссылочного
+    type CarYear = number;  // алиас на основе примитивных типов
+    type CarType = string;
+    type CarModel = string;
+    type Car = {            // алиас на основе комплексного типа(объект/массив)
+        year: CarYear,
+        type: CarType,
+        model: CarModel
+    };
+
+    // применять алиасы можно по имени как бы это были типы
+    const carYear: CarYear = 2001;
+    const carType: CarType = "Toyota";
+    const carModel: CarModel = "Corolla";
+    const car: Car = {
+        year: carYear,
+        type: carType,
+        model: carModel
+    };
+
+
+--- Union of types ---
+    // тип либо-либо, например можно присвоить только строку или число
+    let result: number | string = 12;                       // 12 или '45'                            
     function add(a: number | string, b: number | string)    // в параметрах
 
-    Alias:
-    шаблон для типа
-    type chars = string;    // шаблон для string
-    let messsage: chars;    // same as string type
-
-    String Literal:
+--- String Literal ---
     let click: 'click';     // click - string literal type = 'click'
     click = 'click';        // valid
     click = 'dblclick';     // compiler error
