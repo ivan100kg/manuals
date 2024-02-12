@@ -18,21 +18,42 @@ TS -> TSCompiler -> JS
 
 # Console
 npm i -g typescript     // установить typescript
-tsc --v                 // tsc - компилятор ts, посмотреть версию
-tsc --init              // создать конфиг файл для настройки, настроить под проект 
-                           tsconfig.json <---------------------------------------------+
-tsc                     // скомпилить все файлы в name.js (имя ставится в настройках) -+
+tsc --v                 // посмотреть версию
+tsc --init              // создать tsconfig.json для настройки, настроить под проект 
+tsc                     // скомпилить все файлы в name.js (имя ставится в настройках)
 tsc index.ts            // скомпилить 1 файл в index.js
 
 
 --- datatypes --------------------------------------------------------------------------------------
-Primitive types:
-string      'text'      let firstName: string;  // 'John' "Mike" `Fuck you ${name}`
-number      3.14	    let price: number;      // 100 -2.4 0b1000 0o146 0x2FF 9007199254740991n
-boolean     true	    let pending: boolean;   // true false
-null	    null        has one value: null
-undefined	undefined   has one value: undefined. It is a default value of an uninitialized variable
-symbol	    symbol      represents a unique constant value
+--- Primitive types ---
+    type        example                             declare
+    ------------------------------------------------------------------------
+    string      'John' "Mike" `Fuck you ${name}`    const firstName: string;
+    number      100 -2.4 0b1000 0o146 0x2FF 90991n	const price: number;
+    boolean     true false	                        const pending: boolean;
+    null	    null                                const value: null;
+    undefined	undefined                           const value: undefined;
+    symbol	    symbol                              
+
+    Способы объявления типов переменных: 
+    const age: number = 41; // можно объявлять жестко с типом
+    const age = 41;         // либо можно авто, компилятор сам определит тип
+    age = 'hi';             // ERROR, в любом случае объявления, после присваивания невозможно изменить тип
+
+
+--- Type: any ---
+// лучше стараться не использовать
+let result: any = true;     // переменная может принимать любой тип
+result = 'hi';              // string
+result = 12;                // number
+result += 1;                // какие-то действия
+
+--- Type: unknown ---
+// если есть значение, тип которого неизвестен, лучше использовать unknown
+let unk: unknown = true;    // переменная может принимать любой тип
+unk = 13;                   // можно менять
+unk += 1;                   // ERROR, сначала нужно привести тип, потом действия
+unk = unk as number + 1;    // привести тип с помощью 'as'
 
 Object types:
 let person: {           // объявляем объект, специфицурем какие поля какого типа
@@ -44,6 +65,11 @@ person = {              // инициализация
    age: 25
 };
 let vacant: {} = {};    // объявить + инициализация, пустой объект(можно с не пустыми)
+const user = {          // либо объявляем как в js - компилятор авто определит типы
+    name: 'John', 
+    age: 25
+};
+
 
 Array:
 let names: string[];    // могут содержаться только строки
@@ -69,11 +95,6 @@ enum ApprovalStatus {   // enum
     rejected
 };
 ApprovalStatus.draft    // обращения к константам
-
-Any:
-любой тип
-let result;
-const json = `{"latitude": 10.11, "longitude":12.12}`;
 
 Void:
 отсутствие типа
