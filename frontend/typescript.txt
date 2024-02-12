@@ -74,8 +74,9 @@ tsc index.ts            // скомпилить 1 файл в index.js
 --- Object types ---
     Object:
     let person: {           // объявляем объект, специфицурем какие поля какого типа
-        name: string;
-        age: number
+        name: string,
+        age: number,
+        weight?: number     // ? опциональный элемент(может быть или не быть)
     }
     person = {              // инициализация
         name: 'John',
@@ -110,7 +111,7 @@ tsc index.ts            // скомпилить 1 файл в index.js
 
 
     Enum:
-    константы, под капотом это числа от 0
+    // константы, под капотом это числа от 0
     enum ApprovalStatus {   // enum
         draft = 1,          // по умолчанию от 0, можно поменять          
         submitted,
@@ -118,6 +119,20 @@ tsc index.ts            // скомпилить 1 файл в index.js
         rejected
     };
     ApprovalStatus.draft    // обращения к константам
+    // можно любые числа присваивать
+    enum StatusCodes {
+        NotFound = 404,
+        Success = 200,
+        Accepted = 202,
+        BadRequest = 400
+    };
+    // или строки
+    enum CardinalDirections {
+        North = 'North',
+        East = "East",
+        South = "South",
+        West = "West"
+    };
 
     Void:
     отсутствие типа
