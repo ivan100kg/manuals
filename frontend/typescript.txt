@@ -169,10 +169,10 @@ tsc index.ts            // скомпилить 1 файл в index.js
     function add(a: number | string, b: number | string)    // в параметрах
 
 --- String Literal ---
-    let click: 'click';     // click - string literal type = 'click'
-    click = 'click';        // valid
-    click = 'dblclick';     // compiler error
-    string literal type может иметь одно из неск значений
+    let click: 'click';         // click - string literal type = 'click'
+    click = 'click';            // valid
+    click = 'dblclick';         // compiler error
+    // string literal type может иметь одно из неск значений
     let mouseEvent: 'click' | 'dblclick' | 'mouseup' | 'mousedown';
     mouseEvent = 'click';       // valid
     mouseEvent = 'dblclick';    // valid
@@ -181,7 +181,7 @@ tsc index.ts            // скомпилить 1 файл в index.js
     mouseEvent = 'mouseover';   // compiler error
 
 
---- Basic constructions ----------------------------------------------
+--- Basic constructions --------------------
 if (condition1) {
     code;
 } else if (condition2) {
@@ -244,7 +244,48 @@ function add(a: any, b: any): any {
 type Negate = (value: number) => number;        // алиас из функции
 const foo: Negate = (value) => value * -1;      // функция с типом Negate
 
---- Class ---------------------------------------------------------
+
+--- Generics ------------------------------------------------------------------------------------
+Дженерики позволяют создавать "переменные типа", которые можно использовать для создания классов, 
+функций и псевдонимов типов, которым не нужно явно определять типы, которые они используют.
+Дженерики упрощают написание повторно используемого кода.
+
+// function
+function createPair<S, T>(v1: S, v2: T): [S, T] {       // использование в ф-ии, которая принимает и
+  return [v1, v2];                                         вовращает любые 2 типа
+}
+console.log(createPair<string, number>('hello', 42));   // ['hello', 42]
+console.log(createPair<boolean, null>(true, null));     // [true, null]
+
+// class
+class NamedValue<T> {                                   // класс использует тип T
+    private _value: T | undefined;                      // T или undefined
+
+    constructor(private name: string) {}
+
+    public setValue(value: T) {                         // сеттер
+        this._value = value;
+    }
+
+    public getValue(): T | undefined {                  // геттер
+        return this._value;
+    }
+
+    public toString(): string {                         // toString
+        return `${this.name}: ${this._value}`;
+    }
+}
+let value = new NamedValue<number>('myNumber');         // созд объект класса
+value.setValue(10);                                     // любой тип   
+console.log(value.toString());                          // myNumber: 10
+
+// alias
+type Wrapped<T> = { value: T };                         // использование в алиасах
+const wrappedValue: Wrapped<number> = { value: 10 };
+
+
+
+--- Class -----------------------------------------------------------
 добавляются типы в поля, конструктор, методы
 class Person {
     private ssn: string;            // private - доступ внутри класса
@@ -328,7 +369,7 @@ class FullTimeEmployee extends Employee {
     }
 }
 
---- Interfaces ------------------------------------------------------------------------------------
+--- Interfaces ---------------------------------------------------------------------------
 interface Person {                              // интерфейс 
     firstName: string;
     lastName?: strring;                         // опциональный элемент
@@ -451,6 +492,6 @@ obj instanceof String;      // -> boolean, проверка на принадл�
 'name' in partner;          // -> boolean, проверка на вхождение свойства в объект
 
 
---- Assertions --------------------------------------------------------------------------------
+--- Assertions ---
 sum(5, 12) as string;       // говорим компилятору что это строка
 <string>sum(5, 12);         // тоже самое но другой синтаксис
