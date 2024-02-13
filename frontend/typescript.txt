@@ -168,6 +168,7 @@ tsc index.ts            // скомпилить 1 файл в index.js
     let result: number | string = 12;                       // 12 или '45'                            
     function add(a: number | string, b: number | string)    // в параметрах
 
+
 --- String Literal ---
     let click: 'click';         // click - string literal type = 'click'
     click = 'click';            // valid
@@ -179,6 +180,61 @@ tsc index.ts            // скомпилить 1 файл в index.js
     mouseEvent = 'mouseup';     // valid
     mouseEvent = 'mousedown';   // valid
     mouseEvent = 'mouseover';   // compiler error
+
+
+--- Utility Types/служебные типы ---
+    // интерфейс для примера
+    interface Point {
+        x?: number;
+        y: number;
+    }
+    
+    Partial
+    // делает все поля/свойства объекта опциональными
+    let pointPart: Partial<Point> = {};     // x и y опциональные
+    pointPart.x = 10;
+
+    Required
+    // делает все поля/свойства объекта обязательными
+    let pointPart: Partial<Point> = {       // x и y обязательные
+        x: 10,
+        y: 12
+    };
+
+    Record
+    // запись определения типа объекта с определенным типом ключа и типом значения
+    const nameAgeMap: Record<string, number> = {
+        'Alice': 21,
+        'Bob': 25
+    };
+
+    Omit
+    // убирает из объекта указанные ключи
+    let pointPart: Omit<Point, 'x'> = {     // убрать ключ 'x'(если много то через |)
+        y: 13
+    };
+
+    Pick
+    // вытягивает нужные ключи
+    let pointPart: Pick<Point, 'y'> = {     // убрать ключ 'y'(если много то через |)
+        y: 13
+    };
+
+    Exclude
+    // убирает смежные типы
+    type P = string | number | boolean;
+    const value: Exclude<P, string> = true;// убрать возможного типа string
+
+    Readonly
+    // нельзя модифицировать
+    let pointPart: Readonly<Point> = {     // x и y больше нельзя менять
+        x: 10,
+        y: 12
+    }
+
+    ReturnType/Parameters
+    // вытягивают из функции параметры/возвращающий тип (см мануал)
+
 
 
 --- Basic constructions --------------------
