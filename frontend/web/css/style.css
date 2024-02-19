@@ -76,3 +76,12 @@ h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight: 400;}
 a{
     color: #fff;
 }
+
+table {
+    /* border-collapse: collapse; */
+}
+
+table, th, td {
+    border: 1px solid gray;
+    border-collapse: collapse;
+}

@@ -162,8 +162,13 @@ Links
     a:active        - a link the moment it is clicked
     text-decoration - property used to remove underlines from links
 
-Lists
-    
+
+--- table ---
+    /* сделать таблицу с видными границами и ячейками */
+    table, th, td {
+        border: 1px solid gray;     /* границы таблицы и ячеек видны */
+        border-collapse: collapse;  /* ячейки плотно друг к другу */
+    }
 
     
 
