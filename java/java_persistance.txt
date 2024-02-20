@@ -475,8 +475,8 @@ Hibernate
     UPDATE employee SET salary = 0;                   | не поддерживается
     DELETE employee WHERE name='Inna'                 | DELETE FROM Employee e WHERE e.id = :id
     WHERE field IS NOT TRUE;                          | WHERE field IS NULL OR field IS FALSE;
-    ...JOIN employee ON task.employee = employee.id;  | SELECT t FROM Task e JOIN t.employee e 
-                                                      |     WHERE e.name = :name
+    ...JOIN employee ON task.employee = employee.id;  | SELECT t FROM Task t JOIN t.employee e (авто связь)
+                                                      |     WHERE e.id IN = :idList;
 
 
 --- CRUD with Hibernate ---
