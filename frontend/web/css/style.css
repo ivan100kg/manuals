@@ -78,10 +78,10 @@ a{
 }
 
 table {
-    /* border-collapse: collapse; */
+    border-collapse: collapse;
 }
 
 table, th, td {
     border: 1px solid gray;
-    border-collapse: collapse;
+    padding: 2px;
 }
