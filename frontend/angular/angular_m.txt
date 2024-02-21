@@ -1,0 +1,55 @@
+Angular
+
+Node.js                     - это среда времени выполнения JavaScript, которая позволяет запускать JavaScript на сервере. 
+                              Он позволяет создавать серверные приложения с использованием JavaScript.
+NPM (Node Package Manager)  - это менеджер пакетов для JavaScript, который позволяет управлять зависимостями 
+                              проекта, устанавливать различные пакеты, выполнять скрипты и многое другое.
+TSC (TypeScript Compiler)   - это компилятор TypeScript, который преобразует файлы TypeScript в файлы JavaScript. 
+TypeScript                  - это язык программирования, который расширяет функциональность JavaScript, 
+                              добавляя статическую типизацию.
+Angular                     - фреймворк от Google для создания клиентских приложений 
+                              нацелен на разработку SPA-решений (Single Page Application)
+                              использует TypeScript в качестве основного языка
+AngularJS                   - старый фрейм от которого произошел Angular
+Angular CLI                 - пакет npm, упрощает создание приложения, его компиляцию
+
+
+--- Console ---
+npm install -g @angular/cli # установка, установка новой версии Angular CLI
+ng version                  # версия Angular CLI
+ng update                   # обновить Angular CLI
+cd myProject                # перейти в папку где будет содержаться проект
+vim package.json            # создать файл с конфигурацией
+npm install                 # установка всех необходимых модулей из package.json
+mkdir -p src/app            # создадим каталоги для исходников
+vim app.component.ts        # создать компонент
+
+--- package.json ---
+{
+  "name": "helloapp",
+  "version": "1.0.0",
+  "description": "First Angular 17 Project",
+  "author": "Eugene Popov metanit.com",
+  "scripts": {                      -- используемые команды
+    "ng": "ng",
+    "start": "ng serve",            -- веб сервер для тестирования
+    "build": "ng build"             -- компилирует приложение
+  },
+  "dependencies": {                 -- пакеты angular, которые необходимы приложению для работы
+    "@angular/common": "~17.0.0",
+    "@angular/compiler": "~17.0.0",
+    "@angular/core": "~17.0.0",
+    "@angular/forms": "~17.0.0",
+    "@angular/platform-browser": "~17.0.0",
+    "@angular/platform-browser-dynamic": "~17.0.0",
+    "@angular/router": "~17.0.0",
+    "rxjs": "~7.8.0",
+    "zone.js": "~0.14.2"
+  },
+  "devDependencies": {              -- пакеты, которые будут использоваться для разработки
+    "@angular-devkit/build-angular": "~17.0.0",
+    "@angular/cli": "~17.0.0",
+    "@angular/compiler-cli": "~17.0.0",
+    "typescript": "~5.2.2"
+  }
+}
