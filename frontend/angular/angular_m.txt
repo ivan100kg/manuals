@@ -71,3 +71,8 @@ import {FormsModule} from "@angular/forms";     // модул для работ�
 export class AppComponent {                     // экспорт класса в котором определена name
     name= "";                                   // с пустым значением
 }
+
+--- main.ts ---
+import { bootstrapApplication } from "@angular/platform-browser";
+import { AppComponent } from "./app/app.component";
+bootstrapApplication(AppComponent).catch(e => console.error(e));
