@@ -76,3 +76,15 @@ export class AppComponent {                     // экспорт класса �
 import { bootstrapApplication } from "@angular/platform-browser";
 import { AppComponent } from "./app/app.component";
 bootstrapApplication(AppComponent).catch(e => console.error(e));
+
+--- index.html ---
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>METANIT.COM</title>
+</head>
+<body>
+    <my-app>Загрузка...</my-app>
+</body>
+</html>
