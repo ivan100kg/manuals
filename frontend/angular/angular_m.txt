@@ -283,5 +283,77 @@ example:
             this.count++;
             console.log($event);
         }
-
     }
+
+--- Условные конструкции ---
+# if-esle
+import { Component} from "@angular/core";
+import { FormsModule } from "@angular/forms";
+ 
+@Component({
+    selector: "my-app",
+    standalone: true,
+    imports: [FormsModule],
+    template:`<div>
+      <input [(ngModel)]="num" type="number" />
+      @if(num==5){
+        <p>Переменная num равна 5</p>
+      } @else if(num==6){
+        <p>Переменная num равна 6</p>
+      } @else {
+        <p>У переменной num неизвестное значение</p>
+      }
+    </div>`
+})
+export class AppComponent {
+    num = 5;
+}
+
+# switch
+import { Component} from "@angular/core";
+import { FormsModule } from "@angular/forms";
+ 
+@Component({
+    selector: "my-app",
+    standalone: true,
+    imports: [FormsModule],
+    template:`<input [(ngModel)]="op" />
+    <p>a = {{a}}  b = {{b}}</p>
+  <p>Результат: 
+      @switch (op) {
+        @case ("+") {
+          {{ a + b }}
+        }
+        @case ("-") {
+          {{ a - b }}
+        }
+        @case ("*") {
+          {{ a * b }}
+        }
+        @default {
+          Неизвестная операция
+        }
+      }
+    </p>`
+})
+export class AppComponent {
+    op = "-"; // символ операции  
+    a = 10;
+    b = 5;
+}
+
+--- Цикл for ---
+import { Component} from "@angular/core";
+ 
+@Component({
+    selector: "my-app",
+    standalone: true,
+    template:`<ul>
+    @for (item of items; track item) {
+          <li>{{ item }}</li>
+    }
+</ul>`
+})
+export class AppComponent {
+    items = ["Tom", "Bob", "Sam"];
+}
