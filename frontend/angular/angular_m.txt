@@ -246,27 +246,41 @@ export class AppComponent { }
 
 --- Привязка ---
 Привязка значений компонентов к частям шаблона
+
+атрибут   - в HTML коде, находятся внутри открывающего тега элемента и имеют имя и значение
+свойство  - в JS коде, во время обращения к элементу через точку
+
 формы привязки данных:
     1. <h1>Добро пожаловать {{name}}!</h1>          -- {{name}} Привязка элемента DOM к значению компонента (односторонняя)
-    2. <input type="text" [value]="name" />         -- [value] Привязка свойства элемента DOM к значению компонента (односторонняя)
+    2. <input type="text" [value]="name" />         -- [value] Привязка свойства эл DOM к знач компонента (одностор)
     3. <button (click)="addItem(txt)">доб</button>  -- (click) Привязка метода компонента к событию в DOM (односторонняя)
+
     4. <input [(ngModel)]="nam" placeholder="nam">  -- [(ngModel)] (двусторонняя) привязка, когда элемент DOM привязан к значению 
                                                        на компоненте, при этом изменения на одном конце привязки сразу приводят к 
                                                        изменениям на другом конце
-    5. Привязка к атрибуту элемента html
-    6. Привязка к классу CSS
-    7. Привязка к стилю элемента html
+    5. <input [attr.value]="text" />                -- [attr.value] Привязка к атрибуту элемента html
+    6. <div [class.redbox]="isRed"></div>           -- [class.redbox] Привязка к классу CSS, [class.имя_класса]="true/false"
+    7. <div [style.backgroundColor]="isRed? 'red' : 'green'"> -- Привязка к стилю элемента html
 
-# свойства
-import { Component } from "@angular/core";      
-@Component({
-    selector: "my-app",
-    standalone: true,
-    template: `<input type="text" [value]="name" />`    <----+  // либо так с пом свойства
-                <input type="text" value="{{name}}" />  <----+  // либо можно так с пом значения
-                <p>Возраст: {{age}}</p>`  <--------+         |  // значение из компонента
-})                                                 |         |
-export class AppComponent {                        |         |
-    name = "Tom";   -------------------------------|---------+
-    age = 12;       -------------------------------+
-}
+example:
+    import { Component } from "@angular/core";      
+    @Component({
+        selector: "my-app",
+        standalone: true,
+        imports:[FormsModule],                                      // импортируем FormsModule для двусторонней привязки
+        template: `<input type="text" [value]="name" />`    <----+  // либо так с пом свойства
+                    <input type="text" value="{{name}}" />  <----+  // либо можно так с пом значения
+                    <p>Возраст: {{age}}</p>   <--------+         |  // значение из компонента
+                    <p [textContent]="name"></p>`  <---|---------+  // свойство textContent не у <p> а у
+                    <button (click)="increase($event)">Cl</button>  // онклик функция с передачей события $event(инфо о событии)
+                    <input type="text" [(ngModel)]="name" />`<^--+  // двустороння привязка, необходим импорт FormsModule
+    })                                                 |      |  |
+    export class AppComponent {                        |      |  |
+        name = "Tom";   -------------------------------|------|--+
+        age = 12;       -------------------------------+      |
+        count: number = 0;                                    |
+        increase($event : any) : void { ----------------------+
+            this.count++;
+            console.log($event);
+        }
+    }
