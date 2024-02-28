@@ -259,9 +259,9 @@ export class AppComponent { }
                                                        на компоненте, при этом изменения на одном конце привязки сразу приводят к 
                                                        изменениям на другом конце
     5. <input [attr.value]="text" />                -- [attr.value] Привязка к атрибуту элемента html
-    6. <div [class.redbox]="isRed"></div>           -- [class.redbox] Привязка к классу CSS, [class.имя_класса]="true/false"
-    7. <div [style.backgroundColor]="isRed? 'red' : 'green'"> -- Привязка к стилю элемента html
-
+    6. <div [class.redbox]="isRed"></div>           -- [class.redbox] Привязка к классу CSS, имя класса, кот мы хотим доб/удалить
+    7. <div [style.backgroundColor]="isRed? 'red' : 'green'"> -- [style.backgroundColor] Привязка к стилю элемента html
+                                                                 [style.стилевое_свойство]="выражение ? A : B"
 example:
     import { Component } from "@angular/core";      
     @Component({
@@ -283,4 +283,5 @@ example:
             this.count++;
             console.log($event);
         }
+
     }
