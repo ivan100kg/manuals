@@ -349,11 +349,23 @@ import { Component} from "@angular/core";
     selector: "my-app",
     standalone: true,
     template:`<ul>
-    @for (item of items; track item) {
-          <li>{{ item }}</li>
-    }
+    @for (item of items; track item) {  // track определяет ключ, используемый для связи элементов массива с представлениями в DOM
+          <li>{{ item }}</li>              track $index     - если значения не уникальные
+    }                                      track item.поле  - если итерируемся по объектам с каким-то уникальным полем
 </ul>`
 })
 export class AppComponent {
     items = ["Tom", "Bob", "Sam"];
 }
+
+Кроме $index внутри цикла мы можем применять значения:
+$count  - количество элементов коллекции
+$first  - является ли текущий элемент первым в коллекции
+$last   - является ли текущий элемент последним в коллекции
+$even   - является ли индекс текущего элемента четным
+$odd    - является ли индекс текущего элемента нечетным
+@for (item of items; track $index) {
+      <li>Item #{{ $index }}: {{ item }} {{$last?"(последний)":""}} {{$first?"(пeрвый)":""}}</li>
+  }
+
+--- Вложенные компоненты ---
