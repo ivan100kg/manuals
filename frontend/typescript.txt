@@ -14,10 +14,13 @@ TS -> TSCompiler -> JS
     - компилируем
     - получаем file.js 
 
-Установить/переустановить node и npm https://github.com/nodesource/distributions
+Установить/переустановить node и npm:
+curl -fsSL https://deb.nodesource.com/setup_21.x | sudo -E bash - &&\
+sudo apt-get install -y nodejs
+
+npm i -g typescript         # установка typescript
 
 # Console
-npm i -g typescript     // установить typescript
 tsc --v                 // посмотреть версию
 tsc --init              // создать tsconfig.json для настройки, настроить под проект 
 tsc                     // скомпилить все файлы в name.js (имя ставится в настройках)

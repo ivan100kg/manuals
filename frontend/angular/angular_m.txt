@@ -14,8 +14,15 @@ AngularJS                   - старый фрейм от которого пр
 Angular CLI                 - пакет npm, упрощает создание приложения, его компиляцию
 
 
+Установить/переустановить node и npm:
+curl -fsSL https://deb.nodesource.com/setup_21.x | sudo -E bash - &&\
+sudo apt-get install -y nodejs
+
+npm i -g typescript         # установка typescript
+npm install -g @angular/cli # установка новой версии Angular CLI
+
+
 === Настройка проекта ========================================================================
-npm install -g @angular/cli # установка, установка новой версии Angular CLI
 ng version                  # версия Angular CLI
 ng update                   # обновить Angular CLI
 cd myProject                # перейти в папку где будет содержаться проект
