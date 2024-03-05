@@ -20,6 +20,7 @@ sudo apt-get install -y nodejs
 
 npm i -g typescript         # установка typescript
 npm install -g @angular/cli # установка новой версии Angular CLI
+npm install -g sass         # Sass препроцессор(хз может уже встроен)
 
 
 === Настройка проекта ========================================================================

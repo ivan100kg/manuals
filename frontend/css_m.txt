@@ -172,7 +172,62 @@ Links
 
     
 
-        
+=== Sass/SCSS препроцессоры =========================================================    
+npm install -g sass         # Sass препроцессор
+sass input.scss output.css  # работа препроцессора Sass/SCSS -> CSS
+Sass (Syntactically Awesome Style Sheets) это расширение CSS с дополнительными возможностями, 
+представляющее более читаемый и поддерживаемый синтаксис
+Синтаксис без скобок и точек с запятой
+
+SCSS (Sassy CSS) это синтаксис Sass, который является близким к обычному CSS 
+с небольшими дополнениями. Синтаксис со скобками и точками с запятой
+
+
+Sass                                    SCSS
+---------------------------------------------------------------------------------
+// переменные - объявляем и используем в файле
+$my-font: Helvetica, sans-serif         $font-stack: Helvetica, sans-serif;
+
+// импорт - можно импорт другие файлы(фрагменты), нач с ниж подчерк _another.sass/.scss 
+@import reset                           @import 'reset';    
+
+// миксины - типа функций, можно передавать парам, для применения сразу неск свойств
+=transform($property)                   @mixin transform($property) {
+  -webkit-transform: $property            -webkit-transform: $property;
+  -ms-transform: $property                -ms-transform: $property;
+  transform: $property                    transform: $property;
+.box                                    }
+  +transform(rotate(30deg))             .box { @include transform(rotate(30deg)); }
+
+// наследование - можно унаследовать набор свойств, переопределить некоторые
+%message-shared                         %message-shared {
+  border: 1px solid #ccc                  border: 1px solid #ccc;
+  padding: 10px                           padding: 10px;
+  color: #333                             color: #333;
+                                        }
+.message                                .message {
+  @extend %message-shared                 @extend %message-shared; 
+                                        }
+.success                                .success {
+  @extend %message-shared;                @extend %message-shared;
+  border-color: green                     border-color: green;
+                                        }
+// математические операторы + - * / %
+.container                              .container {   
+  width: 100% / 2                         width: 100% / 2;
+                                        }
+
+// вложенность
+body                                    body {
+    color: $my-font                             color: $my-font;
+    font-weight: bold                       font-weight: bold;
+    a                                       a {
+        background: #eee                        background: #eee;
+        &:hover                                 &:hover {
+            color: #eeeeee                          color: #eeeeee;
+                                                }
+                                            }
+                                        }
 
 
 
