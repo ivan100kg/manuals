@@ -1,1 +1,0 @@
-{"ast":null,"code":"export class AppComponent {\n  name = \"\";\n  age = 12;\n  isRed = true;\n}","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}
