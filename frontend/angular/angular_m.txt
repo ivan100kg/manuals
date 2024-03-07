@@ -26,6 +26,7 @@ npm install -g sass         # Sass препроцессор(хз может уж
 === Настройка проекта ========================================================================
 ng new my-proj              # создать новый проект (тестовый)
 ng g c my-comp              # создать компонент
+ng g s services/my-serv     # создать сервис в папке services
 ng version                  # версия Angular CLI
 ng update                   # обновить Angular CLI
 cd myProject                # перейти в папку где будет содержаться проект
