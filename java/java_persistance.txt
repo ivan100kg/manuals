@@ -771,6 +771,9 @@ Hibernate
     Many-to-One    | Eager         | одна связь - нетерпеливая - просто
     Many-to-Many   | Lazy          | может быть много связей - поэтому ленивая
 
+    исправление ошибки ERROR: target lists can have at most 1664 entries
+    поставить @ManyToOne(fetch = FetchType.LAZY) на тяжёлом поле
+
 
 --- Many-To-One / One-To-Many ---
     Примеры таблиц:
