@@ -24,7 +24,7 @@ npm install -g sass         # Sass препроцессор(хз может уж
 
 
 === Настройка проекта ========================================================================
-ng new my-proj              # создать новый проект (тестовый)
+ng new my-proj              # создать новый проект - скелет проекта
 ng g c my-comp              # создать компонент
 ng g s services/my-serv     # создать сервис в папке services
 ng version                  # версия Angular CLI
@@ -405,4 +405,45 @@ import { ChildComponent } from "./child.component"; // добавляем имп
     </div>`})                                   |
 export class AppComponent {                     |
     name = 'Parent';  --------------------------+
+}
+
+--- Передача данных в дочерний компонент ---
+@Input() означает что эти значения могут устанавливаться из вне(например из родителя)
+
+import { Input, Component} from "@angular/core";  // импорт декоратора
+@Component({
+    selector: 'child-comp',
+    standalone: true,
+    template: `<p>Имя пользователя: {{userName}}</p>
+              <p>Возраст пользователя: {{userAge}}</p>`
+})
+export class ChildComponent{ 
+    @Input() userName: string = "";      <--------------------------------------┐ отрисовка этого значения
+    _userAge: number = 0;                                                       |
+                                                                                |
+    @Input()                                                                    |
+    set userAge(age:number) {               // привязка к сеттеру               |
+        if(age<0)                                                               |
+            this._userAge=0;                                                    |
+        else if(age>100)                                                        |
+            this._userAge=100;                                                  |
+        else                                                                    |
+            this._userAge = age;                                                |
+    }                                                                           |
+    get userAge() { return this._userAge; } // геттер                           |
+}                                                                               |
+                                                                                |
+import { Component } from "@angular/core";                                      |
+import { FormsModule } from '@angular/forms';                                   |
+import {ChildComponent} from './child.component';                               |
+@Component({                                                                    |
+    selector: "my-app",                                                         |
+    standalone: true,                                                           |
+    imports: [ChildComponent, FormsModule],                                     |
+    template: `<child-comp [userName]="name" [userAge]="age"></child-comp>  <---┤ привязка к доч эл
+                <input type="text" [(ngModel)]="name" />`    <-->---------------┤
+})                                                                              |
+export class AppComponent {                                                     |
+    name = "Tom";   <-->--------------------------------------------------------┘ привязка сюда
+    age = 24;
 }
