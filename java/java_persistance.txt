@@ -773,6 +773,7 @@ Hibernate
 
     исправление ошибки ERROR: target lists can have at most 1664 entries
     поставить @ManyToOne(fetch = FetchType.LAZY) на тяжёлом поле
+    либо в пропертях spring.jpa.properties.hibernate.enable_lazy_load_no_trans=true
 
 
 --- Many-To-One / One-To-Many ---
