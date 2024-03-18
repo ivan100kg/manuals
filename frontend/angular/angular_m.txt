@@ -447,3 +447,22 @@ export class AppComponent {                                                     
     name = "Tom";   <-->--------------------------------------------------------┘ привязка сюда
     age = 24;
 }
+
+--- Передача в родительский элемент ---
+// child
+@Output() onChanged = new EventEmitter<boolean>();  // EventEmitter<тип> - передать знач типа boolean родителю 
+change(increased: boolean) {    <-----------------------------┐
+    this.onChanged.emit(increased);                           |
+}                                                             |
+                                                              |
+// html-child                                                 |
+`<button (click)="change(true)">+</button>`     <-------------┤
+                                                              |
+// Parent                                                     |
+clicks  = 0;                                                  |
+onChanged(increased:boolean){    <----------------------------┤
+    increased?this.clicks++:this.clicks--;                    |
+}                                                             |
+                                                              |
+// Parent-html                                                |
+`<child-comp (onChanged)="onChanged($event)"></child-comp>` <-┘
