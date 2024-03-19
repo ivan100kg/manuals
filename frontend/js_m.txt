@@ -38,6 +38,22 @@
     arr['HTML']                 // по ключу
     arr.HTML                    // через точку
 
+--- ES2015 ---
+    const httpOptions = { timeout: 2000, isCache: true };
+    // создание сразу двух httpTimeout, httpCache констант из объекта 
+    const { timeout: httpTimeout, isCache: httpCache } = httpOptions;
+    // создание 2-х констант с теме же именами что и поля объекта
+    const { timeout, isCache } = httpOptions;
+
+    // default values
+    mySize = size || 10;    // если size === undefined => mySize = 10
+
+    // rest operator
+    function addPonies(...ponies) {     // массив по которому можно итерироваться
+        for (let pony of ponies) {      // for-of итерируемся по массиву
+            poniesInRace.push(pony);
+    const minPrice = Math.min(...arr);  // можно передавать в ф-ии
+
 --- Типы ------------------------------------------------------------------
     typeof()    // look a type of variable
     Number      // 0, -2, 3.14, 123e5, 12e-2, NaN, ±infinity
@@ -434,7 +450,16 @@ class Rectangle {                           // класс
         div.textContent = 'Hello blya!';
         this.parent.append(div);
     }
-}
+
+    get color() {                           // геттер
+        console.log('get color');
+        return this._color;
+    }
+    set color(newColor) {                   // setter
+        console.log(`set color ${newColor}`);
+        this._color = newColor;
+    }
+
 
 const square = new Rectangle(12,13);        // объект
 console.log(square.calsArea());
