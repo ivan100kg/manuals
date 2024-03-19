@@ -98,7 +98,8 @@ tsc index.ts            // скомпилить 1 файл в index.js
     };
 
     Array:
-    let names: string[];    // могут содержаться только строки
+    let names: string[];        // могут содержаться только строки
+    let names: Array<string>;   // могут содержаться только строки(второй синтаксис)
     names = ['John','Jane'];
     names.push('Ivan');
     // работают все методы forEach() map() reduce() filter()
@@ -107,7 +108,8 @@ tsc index.ts            // скомпилить 1 файл в index.js
     scores = ['Programming', 5, 'Software Design', 4];
     // неизменяемый массив
     const names: readonly string[] = ["Dylan"];
-    names.push("Jack");     // Error: Property 'push' does not exist on type 'readonly string[]'.
+    names.push("Jack");     // Error: Property 'push' does not exist on type 'readonly string[]'
+    const ponies: Array<Pony> = [new Pony()];   // массив объектов другой синтаксис
 
     Tupple:
     // массив только фиксированного числа эл, опред типов
@@ -349,13 +351,6 @@ type Wrapped<T> = { value: T };                         // использова�
 const wrappedValue: Wrapped<number> = { value: 10 };
 
 
---- Decorator -------------------------------------------------------
-function foo(target) {
-    // do something with 'target' ...
-}
-
-
-
 --- Class -----------------------------------------------------------
 добавляются типы в поля, конструктор, методы
 class Person {
@@ -529,6 +524,35 @@ interface StatefulControl extends Control {    // интерфейс, насле
 class TextBox extends Control implements StatefulControl {
     enable() { }
 }
+
+
+--- Decorator -------------------------------------------------------
+Объявить @Decorator можно у:
+    -класс
+    -свойство класса
+    -функция
+    -параметр функции
+    -параметр конструктора
+
+class RaceService {
+    @Log()
+    getRaces() {
+        // call API
+
+Декоратор:
+    const Log = () => {
+        return (target: any, name: string, descriptor: any) => {
+            logger.log(`call to ${name}`);
+            return descriptor;
+        };
+    };
+
+    target      - метод помеченный декоратором
+    name        - имя помеченного метода
+    descriptor  - дескриптор помеченного метода
+
+Параметры:
+    @Log({name: 'John'})    декоратор может принимать параметры
 
 --- Intersection Types -------------------------------------------------------
 Новый тип создается мультикомбинацией других типов, имеет все фишки этих типов
