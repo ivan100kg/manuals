@@ -254,6 +254,12 @@ touch -m my_file                    # Modification time - изменить на 
 touch -m -t 202210231030 my_file    # [[CC]YY]MMDDhhmm[.ss] - изменить на время
                                       СС - century(20/19) век 
 
+# так можно изменить время создания файла
+touch -t YYYYMMDDHHMM.SS newfile    
+cp originalfile newfile
+rm originalfile
+mv newfile originalfile
+
 # справка------------------------------------+
 man     # справочное рук-во программ(комманд)
 info    # справочное рук-во
