@@ -247,6 +247,19 @@ ln      # ссылка жесткая
 ln -s   # - символическая ссылка
 {}      # до{10..12}после или {1..31}{1..12}{2004..2020} форм-т всякие послед-ти.
 
+touch my_file                       # создать файл
+touch f1 f2 f3                      # создать множество файлов
+touch -a my_file                    # Access time - изменить на текущее
+touch -m my_file                    # Modification time - изменить на текущее
+touch -m -t 202210231030 my_file    # [[CC]YY]MMDDhhmm[.ss] - изменить на время
+                                      СС - century(20/19) век 
+
+# так можно изменить время создания файла
+touch -t YYYYMMDDHHMM.SS newfile    
+cp originalfile newfile
+rm originalfile
+mv newfile originalfile
+
 # справка------------------------------------+
 man     # справочное рук-во программ(комманд)
 info    # справочное рук-во
