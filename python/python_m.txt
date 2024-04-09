@@ -100,8 +100,9 @@ python -m venv Myenv            # создать окружение
 ./Myenv/Scripts/activate.bat    # активировать
           .../deactivate.bat    # деактивировать
 # Linux:
+pip install virtualenv          # установка
 python3 -m venv Myenv           # создать окружение
-./Myenv/bin/activate            # активировать
+. Myenv/bin/activate            # (source) активировать
 deactivate                      # деактивировать     
 
 Документация, справка-----------------------------------------------+
