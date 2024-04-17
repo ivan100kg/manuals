@@ -1700,7 +1700,7 @@ sudo update-alternatives --config java
 
 --- подключить сетевую папку Windows ------------------------
 sudo apt install cifs-utils
-mount -t cifs -o username=user,password=pass //IP/folder /mnt
+mount -t cifs -o username=user,password=pass,file_mode=0666,dir_mode=0777 //IP/dir /mnt/hui
 user        - логин
 pass        - пароль
 IP          - ip компьютера с сетевой папкой
