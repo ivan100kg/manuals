@@ -1038,18 +1038,16 @@ FETCH               -- кол-во строк
 	sudo service postgresql restart
 
 -- Add user to PostgreSQL -------------------------------------------------
-CREATE DATABASE mydb;
-CREATE USER bestuser WITH PASSWORD 'bestuser';
-ALTER ROLE bestuser SET client_encoding TO 'utf8';
-ALTER ROLE bestuser SET default_transaction_isolation TO 'read committed';
-ALTER ROLE bestuser SET timezone TO 'UTC';
-GRANT ALL PRIVILEGES ON DATABASE mydb TO bestuser;  -- все права на базу
+CREATE ROLE python WITH PASSWORD 's8Jg5HYc';
+ALTER ROLE python SET client_encoding TO 'utf8';
+ALTER ROLE python SET default_transaction_isolation TO 'read committed';
+ALTER ROLE python SET timezone TO 'UTC';
+-- GRANT ALL PRIVILEGES ON DATABASE "Vega" TO python;  -- все права на базу
 -- разрешить только CRUD операции на определенную таблицу
-GRANT CONNECT ON DATABASE "Vega" TO bestuser;
-GRANT SELECT ON my_table TO bestuser;
-GRANT INSERT ON my_table TO bestuser;
-GRANT UPDATE ON my_table TO bestuser;
-GRANT DELETE ON my_table TO bestuser;
+GRANT CONNECT ON DATABASE "Vega" TO python;
+GRANT USAGE ON SCHEMA public TO python;
+GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES ON TABLE public.my_table TO python;
+GRANT SELECT, USAGE ON SEQUENCE public.my_table_id_seq TO python;
 
 -- Tips/Triks ----------------------
 -- группировка по дням недели
@@ -1068,7 +1066,7 @@ BEGIN
         SELECT
             array_agg(id::integer)
         FROM table
-        WHERE 
+        WHERE
             name = 'Vasya')
     LOOP
         INSERT INTO table_2
