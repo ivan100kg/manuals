@@ -4089,3 +4089,15 @@
     System.out.println(sm1.OS());       // достаем поля
     System.out.println(sm1.year());
     Class.getAnnotation(class).method() // так в общем виде
+
+--- UUID ---
+    Universally Unique Identifier 128-bit long number in hex characters separated by '-'
+    e58ed763-928c-4155-bee9-fdbaaadc15f3    // 32 сивола + 4 тире '-'
+
+    create:
+    UUID uuid = new UUID(mostSignificant64Bits, leastSignificant64Bits);    // 
+    UUID uuid = UUID.nameUUIDFromBytes(bytes);                              // из массива байт(3 версия)
+    UUID uuid = UUID.fromString(uuidHexDigitString);                        // из uuid строки
+    UUID uuid = UUID.randomUUID();                                          // рандомный(4 версия)
+    int variant = uuid.variant();                                           // вариант
+    int version = uuid.version();                                           // версия
