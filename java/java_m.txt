@@ -3892,6 +3892,9 @@
         System.out.println(matcher.group());    // вывести на экран(все группы)
     }
 
+    Eсли нужно только первое совпадение:
+    if (matcher.find()) result = matcher.group();
+
     Example:
     str.replaceAll("[aAeEuUiIoO]", "");         // удаление гласных
 
