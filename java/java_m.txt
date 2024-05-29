@@ -1547,10 +1547,17 @@
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     String dateString = dateFormat.format(currentDate);
 
+    // from Date to LocalDateTime
+    date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
     // сравнение даты(строчной) с текущей
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     Date doomsDay = dateFormat.parse("2023-09-01");
     new Date().after(doomsday);
+
+    // получить среднюю дату между двух дат LocalDateTime
+    Duration duration = Duration.between(date1, date2);
+    LocalDateTime middleDateTime = date1.plus(duration.dividedBy(2));
 
 --- Random ---
     (int) ((Math.random() * (max - min)) + min);    // генератор инт [min, max)
