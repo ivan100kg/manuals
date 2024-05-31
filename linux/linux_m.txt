@@ -174,7 +174,7 @@ unit    - модули(юниты), сущность которой управл
 	
 # логи
 /var/log/           - расположение логов
-syslog              - системные журналы ОС linux(события загрузки, ядра ...)
+syslog/messages     - системные журналы ОС linux(события загрузки, ядра ...)
 auth.log            - лог авторизации и аутентификации в системе
 dmesg               - информация о загрузке ядра и драйверов оборудования
 alternatives.log    - лог файл программы update-alternatives
@@ -202,8 +202,6 @@ journalctl          - вывести все логи (с последней за
     journalctl --disk-usage         - занимаемое место логов
     journalctl --vacuum-size=2G     - очистить до определенного размера
     journalctl --vacuum-time=1years - очистить до определенного возраста
-
-
 
 # WSL
 	sudo service postgresql start
