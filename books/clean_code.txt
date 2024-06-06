@@ -1,0 +1,37 @@
+# Чистый код
+
+
+Имена
+Переменные/классы - существительное с описанием что это
+Функции - глагол что делает ф-ия
+
+good                            | bad
+--------------------------------+----------------------------------------------
+    переменные:
+int daysSinceCreation           | d, nameString, customerObject
+String source, destination      | String p1, p2
+firstName, lastName             | addrFirstName, addrLastName
+    константы:
+WORK_DAYS_PER_WEEK              | m_dsc
+    классы:
+class Product, WikiPage         | class ProductData, ProductInfo, DtaRcrd102
+class Customer, Account         | Manager, Processor, Data, Info
+AccountAddress                  | GSDAccountAddress
+    списки:
+List<String> accounts           | List<String> accountList
+    интерфейсы:
+interface ShapeFactory          | interface IShapeFactory
+    методы:
+postPayment, savePage, isRed    | holyHandGrenade
+getColor, setMusic              |
+    доп конструкторы:
+Complex.FromRealNumber(19.0)    | new Complex(23.0) 
+
+Функции:
+Функции по своим именам как бы рассказывают историю программы
+1. компактность
+2. должна выполнять одну операцию на одном уровне абстракции
+3. максимум 2 аргумента, если больше - передаем класс
+4. аргументы - флаги недопустимы! функция выполняет 1-ну операцию
+5. try-catch засовываем в отдельную ф-ю обработки ошибок
+6. Не повторяющийся код
