@@ -44,3 +44,19 @@ Spring API Gateway
     Балансировщик нагрузки и маршрутизатор запросов. Через этот шлюз идут запросы от клиента к контейнеру сервисов
 Spring Cloud Config
     Настройки приложений - хранятся в облаке
+
+                 Mobile / Browser                   - клиент
+                        |
+                        v
+            Api Gateway (Springboot app)            - маршрутизатор, направляет запросы в нужный микросервис
+            /           |           \
+    Config Server       |       Discovery server    - Discovery server - хранит url и названия микросервисов
+    (Springboot app)    |       (Springboot app)    - Config Server - конфиги микросервисов
+                        |
+        +----------+----+------+-----------+
+        |          |           |           |
+        v          v           v           v
+      micro1     micro2      micro3      micro4     микросервисы
+        |          |           |           |
+        v          v           v           v
+       db1        db2         db3         db4       у каждого своя база даных
