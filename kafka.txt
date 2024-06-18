@@ -139,8 +139,42 @@ Event-Driven Architecture
     то можно просто создать consumer groups из таких одинаковых  сервисов Push-micro
 
 
-Запуск сервера Kafka
+Запуск 1 сервера Kafka
     bin                                 - директория со скриптами
     ./kafka-storage.sh random-uuid      - сгенерить id для kafka кластера
     ./kafka-storage.sh format -t <uuid> -c ../config/kraft/server.properties - формат логов
-    ./kafka-server-start.sh ../config/kraft/server.properties                - старт сервера   
+    ./kafka-server-start.sh ../config/kraft/server.properties                - старт сервера
+
+Запуск на нескольких серверах
+    создать файлы аналогичные config/kraft/server.properties под сервера
+    изменяем в каждом файле:
+        node.id     - id сервера в Kafka кластере, делаем уникальные для каждого сервера
+        listeners   - список адрес:портов которые слушает kafka
+                      поменять для каждого сервера порты:
+                      PLAINTEXT://9092  - брокер
+                      CONTROLLER://9093 - контроллер
+                      следующий сервер допустим 9094 9095 и тд
+        controller.quorum.votes
+                    - управление лидерами, последователями при падениях серверов
+                      1@localhost:9093  - id_сервера@url_контроллера
+                      для трёх серверов будет так во всех файлах:
+                      1@localhost:9093,2@localhost:9095,3@localhost:9097
+        advertused.listeners
+                    - список адресов брокеров, может совпадать или быть другим для
+                      клиентов, например внешним, далее соединяется с внутринним listeners
+                      PLAINTEXT://9092 выставить во всех файлах свой порт если совпадает с 
+                      listeners, либо какой-то свой url
+        log.dirs    - директория для логов
+                      меняем для каждого сервера свою директорию
+                      /tmp/serv1/kraft-combined-logs
+    запуск серверов:
+        генерим uuid:
+            ./kafka-storage.sh random-uuid - сгенерим id кластера IuLotyvvS-GX5jpwmZYXeQ
+        формат логов для совместимости:
+            ./kafka-storage.sh format -t IuLotyvvS-GX5jpwmZYXeQ -c ../config/kraft/serv1
+            /kafka-storage.sh format -t IuLotyvvS-GX5jpwmZYXeQ -c ../config/kraft/serv2
+            ./kafka-storage.sh format -t IuLotyvvS-GX5jpwmZYXeQ -c ../config/kraft/serv3
+        запуск серверов(в разных терминалах):
+            ./kafka-server-start.sh ../config/kraft/serv1
+            ./kafka-server-start.sh ../config/kraft/serv2
+            ./kafka-server-start.sh ../config/kraft/serv3
