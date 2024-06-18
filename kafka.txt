@@ -178,3 +178,8 @@ Event-Driven Architecture
             ./kafka-server-start.sh ../config/kraft/serv1
             ./kafka-server-start.sh ../config/kraft/serv2
             ./kafka-server-start.sh ../config/kraft/serv3
+
+Остановка сервера
+    Не останавливаем ctrl+c(портеря данных, логи ...)
+    1. останановка produsers, consumers
+    2. остановка с пом терминала ./kafka-server-stop
