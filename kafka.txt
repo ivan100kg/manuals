@@ -86,6 +86,7 @@ Apache Kafka
     
     Обычно на один раздел топика вешаются 3 брокера, 1 лидер + 2 последователя
     А один брокер берет один раздел как лидер и два как последователь
+    Количество разделов должно быть >= кол-во consumers
 
 Почему Kafka
     Несколько производителей    - способность работать с несколькими производителями
@@ -139,11 +140,17 @@ Event-Driven Architecture
     то можно просто создать consumer groups из таких одинаковых  сервисов Push-micro
 
 
+Kafka CLI
+    command line interface - работа с kafka через терминал
+    просто запускаем скрипты из директории bin
+
+
 Запуск 1 сервера Kafka
     bin                                 - директория со скриптами
     ./kafka-storage.sh random-uuid      - сгенерить id для kafka кластера
     ./kafka-storage.sh format -t <uuid> -c ../config/kraft/server.properties - формат логов
     ./kafka-server-start.sh ../config/kraft/server.properties                - старт сервера
+
 
 Запуск на нескольких серверах
     создать файлы аналогичные config/kraft/server.properties под сервера
@@ -172,14 +179,41 @@ Event-Driven Architecture
             ./kafka-storage.sh random-uuid - сгенерим id кластера IuLotyvvS-GX5jpwmZYXeQ
         формат логов для совместимости:
             ./kafka-storage.sh format -t IuLotyvvS-GX5jpwmZYXeQ -c ../config/kraft/serv1
-            /kafka-storage.sh format -t IuLotyvvS-GX5jpwmZYXeQ -c ../config/kraft/serv2
+            ./kafka-storage.sh format -t IuLotyvvS-GX5jpwmZYXeQ -c ../config/kraft/serv2
             ./kafka-storage.sh format -t IuLotyvvS-GX5jpwmZYXeQ -c ../config/kraft/serv3
         запуск серверов(в разных терминалах):
             ./kafka-server-start.sh ../config/kraft/serv1
             ./kafka-server-start.sh ../config/kraft/serv2
             ./kafka-server-start.sh ../config/kraft/serv3
 
+
 Остановка сервера
     Не останавливаем ctrl+c(портеря данных, логи ...)
     1. останановка produsers, consumers
     2. остановка с пом терминала ./kafka-server-stop
+
+
+Topic
+    создать новый топик:
+        запустить сервера
+        ./kafka-topics.sh --create                                  создать  
+                          --topic my-topic                          топик с именем my-topic
+                          --partitions 3                            разделы количество, лучше делать
+                                                                    >= кол-ва consumers, иначе парал-
+                                                                    лельного чтения не будет
+                          --replication-factor 3                    кол-во копий каждого раздела
+                                                                    одна в лидере +остальные в
+                                                                    репликах(не больше колва серверов) 
+                          --bootstrap-server host:9092,host:9094    список брокеров в кластере, можно
+                                                                    указывать хотя бы 2
+    посмотреть топики:
+        ./kafka-topics.sh --list --bootstrap-server host:9092       посмотреть топики, указываем один
+                                                                    из брокеров кластера
+        ./kafka-topics.sh --describe --bootstrap-server host:9092   детальная информация о топиках
+                                                                    partition : 0   - раздел
+                                                                    Leader: 1       - лидер раздела
+                                                                    Replicas: 1,2,3 - копии на серверах
+                                                                    Isr: 1,2,3      - синхронизация серверов
+    удалить топик:
+        включить настройку, если выключена delete.topic.enable=true
+        ./kafka-topics.sh --delete --topic my-topic -bootstrap-server host:9092 - удалить топик my-topic
