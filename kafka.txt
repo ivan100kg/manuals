@@ -214,6 +214,20 @@ Topic
                                                                     Leader: 1       - лидер раздела
                                                                     Replicas: 1,2,3 - копии на серверах
                                                                     Isr: 1,2,3      - синхронизация серверов
+    изменить топик:
+        изменить количество разделов
+        kafka-topics.sh --bootstrap-server localhost:9092 --alter --topic my-topic --partitions 16
     удалить топик:
         включить настройку, если выключена delete.topic.enable=true
-        ./kafka-topics.sh --delete --topic my-topic -bootstrap-server host:9092 - удалить топик my-topic
+        ./kafka-topics.sh --delete --topic my-topic --bootstrap-server host:9092 - удалить топик my-topic
+
+Producer
+    создать сообщение через CLI
+        ./kafka-console-producer.sh --bootstrap-server localhost:9092 --topic mytopic
+        далее переходим в интеррактивный режим - пишем через терминал сообщения + Enter в my-topic
+            >hello
+        --property "parse.key=true" --property "key.separator=:"    - свойства для попадания сообщения в
+            >hui:hello                                                определённые разделы, проискодит
+                                                                      парсинг ключа по разделителю ':'
+                                                                      либо любого другого
+        
