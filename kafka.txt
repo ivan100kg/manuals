@@ -252,6 +252,28 @@ Producer
             Database
 
 Spring Boot Producer
+    maven: 
+        Spring Web
+        Spring for Apache Kafka
+    application.properties
+        server.port=0 - автоматический порт(иначе 8080 может быть занят)
+        spring.kafka.producer.bootstrap-servers=localhost:9092,localhost:9094 - брокеры(можно минимум 2)
+        spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer         - серилизатор ключа
+        spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer  - серилизатор сообщ
+    KafkaConfig.java
+        @Configuration
+        public class KafkaConfig {
+
+            @Bean
+            NewTopic createTopic() {
+                return TopicBuilder.name("product-created-event")       // топик
+                        .partitions(3)                                  // кол-во пратиций
+                        .replicas(3)                                    // кол-во реплик
+                        .configs(Map.of("min.insync.replicas", "2"))    // минимум синхронизированных реплик с лидером
+                        .build();
+            }
+        }
+
 
 
         
