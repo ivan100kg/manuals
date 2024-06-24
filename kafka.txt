@@ -265,7 +265,7 @@ Spring Boot Producer
         public class KafkaConfig {
 
             @Bean
-            NewTopic createTopic() {
+            NewTopic createTopic() {                                    // создает топик если его нет
                 return TopicBuilder.name("product-created-event")       // топик
                         .partitions(3)                                  // кол-во пратиций
                         .replicas(3)                                    // кол-во реплик
@@ -273,6 +273,45 @@ Spring Boot Producer
                         .build();
             }
         }
+
+    ProductServiceImpl.java
+        @Service
+        public class ProductServiceImpl implements ProductService {
+            @Autowired
+            private KafkaTemplate<String, ProductCreatedEvent> kafkaTemplate;
+            @Autowired
+            private ProductRepository productRepository;
+
+            @Override
+            public String createProduct(MyDTO myDTO) {
+                String productId = productRepository.save(myDTO);
+                ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent(productId,
+                        myDTO.getTitle(),
+                        myDTO.getPrice(),
+                        myDTO.getQuantity());
+
+                // асинхронная отправка
+                CompletableFuture<SendResult<String, ProductCreatedEvent>> future =
+                        kafkaTemplate.send("product-created-event", productId, productCreatedEvent);
+        
+                future.whenComplete((result, exception) -> {
+                   if (exception != null) {
+                       logger.error("ERROR: {}", exception.getMessage());
+                   } else {
+                       logger.info("Ok: {}", result.getRecordMetadata());
+                   }
+                });
+
+                // синхронная отправка(когда нужно дождаться ответа перед тем как послать след сообщение)
+                try {
+                    SendResult<String, ProductCreatedEvent> result = 
+                        kafkaTemplate.send("product-created-event", productId, productCreatedEvent).get();
+                    logger.info("Ok: {}", result.getRecordMetadata());
+                } catch (InterruptedException | ExecutionException e) {
+                    logger.error("ERROR: {}", e.getMessage());
+                }
+
+                return productId;
 
 
 
