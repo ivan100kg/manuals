@@ -313,6 +313,25 @@ Spring Boot Producer
 
                 return productId;
 
-
+Получение acknowledgment
+    Варианты конфигурации:
+        1. Ждать acknowledgement от всех insync реплик  - spring.kafka.producer.acks=all
+        2. Не получать acknowledgement                  - spring.kafka.producer.acks=0
+        3. Получать только от Leader(default)           - spring.kafka.producer.acks=1
+    Если acknowledgment не приходит от лидера или при all не приходит от всех insync реплик, 
+    то Producer начинает делать retry:
+        Либо делает retry в течение 2 мин, либо делаем максимальное кол-во retry 2147483647, либо указываем
+        вручную кол-во retry, интервал, время попыток:
+            spring.kafka.producer.retries=10 (default 2147483647 максимальное кол-во retry)
+            spring.kafka.producer.properties.retry.backoff.ms=1000  (default 100 интервал отправки сообщений)
+            spring.kafka.producer.properties.delivery.timeout.ms=60000 (default 120000 время попыток)
+            spring.kafka.producer.properties.linger.ms=0 (сколько по времени накапливаем сообщ, потом шлем батчем)
+            spring.kafka.producer.properties.request.timeout.ms=30000 (как долго prducer ждет ответа от брокера)
+            !!! delivery.timeout.ms >= linger.ms + request.timeout.ms
+    Ошибки типа error acknowlegement:
+        1. Retryable error - временная проблема, может быть решена повтором(retry), если
+           например реплика упала
+        2. Non-Retryable error - постоянная ошибка - не может быть решена повтором, если
+           например превышен допустимый размер сообщения
 
         
