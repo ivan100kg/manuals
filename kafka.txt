@@ -272,6 +272,32 @@ Spring Boot Producer
                         .configs(Map.of("min.insync.replicas", "2"))    // минимум синхронизированных реплик с лидером
                         .build();
             }
+
+            // есть ещё один вариант конфига kafkaTemplate более гибкий
+            // прокидываем все пропертя в переменные
+            @Value("${spring.kafka.producer.bootstrap-servers}")
+            private String bootstrapServers;
+            @Value("${spring.kafka.producer.key-serializer}")
+            private String keySerializer;
+
+            // создаем мэпку(получение с пом метода)
+            private Map<String, Object> producerConfig() {
+                Map<String, Object> config = new HashMap<>();
+                config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+                config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, keySerializer);
+                return config;
+            }
+
+            // создаем 2 бина: фабрику и kafkaTemplate
+            @Bean
+            ProducerFactory<String, ProductCreatedEvent> producerFactory() {
+                return new DefaultKafkaProducerFactory<>(producerConfig());
+            }
+
+            @Bean
+            KafkaTemplate<String, ProductCreatedEvent> kafkaTemplate() {
+                return new KafkaTemplate<>(producerFactory());
+            }
         }
 
     ProductServiceImpl.java
@@ -303,13 +329,9 @@ Spring Boot Producer
                 });
 
                 // синхронная отправка(когда нужно дождаться ответа перед тем как послать след сообщение)
-                try {
-                    SendResult<String, ProductCreatedEvent> result = 
-                        kafkaTemplate.send("product-created-event", productId, productCreatedEvent).get();
-                    logger.info("Ok: {}", result.getRecordMetadata());
-                } catch (InterruptedException | ExecutionException e) {
-                    logger.error("ERROR: {}", e.getMessage());
-                }
+                SendResult<String, ProductCreatedEvent> result = 
+                    kafkaTemplate.send("product-created-event", productId, productCreatedEvent).get();
+                logger.info("Ok: {}", result.getRecordMetadata());
 
                 return productId;
 
