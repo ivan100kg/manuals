@@ -380,3 +380,18 @@ Consumer
             --from-beginning                                    печать все сообщения сначала
             --property "print.key=true"                         печатать ключ и сообщение
         
+Spring Boot Consumer
+    Producer ---------> Broker: Topic[][][][] ---------> Consumer
+              publish      store               consume
+    
+    Если Consumer один - то чтение идет с разных разделов
+    Если сделать 3 реплики Consumer - то в случае если разделов 3 - читать будет каждый 1 раздел
+    Это называется ConsumerGroup
+
+    properties:
+        server.port=0
+        spring.kafka.consumer.bootstrap-servers=localhost:9092,localhost:9094
+        spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
+        spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.kafka.consumer.group-id=product-created-events       - уникальный group id consumer
+        spring.kafka.consumer.properties.spring.trusted.packages=*  - доверенные пакеты
