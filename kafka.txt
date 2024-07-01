@@ -261,10 +261,18 @@ Spring Boot Producer
         Spring Web
         Spring for Apache Kafka
     application.properties
-        server.port=0 - автоматический порт(иначе 8080 может быть занят)
-        spring.kafka.producer.bootstrap-servers=localhost:9092,localhost:9094 - брокеры(можно минимум 2)
-        spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer         - серилизатор ключа
-        spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer  - серилизатор сообщ
+        server.port=0
+        spring.kafka.producer.bootstrap-servers=localhost:9092,localhost:9094
+        spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+        spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer
+        spring.kafka.producer.acks=all
+        spring.kafka.producer.retries=10
+        spring.kafka.producer.properties.retry.backoff.ms=1000
+        spring.kafka.producer.properties.delivery.timeout.ms=20000
+        spring.kafka.producer.properties.linger.ms=0
+        spring.kafka.producer.properties.request.timeout.ms=10000
+        spring.kafka.producer.properties.max.in.flight.requests.per.connection=5
+        spring.kafka.producer.properties.enable.idempotence=true
     KafkaConfig.java
         @Configuration
         public class KafkaConfig {
@@ -393,5 +401,32 @@ Spring Boot Consumer
         spring.kafka.consumer.bootstrap-servers=localhost:9092,localhost:9094
         spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
         spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.JsonDeserializer
-        spring.kafka.consumer.group-id=product-created-events       - уникальный group id consumer
-        spring.kafka.consumer.properties.spring.trusted.packages=*  - доверенные пакеты
+        spring.kafka.consumer.group-id=product-created-events           - уникальный group id consumer
+        spring.kafka.consumer.properties.spring.json.trusted.packages=* - доверенные пакеты(* - все)
+
+    KafkaConfig.java
+    @Configuration
+    public class KafkaConfig {
+        @Autowired
+        Environment environment;
+
+        @Bean
+        ConsumerFactory<String, Object> consumerFactory () {
+            Map<String, Object> config = new HashMap<>();
+            config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("spring.kafka.consumer.bootstrap-servers"));
+            config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+            config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+            config.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("spring.kafka.consumer.group-id"));
+            config.put(JsonDeserializer.TRUSTED_PACKAGES, environment.getProperty("spring.kafka.consumer.properties.spring.json.trusted.packages"));
+
+            return new DefaultKafkaConsumerFactory<>(config);
+        }
+
+        @Bean
+        ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(ConsumerFactory<String, Object> consumerFactory) {
+            ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
+            factory.setConsumerFactory(consumerFactory);
+
+            return factory;
+        }
+    }
