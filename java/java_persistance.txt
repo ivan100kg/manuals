@@ -458,6 +458,7 @@ Hibernate
     UPDATE employee SET salary = 0;                   | UPDATE Employee SET salary = 0;
     DELETE employee WHERE first_name='Inna'           | DELETE Employee WHERE firstName='Inna'
     WHERE field IS NOT TRUE;                          | WHERE field IS NULL OR field IS FALSE;
+    WHERE actual                                      | actual IS NOT NULL AND actual IS TRUE
     ...JOIN employee ON task.employee = employee.id;  | FROM Task WHERE employee.name = 'Igor'
     ...JOIN employee ON task.employee = employee.id;  | SELECT employee FROM Task where id = 2
     в джоинах обращаемся к полям связной таблицы через точку
@@ -475,6 +476,7 @@ Hibernate
     UPDATE employee SET salary = 0;                   | не поддерживается
     DELETE employee WHERE name='Inna'                 | DELETE FROM Employee e WHERE e.id = :id
     WHERE field IS NOT TRUE;                          | WHERE field IS NULL OR field IS FALSE;
+    WHERE actual                                      | actual IS NOT NULL AND actual IS TRUE
     ...JOIN employee ON task.employee = employee.id;  | SELECT t FROM Task t JOIN t.employee e (авто связь)
                                                       |     WHERE e.id IN = :idList;
 
