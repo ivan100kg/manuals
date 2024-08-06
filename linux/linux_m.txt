@@ -929,6 +929,13 @@ sshpass -p "$password" scp "$username"@"$server":"$file_path" "$file_dest"
 sshpass -p "$password" ssh "$username"@"$server" "cat $file_path"
 
 
+# vpn server ---------------------------------------------------+
+Разворачиваем vps сервер
+wget https://git.io/vpn -O openvpn-install.sh
+sudo bash ./openvpn-install.sh
+далее следуем командам, создаем/удаляем конфиги для пользователей
+
+
 # Поиск файлов ----------------------------------------------------------------+
 locate # поиск в базе данных имен locate zip, locatedb - обновить бд. 
 find   # сложный способ поиска find "путь" "проверки" "операции" "параметры"
