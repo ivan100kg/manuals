@@ -64,6 +64,19 @@ Apache Kafka
                   чтение каждого раздела только одним членом группы
 
 Брокеры и кластеры
+    Broker_1    Broker_2    Broker_3        Пример 3 брокера, 2 топика по 3 партиции:
+                                            1 брокер - лидер для partition_10 и partition_22
+        Topic_1         Topic_2                        фолловер для partition_11 partition_12
+        partition_10    partition_20                                partition_20 partition_21
+        partition_11    partition_21        2 брокер - лидер для partition_11 и partition_21
+        partition_12    partition_22                   фолловер для partition_10 partition_12
+                                                                    partition_20 partition_22
+                                            3 брокер - лидер для partition_12 и partition_20
+                                                       фолловер для partition_10 partition_11
+                                                                    partition_21 partition_22
+
+    При падении одного из брокеров, если он был лидером - лидер назначается из фолловеров
+
     broker  - отдельный сервер Kafka - получает сообщения от производителей, 
               присваивает им смещения и записывает сообщения в дисковое 
               хранилище. Он также обслуживает потребители и отвечает на запросы
