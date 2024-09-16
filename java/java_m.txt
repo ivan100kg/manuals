@@ -1401,6 +1401,12 @@
     Как и runtime exceptions считаются unchecked.
     ExceptionInInitializerError // выбрасывается в статич элементах, когда при
                                    их использовании выбрас runtime exception.
+
+--- Assert ---
+    Это специальный механизм в Java, который позволяет проверять истинность выражений
+    assert условие : сообщение;
+    assert obj != null : "obj is null"; // если условие неверно - выброс ошибки
+                                           AssertionError
     
 --- Date/Time ---
     java.time       // package
