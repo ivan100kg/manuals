@@ -270,6 +270,8 @@ Producer
                v
             Database
 
+
+------------ Project workframe -----------------
 Hierarchy
     .
     ├── config
@@ -281,6 +283,22 @@ Hierarchy
     │   └── EgiszSendingProducer.java
     └── topics
         └── KafkaTopic.java
+
+Dependencies
+    <dependency>
+        <groupId>org.springframework.kafka</groupId>
+        <artifactId>spring-kafka</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.kafka</groupId>
+        <artifactId>spring-kafka-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <!-- эта зависимость возможно не нужна -->
+    <dependency>    
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+    </dependency> 
 
 application.properties
     spring.kafka.producer.bootstrap-servers=192.168.1.66:9092,192.168.1.66:9094
@@ -297,6 +315,7 @@ application.properties
 
 
 KafkaConfig.java
+    // Общий конфиг для продюссеров и консьюмеров 
     @Configuration
     public class KafkaConfig {
         @Value("${spring.kafka.producer.bootstrap-servers}")
@@ -322,53 +341,28 @@ KafkaConfig.java
         @Value("${spring.kafka.producer.properties.enable.idempotence}")
         private String idempotence;
 
+        // producers config - фабрики и KafkaTemplate для продюссеров в проекте
         @Bean
-        ProducerFactory<String, MedRecordDTO> sdmdSendingProducerFactory() {
-            return new DefaultKafkaProducerFactory<>(producerConfig());
-        }
-
-        @Bean
-        KafkaTemplate<String, MedRecordDTO> sdmdSendingKafkaTemplate() {
-            return new KafkaTemplate<>(sdmdSendingProducerFactory());
+        ProducerFactory<String, FirstDTO> firstProducerFactory() {      // 1-я фабрика для создания KafkaTemplate
+            return new DefaultKafkaProducerFactory<>(producerConfig()); // общий конфиг
         }
 
         @Bean
-        ConsumerFactory<String, EgiszPersonDTO> personUUIDConsumerFactory() {
-            return new DefaultKafkaConsumerFactory<>(consumerConfig("person-uuid-sent-medserver-group", EgiszPersonDTO.class.getName()));
+        KafkaTemplate<String, FirstDTO> firstKafkaTemplate() {          // KafkaTemplate для отправки сообщений в топик
+            return new KafkaTemplate<>(firstProducerFactory());         // для producer-1
         }
 
         @Bean
-        ConcurrentKafkaListenerContainerFactory<String, EgiszPersonDTO> personUUIDKafkaListenerContainerFactory() {
-            ConcurrentKafkaListenerContainerFactory<String, EgiszPersonDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
-            factory.setConsumerFactory(personUUIDConsumerFactory());
-            return factory;
+        ProducerFactory<String, SecondDTO> secondProducerFactory() {    // 2-я фабрика для создания KafkaTemplate
+            return new DefaultKafkaProducerFactory<>(producerConfig()); // общий конфиг
         }
 
         @Bean
-        ConsumerFactory<String, EgiszMRStatusDTO> mrStatusConsumerFactory() {
-            return new DefaultKafkaConsumerFactory<>(consumerConfig("medrecord-status-updated-medserver-group", EgiszMRStatusDTO.class.getName()));
+        KafkaTemplate<String, SecondDTO> secondKafkaTemplate() {        // KafkaTemplate для отправки сообщений в топик
+            return new KafkaTemplate<>(secondProducerFactory());        // для producer-2 ...
         }
 
-        @Bean
-        ConcurrentKafkaListenerContainerFactory<String, EgiszMRStatusDTO> mrStatusKafkaListenerContainerFactory() {
-            ConcurrentKafkaListenerContainerFactory<String, EgiszMRStatusDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
-            factory.setConsumerFactory(mrStatusConsumerFactory());
-            return factory;
-        }
-
-        private Map<String, Object> consumerConfig(String groupId, String className) {
-            Map<String, Object> config = new HashMap<>();
-            config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-            config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-            config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-            config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
-            config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-            config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-            config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, className);
-            config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, "false");
-            return config;
-        }
-
+        // общий конфиг продюссеров
         private Map<String, Object> producerConfig() {
             Map<String, Object> config = new HashMap<>();
             config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -383,7 +377,48 @@ KafkaConfig.java
             config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, idempotence);
             return config;
         }
+
+        // consumer config - фабрики и настройки для консьюмеров в проекте
+        @Bean
+        ConsumerFactory<String, ThirdDTO> firstConsumerFactory() {
+            return new DefaultKafkaConsumerFactory<>(consumerConfig("consumer-group-1", ThirdDTO.class.getName()));
+        }
+
+        @Bean
+        ConcurrentKafkaListenerContainerFactory<String, ThirdDTO> firstKafkaListenerContainerFactory() {
+            ConcurrentKafkaListenerContainerFactory<String, ThirdDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+            factory.setConsumerFactory(firstConsumerFactory());
+            return factory;
+        }
+
+        @Bean
+        ConsumerFactory<String, FourthDTO> secondConsumerFactory() {
+            return new DefaultKafkaConsumerFactory<>(consumerConfig("consumer-group-2", FourthDTO.class.getName()));
+        }
+
+        @Bean
+        ConcurrentKafkaListenerContainerFactory<String, FourthDTO> secondKafkaListenerContainerFactory() {
+            ConcurrentKafkaListenerContainerFactory<String, FourthDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+            factory.setConsumerFactory(secondConsumerFactory());
+            return factory;
+        }
+
+        // конфиг для всех консьюмеров, отличается параметрами
+        private Map<String, Object> consumerConfig(String groupId, String className) {
+            Map<String, Object> config = new HashMap<>();
+            config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+            config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+            config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+            config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
+            config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+            config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+            config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, className);
+            config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, "false");
+            return config;
+        }
     }
+
+
 
 Spring Boot Producer
     maven: 
