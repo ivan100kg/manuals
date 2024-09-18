@@ -239,16 +239,15 @@ Topic
         ./kafka-topics.sh --delete --topic my-topic --bootstrap-server host:9092 - удалить топик my-topic
 
 Producer
-    создать сообщение через CLI
-        ./kafka-console-producer.sh --bootstrap-server localhost:9092 
-                                    --topic mytopic                 топик в который будем публиковать
+    Создать сообщение через CLI
+        ./kafka-console-producer.sh 
+            --bootstrap-server localhost:9092   сервера
+            --topic mytopic                     топик в который будем публиковать
+            --property "parse.key=true"         если хотим слать сообщения с ключом(в 1 раздел)
+            --property "key.separator=:"        обозначение разделителя для ключа:зачения
         далее переходим в интеррактивный режим - пишем через терминал сообщения + Enter в my-topic
-            >hello
-             сообщение              
-                                    --property "parse.key=true"     свойства для попадания сообщения в
-                                    --property "key.separator=:"    парсинг ключа по разделителю ':'
-            >huid:hello                                             либо любого другого
-             ключ:сообщение                                         
+            >hello          отправить без ключа
+            >huid:hello     отправить с ключём в 1 раздел
                                                                     
     разработка Java Producer - это Spring Boot приложение(микросервис)
     что должен делать producer:
@@ -271,9 +270,25 @@ Producer
             Database
 
 
+Consumer
+    Прочитать сообщение с помощью CLI
+        ./kafka-console-consumer.sh 
+            --bootstrap-server localhost:9092,localhost:9094    сервера
+            --topic mytopic                                     топик для чтения
+            --from-beginning                                    печать все сообщения сначала
+            --property "print.key=true"                         печатать ключ и сообщение
+        
+Spring Boot Consumer
+    Producer ---------> Broker: Topic[][][][] ---------> Consumer
+              publish      store               consume
+    
+    Если Consumer один - то чтение идет с разных разделов
+    Если сделать 3 реплики Consumer - то в случае если разделов 3 - читать будет каждый 1 раздел
+    Это называется ConsumerGroup
+
+
 ------------ Project workframe -----------------
 Hierarchy
-    .
     ├── config
     │   └── KafkaConfig.java
     ├── consumer
@@ -312,7 +327,6 @@ application.properties
     spring.kafka.producer.properties.request.timeout.ms=10000
     spring.kafka.producer.properties.max.in.flight.requests.per.connection=5
     spring.kafka.producer.properties.enable.idempotence=true
-
 
 KafkaConfig.java
     // Общий конфиг для продюссеров и консьюмеров 
@@ -490,21 +504,6 @@ Idempotent Producer
         config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true)
 
 
-Consumer
-    Прочитать сообщение с помощью CLI
-        ./kafka-console-consumer.sh 
-            --bootstrap-server localhost:9092,localhost:9094    сервера
-            --topic mytopic                                     топик для чтения
-            --from-beginning                                    печать все сообщения сначала
-            --property "print.key=true"                         печатать ключ и сообщение
-        
-Spring Boot Consumer
-    Producer ---------> Broker: Topic[][][][] ---------> Consumer
-              publish      store               consume
-    
-    Если Consumer один - то чтение идет с разных разделов
-    Если сделать 3 реплики Consumer - то в случае если разделов 3 - читать будет каждый 1 раздел
-    Это называется ConsumerGroup
 
     properties:
         server.port=0
