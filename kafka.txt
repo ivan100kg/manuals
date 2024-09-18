@@ -456,15 +456,6 @@ KafkaTopic.java
         }
     }
 
-        
-                future.whenComplete((result, exception) -> {
-                   if (exception != null) {
-                       logger.error("ERROR: {}", exception.getMessage());
-                   } else {
-                       logger.info("Ok: {}", result.getRecordMetadata());
-                   }
-                });
-
                 // синхронная отправка(когда нужно дождаться ответа перед тем как послать след сообщение)
                 SendResult<String, ProductCreatedEvent> result = 
                     kafkaTemplate.send("product-created-event", productId, productCreatedEvent).get();
@@ -504,26 +495,6 @@ Idempotent Producer
         config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true)
 
 
-
-    properties:
-        server.port=0
-        spring.kafka.consumer.bootstrap-servers=localhost:9092,localhost:9094
-        spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer
-        spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.JsonDeserializer
-        spring.kafka.consumer.group-id=product-created-events           - уникальный group id consumer
-        spring.kafka.consumer.properties.spring.json.trusted.packages=* - доверенные пакеты(* - все)
-
-    KafkaConfig.java
-    @Configuration
-    public class KafkaConfig {
-        @Autowired
-        Environment environment;
-
-        @Bean
-        ConsumerFactory<String, Object> consumerFactory () {
-            Map<String, Object> config = new HashMap<>();
-            config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("spring.kafka.consumer.bootstrap-servers"));
-            config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
             config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class); // скипает SerializationException
                                                                                                             если допустим пришла строка, выскакивает
                                                                                                             SerializationException 1 раз и пропускается
