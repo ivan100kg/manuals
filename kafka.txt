@@ -242,15 +242,14 @@ Producer
     Создать сообщение через CLI
         ./kafka-console-producer.sh 
             --bootstrap-server localhost:9092   сервера
-            --topic mytopic                     топик в который будем публиковать
+            --topic my-topic                    топик в который будем публиковать
             --property "parse.key=true"         если хотим слать сообщения с ключом(в 1 раздел)
             --property "key.separator=:"        обозначение разделителя для ключа:зачения
         далее переходим в интеррактивный режим - пишем через терминал сообщения + Enter в my-topic
             >hello          отправить без ключа
             >huid:hello     отправить с ключём в 1 раздел
                                                                     
-    разработка Java Producer - это Spring Boot приложение(микросервис)
-    что должен делать producer:
+    Что должен делать producer:
         1. publish   - публикация событий на Kafka Broker
         2. serialize - сериализовать сообщение под нужный тип данных, также можно сериализовать
                        ключ под его тип данных. Например String для ключа, JSON для сообщения
@@ -258,11 +257,11 @@ Producer
         4. определять раздел(партицию)(если передается ключ)
     Можно отправлять сообщения в Kafka как синхронные(ждать подтверждения с Kafka Broker)
     так и асинхронные(не ждать подтверждения, а слать сообщения, а при приходе подтверждения - обработать)
-        Browser Mobile
-               ^
-         login | HTTP-request/responce
-               v
-        Auth Mecroservice       отправка
+        Browser Mobile                       /
+               ^                            /
+         login | HTTP-request/responce     /
+               v                          /
+        Auth Mecroservice       отправка /
                ^ Kafka Template --------------> Kafka
                |  (Producer)    <-------------- Broker
                |                подтверждение
@@ -277,6 +276,7 @@ Consumer
             --topic mytopic                                     топик для чтения
             --from-beginning                                    печать все сообщения сначала
             --property "print.key=true"                         печатать ключ и сообщение
+            --group <your-group-id>                             для чтения группой(каждый читает сообщение 1 раз)
         
 Spring Boot Consumer
     Producer ---------> Broker: Topic[][][][] ---------> Consumer
