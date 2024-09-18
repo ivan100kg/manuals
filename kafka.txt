@@ -418,84 +418,30 @@ KafkaConfig.java
         }
     }
 
-
-
-Spring Boot Producer
-    maven: 
-        Spring Web
-        Spring for Apache Kafka
-    application.properties
-        server.port=0
-        spring.kafka.producer.bootstrap-servers=localhost:9092,localhost:9094
-        spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
-        spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer
-        spring.kafka.producer.acks=all
-        spring.kafka.producer.retries=10
-        spring.kafka.producer.properties.retry.backoff.ms=1000
-        spring.kafka.producer.properties.delivery.timeout.ms=20000
-        spring.kafka.producer.properties.linger.ms=0
-        spring.kafka.producer.properties.request.timeout.ms=10000
-        spring.kafka.producer.properties.max.in.flight.requests.per.connection=5
-        spring.kafka.producer.properties.enable.idempotence=true
-    KafkaConfig.java
-        @Configuration
-        public class KafkaConfig {
-
-            @Bean
-            NewTopic createTopic() {                                    // создает топик если его нет
-                return TopicBuilder.name("product-created-event")       // топик
-                        .partitions(3)                                  // кол-во пратиций
-                        .replicas(3)                                    // кол-во реплик
-                        .configs(Map.of("min.insync.replicas", "2"))    // минимум синхронизированных реплик с лидером
-                        .build();
-            }
-
-            // есть ещё один вариант конфига kafkaTemplate более гибкий
-            // прокидываем все пропертя в переменные
-            @Value("${spring.kafka.producer.bootstrap-servers}")
-            private String bootstrapServers;
-            @Value("${spring.kafka.producer.key-serializer}")
-            private String keySerializer;
-
-            // создаем мэпку(получение с пом метода)
-            private Map<String, Object> producerConfig() {
-                Map<String, Object> config = new HashMap<>();
-                config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-                config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, keySerializer);
-                return config;
-            }
-
-            // создаем 2 бина: фабрику и kafkaTemplate
-            @Bean
-            ProducerFactory<String, ProductCreatedEvent> producerFactory() {
-                return new DefaultKafkaProducerFactory<>(producerConfig());
-            }
-
-            @Bean
-            KafkaTemplate<String, ProductCreatedEvent> kafkaTemplate() {
-                return new KafkaTemplate<>(producerFactory());
-            }
+KafkaTopic.java
+    // настраиваем любое кол-во топиков, если топиков ещё нет - то они будут созданы
+    // если топики существуют - ничего не происходит
+    @Configuration
+    public class KafkaTopic {
+        @Bean
+        NewTopic createFirstTopic() {
+            return TopicBuilder.name("topic-1")                     // имя топика
+                    .partitions(3)                                  // кол-во пратиций
+                    .replicas(3)                                    // кол-во реплик
+                    .configs(Map.of("min.insync.replicas", "2"))    // минимум синхронизированных реплик с лидером
+                    .build();
         }
 
-    ProductServiceImpl.java
-        @Service
-        public class ProductServiceImpl implements ProductService {
-            @Autowired
-            private KafkaTemplate<String, ProductCreatedEvent> kafkaTemplate;
-            @Autowired
-            private ProductRepository productRepository;
+        @Bean
+        NewTopic createSecondTopic() {
+            return TopicBuilder.name("topic-2")
+                    .partitions(3)
+                    .replicas(3)
+                    .configs(Map.of("min.insync.replicas", "2"))
+                    .build();
+        }
+    }
 
-            @Override
-            public String createProduct(MyDTO myDTO) {
-                String productId = productRepository.save(myDTO);
-                ProductCreatedEvent productCreatedEvent = new ProductCreatedEvent(productId,
-                        myDTO.getTitle(),
-                        myDTO.getPrice(),
-                        myDTO.getQuantity());
-
-                // асинхронная отправка
-                CompletableFuture<SendResult<String, ProductCreatedEvent>> future =
-                        kafkaTemplate.send("product-created-event", productId, productCreatedEvent);
         
                 future.whenComplete((result, exception) -> {
                    if (exception != null) {
