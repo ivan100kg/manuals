@@ -270,6 +270,121 @@ Producer
                v
             Database
 
+Hierarchy
+    .
+    ├── config
+    │   └── KafkaConfig.java
+    ├── consumer
+    │   ├── MedRecordStatusChangedConsumer.java
+    │   └── PersonUUIDChangeConsumer.java
+    ├── producer
+    │   └── EgiszSendingProducer.java
+    └── topics
+        └── KafkaTopic.java
+
+application.properties
+    spring.kafka.producer.bootstrap-servers=192.168.1.66:9092,192.168.1.66:9094
+    spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+    spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer
+    spring.kafka.producer.acks=all
+    spring.kafka.producer.retries=10
+    spring.kafka.producer.properties.retry.backoff.ms=1000
+    spring.kafka.producer.properties.delivery.timeout.ms=20000
+    spring.kafka.producer.properties.linger.ms=0
+    spring.kafka.producer.properties.request.timeout.ms=10000
+    spring.kafka.producer.properties.max.in.flight.requests.per.connection=5
+    spring.kafka.producer.properties.enable.idempotence=true
+
+
+KafkaConfig.java
+    @Configuration
+    public class KafkaConfig {
+        @Value("${spring.kafka.producer.bootstrap-servers}")
+        private String bootstrapServers;
+        @Value("${spring.kafka.producer.key-serializer}")
+        private String keySerializer;
+        @Value("${spring.kafka.producer.value-serializer}")
+        private String valueSerializer;
+        @Value("${spring.kafka.producer.acks}")
+        private String acks;
+        @Value("${spring.kafka.producer.retries}")
+        private String retries;
+        @Value("${spring.kafka.producer.properties.retry.backoff.ms}")
+        private String retryBackoff;
+        @Value("${spring.kafka.producer.properties.delivery.timeout.ms}")
+        private String deliveryTimeout;
+        @Value("${spring.kafka.producer.properties.linger.ms}")
+        private String linger;
+        @Value("${spring.kafka.producer.properties.request.timeout.ms}")
+        private String requestTimeout;
+        @Value("${spring.kafka.producer.properties.max.in.flight.requests.per.connection}")
+        private String inFlightRequests;
+        @Value("${spring.kafka.producer.properties.enable.idempotence}")
+        private String idempotence;
+
+        @Bean
+        ProducerFactory<String, MedRecordDTO> sdmdSendingProducerFactory() {
+            return new DefaultKafkaProducerFactory<>(producerConfig());
+        }
+
+        @Bean
+        KafkaTemplate<String, MedRecordDTO> sdmdSendingKafkaTemplate() {
+            return new KafkaTemplate<>(sdmdSendingProducerFactory());
+        }
+
+        @Bean
+        ConsumerFactory<String, EgiszPersonDTO> personUUIDConsumerFactory() {
+            return new DefaultKafkaConsumerFactory<>(consumerConfig("person-uuid-sent-medserver-group", EgiszPersonDTO.class.getName()));
+        }
+
+        @Bean
+        ConcurrentKafkaListenerContainerFactory<String, EgiszPersonDTO> personUUIDKafkaListenerContainerFactory() {
+            ConcurrentKafkaListenerContainerFactory<String, EgiszPersonDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+            factory.setConsumerFactory(personUUIDConsumerFactory());
+            return factory;
+        }
+
+        @Bean
+        ConsumerFactory<String, EgiszMRStatusDTO> mrStatusConsumerFactory() {
+            return new DefaultKafkaConsumerFactory<>(consumerConfig("medrecord-status-updated-medserver-group", EgiszMRStatusDTO.class.getName()));
+        }
+
+        @Bean
+        ConcurrentKafkaListenerContainerFactory<String, EgiszMRStatusDTO> mrStatusKafkaListenerContainerFactory() {
+            ConcurrentKafkaListenerContainerFactory<String, EgiszMRStatusDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+            factory.setConsumerFactory(mrStatusConsumerFactory());
+            return factory;
+        }
+
+        private Map<String, Object> consumerConfig(String groupId, String className) {
+            Map<String, Object> config = new HashMap<>();
+            config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+            config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+            config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+            config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
+            config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+            config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+            config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, className);
+            config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, "false");
+            return config;
+        }
+
+        private Map<String, Object> producerConfig() {
+            Map<String, Object> config = new HashMap<>();
+            config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+            config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+            config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+            config.put(ProducerConfig.ACKS_CONFIG, acks);
+            config.put(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, retryBackoff);
+            config.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, deliveryTimeout);
+            config.put(ProducerConfig.LINGER_MS_CONFIG, linger);
+            config.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeout);
+            config.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, inFlightRequests);
+            config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, idempotence);
+            return config;
+        }
+    }
+
 Spring Boot Producer
     maven: 
         Spring Web
