@@ -545,12 +545,12 @@ FirstProducer.java
         @Autowired
         private KafkaTemplate<String, FirstDTO> firstKafkaTemplate;
 
-        private final String topic = "my-topic-1";      // топик
+        private final String topic = "my-topic-1";      // топик в который отправляем
 
         public void sendMessage(FirstDTO dto) {
             try {
                 assert dto != null : "FirstDTO is null";
-                log.info("Sending message: uuid = {}", dto.getUuid());
+                log.info("Sending message: {}", dto);
 
                 // выбрать какой тип отправки нужен
                 // 1 - асинхронная отправка с помощью CompletableFuture
@@ -568,6 +568,28 @@ FirstProducer.java
             
             } catch (Exception e) {
                 log.error("Failed to send message: {}", e.getMessage());
+            }
+        }
+    }
+
+FirstConsumer.java
+    // аналогично создаем консьюмеров, 2 бина фабрика+контейнер-фарика и сам сервис
+    @Service
+    @Log4j2
+    public class FirstConsumer {
+        @KafkaListener(topics = "my-topic-2",                               // топик с которого читаем
+                groupId = "consumer-group-1",                               // группа из конфига
+                containerFactory = "firstKafkaListenerContainerFactory")    // контейнер-фабрика из конфига
+        public void listen(FirstDTO dto) {
+            try {
+                if (dto == null)
+                    throw new RuntimeException("dto must be not null");
+
+                log.info("Received message: {}", dto);
+
+                // logic                                                    // обработка сообщения
+            } catch (Exception e) {
+                log.error("Error processing message: {}, exception: {}", dto, e.getMessage());
             }
         }
     }
