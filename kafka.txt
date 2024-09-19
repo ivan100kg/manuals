@@ -241,12 +241,12 @@ Kafka CLI
         "version": 1                                            # версия                                |
                                                                                                         |
     На диске                                                                                            |
-        /tmp/serv3/kraft-comb-logs/my-topic-0/                                                          |
-        -rw-rw-r-- 1 ivanb ivanb 10485760 сен 19 11:43 00000000000000000000.index                       |
-        -rw-rw-r-- 1 ivanb ivanb   130153 сен 19 11:43 00000000000000000000.log <-----------------------┘
-        -rw-rw-r-- 1 ivanb ivanb 10485756 сен 19 11:43 00000000000000000000.timeindex
-        -rw-rw-r-- 1 ivanb ivanb        8 сен 18 14:24 leader-epoch-checkpoint
-        -rw-rw-r-- 1 ivanb ivanb       43 сен 18 14:24 partition.metadata
+        /tmp/serv3/kraft-comb-logs/my-topic-0/ одна партиция                                            |
+        00000000000000000000.index     # используется для быстрого поиска по логам и смещениям          |
+        00000000000000000000.log       # соотв размеру сообщений, которые были записаны в партицию <----┘
+        00000000000000000000.timeindex # для сопоставления времени записи сообщений со смещениями
+        leader-epoch-checkpoint
+        partition.metadata
     Посмотреть занимаемое место
         du -sh /path/to/kafka/logs
         если на разных серверах - то можно скрипт сделать и посмотреть на каждом du -sh
@@ -317,6 +317,38 @@ Producer
             Database
 
 
+Получение acknowledgment
+    Варианты конфигурации:
+        1. Ждать acknowledgement от всех insync реплик  - spring.kafka.producer.acks=all
+        2. Не получать acknowledgement                  - spring.kafka.producer.acks=0
+        3. Получать только от Leader(default)           - spring.kafka.producer.acks=1
+    Если acknowledgment не приходит от лидера или при all не приходит от всех insync реплик, 
+    то Producer начинает делать retry:
+        Либо делает retry в течение 2 мин, либо делаем максимальное кол-во retry 2147483647, либо указываем
+        вручную кол-во retry, интервал, время попыток:
+            spring.kafka.producer.retries=10 (default 2147483647 максимальное кол-во retry)
+            spring.kafka.producer.properties.retry.backoff.ms=1000  (default 100 интервал отправки сообщений)
+            spring.kafka.producer.properties.delivery.timeout.ms=60000 (default 120000 время попыток)
+            spring.kafka.producer.properties.linger.ms=0 (сколько по времени накапливаем сообщ, потом шлем батчем)
+            spring.kafka.producer.properties.request.timeout.ms=30000 (как долго prducer ждет ответа от брокера)
+            spring.kafka.producer.properties.max.in.flight.requests.per.connection=5 (макс 5 сообщений без ответа)
+            spring.kafka.producer.properties.enable.idempotence=true (Idempotent Producer - ниже описано)
+            !!! delivery.timeout.ms >= linger.ms + request.timeout.ms
+    Ошибки типа error acknowlegement:
+        1. Retryable error - временная проблема, может быть решена повтором(retry), если
+           например реплика упала
+        2. Non-Retryable error - постоянная ошибка - не может быть решена повтором, если
+           например превышен допустимый размер сообщения
+
+Idempotent Producer
+    При послылке сообщения и сохранении его в топик, допустим валится acknowledgment
+    Делается retry но сообщение НЕ сохраняется ещё раз, а возвращается acknowledgment
+    по умолчанию true, но рекумендуется указать явно 
+    включить конфиг через properties или мэпку
+        spring.kafka.producer.properties.enable.idempotence=true
+        config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true)
+
+
 Consumer
     Прочитать сообщение с помощью CLI
         ./kafka-console-consumer.sh 
@@ -335,15 +367,16 @@ Spring Boot Consumer
     Это называется ConsumerGroup
 
 
------------- Project workframe -----------------
+------------ Project workframe -----------------------------------------------------------------
 Hierarchy
     ├── config
     │   └── KafkaConfig.java
     ├── consumer
-    │   ├── MedRecordStatusChangedConsumer.java
-    │   └── PersonUUIDChangeConsumer.java
+    │   ├── FifrstConsumer.java
+    │   └── SecondConsumer.java
     ├── producer
-    │   └── EgiszSendingProducer.java
+    │   ├── FirstProducer.java
+    |   └── SecondProducer.java
     └── topics
         └── KafkaTopic.java
 
@@ -468,14 +501,14 @@ KafkaConfig.java
         // конфиг для всех консьюмеров, отличается параметрами
         private Map<String, Object> consumerConfig(String groupId, String className) {
             Map<String, Object> config = new HashMap<>();
-            config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-            config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-            config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-            config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
-            config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-            config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-            config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, className);
-            config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, "false");
+            config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);                          // сервера
+            config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);             // обработка ключа
+            config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);    // обработка значения
+            config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);         // если ошибка - переход к следующему
+            config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);                                            // группа консьюмеров
+            config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");                                             // пакеты
+            config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, className);                                     // свой класс по умолчанию
+            config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, "false");                                    // лишний вывод в консоль
             return config;
         }
     }
@@ -504,61 +537,37 @@ KafkaTopic.java
         }
     }
 
-                // синхронная отправка(когда нужно дождаться ответа перед тем как послать след сообщение)
-                SendResult<String, ProductCreatedEvent> result = 
-                    kafkaTemplate.send("product-created-event", productId, productCreatedEvent).get();
-                logger.info("Ok: {}", result.getRecordMetadata());
+FirstProducer.java
+    // аналогично создаются остальные продюссеры - под каждый добавляем свой KafkaTemplate в KafkaConfig
+    @Service
+    @Log4j2
+    public class FirstProducer {
+        @Autowired
+        private KafkaTemplate<String, FirstDTO> firstKafkaTemplate;
 
-                return productId;
+        private final String topic = "my-topic-1";      // топик
 
-Получение acknowledgment
-    Варианты конфигурации:
-        1. Ждать acknowledgement от всех insync реплик  - spring.kafka.producer.acks=all
-        2. Не получать acknowledgement                  - spring.kafka.producer.acks=0
-        3. Получать только от Leader(default)           - spring.kafka.producer.acks=1
-    Если acknowledgment не приходит от лидера или при all не приходит от всех insync реплик, 
-    то Producer начинает делать retry:
-        Либо делает retry в течение 2 мин, либо делаем максимальное кол-во retry 2147483647, либо указываем
-        вручную кол-во retry, интервал, время попыток:
-            spring.kafka.producer.retries=10 (default 2147483647 максимальное кол-во retry)
-            spring.kafka.producer.properties.retry.backoff.ms=1000  (default 100 интервал отправки сообщений)
-            spring.kafka.producer.properties.delivery.timeout.ms=60000 (default 120000 время попыток)
-            spring.kafka.producer.properties.linger.ms=0 (сколько по времени накапливаем сообщ, потом шлем батчем)
-            spring.kafka.producer.properties.request.timeout.ms=30000 (как долго prducer ждет ответа от брокера)
-            spring.kafka.producer.properties.max.in.flight.requests.per.connection=5 (макс 5 сообщений без ответа)
-            spring.kafka.producer.properties.enable.idempotence=true (Idempotent Producer - ниже описано)
-            !!! delivery.timeout.ms >= linger.ms + request.timeout.ms
-    Ошибки типа error acknowlegement:
-        1. Retryable error - временная проблема, может быть решена повтором(retry), если
-           например реплика упала
-        2. Non-Retryable error - постоянная ошибка - не может быть решена повтором, если
-           например превышен допустимый размер сообщения
+        public void sendMessage(FirstDTO dto) {
+            try {
+                assert dto != null : "FirstDTO is null";
+                log.info("Sending message: uuid = {}", dto.getUuid());
 
-Idempotent Producer
-    При послылке сообщения и сохранении его в топик, допустим валится acknowledgment
-    Делается retry но сообщение НЕ сохраняется ещё раз, а возвращается acknowledgment
-    по умолчанию true, но рекумендуется указать явно 
-    включить конфиг через properties или мэпку
-        spring.kafka.producer.properties.enable.idempotence=true
-        config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true)
+                // выбрать какой тип отправки нужен
+                // 1 - асинхронная отправка с помощью CompletableFuture
+                CompletableFuture<SendResult<String, FirstDTO>> future = firstKafkaTemplate.send(topic, dto).completable();
+                future.whenComplete((result, exception) -> {
+                    if (exception != null)
+                        log.error("ERROR: {}", exception.getMessage());
+                    else
+                        log.info("Ok: {}", result.getRecordMetadata());
+                });
 
-
-            config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class); // скипает SerializationException
-                                                                                                            если допустим пришла строка, выскакивает
-                                                                                                            SerializationException 1 раз и пропускается
-                                                                                                            переходит к следующей ячейке
-            config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);      // обрабатывает JSON
-            config.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("spring.kafka.consumer.group-id"));
-            config.put(JsonDeserializer.TRUSTED_PACKAGES, environment.getProperty("spring.kafka.consumer.properties.spring.json.trusted.packages"));
-
-            return new DefaultKafkaConsumerFactory<>(config);
-        }
-
-        @Bean
-        ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(ConsumerFactory<String, Object> consumerFactory) {
-            ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
-            factory.setConsumerFactory(consumerFactory);
-
-            return factory;
+                // 2 - cинхронная отправка(когда нужно дождаться ответа перед тем как послать след сообщение)
+                SendResult<String, FirstDTO> result = firstKafkaTemplate.send(topic, dto).get();
+                log.info("Ok: {}", result.getRecordMetadata());
+            
+            } catch (Exception e) {
+                log.error("Failed to send message: {}", e.getMessage());
+            }
         }
     }
