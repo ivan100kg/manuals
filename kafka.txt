@@ -211,6 +211,7 @@ Kafka CLI
     1. останановка produsers, consumers
     2. остановка с пом терминала ./kafka-server-stop.sh
 
+
 Логи/сообщения/занимаемое место кластера
     ./kafka-log-dirs.sh                     посмотреть логи
         --bootstrap-server localhost:9092   сервера(один из)
@@ -269,16 +270,24 @@ Topic
         ./kafka-topics.sh --list --bootstrap-server host:9092       посмотреть топики, указываем один
                                                                     из брокеров кластера
         ./kafka-topics.sh --describe --bootstrap-server host:9092   детальная информация о топиках
-                                                                    partition : 0   - раздел
-                                                                    Leader: 1       - лидер раздела
-                                                                    Replicas: 1,2,3 - копии на серверах
-                                                                    Isr: 1,2,3      - синхронизация серверов
+            Topic: my-topic	                - топик
+            TopicId: Dw-UCa5jRYC8aBCbiBqwxQ	- id
+            PartitionCount: 3	            - партиции
+            ReplicationFactor: 3	        - реплики
+            Configs:                        - доп конфиги
+                min.insync.replicas=2,      - минимум синхронизированных реплик
+                segment.bytes=1073741824    - размер сегментов(файлов), создается новый файл логов, если превышает 
+            partition : 0                   - раздел
+            Leader: 1                       - лидер раздела
+            Replicas: 1,2,3                 - копии на серверах
+            Isr: 1,2,3                      - синхронизация серверов(какие синхронизирована с лидером)
     изменить топик:
         изменить количество разделов
         kafka-topics.sh --bootstrap-server localhost:9092 --alter --topic my-topic --partitions 16
     удалить топик:
         включить настройку, если выключена delete.topic.enable=true
         ./kafka-topics.sh --delete --topic my-topic --bootstrap-server host:9092 - удалить топик my-topic
+        либо можно удалить все директории логов
 
 Producer
     Создать сообщение через CLI
