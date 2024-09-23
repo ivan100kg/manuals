@@ -250,6 +250,7 @@ Kafka CLI
         partition.metadata
     Посмотреть занимаемое место
         du -sh /path/to/kafka/logs
+        du -sh /tmp/serv1 /tmp/serv2 /tmp/serv3 
         если на разных серверах - то можно скрипт сделать и посмотреть на каждом du -sh
 
 
@@ -310,7 +311,7 @@ Producer
     Попадание в один раздел по ключу по примеру 3-х партиций:
         partition = hash("my-key") % 3      Kafka применяет хеш-функцию к значению ключа
         Таким образом определится один из трёх разделов и сообщения с одинаковым ключём
-        попадают в одну партицию
+        попадают в одну партицию. Соответственно чтение будет идти последовательно
 
     Можно отправлять сообщения в Kafka как синхронные(ждать подтверждения с Kafka Broker)
     так и асинхронные(не ждать подтверждения, а слать сообщения, а при приходе подтверждения - обработать)
@@ -331,7 +332,8 @@ Producer
         1. Ждать acknowledgement от всех insync реплик  - spring.kafka.producer.acks=all
         2. Не получать acknowledgement                  - spring.kafka.producer.acks=0
         3. Получать только от Leader(default)           - spring.kafka.producer.acks=1
-    Если acknowledgment не приходит от лидера или при all не приходит от всех insync реплик, 
+    Если acknowledgment не приходит от лидера или при all не приходит от всех insync реплик(имеется ввиду
+    все синхонизированные реплики - мин кол-во определяется параметром min.isync.replicas=2),  
     то Producer начинает делать retry:
         Либо делает retry в течение 2 мин, либо делаем максимальное кол-во retry 2147483647, либо указываем
         вручную кол-во retry, интервал, время попыток:
@@ -345,9 +347,9 @@ Producer
             !!! delivery.timeout.ms >= linger.ms + request.timeout.ms
     Ошибки типа error acknowlegement:
         1. Retryable error - временная проблема, может быть решена повтором(retry), если
-           например реплика упала
+           например реплика упала, продюссер снова пытается слать сообщение
         2. Non-Retryable error - постоянная ошибка - не может быть решена повтором, если
-           например превышен допустимый размер сообщения
+           например превышен допустимый размер сообщения, продюссер больше слать сообщения не будет
 
 Idempotent Producer
     При послылке сообщения и сохранении его в топик, допустим валится acknowledgment
@@ -364,7 +366,7 @@ Consumer
             --bootstrap-server localhost:9092,localhost:9094    сервера
             --topic mytopic                                     топик для чтения
             --from-beginning                                    печать все сообщения сначала
-            --property "print.key=true"                         печатать ключ и сообщение
+            --property "print.key=true"                         печатать ключ и сообщение(без ключа - null)
             --group <your-group-id>                             для чтения группой(каждый читает сообщение 1 раз)
         
 Spring Boot Consumer
@@ -562,16 +564,18 @@ FirstProducer.java
                 log.info("Sending message: {}", dto);
 
                 // выбрать какой тип отправки нужен
-                // 1 - асинхронная отправка с помощью CompletableFuture
+                // 1 - асинхронная отправка с помощью CompletableFuture(для отображения результата)
+                // либо можно просто отправить firstKafkaTemplate.send(topic, dto); не дожидаясь ответа
                 CompletableFuture<SendResult<String, FirstDTO>> future = firstKafkaTemplate.send(topic, dto).completable();
                 future.whenComplete((result, exception) -> {
                     if (exception != null)
                         log.error("ERROR: {}", exception.getMessage());
                     else
-                        log.info("Ok: {}", result.getRecordMetadata());
+                        log.info("Ok: {}", result.getRecordMetadata()); // в метаданных можно вытащить много инфы
                 });
 
                 // 2 - cинхронная отправка(когда нужно дождаться ответа перед тем как послать след сообщение)
+                future.join();  // либо так из многопоточки в однупоточку либо по-правильному:
                 SendResult<String, FirstDTO> result = firstKafkaTemplate.send(topic, dto).get();
                 log.info("Ok: {}", result.getRecordMetadata());
             
