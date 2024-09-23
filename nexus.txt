@@ -45,6 +45,36 @@ Nexus Repository Manager
         login: admin
         password: /opt/sonatype-work/nexus3/admin.password
 
+https:
+    cd /opt/nexus/etc/ssl/
+    sudo keytool -genkeypair -keystore keystore.jks -storepass my_pass                    <----+
+                 -keypass my_pass -alias jetty -keyalg RSA -keysize 2048 -validity 1000         \
+                 -dname "CN=*.${NEXUS_DOMAIN}, OU=test, O=test1, L=Unspecified, ST=Unspecified, C=RU" 
+                 -ext "SAN=DNS:nexus-repo.com,IP:192.168.1.66" -ext "BC=ca:true"                  \
+    sudo keytool -export -alias jetty -keystore keystore.jks -rfc -file nexus.cert                 \
+    sudo vim /opt/nexus/etc/nexus-default.properties                                                \
+        дописываем в секцию # Jetty section                                                          |
+        application-port-ssl=8443                                                                    |
+        nexus-args=${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-https.xml,${jetty.etc}/jetty-requestlog.xml
+    sudo vim /opt/nexus/etc/jetty/jetty-https.xml                                                    |
+        Находим блок sslContextFactory вставляем свои пароли и имя keystore который генерили раньше -+
+        <Set name="KeyStorePath"><Property name="ssl.etc"/>/keystore.jks</Set>
+        <Set name="KeyStorePassword">my_pass</Set>
+        <Set name="KeyManagerPassword">my_pass</Set>
+        <Set name="TrustStorePath"><Property name="ssl.etc"/>/keystore.jks</Set>
+        <Set name="TrustStorePassword">my_pass</Set>
+    sudo systemctl restart nexus
+    
+    # установка сертификата
+    sudo mv nexus.cert nexus.crt
+    sudo cp nexus.crt  /usr/local/share/ca-certificates
+    sudo update-ca-certificates
+
+    Заходим на веб-морду под админом
+    Server administration and configuration
+    и задаем https (пока только в докере)
+
+
 Добавить maven репозиторий в nexus
     pom.xml
     <distributionManagement>
