@@ -44,6 +44,7 @@ Nexus Repository Manager
     Жмем sing in
         login: admin
         password: /opt/sonatype-work/nexus3/admin.password
+        создаем maven2-host под мавен репозиторий
 
 https:
     cd /opt/nexus/etc/ssl/
@@ -76,7 +77,21 @@ https:
 
 
 Добавить maven репозиторий в nexus
-    pom.xml
+    # settings.xml
+    <?xml version="1.0" encoding="UTF-8"?>                                                                            
+    <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 http://maven.apache.org/xsd/settings-1.2.0.xsd">
+        <servers>                                                                   
+            <server>                                                                
+                <id>nexus-repo</id>                                                 
+                <username>admin</username>                                          
+                <password>admin-pass</password>                                   
+            </server>                                                               
+        </servers>                                                                 
+    </settings>
+    
+    # pom.xml
     <distributionManagement>
 		<repository>
 			<id>nexus-repo</id>
@@ -85,3 +100,33 @@ https:
 	</distributionManagement>
 
     mvn clean deploy
+
+Добавить зависимость из nexus
+    # settings.xml
+    <?xml version="1.0" encoding="UTF-8"?>                                                                            
+    <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 http://maven.apache.org/xsd/settings-1.2.0.xsd">
+        <mirrors>                                                                   
+            <mirror>                                                                
+                <id>nexus-repo</id>                                                 
+                <mirrorOf>nexus-repo</mirrorOf>                                     
+                <url>http://192.168.1.66:8081/repository/dto/</url>                 
+                <blocked>false</blocked>                                            
+            </mirror>                                                               
+        </mirrors>                                                                  
+    </settings> 
+
+    # pom.xml
+    <dependency>
+        <groupId>ru.sciencelab</groupId>
+        <artifactId>dto</artifactId>
+        <version>1.0.3</version>
+    </dependency>
+
+    <repositories>
+        <repository>
+            <id>nexus-repo</id>
+            <url>http://192.168.1.66:8081/repository/dto/</url>
+        </repository>
+    </repositories>
