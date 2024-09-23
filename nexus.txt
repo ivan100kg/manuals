@@ -1,0 +1,57 @@
+Nexus Repository Manager
+Это инструмент для управления зависимостей. 
+Он позволяет хранить и управлять JAR, WAR, Docker-образы и т.д.
+
+
+Установка:
+    sudo apt update
+    sudo wget https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+    sudo tar -zxvf latest-unix.tar.gz -C /opt
+    sudo mv opt/nexus-3.61.0-02/ opt/nexus/
+    
+    # user + config
+    sudo adduser nexus
+    sudo chown -R nexus:nexus nexus/ sonatype-work/
+    sudo vim /opt/nexus/bin/nexus.rc
+        run_as_user="nexus"
+
+    # service
+    sudo vim /etc/systemd/system/nexus.service
+        [Unit]
+        Description=nexus service
+        After=network.target
+        [Service]
+        Type=forking
+        LimitNOFILE=65536
+        ExecStart=/opt/nexus/bin/nexus start
+        ExecStop=/opt/nexus/bin/nexus stop
+        User=nexus
+        Restart=on-abort
+        [Install]
+        WantedBy=multi-user.target
+    sudo systemctl start nexus
+    sudo systemctl enable nexus
+    systemctl status nexus
+
+    # logs
+    tail -f /opt/sonatype-work/nexus3/log/nexus.log
+    
+Настройка
+    Заходим на веб-морду
+    http://127.0.0.1:8081/ - слушает 8081 порт, заменить на ip
+                             если коннектимся из вне
+    cat /opt/sonatype-work/nexus3/admin.password    # копируем pass
+    Жмем sing in
+        login: admin
+        password: /opt/sonatype-work/nexus3/admin.password
+
+Добавить maven репозиторий в nexus
+    pom.xml
+    <distributionManagement>
+		<repository>
+			<id>nexus-repo</id>
+			<url>http://192.168.1.66:8081/repository/dto/</url>
+		</repository>
+	</distributionManagement>
+
+    mvn clean deploy
