@@ -1671,12 +1671,19 @@ LOGNAМE=root
 
 --- Запуск скриптов при входе в систему и при запуске оболочки -----------
 # скрипты можно расположить в следующих файлах
-$HOME/.bash_profile # при входе в систему
-$HOME/.bash_login   # при входе в систему
-$HOME/.profile      # при входе в систему This file is not read by
-                      bash(1), if ~/.bash_profile or ~/.bash_login exists.
-$HOME/.bash_logout  # when leaving the console
-$HOME/.bashrc       # при открытии оболочки bash
+для текущего юзера:
+~/.bash_profile     # вход в систему
+~/.bash_login       # вход в систему (если нет .bash_profile)
+~/.profile          # вход в систему (если нет .bash_profile и .bash_login)
+~/.bash_logout      # закрытие оболочки bash
+~/.bashrc           # при открытии оболочки bash
+
+для всех пользователей:
+/etc/environment    # старт системы
+/etc/profile        # вход в систему
+/etc/profile.d/*    # вход в систему, запускаются все файлы в директории
+/etc/fstab          # старт системы, монтирование дисков/устройств
+
     
 --- locale -------------------------------------------------------------------
 locale          # информация о текущем языковом окружении
