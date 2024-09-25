@@ -37,6 +37,13 @@ Nexus Repository Manager
     tail -f /opt/sonatype-work/nexus3/log/nexus.log
     
 Настройка
+    Добавить порт в firewall(если установлен)
+        ufw status
+        iptables -L
+        firewall-cmd --list-all
+            firewall-cmd --permanent --add-port=8081/tcp
+            firewall-cmd --reload
+
     Заходим на веб-морду
     http://127.0.0.1:8081/ - слушает 8081 порт, заменить на ip
                              если коннектимся из вне
@@ -47,7 +54,7 @@ Nexus Repository Manager
         создаем maven2-host под мавен репозиторий
 
 Добавить maven репозиторий в nexus
-    # settings.xml
+    # settings.xml - создаем шифрование, смотри maven инструкцию
     <?xml version="1.0" encoding="UTF-8"?>                                                                            
     <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0" 
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
