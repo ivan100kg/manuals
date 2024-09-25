@@ -126,6 +126,16 @@ Nexus Repository Manager
         </mirrors>                                                                  
     </settings> 
 
+    Либо можно добавить 1 зеркало на группу maven-public, 
+    в ней по умолчанию maven-realeases, maven-snapshots...
+    а в эту группу добавлять через веб нужные репозитории (dto)
+    <mirror>                                                                
+        <id>maven-public</id>                                               
+        <mirrorOf>*</mirrorOf>                                              
+        <url>http://172.16.0.216:8081/repository/maven-public</url>         
+        <blocked>false</blocked>                                            
+    </mirror>
+
     # pom.xml
     <dependency>
         <groupId>ru.sciencelab</groupId>
@@ -136,6 +146,8 @@ Nexus Repository Manager
         ...любые зависимости из maven-releases
     </dependency>
 
+    Можно добавить репозитории через pom.xml, либо через settings.xml
+    # pom.xml - добавить репозитории
     <repositories>
         <repository>
             <id>nexus-releases</id>
@@ -146,6 +158,39 @@ Nexus Repository Manager
             <url>http://172.16.0.216:8081/repository/dto/</url>
         </repository>
     </repositories>
+
+    # setting.xml - добавить репозитории
+    <profiles>                                                                  
+        <profile>                                                               
+            <id>nexus</id>                                                      
+            <repositories>                                                      
+                <repository>                                                    
+                    <id>nexus-releases</id>                                     
+                    <url>http://172.16.0.216:8081/repository/maven-releases/</url>
+                    <releases>                                                  
+                        <enabled>true</enabled>                                 
+                    </releases>                                                 
+                    <snapshots>                                                 
+                        <enabled>false</enabled>                                
+                    </snapshots>                                                
+                </repository>                                                   
+            </repositories>                                                     
+                <repository>                                                    
+                    <id>nexus-dto</id>                                          
+                    <url>http://172.16.0.216:8081/repository/dto/</url>         
+                    <releases>                                                  
+                        <enabled>true</enabled>                                 
+                    </releases>                                                 
+                    <snapshots>                                                 
+                        <enabled>false</enabled>                                
+                    </snapshots>                                                
+                </repository>                                                   
+        </profile>                                                              
+    </profiles>                                                                 
+                                                                                
+    <activeProfiles>                                                            
+        <activeProfile>nexus</activeProfile>                                    
+    </activeProfiles>
 
 
 https:
