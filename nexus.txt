@@ -53,12 +53,16 @@ Nexus Repository Manager
         password: /opt/sonatype-work/nexus3/admin.password
         создаем maven2-host под мавен репозиторий
 
-Добавить maven репозиторий в nexus
-    # settings.xml - создаем шифрование, смотри maven инструкцию
+
+--- Добавить свой maven репозиторий в nexus ---------------------------
+    # server.id из settings.xml должно быть == repository.id из pom.xml
+
+    # settings.xml - создаем шифрование пароля, смотри maven инструкцию
     <?xml version="1.0" encoding="UTF-8"?>                                                                            
     <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0" 
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-        xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 http://maven.apache.org/xsd/settings-1.2.0.xsd">
+        xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 
+        http://maven.apache.org/xsd/settings-1.2.0.xsd">
         <servers>                                                                   
             <server>                                                                
                 <id>nexus-repo</id>                                                 
@@ -78,19 +82,47 @@ Nexus Repository Manager
 
     mvn clean deploy
 
-Добавить зависимость из nexus
+
+--- Добавить любой jar в nexus -----------------------------------------
+    Все Jar по умолчанию заливаются в репозиторий nexus - maven-releases
+    1. Добавить настройки в setting.xml
+        <server>                                                                
+            <id>nexus-releases</id>                                             
+            <username>admin</username>                                          
+            <password>{encPass}</password> 
+        </server>
+    2. Деплоим в нексус
+    mvn deploy:deploy-file -DrepositoryId=nexus-releases 
+                        -Durl=http://172.16.0.216:8081/repository/maven-releases/ 
+                        -Dfile=itext-2.1.7.js4.jar 
+                        -DgroupId=com.lowagie 
+                        -DartifactId=itext 
+                        -Dversion=2.1.7.js4 
+                        -Dpackaging=jar 
+                        -DgeneratePom=true
+    Когда зависимости подтянутся - они лягут в локальный .m2
+
+
+--- Подтянуть зависимость из nexus в любой maven проект ------
     # settings.xml
     <?xml version="1.0" encoding="UTF-8"?>                                                                            
     <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0" 
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-        xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 http://maven.apache.org/xsd/settings-1.2.0.xsd">
+        xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 
+        http://maven.apache.org/xsd/settings-1.2.0.xsd">
         <mirrors>                                                                   
             <mirror>                                                                
                 <id>nexus-repo</id>                                                 
                 <mirrorOf>nexus-repo</mirrorOf>                                     
                 <url>http://192.168.1.66:8081/repository/dto/</url>                 
                 <blocked>false</blocked>                                            
-            </mirror>                                                               
+            </mirror>  
+            <mirror>                                                                
+                <id>nexus-releases-mirror</id>                                      
+                <mirrorOf>nexus-releases</mirrorOf>                                 
+                <url>http://172.16.0.216:8081/repository/maven-releases/</url>      
+                <blocked>false</blocked>                                            
+            </mirror>                                                              
         </mirrors>                                                                  
     </settings> 
 
@@ -100,13 +132,21 @@ Nexus Repository Manager
         <artifactId>dto</artifactId>
         <version>1.0.3</version>
     </dependency>
+    <dependency>
+        ...любые зависимости из maven-releases
+    </dependency>
 
     <repositories>
         <repository>
-            <id>nexus-repo</id>
-            <url>http://192.168.1.66:8081/repository/dto/</url>
+            <id>nexus-releases</id>
+            <url>http://172.16.0.216:8081/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>nexus-dto</id>
+            <url>http://172.16.0.216:8081/repository/dto/</url>
         </repository>
     </repositories>
+
 
 https:
     cd /opt/nexus/etc/ssl/
