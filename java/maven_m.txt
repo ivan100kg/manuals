@@ -389,6 +389,46 @@
     </repositories>
 
 
+--- settings.xml ---
+# deploy
+
+# шифрование пароля
+    1. создать мастер-пароль    mvn --encrypt-master-password <password> <----+
+    2. создать файл settings-security.xml и добавить туда полученный пароль --+
+    3. зашифровать нужный пароль от сервера mvn --encrypt-password <password>
+       и вставить его в settings.xml
+
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"                        
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0    
+    http://maven.apache.org/xsd/settings-1.2.0.xsd">
+    <servers>                                                                   
+        <server>                                                                
+            <id>naukaServer</id>                                                
+            <username>tomcat</username>                                         
+            <password>{sadgfasdf}</password>                                                                              
+        </server>                                                               
+        <server>                                                                
+            <id>gitlab</id>                                                     
+            <username>ivanb</username>                                          
+            <password>{sdgfsdg}</password>                     
+        </server>                                                               
+        <server>                                                                
+            <id>nexus-repo</id>                                                 
+            <username>admin</username>                                          
+            <password>{asdfasdf}</password>                                       
+        </server>                                                               
+    </servers>                                                                  
+    <mirrors>                                                                   
+        <mirror>                                                                
+            <id>nexus-repo</id>                                                 
+            <mirrorOf>nexus-repo</mirrorOf>                                     
+            <url>http://172.16.0.216:8081/repository/dto/</url>                 
+            <blocked>false</blocked>                                            
+        </mirror>                                                               
+    </mirrors>                                                                  
+</settings>
+
 --- Запаковка сборки в Docker ---
     <build>
         <plugins>
