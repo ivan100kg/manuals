@@ -606,3 +606,17 @@ FirstConsumer.java
             }
         }
     }
+
+    // вариант если в один топик передаются разные дто-шки(ивенты)
+       и фабрика будет иметь такой вид ConsumerFactory<String, Object>,
+       а контенер фабрика такой  ConcurrentKafkaListenerContainerFactory<String, Object>
+    // можно разделить следующим образом
+    @Service
+    @KafkaListener(topics = "my-topic-2")       // дилегирует на методы ниже
+    public class FirstConsumer {    
+        @KafkaHandler
+        public void hadle(FirstDTO dto) {}      // обработка первого ивента
+        
+        @KafkaHandler
+        public void hadle(SecondDTO dto) {}     // обработка второго ивента
+
