@@ -266,7 +266,7 @@ nmap [опции] {цель}
 
     скрипты:
     -sC                     запускать скрипт по умолчанию
-    расположение:           sudo find /usr/share/nmap/scripts/ -name '*.nse' | grep ftp
+    расположение:           sudo find /usr/share/nmap/scripts/ -name '*.nse' | grep ssh
     информация о скрипте:   sudo nmap --script-help ftp-brute.nse
     вызов скипта:           sudo nmap --script ssh-brute.nse 192.168.1.1 -p 22
 
