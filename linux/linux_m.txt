@@ -45,7 +45,8 @@ GNU — операционная система типа Unix, программ�
 11. Выполнить сценарии запуска
 12. Запустить систему
 
-efibootmgr  #   UEFI утилита позволяет изиенить порядок загрузки(выбор устр)
+efibootmgr  #   UEFI утилита позволяет изменить порядок загрузки(выбор устр)
+
 # GRUB --
 позволяет указать параметры: загрузочное ядро, режим работы для загрузки
 /boot/grub/grub.cfg # config file, не редактировать
@@ -1774,7 +1775,30 @@ folder      - имя сетевой папки
 umount /mnt - umount
 
 
---- keyboard Language ---
+--- ярлык на рабочий стол/приложения Ubuntu ---
+chmod +x ~/myscript.sh                              # делаем скрипт исполняемым
+vim ~/.local/share/applications/myscript.desktop    # создаем ярлык для приложений
+# Копируем на рабочий стол
+cp ~/.local/share/applications/myscript.desktop ~/Desktop
+    [Desktop Entry]
+    Version=1.0
+    Type=Application
+    Name=My Script
+    Comment=Run my custom script
+    Exec=/bin/bash ~/myscript.sh
+    Icon=utilities-terminal
+    Terminal=false
+    Categories=Utility;
+    
+    Name        - название приложения, как оно будет отображаться в меню.
+    Comment     - описание приложения.
+    Exec        - путь к вашему скрипту.
+    Icon        - иконка приложения (замените на подходящую, если нужно).
+    Terminal    - открывать терминал
+update-desktop-database ~/.local/share/applications # обновить кэш
+
+
+--- keyboard Language ----------------------
 # сменить язык клавиатуры на Shift-Alt левые
 gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "['<Shift>Alt_L']"
 # сменить язык клавиатуры на Alt-Shift левые
@@ -1813,7 +1837,7 @@ gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "['<
         mvn clean install tomcat7:redeploy -P prod  # prod - имя профиля >-+
 
 
---- настройка статического IP ---------
+--- настройка статического IP -------------------
 sudo vim /etc/netplan/01-network-manager-all.yaml
 
   network:
