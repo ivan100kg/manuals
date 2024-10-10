@@ -52,26 +52,38 @@ Docker Hub - хранилище сборок.
 
 --- Console command ---------------------------------------------------------
 # info
-docker images               # посмотреть образы на диске
-docker ps                   # посмотреть запущенные контейнеры (-a все конты)
+docker images                   # посмотреть образы на диске
+docker ps                       # посмотреть запущенные контейнеры (-a все конты)
 
 # сборка образа
-docker build -t name path   # собрать Image по Dockerfile
-                              name - имя Image 
-                              path - путь Dockerfile
+docker build -t name:tag path   # собрать Image по Dockerfile
+                                  name - имя Image
+                                  tag  - тэг, необязательный
+                                  path - путь до Dockerfile
 # запуск контейнера                             
-docker run im_name/id       # запуск контейнера по образу (имени/id)
-docker run --rm id          # после отработки/остановки - конт с id=id удалится
+docker run im_name/id           # запуск контейнера по образу (имени/id)
+docker run --rm id              # после отработки/остановки - конт с id=id удалится
 docker run -dp 127.0.0.1:3000:3000 im/id    # -d - запуск контейнера в фоновом режиме
                                               -p - маппинг портов hostPort:containerPort
                                               im/id - имя Image/ id
 # остановка/удаление контейнеров
-docker stop id/cname        # остановить контейнер по id/name
-docker rm id/cname          # удалить контейнер по ID/name
-docker rm $(docker ps -aq)  # удалить все контейнеры
+docker stop id/cname            # остановить контейнер по id/name
+docker rm id/cname              # удалить контейнер по ID/name
+docker rm $(docker ps -aq)      # удалить все контейнеры
 
 # удалить образ
-sudo docker image rm id     # удалить образ -f - принудительно
+docker image rm id              # удалить образ -f - принудительно
+
+# установить тэг
+docker tag im/id name:tag       # создать новую ссылку на существующий образ с
+                                  любым названием и тэгом, в качестве источника
+                                  может быть id, name, name:tag
+
+# скопировать образ на другую машину
+docker save -o имя_образа.tar имя_образа:тег    # сохраняем в файл
+scp myapp.tar user@IP:/path                     # копируем на дпугую машину
+docker load -i /path/myapp.tar                  # извлекаем образ на другой машине
+                                                  можно запускать контейнер
 
 # example
 docker run --rm --name web -p 8080:8080 myProject
