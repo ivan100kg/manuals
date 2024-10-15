@@ -6,7 +6,7 @@ Docker Container
     это работающее приложение созданное на базе Image,
     можно создавать множество контейнеров на одной и той же базе.
     Контейнер работает до остановки приложения.
-    Запускаумый инстанс образа. Можно запускать/останавл/удалять/перемещать конт
+    Запускаумый инстанс образа. Можно запускать/останавл/удалять/перемещать
     Можно запускать на локальной машине, виртуальной, облаке
     Может быть запущен на любой ОС
     Изолирован от других контейнеров, имеет свою структуру
@@ -52,23 +52,46 @@ Docker Hub - хранилище сборок.
 
 --- Console command ---------------------------------------------------------
 # info
+docker                          # все команды
+docker COMMAND --help           # детальное описание команды
+docker info                     # инфо о докер, память, образы, контейнеры
 docker images                   # посмотреть образы на диске
 docker ps                       # посмотреть запущенные контейнеры (-a все конты)
+
+# dockerhub
+docker login                    # зайти в уч запись
+docker logout                   # выйти
+
+# загрузка образа
+docker pull im_name[:tag]       # загрузка образа из реестра образов (докерхаб
+                                  по умолчанию) на лок машину /var/lib/docker,
+                                  по умолчанию берется образ с тэгом :latest
+
 
 # сборка образа
 docker build -t name:tag path   # собрать Image по Dockerfile
                                   name - имя Image
                                   tag  - тэг, необязательный
                                   path - путь до Dockerfile
-# запуск контейнера                             
-docker run im_name/id           # запуск контейнера по образу (имени/id)
-docker run --rm id              # после отработки/остановки - конт с id=id удалится
-docker run -dp 127.0.0.1:3000:3000 im/id    # -d - запуск контейнера в фоновом режиме
-                                              -p - маппинг портов hostPort:containerPort
-                                              im/id - имя Image/ id
-# остановка/удаление контейнеров
-docker stop id/cname            # остановить контейнер по id/name
-docker rm id/cname              # удалить контейнер по ID/name
+# создать контейнер                             
+docker run im_name/id           # создать контейнер по образу + запустить
+                                  если образа нет - то он скачается с докерхаб
+                                  -d - запуск контейнера в фоновом режиме
+                                  -p 80:80 - маппинг портов hostPort:containerPort
+                                  --rm после отработки/остановки - конт удалится
+                                  im/id - имя Image или id
+                                  --ip 
+
+# остановить/запустить контейнер
+docker stop c_name/id           # остановить контейнер
+docker start c_name/id          # запустить
+docker restart c_name/id        # остановить + запустить
+docker pause c_name/id          # пауза
+docker unpause c_name/id        # снять с паузы
+
+# удаление контейнеров
+docker rm id/c_name             # удалить контейнер по ID/name
+                                  удалить несколько - через пробел
 docker rm $(docker ps -aq)      # удалить все контейнеры
 
 # удалить образ
@@ -101,3 +124,4 @@ docker volume ls        # List volumes
 docker volume prune     # Remove all unused local volumes
 docker volume rm        # Remove one or more volumes
 docker run -v volumeName:absHostPath    # запуск volume:хост путь
+
