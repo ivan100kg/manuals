@@ -393,8 +393,11 @@
 # deploy
 
 # шифрование пароля
-    1. создать мастер-пароль    mvn --encrypt-master-password <password> <----+
-    2. создать файл settings-security.xml и добавить туда полученный пароль --+
+    1. создать мастер-пароль    mvn --encrypt-master-password <password> <----------+
+    2. создать файл ~/.m2/settings-security.xml и добавить туда полученный пароль --+
+        <settingsSecurity>                                                                                                      
+            <master>{VOLpK4325233EHd324sdg3w4fdg}</master>               
+        </settingsSecurity>
     3. зашифровать нужный пароль от сервера mvn --encrypt-password <password>
        и вставить его в settings.xml
 
