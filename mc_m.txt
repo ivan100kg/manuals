@@ -37,4 +37,14 @@ CdParent	    Ctrl-PgUp	        move to the parent directory
 Mark	        Ins, Ctrl-t	        tag or untag files. To untag files, just retag a tagged file
 MarkDown	    Shift-Down	        tag file and move the selection bar to the next entry
 MarkUp	        Shift-Up	        tag file and move the selection bar to the previous entry
-Enter	        Enter	
+Enter	        Enter 
+
+--- переопределение открытия разных типов файлов ---
+1. открыть ~/.config/mc/mc.ext.ini
+2. добавить нужный конфиг
+    Open - обработка нажатия enter - открывается программа по умолчанию
+    View - нажатие F3
+[log]
+Regex=\\.log$
+RegexIgnoreCase=true
+Open=/usr/libexec/mc/ext.d/doc.sh open log
