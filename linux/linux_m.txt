@@ -1741,9 +1741,8 @@ ffmpeg -i input.webm -b:v 1200k -c:v libx264 -c:a aac -r 24 out.mp4
 ffmpeg -i a.mp4 -i b.mp4 -map 0:a -map 1:v -c copy -shortest b_result.mp4
 	
 --- Java -----------------------------------------
-sudo apt install openjdk-8-jdk-headless
-sudo apt install openjdk-8-jdk
-sudo apt install maven
+sudo dnf install java
+sudo dnf install maven
 sudo vim /etc/profile
     # add to end of file
     export JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64/"
