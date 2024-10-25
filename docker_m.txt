@@ -172,3 +172,16 @@ docker run -v volumeName:absHostPath    # запуск volume:хост путь
 --- Управление несколькими контейнерами ---
 Docker Compose - управление и запуск нескольких контейнеров с помощью YAML
 Kubernetes или OpenShift - оркестраторы, управляют множеством контейнеров
+
+# Docker compose
+# Команды запускаются в директории где расположен docker-compose.yml
+docker-compose --help           # info о всех командах
+docker-compose COMMAND --help   # info конкретной команды
+docker-compose up               # запускает все контейнеры, определённые в docker-compose.yml
+                                  -d запускает контейнеры в фоновом режиме 
+docker-compose logs <service>   # логи контейнера или всех
+docker-compose ps               # список запущенных контейнеров
+docker-compose down             # остановить и удалить контейнеры
+docker-compose exec web bash    # Выполняет команду(например bash) в конкретном запущенном 
+                                  контейнере(например web)
+                                  
