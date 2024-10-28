@@ -184,4 +184,81 @@ docker-compose ps               # список запущенных контей
 docker-compose down             # остановить и удалить контейнеры
 docker-compose exec web bash    # Выполняет команду(например bash) в конкретном запущенном 
                                   контейнере(например web)
+
+# docker-compose.yml
+    version: "3.8"  # Указываем версию Docker Compose
+
+    services:
+    # Микросервис 1 на Spring Boot
+    microservice1:
+        image: your-spring-microservice1-image:latest               # Указываем имя образа
+        build:
+        context: ./microservice1                                  # Контекст сборки, путь к Dockerfile
+        ports:
+        - "8081:8080"                                             # Прокидываем порт 8080 контейнера на 8081 хоста
+        environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://db1:5432/db1     # URL подключения к БД
+        SPRING_DATASOURCE_USERNAME: postgres                      # Имя пользователя для БД
+        SPRING_DATASOURCE_PASSWORD: postgres                      # Пароль для БД
+        depends_on:
+        - db1                                                     # Указываем зависимость от базы данных db1
+        volumes:
+        - ./microservice1:/app                                    # Монтируем локальную директорию в контейнер
+
+    # Микросервис 2 на Spring Boot
+    microservice2:
+        image: your-spring-microservice2-image:latest               # Указываем имя образа
+        build:
+        context: ./microservice2                                  # Контекст сборки, путь к Dockerfile
+        ports:
+        - "8082:8080"                                             # Прокидываем порт 8080 контейнера на 8082 хоста
+        environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://db2:5432/db2     # URL подключения к БД
+        SPRING_DATASOURCE_USERNAME: postgres                      # Имя пользователя для БД
+        SPRING_DATASOURCE_PASSWORD: postgres                      # Пароль для БД
+        depends_on:
+        - db2                                                     # Указываем зависимость от базы данных db2
+        volumes:
+        - ./microservice2:/app                                    # Монтируем локальную директорию в контейнер
+
+    # База данных 1 (PostgreSQL)
+    db1:
+        image: postgres:latest                  # Указываем образ PostgreSQL
+        restart: always                         # Перезапускать контейнер в случае сбоя
+        environment:
+        POSTGRES_DB: db1                      # Название создаваемой базы данных
+        POSTGRES_USER: postgres               # Имя пользователя для подключения к БД
+        POSTGRES_PASSWORD: postgres           # Пароль для подключения к БД
+        volumes:
+        - db1-data:/var/lib/postgresql/data   # Монтируем именованный том для хранения данных
+
+    # База данных 2 (PostgreSQL)
+    db2:
+        image: postgres:latest                  # Указываем образ PostgreSQL
+        restart: always                         # Перезапускать контейнер в случае сбоя
+        environment:
+        POSTGRES_DB: db2                      # Название создаваемой базы данных
+        POSTGRES_USER: postgres               # Имя пользователя для подключения к БД
+        POSTGRES_PASSWORD: postgres           # Пароль для подключения к БД
+        volumes:
+        - db2-data:/var/lib/postgresql/data   # Монтируем именованный том для хранения данных
+
+    # Микросервис UI на Angular
+    ui:
+        image: your-angular-ui-image:latest     # Указываем имя образа
+        build:
+        context: ./ui                         # Контекст сборки, путь к Dockerfile
+        ports:
+        - "4200:80"                           # Прокидываем порт 80 контейнера на 4200 хоста
+        depends_on:
+        - microservice1                       # Указываем зависимость от микросервиса 1
+        - microservice2                       # Указываем зависимость от микросервиса 2
+        volumes:
+        - ./ui:/usr/share/nginx/html          # Монтируем локальную директорию в контейнер
+
+    # Определяем именованные тома для хранения данных
+    volumes:
+    db1-data:                                 # Именованный том для базы данных 1
+    db2-data:                                 # Именованный том для базы данных 2
+
                                   
