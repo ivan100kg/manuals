@@ -15,8 +15,12 @@ Angular CLI                 - пакет npm, упрощает создание 
 
 
 Установить/переустановить node и npm:
+# debian
 curl -fsSL https://deb.nodesource.com/setup_21.x | sudo -E bash - &&\
 sudo apt-get install -y nodejs
+
+# radhat
+sudo dnf install nodejs 
 
 npm i -g typescript         # установка typescript
 npm install -g @angular/cli # установка новой версии Angular CLI
@@ -31,13 +35,13 @@ ng g c my-comp              # создать компонент
 ng g s services/my-serv     # создать сервис в папке services
 ng version                  # версия Angular CLI
 ng update                   # обновить Angular CLI
-cd myProject                # перейти в папку где будет содержаться проект
-vim package.json            # создать файл с конфигурацией, установка зависимостей, пакетов..
+cd myProject                # перейти в папку где будет содержаться проект    
+vim package.json            # создать файл с конфигурацией, установка зависимостей, пакетов.. 
 npm install                 # установка всех необходимых модулей из package.json
 mkdir -p src/app            # создадим каталоги для исходников
 vim app.component.ts        # создать компонент, как минимум 1 на проект
 cd ../                      # перейдем в src
-vim main.ts                 # создать файл для запуска приложения
+vim main.ts                 # создать файл для запуска приложения 
 vim index.html              # создать собственно саму страничка
 vim tsconfig.json           # создать конфиг файл для TypeScript
 vim angular.json            # создать конфиг файл для Angular CLI
