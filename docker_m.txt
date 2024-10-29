@@ -174,6 +174,8 @@ docker run -v volumeName:absHostPath    # запуск volume:хост путь
 
 Прикреплять данные к контейнеру можно с помощью лоальной директории
 
+# копировать данные с тома себе на локальный комп
+docker cp container_id:/data/path/to/file_dir /path/on/host
 
 
 
