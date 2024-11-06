@@ -795,67 +795,98 @@ tload    # тоже самое но без граф инт ---------------------
                         но не завершение работы
 19          SIGCONT     Продолжение выполнения ранее остановленного процесса
 
+
 # репозитории - коллекции пакетов ----------------------------------
 /etc/apt/sources.list       стандартные репозитории дистрибутива
 /etc/apt/sources.list.d/    дополнительные репозитории - файлы .list
+
 добавить репозиторий:
-apt-add-repository 'deb http://rep_addr version branch'             обыч реп
-apt-add-repository 'ppa:repository/ppa'                             ppa реп
-echo "deb http://rep_addr version branch" >> /etc/apt/sources.list  ввести напрямую
+apt-add-repository 'deb http://rep_addr version branch'             # обыч реп
+apt-add-repository 'ppa:repository/ppa'                             # ppa реп
+echo "deb http://rep_addr version branch" >> /etc/apt/sources.list  # ввести напрямую
+vim /etc/apt/sources.list.d/<имя_файла>.list                        # нов файл
+
 добавить ключи безопасности(3 способа):
 curl -L http://addr/repo_key | sudo apt-key add
-wget -q -O - http://addr/repo_key| sudo apt-key add -
+wget -q -O - http://addr/repo_key | sudo apt-key add -
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys <http://addr/repo_key>
-удалить репозиторий:
-apt-add-repository --remove 'deb http://rep_addr version branch'    обыч реп
-/etc/apt/sources.list или в одном из /etc/apt/sources.list.d/*.list закоментить строки
-sudo add-apt-repository --remove ppa:repository/ppa                 ppa реп
-далее обновляем список репов
-sudo apt update
 
-# пакеты ---------------------------------------------------------
-# 32 or 64 bit
-  i386, x86, IA-32 # 32 bit
-  amd64, x86_64    # 64 bit
-# пакеты - сжатая кол-ция файлов программ сценариев метаданных...
-  debian  # .deb
-  red hat # .rpm
-# дистрибутив включает 1 центральный репозиоорий и несколько сторонних
-# инструменты управления пакетами
-  debian: высокоур: apt, apt-get, aptitude. низкоур: dpkg
-  redhat: высокоур: yum. низкоур: rpm
-# поиск пакетов
-  apt-cache search "pak"
-  yum search "pak"
-# установка пакетов из репозитория
-  apt install "pak"
-  yum install "pak"
-# установка пакетов из файла
-  dpkg --install "pak"
-  rpm -i "pak"
-#  удаление пакетов
-  apt remove "pak"
-  yum erase "pak"
-# обновление пакетов из реп-ия
-  sudo apt update; apt upgrade
-  sudo pacman -Syu # Arch
-  yum update
-# обновление пакетов из файла
-  dpkg --install "pak"
-  rpm -U "pak"
-# список установленнвх пакетов
-  dpkg -l(--list)
-  rpm -qa
-# определение установлен ли пакет
-  dpkg --status 'name'
-  rpm -q 'name'
-  apt --help # дружелюбный интерфейс всеикоманды
-# переконфигурировать пакеты в случ ошибок конфигурации
-  sudo dpkg --configure -a
-# сборка и установка программ
-  .configure   # поставляется со сборкоц, анализирует сборку, создает Makefile
-  make         # выполняет инструкции в макефайле
-  sudo make install # установка программы
+удалить репозиторий:
+apt-add-repository --remove 'deb http://rep_addr version branch'    # обыч реп
+/etc/apt/sources.list или в одном из /etc/apt/sources.list.d/*.list # закоментить строки
+sudo add-apt-repository --remove ppa:repository/ppa                 # ppa реп
+rm /etc/apt/sources.list.d/<имя_файла>.list                         # удалить файл
+
+apt-cache policy                # проверка состояния репозиториев
+apt-cache policy <имя_пакета>   # проверка конкретного пакета из репа
+
+
+# apt (Advanced Package Tool) --------------------------------------------
+Инструмент для управления пакетами, который обеспечивает удобный интерфейс 
+для установки, обновления и удаления программного обеспечения
+
+apt update                  # загружает информацию о доступных пакетах из 
+                              всех настроенных репозиториев и обновляет кэш
+apt upgrade                 # обновить все установл пакеты до послед версий
+apt autoremove              # очистка неиспользуемых пакетов
+apt full-upgrade            # upgrade + autoremove
+apt install <имя_пакета>    # установить пакет 
+apt install -f              # исправить проблемы с зависимостями
+apt remove <имя_пакета>     # удалить пакет
+apt purge <имя_пакета>      # удалить пакет и конфиг файлы
+apt search <ключевое_слово> # поиск пакета
+apt show <имя_пакета>       # инфо о пакете
+apt list --installed        # список установленных пакетов
+
+
+# dpkg -----------------------------------
+Пакетный менеджер для Debian (.deb пакеты)
+
+dpkg -i <имя_пакета>.deb    # установка пакета
+dpkg -r <имя_пакета>        # удалить пакет
+dpkg --purge <имя_пакета>   # удалить пакет и конфиг файлы
+dpkg -l                     # список установленных пакетов
+dpkg -s <имя_пакета>        # инфо о пакете
+dpkg --configure -a         # исправить проблемы с зависимостями
+dpkg --get-selections       # список файлов .deb в системе
+
+
+# snap ---------------------------------------------
+Система управления пакетами(разработчик - Canonical)
+- Изоляция:             Snap-приложения работают в контейнерах
+- Обновления:           Snap автоматически обновляет приложения
+- Кроссплатформенность: Snap-пакеты могут работать на различ дистр Linux
+- Зависимости:          Snap пакеты включают все необходимые зависимости
+
+# установка
+sudo apt install snapd
+sudo systemctl enable --now snapd.socket
+
+# комманды
+sudo snap install <имя_пакета>  # установка пакета
+sudo snap remove <имя_пакета>   # удалить пакет
+snap list                       # список установленных
+sudo snap refresh <имя_пакета>  # обновиьт пакет
+snap info <имя_пакета>          # инфо
+
+
+# flatpak ------------------------------------------
+Система управления пакетами (разработан сообществом)
+- Изоляция:             Flatpak-приложения работают в контейнерах
+- Кроссплатформенность: работают на различ дистр Linux
+- Расширяемость:        есть возможность создания "ретропакетов"
+
+# установка
+sudo apt install flatpak
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+# комманды
+flatpak install flathub <имя_пакета>    # установка пакета
+flatpak uninstall <имя_пакета>          # удалить пакет
+flatpak list                            # список установленных
+flatpak update <имя_пакета>             # обновиьт пакет
+flatpak info <имя_пакета>               # инфо
+
 
 # устройства хранения----------------------------------------------------------+
 /etc/fstab      # устройства монтируемые на этапе загрузки
