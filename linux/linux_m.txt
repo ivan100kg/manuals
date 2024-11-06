@@ -1822,6 +1822,9 @@ umount /mnt - umount
     password=pass
 2. добавить в /etc/fstab
     //172.16.0.209/MedCenter /mnt/server02/MedCenter cifs credentials=/etc/cifs-creds,file_mode=0666,dir_mode=0777 0 0
+3. sudo apt install cifs-utils      # необходимые утилиты
+4. sudo systemctl daemon-reload     # перезапуск демона 
+5. sudo mount -a                    # тестируем маунт из fstab
 
 
 --- ярлык на рабочий стол/приложения Ubuntu ---
