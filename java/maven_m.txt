@@ -417,6 +417,14 @@
                 <password>{enc_pass}</password>
             </server>
         </servers>
+        <mirrors>
+            <mirror>
+                <id>maven-public</id>
+                <mirrorOf>*</mirrorOf>
+                <url>http://172.16.0.216:8081/repository/maven-public</url>
+                <blocked>false</blocked>
+            </mirror>
+        </mirrors>
         <profiles>
             <profile>
                 <id>nexus</id>
@@ -444,6 +452,9 @@
                 </repositories>
             </profile>
         </profiles>
+        <activeProfiles>
+            <activeProfile>nexus</activeProfile>
+        </activeProfiles>
     </settings>
 
 
