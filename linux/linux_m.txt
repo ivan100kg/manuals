@@ -1816,6 +1816,14 @@ folder      - имя сетевой папки
 umount /mnt - umount
 
 
+--- fstab монтирование устройств при запуске системы -----
+1. создать файл /etc/cifs-creds и добавить в него данные авторизации
+    username=username
+    password=pass
+2. добавить в /etc/fstab
+    //172.16.0.209/MedCenter /mnt/server02/MedCenter cifs credentials=/etc/cifs-creds,file_mode=0666,dir_mode=0777 0 0
+
+
 --- ярлык на рабочий стол/приложения Ubuntu ---
 chmod +x ~/myscript.sh                              # делаем скрипт исполняемым
 vim ~/.local/share/applications/myscript.desktop    # создаем ярлык для приложений
