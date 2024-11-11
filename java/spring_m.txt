@@ -2865,6 +2865,7 @@ Setting examples
 --- WSDL SOAP клиент ---
     Сервис с которым необходимо работать по SOAP имеет адрес:
         http://b2b-demo.n3health.ru/emk/PixService.svc
+    
     Схема wsdl может быть представлена файлом или ссылкой:
         http://b2b-demo.n3health.ru/emk/PixService.svc?wsdl
         ./scheme.wsdl
@@ -2878,13 +2879,26 @@ Setting examples
 
     2. генерируем классы по схеме:
         можно использовать любой из этих инструментов
-        wsimport    - из коробки, подключить доп либы
-        wsdl2java   - докачать отдельно, без доп либ
+        wsimport    - из коробки(Java 8)
+        wsdl2java   - докачать отдельно
+        
         Примеры:
-        wsimport -keep -p sciencelab.wsdlpac  http://b2b-demo.n3health.ru/emk/PixService.svc?wsdl
+        wsimport -keep                                                      # сохраняет оригинальные файлы .class
+                 -s ./src/main/java                                         # каталог для сгенерированных Java-файлов
+                 -p ru.sciencelab.nsi_dictionary.model                      # пакет, в который будут помещены сгенерированные классы
+                 https://nsi.rosminzdrav.ru/wsdl/SOAP-server.v2.php?wsdl    # ссылка на схему
+        
         wsdl2java -d ~/Projects/test -p sciencelab.wsdlpac http://b2b-demo.n3health.ru/emk/PixService.svc?wsdl
 
-    3. Создаем конфиг файл в проекте
+    3. возможные проблемы с ssl сертификатами
+        качаем сертификат с браузера с нужного сайта URL
+        сохраним файл как file.crt 
+        Google Chrome: справа от адреса нажать на кнопку -> detail -> export
+
+        Добавим файл сертификата в хранилище, для нужной версии Java(в примере 17)
+        sudo keytool -import -alias mycert -file ~/file.crt -keystore /usr/lib/jvm/java-17-openjdk-amd64/lib/security/cacerts
+    
+    4. Создаем конфиг файл в проекте
         @Configuration
         public class CxfConfig {
             @Bean
@@ -2894,7 +2908,7 @@ Setting examples
         ...
         }
 
-    4. Создаем свои сервисы для работы с сервером
+    5. Создаем свои сервисы для работы с сервером
         private final IEmkService emkService;                               // IEmkService - сгенеренный интерфейс
 
         @Autowired
@@ -2902,7 +2916,7 @@ Setting examples
             this.pixService = pixService.getSoap12PixService();             // выдергиваем из него сервис по soap
         }                                                                   // и уже работаем с ним по api
 
-    5. Смотрим api, наполняем сущности, взаимодействуем с сервисом
+    6. Смотрим api, наполняем сущности, взаимодействуем с сервисом
 
 
 --- Schedule ---
