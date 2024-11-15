@@ -412,7 +412,7 @@
                 <password>{enc_pass}</password>
             </server>
             <server>
-                <id>nexus-repo</id>
+                <id>nexus-releases</id>
                 <username>admin</username>
                 <password>{enc_pass}</password>
             </server>
