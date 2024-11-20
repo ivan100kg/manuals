@@ -137,6 +137,8 @@ docker build -t name:tag path   # собрать Image по Dockerfile
                                   name - имя Image
                                   tag  - тэг, необязательный
                                   path - путь до Dockerfile
+                                  --no-cache - всегда выполнять все команды,
+                                               не кешировать 
 # создать контейнер                             
 docker run im_name/id           # создать контейнер по образу + запустить
                                   если образа нет - то он скачается с докерхаб
