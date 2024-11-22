@@ -391,6 +391,9 @@ Consumer
     партициях - partitions.assigned: [партиция0, партиция1...]
   
 
+Idempotent Consumer:
+    
+
 
 Error Handling
     Dead Letter Topic
