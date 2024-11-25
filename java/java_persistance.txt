@@ -480,6 +480,29 @@ Hibernate
     ...JOIN employee ON task.employee = employee.id;  | SELECT t FROM Task t JOIN t.employee e (авто связь)
                                                       |     WHERE e.id IN = :idList;
 
+--- JPA методы именование - сопоставление с SQL-запросами ---
+
+    JPA                                               | SQL
+    --------------------------------------------------+---------------------------------------
+    Entity entity save(Entity entity)                 | INSERT
+    Optional<T> findById(Long id)                     | SELECT * FROM entity WHERE id = ?
+    Entity entity save(Entity entity)                 | UPDATE entity SET id = ?, ...
+    void delete(Entity entity)                        | DELETE
+    void deleteById(Long id)                          | DELETE FROM entity WHERE id = ?
+    --------------------------------------------------+---------------------------------------
+    next methods returns List<Entity>
+    --------------------------------------------------+---------------------------------------
+    findByName(String name)                           | SELECT * FROM entity WHERE name = ?
+    findByNameAndAge(String name, Integer age)        | SELECT * FROM entity WHERE name = ? AND age = ?
+    findByNameOrAge(String name, Integer age)         | SELECT * FROM entity WHERE name = ? OR age = ?
+    findByAgeGreaterThan(Integer age)                 | SELECT * FROM entity WHERE age > ?
+    findByCreatedDateBefore(LocalDate date)           | SELECT * FROM entity WHERE created_date < ?
+    findByNameLike(String name)                       | SELECT * FROM entity WHERE name LIKE ?
+    findByNameOrderByAgeAsc(String name)              | SELECT * FROM entity WHERE name = ? ORDER BY age ASC
+    @Query("SELECT e FROM Entity e WHERE e.name = ?1")| 
+    List<Entity> findByCustomName(String name);       | 
+
+
 
 --- CRUD with Hibernate ---
     Query - интерфейс, с помощью которого получаем запрос к БД имеет множество реализаций,
