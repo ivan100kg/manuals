@@ -1612,6 +1612,33 @@ done < <(ls -l|tail -n +2) -вывод подоб-ки напрвл-ся на с
 # различные примеры
 rm $(find . -name '*.class')    # удалить рез-ты
 
+--- colored output ----------------------
+вывод цветного текста в терминале
+synopsis:
+    GREEN='\033[0;32m' или GREEN='\e[0;32m'
+    RESET='\e[0m'
+    echo -e "${GREEN} Hello green"
+colors:
+    reset           0
+    black           0;30
+    red             0;31
+    lightRed        1;31
+    green           0;32
+    lightGreen      1;32
+    brown/orange    0;33
+    yellow          1;33
+    blue            0;34
+    lightBlue       1;34
+    purple          0;35
+    lightPurple     1;35
+    cyan            0;36
+    lightCyan       1;36
+    lightGray       0;37
+    white           1;37
+    darkGray        1;30
+example:
+    echo -e "${GREEN}Hello green${RESET} no green"
+
 --- Databases --------------------------------------------------------------
 # Postgres, можно разрешить sudo без пароля, будет удобнее (sudo visudo)
 sudo -u postgres psql -d mydb -c "SELECT * FROM celebrities;"
