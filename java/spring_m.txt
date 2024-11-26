@@ -2840,16 +2840,21 @@ Setting examples
     
     Заголовки:
     HttpHeaders headers = new HttpHeaders();
-    headers.set("Authorization", "token");
+    headers.set("Authorization", "Bearer " + token);
     headers.set("Content-Type", "application/json");
 
-    Параметры в адресной строке:    
+    Параметры в адресной строке (?name=Egor&age=13):    
     UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("https://example.com"); // builder
     builder.queryParam("name", "Egor");                     // устанавливаем параметры
     builder.queryParam("age", 13);                          // ..
     String url = builder.toUriString();                     // получаем url с параметрами
-    HttpEntity<Void> entity = new HttpEntity<>(headers);    // request entity с нашими заголовками
-    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class); // запрос
+
+    Создать сущность с нашими заголовками [ + объект в теле]:
+    HttpEntity<Void> entity = new HttpEntity<>(headers);    // без тела - Void
+    HttpEntity<Dto> entity = new HttpEntity<>(dto, headers);// объект 'dto' в body - класс Dto
+    
+    Послать запрос:
+    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
     response.getStatusCode();                               // обрабытываем статус
     
     Получение ответа в виде JSON из ResponseEntity:
