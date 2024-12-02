@@ -307,6 +307,8 @@ save alias:
     add to ~/.gitconfig
     [alias]
         logs  = log --graph --pretty=format:'%C(magenta)%h%Creset -%C(red)%d%Creset %s %C(dim green)(%cr) %C(cyan)<%an>%Creset' --abbrev-commit --all
+        logs2 = log --graph --all --decorate --pretty=format:'%C(green)%h%Creset %C(bold blue)(%cr)%Creset %C(yellow)%d%Creset - %s %C(cyan)[%an]%Creset' --abbrev-commit
+        logs3 = log --graph --all --decorate --oneline --pretty=format:'%C(green)%h%Creset %C(cyan)(%cr)%Creset %C(yellow)%d%Creset'
     после добавления алиаса можно вызывать git logs
 
 --- Ограничение вывода ---------------------------------------------------------
