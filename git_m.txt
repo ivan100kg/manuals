@@ -231,9 +231,7 @@ git log --pretty=oneline        # еще аргументы short, full, fuller,
 git log --pretty=format:""      # свой формат вывода, напр "%h - %an, %ar : %s"
 git log --pretty=oneline --graph  графы веток, коммитов (также с опцией oneline)
 
-example:
-git log --pretty=format:"%h %cd %cn %s" --date=format:'%Y-%m-%d %H:%M'
-
+--pretty=format:
     Опции в форматированном выводе:
     Опция   | Описания вывода
     --------+----------------
@@ -252,6 +250,7 @@ git log --pretty=format:"%h %cd %cn %s" --date=format:'%Y-%m-%d %H:%M'
     %cd     | Дата коммитера
     %cr     | Относительная дата коммитера
     %s      | Содержание
+    %d      | Ветка/указатели
 
     Наиболее распространенные опции для команды git log:
     Опция	        | Описание
@@ -274,6 +273,41 @@ git log --pretty=format:"%h %cd %cn %s" --date=format:'%Y-%m-%d %H:%M'
     git log --author="John Smith" -p hello.py   # Эта команда выводит данные по 
                                                   всем изменениям, которые Джон Смит
                                                   внес в файл hello.py
+
+color:
+    1. use name color: "%Cred
+        reset
+        normal
+        black
+        red
+        green
+        yellow
+        blue
+        magenta
+        cyan
+        white
+        example: --pretty=format:"%Credкрасный%Creset %Cgreenзелень%Creset
+    2. combine: "%Cboldred
+        bold
+        dim
+        ul
+        blink
+        reverse
+        italic
+        strike
+        bright
+        example: --pretty=format:"%Cbrightredкрасный%Creset
+    3. RGB: C(#ff69b4)wordC(reset)
+
+example:
+    git log --pretty=format:"%h %cd %cn %s" --date=format:'%Y-%m-%d %H:%M'
+    git log --graph --pretty=format:'%C(magenta)%h%Creset -%C(red)%d%Creset %s %C(dim green)(%cr) %C(cyan)<%an>%Creset' --abbrev-commit
+
+save alias:
+    add to ~/.gitconfig
+    [alias]
+        logs  = log --graph --pretty=format:'%C(magenta)%h%Creset -%C(red)%d%Creset %s %C(dim green)(%cr) %C(cyan)<%an>%Creset' --abbrev-commit --all
+    после добавления алиаса можно вызывать git logs
 
 --- Ограничение вывода ---------------------------------------------------------
 git log -2                  # два последних коммита
