@@ -48,9 +48,9 @@ psql --help \? \h       # help for everything
 \c dbname   # connect(use) database
 \dt         # show all tables in db
 \d table_n  # show table 'table_name'
+\du			# all users with roles
 \i sqr.sql  # чтение команд из файла
 \timing on	# включить замер времени выполнения команд
-\du			# all users
 
 -- скопировать данные в файл
 \copy (SELECT * FROM persons) to 'C:\tmp\persons_client.csv' with csv
