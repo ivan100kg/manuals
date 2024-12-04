@@ -190,11 +190,6 @@ docker load -i /path/myapp.tar                  # извлекаем образ 
 # example
 docker run --rm --name web -p 8080:8080 myProject
 
-----------------------------------------------------------------------------
-
-
-# прикрепить к Docker директорию на хостовой машине
--v absHostPath:absLocalPath # абсолютный хост путь : абс путь в контейнере
 
 --- docker volume ---- 
 Прикрепить хостовые директории(для хранения постоянных файлов)
@@ -212,7 +207,6 @@ docker run -v volumeName:absHostPath    # запуск volume:хост путь
 
 # копировать данные с тома себе на локальный комп
 docker cp container_id:/data/path/to/file_dir /path/on/host
-
 
 
 --- Управление несколькими контейнерами ---
@@ -349,3 +343,24 @@ services:
 volumes:
   microservice1-data:               # можно не указывать если указан в Dockerile
 
+
+--- Logs/Логи -----------------------------------------
+Docker logs - записи вывода контейнеров stdout и stderr
+
+# commands:
+docker logs c_id/c_name             # логи работающего контейнера
+docker logs -f c_id/c_name          # логи в реальном времени
+docker logs --tail 10 c_id/c_name   # хвост 10 строк
+docker logs --since 2024-12-01T00:00:00 c_id/c_name     # логи с опред времени
+docker logs --since 1h c_id/c_name  # логи за последний час - можно комбинировть
+                                      2h 12m 10s 1000ms или 1h15m12s1000ms
+docker logs --until 2024-12-01T00:00:00 c_id/c_name     # логи до опред времени
+docker logs --until 15m c_id/c_name # логи записанные до последних 15 минут
+docker logs c_id/c_name | grep -i error                 # поиск в логах  
+# compose всё тоже самое, только можно выводить сразу для всех
+  контейнеров которые запускаются с пом compose или для одного сервиса:
+docker-compose logs                 # для всех контейнеров в docker-compose.yml
+docker-compose logs -f              # realtime для всех контейнеров yml
+docker-compose logs <service_name>  # для опред сервиса в yml (по имени)
+docker-compose logs | grep -i error # поиск в логах
+...
