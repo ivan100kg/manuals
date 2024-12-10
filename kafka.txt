@@ -674,7 +674,7 @@ FirstConsumer.java
         public void hadle(SecondDTO dto) {}     // обработка второго ивента
 
 
---- Kafka кластер в докере ---
+--- Kafka кластер в докере (docker-compose.yml) ---
 services:
   kafka-1:
     image: bitnami/kafka:latest
