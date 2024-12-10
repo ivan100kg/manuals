@@ -392,6 +392,34 @@ Consumer
   
 
 Idempotent Consumer:
+    1. база данных - настроить таблицу для сохранения unique kafka message id
+    2. использовать при передаче сообщения headers для передачи message id
+       используем метод продюссера send(ProducerRecord<K, V> record) - с помощью 
+       ProducerRecord можно прокинуть наш message id в headers:
+            
+            ProducerRecord<MyDto, String> recrd = new ProducerRecord<> (
+                "my-topik",     // топик
+                 null,          // ключ -----------------------------+
+                 myDto          // наше дто-сообщение+               |
+            )                                        |               |
+                                                     |               |
+            String message_id = UUID.randomUUID().toString();        |  // message id (можно любой стринг)
+            record.headers().add("messageId", message_id.getBytes());|  // в байты и добавляем в headers
+    3. Настроить консьюмер для обработки headers     |    |          |
+                                                     |    |          |
+        @KafkaListener(topics = "my-topic",          |    |          |
+            groupId = "my-group",                    |    |          |
+            containerFactory = "containerFactory")   |    |          |
+        public void listen(@Payload MyDto myDto, <---+    v          |      // аннотация - тело запроса
+                           @Header("messageId") String messgeId,     v      // наш header message id
+                           @Header(KafkaHeaders.RECEIVED_KEY) String key) { // ключ, стандартный header
+        }
+    3. при получении сообщения читаем с базы id, принималось ли сообщение -> 
+          если есть: делаем kafka коммит (просто возврат из метода - происходит смещение в топике)
+          если нет: выполняем логику консьюмера и записываем message id
+       можно на весь метод навешать @Transactional для того чтобы в случае ошибки
+       записи message_id - выполнялся откат бизнес логики
+    
     
 
 
