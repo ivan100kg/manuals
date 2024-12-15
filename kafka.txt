@@ -420,8 +420,6 @@ Idempotent Consumer:
        можно на весь метод навешать @Transactional для того чтобы в случае ошибки
        записи message_id - выполнялся откат бизнес логики
     
-    
-
 
 Error Handling
     Dead Letter Topic
@@ -429,6 +427,27 @@ Error Handling
     то благодаря конфигу консьюмер читает 1 раз сообщение, выкидывет exception и пропускает его,
     перейдя к следующему сообщению. Но можно эти невалидные сообщения слать сразу на другой топик,
     который как раз принимает строки
+
+
+Kafka Transactions
+    Использование uncommited и read commited сообщений для осуществления транзакционности
+                        microservice
+                        ------------
+        some_topic -->  Consumer
+                        |Producer1 --uncommited_message1--> topic1 --read_commited--> consumer1
+            transaction-+
+                        |Producer2 --uncommited_message2--> topic2 --read_commited--> consumer2
+
+    Настройка транзакций:
+    1. Настраиваем producers
+        включить транзакционный режим работы проюссеров:
+            # application.properties
+            spring.kafka.producer.transaction-id-prefix=my-service-${random.value}-
+    
+    2. Настраиваем consumer uncommited сообщение
+    Consumer настроен на считывание только read commited сообщений из топика
+    включить транзакционный режим работы проюссеров: 
+    spring.kafka.producer.transaction-id-prefix=my-service-
 
 
 ------------ Project workframe -----------------------------------------------------------------
