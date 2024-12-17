@@ -444,11 +444,39 @@ Kafka Transactions
 
     Настройка транзакций:
     1. Настраиваем producers которые будут связаны между собой транзакциями
-       # application.properties
-       spring.kafka.producer.transaction-id-prefix=my-service-${random.value}-
-       теперь каждый продюссер будет иметь такой префикс + рандомное число для того
-       чтобы все продюссеры имели уникальные имена, так как возможны совпадения, если
-       запускать 2 одинаковых микросервиса(реплики)  
+        # добавим новое свойсво в application.properties:
+        spring.kafka.producer.transaction-id-prefix=my-service-${random.value}-
+        теперь каждый продюссер будет иметь такой префикс + рандомное число для того
+        чтобы все продюссеры имели уникальные имена, так как возможны совпадения, если
+        запускать 2 одинаковых микросервиса(реплики)  
+
+        # добавляем в KafkaConfig.java это новое свойство:
+        @Value("${spring.kafka.producer.transaction-id-prefix}")
+        private String transactionPrefix;
+        ...
+        config.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, transactionPrefix);
+
+        # добавляем новый бин KafkaTransactionManager в KafkaConfig.java:
+        @Bean
+        KafkaTransactionManager<String, Object> kManager(ProducerFactory<String, Object> pFactory) {
+            return new KafkaTransactionManager<>(pFactory);
+        }
+        
+        # отредактируем KafkaTemplate в KafkaConfig.java:
+        @Bean
+        KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> pFactory) {
+            return new KafkaTemplate<>(pFactory);
+        }
+        
+        # добавляем @Transactional над producer:
+        @Service
+        @Log4j2
+        @Transactional(value = "KafkaTransactionManager",   // имя мэнеджера, можно несколько
+                       rollbackfor = Throwable.class,       // роллбэк на все исключения, можно на конкретные
+                       norollbackfor = NullPointerException.class)  // не делать роллбэк
+        public class FirstProducer {...}
+
+
     
     2. Настраиваем consumer uncommited сообщение
     Consumer настроен на считывание только read commited сообщений из топика
@@ -458,17 +486,17 @@ Kafka Transactions
 
 Kafka Logs
     Уровни логирования:
-        OFF:    Отключает логирование.
-        ERROR:  Логирует только ошибки.
-        WARN:   Логирует предупреждения и ошибки.
-        INFO:   Логирует информационные сообщения, предупреждения и ошибки.
-        DEBUG:  Логирует отладочные сообщения, информационные, предупреждения и ошибки.
+        OFF:    Отключает логирование
+        ERROR:  Логирует только ошибки
+        WARN:   Логирует предупреждения и ошибки
+        INFO:   Логирует информационные сообщения, предупреждения и ошибки
+        DEBUG:  Логирует отладочные сообщения, информационные, предупреждения и ошибки
         TRACE:  Логирует все возможные сообщения (включая отладочную информацию)
     Настройка spring приложения:
         # application.properties
-        logging.level.org.apache.kafka=OFF                          логи пакета org.apache.kafka
-        logging.level.kafka=OFF                                     различные подчасти kafka
-        logging.level.org.springframework.kafka=OFF                 логи spring kafka
+        logging.level.org.apache.kafka=WARN                         логи пакета org.apache.kafka
+        logging.level.kafka=WARN                                    различные подчасти kafka
+        logging.level.org.springframework.kafka=WARN                логи spring kafka
         logging.level.org.springframework.transaction=TRACE         логи транзакций
         logging.level.org.springframework.kafka.transaction=TRACE   логи транзакций
 
