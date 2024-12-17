@@ -431,23 +431,46 @@ Error Handling
 
 Kafka Transactions
     Использование uncommited и read commited сообщений для осуществления транзакционности
+    Использование: для выполнения допустим отправки 2-х связанных сообщений в разные топики,
+    к примеру снять деньги, положить деньги. Сообщения посылаются как uncommited и остаются
+    такими до того как последний продюссер отработает, тогда все связные сообщения становятся
+    read commited 
                         microservice
                         ------------
         some_topic -->  Consumer
                         |Producer1 --uncommited_message1--> topic1 --read_commited--> consumer1
-            transaction-+
+           transaction ─┤
                         |Producer2 --uncommited_message2--> topic2 --read_commited--> consumer2
 
     Настройка транзакций:
-    1. Настраиваем producers
-        включить транзакционный режим работы проюссеров:
-            # application.properties
-            spring.kafka.producer.transaction-id-prefix=my-service-${random.value}-
+    1. Настраиваем producers которые будут связаны между собой транзакциями
+       # application.properties
+       spring.kafka.producer.transaction-id-prefix=my-service-${random.value}-
+       теперь каждый продюссер будет иметь такой префикс + рандомное число для того
+       чтобы все продюссеры имели уникальные имена, так как возможны совпадения, если
+       запускать 2 одинаковых микросервиса(реплики)  
     
     2. Настраиваем consumer uncommited сообщение
     Consumer настроен на считывание только read commited сообщений из топика
     включить транзакционный режим работы проюссеров: 
     spring.kafka.producer.transaction-id-prefix=my-service-
+
+
+Kafka Logs
+    Уровни логирования:
+        OFF:    Отключает логирование.
+        ERROR:  Логирует только ошибки.
+        WARN:   Логирует предупреждения и ошибки.
+        INFO:   Логирует информационные сообщения, предупреждения и ошибки.
+        DEBUG:  Логирует отладочные сообщения, информационные, предупреждения и ошибки.
+        TRACE:  Логирует все возможные сообщения (включая отладочную информацию)
+    Настройка spring приложения:
+        # application.properties
+        logging.level.org.apache.kafka=OFF                          логи пакета org.apache.kafka
+        logging.level.kafka=OFF                                     различные подчасти kafka
+        logging.level.org.springframework.kafka=OFF                 логи spring kafka
+        logging.level.org.springframework.transaction=TRACE         логи транзакций
+        logging.level.org.springframework.kafka.transaction=TRACE   логи транзакций
 
 
 ------------ Project workframe -----------------------------------------------------------------
