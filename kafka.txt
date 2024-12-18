@@ -478,11 +478,12 @@ Kafka Transactions
 
 
     
-    2. Настраиваем consumer uncommited сообщение
-    Consumer настроен на считывание только read commited сообщений из топика
-    включить транзакционный режим работы проюссеров: 
-    spring.kafka.producer.transaction-id-prefix=my-service-
-
+    2. Настраиваем consumer
+        # настройка на считывание только read commited сообщений из топика application.properties:
+        spring.kafka.consumer.isolation.level=READ_COMMITED (по умолчанию READ_UNCOMMITED)
+        
+        # добавляем в KafkaConfig.java это новое свойство или сразу напрямую:
+        config.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "read_commited");
 
 Kafka Logs
     Уровни логирования:
