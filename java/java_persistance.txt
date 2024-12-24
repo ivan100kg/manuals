@@ -493,6 +493,7 @@ Hibernate
     next methods returns List<Entity>
     --------------------------------------------------+---------------------------------------
     findByName(String name)                           | SELECT * FROM entity WHERE name = ?
+    findByNameAndActualTrue(String name)              | SELECT * FROM entity WHERE name = ? AND actual
     findByNameAndAge(String name, Integer age)        | SELECT * FROM entity WHERE name = ? AND age = ?
     findByNameOrAge(String name, Integer age)         | SELECT * FROM entity WHERE name = ? OR age = ?
     findByAgeGreaterThan(Integer age)                 | SELECT * FROM entity WHERE age > ?
