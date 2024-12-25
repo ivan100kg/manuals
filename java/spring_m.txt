@@ -2874,6 +2874,7 @@ Setting examples
     Схема wsdl может быть представлена файлом или ссылкой:
         http://b2b-demo.n3health.ru/emk/PixService.svc?wsdl
         ./scheme.wsdl
+        набор .xsd файлов
     
     1. подключаем зависимости:
         <dependency>
@@ -2885,9 +2886,14 @@ Setting examples
     2. генерируем классы по схеме:
         можно использовать любой из этих инструментов
         wsimport    - из коробки(Java 8)
+        xjc         - из коробки
         wsdl2java   - докачать отдельно
         
         Примеры:
+        xjc -d ./src/main/java  # путь куда будут генерироваться файлы
+            -p com.example.cda  # пакет куда будут помещены классы - в итоге src/main/java/com/example/cda
+            ./path_to/CDA.xsd   # путь до одного главного файла из .xsd набора файлов
+
         wsimport -keep                                                      # сохраняет оригинальные файлы .class
                  -s ./src/main/java                                         # каталог для сгенерированных Java-файлов
                  -p ru.sciencelab.nsi_dictionary.model                      # пакет, в который будут помещены сгенерированные классы
