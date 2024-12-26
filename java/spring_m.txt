@@ -2901,6 +2901,15 @@ Setting examples
         
         wsdl2java -d ~/Projects/test -p sciencelab.wsdlpac http://b2b-demo.n3health.ru/emk/PixService.svc?wsdl
 
+        Ошибки при генерации:
+        Дважды встречается поле, допустим id ID - xjc не воспинимает регистр, поэтому возникает исключение
+        решение: 
+            1 переименовать в основном файле .xsd name="ID" на IDSecond <xs:attribute name="IDSecond" type="xs:ID"/>
+              sed -i 's/name="ID"/name="IDSecond"/g' 230elmk/xsd/XSD\ CDA/POCD_MT000040.xsd
+            2 после генерации классов в самих классах найти @XmlAttribute(name = "IDSecond") -> заменить на "ID"
+              find . -name *.java -exec sed -i 's/@XmlAttribute(name = "IDSecond")/@XmlAttribute(name = "ID")/g' {} \;
+
+
     3. возможные проблемы с ssl сертификатами
         качаем сертификат с браузера с нужного сайта URL
         сохраним файл как file.crt 
