@@ -1064,6 +1064,11 @@ GRANT USAGE ON SCHEMA public TO python;
 GRANT SELECT, INSERT, UPDATE, DELETE, REFERENCES ON TABLE public.my_table TO python;
 GRANT SELECT, USAGE ON SEQUENCE public.my_table_id_seq TO python;
 
+-- Создайте нового пользователя, используя существующую роль суперпользователя
+CREATE ROLE имя_нового_пользователя WITH LOGIN PASSWORD 'пароль' IN ROLE superuser_role;
+-- Создать пользователя как суперпользователя
+CREATE ROLE имя_нового_пользователя WITH LOGIN PASSWORD 'пароль' SUPERUSER;
+
 -- Tips/Triks ----------------------
 -- группировка по дням недели
 select 
