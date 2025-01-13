@@ -1,0 +1,804 @@
+Apache Kafka
+    Системы обмена сообщениями по принципу «публикация/подписка»
+    Распределенный журнал фиксации транзакций
+    Распределенная платформа потоковой обработки
+    
+    Данные в Kafka хранятся долго, упорядоченно, доступны для чтения,
+    могут использоваться для доп защиты от сбоев и ради повышения
+    производительности.
+
+
+Паттерн публикация/подписка 
+    publish/subscribe (pub/sub) messaging
+    отправитель(издатель) элемента данных(сообщения) направляет это сообщение
+    не конретно потребителю(подписчику), а просто классифицирует сообщение.
+    Потребитель(подписчик) подписывается на определенные классы сообщений.
+    Брокер - центральный пункт публикации сообщений, включен для упрощения
+    взаимодействий между издателем и подписчиком.
+
+Сообщения/event и пакеты
+    message - сообщение [массив байтов] которой включает несколько атрибутов  
+    event   - JSON String null - тело сообщения
+    key     - доп метаданные в сообщении, используется при
+              необходимости лучше управлять записью сообщений в разделы
+    offset  - доп метаданные в сообщении - непрерывно
+              возрастающее int значение, смещение
+    batch   - пакет/набор сообщений, относящихся к одному топику и разделу, 
+              применяется для большей эффективности
+
+Схемы
+    Доп структура для сообщений, позволяет легко разбирать сообщения
+
+Топики и разделы/Topic/Partition
+    Топик   - сообщения в Kafka распределяются по топикам
+    Раздел  - топики, в свою очередь, разбиваются на разделы(партиции)
+    Stream  - поток данных, термин используется в рассмотрении топика
+
+    partitons    consumers     store                              producers  
+    -------------------------------------------------------------------------
+    partition_0                0 1 2 3 4 5 6 7 8 9 10 <----------┐
+    partition_1              / 0 1 2 3 4 5 6 7 8 9 <-------------┤
+    partition_2  concume < --- 0 1 2 3 4 5 6 7 8 9 10 12 13 <----┤-<- produce
+    partition_3              \ 0 1 2 3 4 5 6 7 8 9 10 12 13 14 <-┤
+    partition_4                0 1 2 3 4 5 6 7 <-----------------┘
+
+    после записи сообщения нельзя изменить/удалить
+
+    Если записывать в один раздел, то очередность чтения сохраниться,
+    иначе чтение сообщений происходит параллельно
+
+Производители и потребители
+    producer    - publisher/writer/производитель, генерирует нов сообщения
+                  сообщения создаются для конкретного топика, по умолчанию
+                  производитель будет равномерно поставлять сообщения во 
+                  все разделы топика, но может в конкретный раздел, 
+                  используя ключ.
+    consumer    - subscriber/reader/потребитель читает сообщения.
+                  Потребитель подписывается на один или более топиков и 
+                  читает сообщения в порядке их создания в каждом разделе,
+                  отслеживает какие сообщения были прочитаны, запоминая
+                  смещение(offset), может приостанавливать и возобновлять
+                  чтение благодаря этому.
+    consumer groups
+                - один или нескольких потребителей, объединившихся для 
+                  обработки топика в группу. Организация в группы гарантирует 
+                  чтение каждого раздела только одним членом группы
+
+Брокеры и кластеры
+    Broker_1    Broker_2    Broker_3        Пример 3 брокера, 2 топика по 3 партиции:
+                                            1 брокер - лидер для partition_10 и partition_22
+        Topic_1         Topic_2                        фолловер для partition_11 partition_12
+        partition_10    partition_20                                partition_20 partition_21
+        partition_11    partition_21        2 брокер - лидер для partition_11 и partition_21
+        partition_12    partition_22                   фолловер для partition_10 partition_12
+                                                                    partition_20 partition_22
+                                            3 брокер - лидер для partition_12 и partition_20
+                                                       фолловер для partition_10 partition_11
+                                                                    partition_21 partition_22
+
+    При падении одного из брокеров, если он был лидером - лидер назначается из фолловеров
+
+    broker  - отдельный сервер Kafka - получает сообщения от производителей, 
+              присваивает им смещения и записывает сообщения в дисковое 
+              хранилище. Он также обслуживает потребители и отвечает на запросы
+              выборки из разделов, возвращая опубликованные сообщения
+    cluster - Брокеры Kafka предназначены для работы в составе кластера
+    cluster controller 
+            - контроллер, один из брокеров кластера, выбирается автоматически 
+              из числа работающих членов кластера. Отвечает за административные
+              операции, включая распределение разделов по брокерам, мониторинг
+    leader  - ведущий брокер, которому принадлежит раздел, для каждого раздела,
+              соединяется с producer для публикации сообщений, consumer также
+              может получать сообщения с ведущего
+    follower- брокер-последователь, которому принадлежит реплицированный
+              (дублирующий) раздел от ведущего. consumer также может получать 
+              сообщения с последователя
+    настройки 
+            - В настройки брокеров Kafka включается длительность хранения 
+              топиков по умолчанию - или в течение определенного промежутка 
+              времени (например, семь дней), или до достижения разделом
+              определенного размера в байтах (например, 1 Гбайт). 
+              Превысившие эти пределы сообщения становятся недействительными и 
+              удаляются
+    
+    Обычно на один раздел топика вешаются 3 брокера, 1 лидер + 2 последователя
+    А один брокер берет один раздел как лидер и два как последователь
+    Количество разделов должно быть >= кол-во consumers
+
+Почему Kafka
+    Несколько производителей    - способность работать с несколькими производителями
+                                  вне зависимости от того, используют они один топик
+                                  или несколько
+    Несколько потребителей      - способность читать любой один поток сообщений, не 
+                                  мешая друг другу
+    Сохранение информ на диске  - потребители не обязательно должны работать в режиме
+                                  реального времени
+    Масштабируемость            - любые объемы данных
+    ...
+
+
+Install
+    Java      - 8+
+    ZooKeeper - Apache ZooKeeper это централизованный сервис для хранения информации 
+                о конфигурации, присвоения имен, обеспечения распределенной 
+                синхронизации и предоставления группового обслуживания.
+                Используется для хранения метаданных о кластере Kafka
+                zoo.cfg - файл конфиг ZooKeeper
+                myid    - id сервера, в zoo.cfg можно указывать ансамбль серверов
+    KRaft     - протокол пришел на смену ZooKeeper, замена Zookeeper в роли хранилища
+                метаданных, с целью упрощения развертывания Kafka-кластера, внутри
+                пакета Kafka лежат конфиги KRaft
+                config/kraft      - дир с настройками KRaft
+                broker.properties - конфиг сервера, который действует как брокер,
+                                    настройка топиков, разделов
+                controller.prop   - конфиг сервера, который действует как контроллер
+                                    управляет метадаными кластера, управляет лидерами
+                server.properties - конфиг сервера, который и контроллер и брокер                
+    Kafka     - брокер кафка
+                broker.id - id брокера в пределах кластера
+                Listeners - разделенный запятыми список URI
+                zookeeper.connect - ZooKeeper(hostname, port, path)
+                log.dirs - куда пишутся все сообщения
+                num.partitions - кол-во разделов
+                log.retention.ms - время хранения сообщений
+                log.retention.bytes - кол-во макс хранимых байтов
+
+
+Event-Driven Architecture
+                                        consumers:
+                                        Email-micro
+     producer                         /
+    Payment-micro --publish--> Topic <- SMS-micro
+                                      \
+                                        Push-micro
+
+    все работает асинхронно
+    если допустим Push-micro не успевает обрабатывать сообщения Kafka
+    то можно просто создать consumer groups из таких одинаковых  сервисов Push-micro
+
+
+Kafka CLI
+    command line interface - работа с kafka через терминал
+    просто запускаем скрипты из директории bin
+
+
+Запуск 1 сервера Kafka
+    bin                                 - директория со скриптами
+    ./kafka-storage.sh random-uuid      - сгенерить id для kafka кластера
+    ./kafka-storage.sh format -t <uuid> -c ../config/kraft/server.properties - формат логов
+    ./kafka-server-start.sh ../config/kraft/server.properties                - старт сервера
+
+
+Запуск на нескольких серверах
+    создать файлы аналогичные config/kraft/server.properties под сервера
+    изменяем в каждом файле:
+        node.id     - id сервера в Kafka кластере, делаем уникальные для каждого сервера
+        listeners   - список адрес:портов которые слушает kafka
+                      поменять для каждого сервера порты:
+                      PLAINTEXT://9092  - брокер
+                      CONTROLLER://9093 - контроллер
+                      следующий сервер допустим 9094 9095 и тд
+        controller.quorum.votes
+                    - управление лидерами, последователями при падениях серверов
+                      1@localhost:9093  - id_сервера@url_контроллера
+                      для трёх серверов будет так во всех файлах:
+                      1@localhost:9093,2@localhost:9095,3@localhost:9097
+                      если на разных серверах - прописываем ip
+        advertused.listeners
+                    - список адресов брокеров, может совпадать или быть другим для
+                      клиентов, например внешним, далее соединяется с внутринним listeners
+                      PLAINTEXT://9092 выставить во всех файлах свой порт если совпадает с 
+                      listeners, если kafka на другом сервере - прописываем ip
+        log.dirs    - директория для логов
+                      меняем для каждого сервера свою директорию
+                      /var/lib/kafka/logs/serv1/kraft-combined-logs
+
+    запуск серверов:
+        генерим uuid:
+            ./kafka-storage.sh random-uuid - сгенерим id кластера IuLotyvvS-GX5jpwmZYXeQ
+        формат логов для совместимости:
+            ./kafka-storage.sh format -t IuLotyvvS-GX5jpwmZYXeQ -c ../config/kraft/serv1
+            ./kafka-storage.sh format -t IuLotyvvS-GX5jpwmZYXeQ -c ../config/kraft/serv2
+            ./kafka-storage.sh format -t IuLotyvvS-GX5jpwmZYXeQ -c ../config/kraft/serv3
+        запуск серверов(в разных терминалах):
+            ./kafka-server-start.sh ../config/kraft/serv1
+            ./kafka-server-start.sh ../config/kraft/serv2
+            ./kafka-server-start.sh ../config/kraft/serv3
+
+
+Остановка сервера
+    Не останавливаем ctrl+c(портеря данных, логи ...)
+    1. останановка produsers, consumers
+    2. остановка с пом терминала ./kafka-server-stop.sh
+
+
+Логи/сообщения/занимаемое место кластера
+    ./kafka-log-dirs.sh                     посмотреть логи
+        --bootstrap-server localhost:9092   сервера(один из)
+        --broker-list 3                     конкретно какой брокер(id)
+        --topic-list my-topic               конкретно топик 
+        --describe                          ставим обязательно - описание
+    Вывод в консоль:
+        "brokers": [
+            {
+                "broker": 3,                                    # id брокера
+                "logDirs": [
+                    {
+                        "partitions": [
+                            {
+                                "partition": "my-topic-0",      # партиция
+                                "size": 130153,                 # размер в байтах (это сообщения Kafka)-┐
+                                "offsetLag": 0,                 # кол-во не прочитанных сообщений       |
+                                "isFuture": false               # создан ли в будущем и не используется |
+                            },                                                                          |
+                            ... ещё 2 партиции                                                          |
+                        ],                                                                              |
+                        "error": null,                          # ошибки                                |
+                        "logDir": "/path/to/kafka/logs"         # директория где хранятся логи          |
+                    }                                                                                   |
+                ]                                                                                       |
+            }                                                                                           |
+        ],                                                                                              |
+        "version": 1                                            # версия                                |
+                                                                                                        |
+    На диске                                                                                            |
+        /tmp/serv3/kraft-comb-logs/my-topic-0/ одна партиция                                            |
+        00000000000000000000.index     # используется для быстрого поиска по логам и смещениям          |
+        00000000000000000000.log       # соотв размеру сообщений, которые были записаны в партицию <----┘
+        00000000000000000000.timeindex # для сопоставления времени записи сообщений со смещениями
+        leader-epoch-checkpoint
+        partition.metadata
+    Посмотреть занимаемое место
+        du -sh /path/to/kafka/logs
+        du -sh /tmp/serv1 /tmp/serv2 /tmp/serv3 
+        если на разных серверах - то можно скрипт сделать и посмотреть на каждом du -sh
+
+
+Topic
+    создать новый топик:
+        запустить сервера
+        ./kafka-topics.sh --create                                  создать  
+                          --topic my-topic                          топик с именем my-topic
+                          --partitions 3                            разделы количество, лучше делать
+                                                                    >= кол-ва consumers, иначе парал-
+                                                                    лельного чтения не будет
+                          --replication-factor 3                    кол-во копий каждого раздела <= кол-во серверов
+                                                                    одна в лидере +остальные в
+                                                                    репликах лучше делать = кол-во серверов
+                          --bootstrap-server host:9092,host:9094    список брокеров в кластере, рекомендуется
+                                                                    указывать хотя бы 2(один мало, вдруг недоступен)
+    посмотреть топики:
+        ./kafka-topics.sh --list --bootstrap-server host:9092       посмотреть топики, указываем один
+                                                                    из брокеров кластера
+        ./kafka-topics.sh --describe --bootstrap-server host:9092   детальная информация о топиках
+            Topic: my-topic	                - топик
+            TopicId: Dw-UCa5jRYC8aBCbiBqwxQ	- id
+            PartitionCount: 3	            - партиции
+            ReplicationFactor: 3	        - реплики
+            Configs:                        - доп конфиги
+                min.insync.replicas=2,      - минимум синхронизированных реплик
+                segment.bytes=1073741824    - размер сегментов(файлов), создается новый файл логов, если превышает 
+            partition : 0                   - раздел
+            Leader: 1                       - лидер раздела
+            Replicas: 1,2,3                 - копии на серверах
+            Isr: 1,2,3                      - синхронизация серверов(какие синхронизирована с лидером)
+    изменить топик:
+        изменить количество разделов
+        kafka-topics.sh --bootstrap-server localhost:9092 --alter --topic my-topic --partitions 16
+    удалить топик:
+        включить настройку, если выключена delete.topic.enable=true
+        ./kafka-topics.sh --delete --topic my-topic --bootstrap-server host:9092 - удалить топик my-topic
+        либо можно удалить все директории логов
+
+Producer
+    Создать сообщение через CLI
+        ./kafka-console-producer.sh 
+            --bootstrap-server localhost:9092   сервера
+            --topic my-topic                    топик в который будем публиковать
+            --property "parse.key=true"         если хотим слать сообщения с ключом(в один раздел)
+            --property "key.separator=:"        обозначение разделителя для ключа:зачения
+        далее переходим в интеррактивный режим - пишем через терминал сообщения + Enter в my-topic
+            >hello          отправить без ключа
+            >huid:hello     отправить с ключём в один раздел
+                                                                    
+    Что должен делать producer:
+        1. publish   - публикация событий на Kafka Broker
+        2. serialize - сериализовать сообщение под нужный тип данных, также можно сериализовать
+                       ключ под его тип данных. Например String для ключа, JSON для сообщения
+        3. определять топик
+        4. определять раздел(партицию)(если передается ключ)
+
+    Попадание в один раздел по ключу по примеру 3-х партиций:
+        partition = hash("my-key") % 3      Kafka применяет хеш-функцию к значению ключа
+        Таким образом определится один из трёх разделов и сообщения с одинаковым ключём
+        попадают в одну партицию. Соответственно чтение будет идти последовательно
+
+    Можно отправлять сообщения в Kafka как синхронные(ждать подтверждения с Kafka Broker)
+    так и асинхронные(не ждать подтверждения, а слать сообщения, а при приходе подтверждения - обработать)
+        Browser Mobile                       /
+               ^                            /
+         login | HTTP-request/responce     /
+               v                          /
+        Auth Mecroservice       отправка /
+               ^ Kafka Template --------------> Kafka
+               |  (Producer)    <-------------- Broker
+               |                подтверждение
+               v
+            Database
+
+
+Получение acknowledgment
+    Варианты конфигурации:
+        1. Ждать acknowledgement от всех insync реплик  - spring.kafka.producer.acks=all
+        2. Не получать acknowledgement                  - spring.kafka.producer.acks=0
+        3. Получать только от Leader(default)           - spring.kafka.producer.acks=1
+    Если acknowledgment не приходит от лидера или при all не приходит от всех insync реплик(имеется ввиду
+    все синхонизированные реплики - мин кол-во определяется параметром min.isync.replicas=2),  
+    то Producer начинает делать retry:
+        Либо делает retry в течение 2 мин, либо делаем максимальное кол-во retry 2147483647, либо указываем
+        вручную кол-во retry, интервал, время попыток:
+            spring.kafka.producer.retries=10 (default 2147483647 максимальное кол-во retry)
+            spring.kafka.producer.properties.retry.backoff.ms=1000  (default 100 интервал отправки сообщений)
+            spring.kafka.producer.properties.delivery.timeout.ms=60000 (default 120000 время попыток)
+            spring.kafka.producer.properties.linger.ms=0 (сколько по времени накапливаем сообщ, потом шлем батчем)
+            spring.kafka.producer.properties.request.timeout.ms=30000 (как долго prducer ждет ответа от брокера)
+            spring.kafka.producer.properties.max.in.flight.requests.per.connection=5 (макс 5 сообщений без ответа)
+            spring.kafka.producer.properties.enable.idempotence=true (Idempotent Producer - ниже описано)
+            !!! delivery.timeout.ms >= linger.ms + request.timeout.ms
+    Ошибки типа error acknowlegement:
+        1. Retryable error - временная проблема, может быть решена повтором(retry), если
+           например реплика упала, продюссер снова пытается слать сообщение
+        2. Non-Retryable error - постоянная ошибка - не может быть решена повтором, если
+           например превышен допустимый размер сообщения, продюссер больше слать сообщения не будет
+
+Idempotent Producer
+    При послылке сообщения и сохранении его в топик, допустим валится acknowledgment
+    Делается retry но сообщение НЕ сохраняется ещё раз, а возвращается acknowledgment
+    по умолчанию true, но рекумендуется указать явно 
+    включить конфиг через properties или мэпку
+        spring.kafka.producer.properties.enable.idempotence=true
+        config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true)
+
+
+Consumer
+    Прочитать сообщение с помощью CLI
+        ./kafka-console-consumer.sh 
+            --bootstrap-server localhost:9092,localhost:9094    сервера
+            --topic mytopic                                     топик для чтения
+            --from-beginning                                    печать все сообщения сначала
+            --property "print.key=true"                         печатать ключ и сообщение(без ключа - null)
+            --group <your-group-id>                             для чтения группой(каждый читает сообщение 1 раз)
+        
+
+    Producer ---------> Broker: Topic[][][][] ---------> Consumer
+              publish      store               consume
+
+  
+    ConsumerGroup:
+    Связкой консьюмера и партиций заведует брокер
+    Если Consumer один - то чтение идет с разных разделов
+    Если 2 Consumer, а раздела 2 то один читает один раздел, а второй два других раздела
+    Если сделать 3 Consumer - то в случае если разделов 3 - читать будет каждый 1 раздел
+    Если консьюмеров больше чем партиций - то лишние консьюмеры не получают партиции
+    для чтения - работают в холостую
+
+    Consumer посылает каждые 3 секунды(настраивается) кластеру сообщения "Heart Beats"
+    типа "я живой", если допустим консьюмер был в группе и не прислал такое сообщение,
+    то брокер назначает другому консьюмеру из группы эту партицию - это Ребалансировка
+    
+    Ребансировка - возникает когда добавляются/отваливаются групповые консьюмеры.
+    при балансировке в консоли консьюмеров будут валиться сообщения о привязанных
+    партициях - partitions.assigned: [партиция0, партиция1...]
+  
+
+Idempotent Consumer:
+    1. база данных - настроить таблицу для сохранения unique kafka message id
+    2. использовать при передаче сообщения headers для передачи message id
+       используем метод продюссера send(ProducerRecord<K, V> record) - с помощью 
+       ProducerRecord можно прокинуть наш message id в headers:
+            
+            ProducerRecord<MyDto, String> recrd = new ProducerRecord<> (
+                "my-topik",     // топик
+                 null,          // ключ -----------------------------+
+                 myDto          // наше дто-сообщение+               |
+            )                                        |               |
+                                                     |               |
+            String message_id = UUID.randomUUID().toString();        |  // message id (можно любой стринг)
+            record.headers().add("messageId", message_id.getBytes());|  // в байты и добавляем в headers
+    3. Настроить консьюмер для обработки headers     |    |          |
+                                                     |    |          |
+        @KafkaListener(topics = "my-topic",          |    |          |
+            groupId = "my-group",                    |    |          |
+            containerFactory = "containerFactory")   |    |          |
+        public void listen(@Payload MyDto myDto, <---+    v          |      // аннотация - тело запроса
+                           @Header("messageId") String messgeId,     v      // наш header message id
+                           @Header(KafkaHeaders.RECEIVED_KEY) String key) { // ключ, стандартный header
+        }
+    3. при получении сообщения читаем с базы id, принималось ли сообщение -> 
+          если есть: делаем kafka коммит (просто возврат из метода - происходит смещение в топике)
+          если нет: выполняем логику консьюмера и записываем message id
+       можно на весь метод навешать @Transactional для того чтобы в случае ошибки
+       записи message_id - выполнялся откат бизнес логики
+    
+
+Error Handling
+    Dead Letter Topic
+    Если пришло сообщение в топик с другим сериализатором, вместо json допустим string
+    то благодаря конфигу консьюмер читает 1 раз сообщение, выкидывет exception и пропускает его,
+    перейдя к следующему сообщению. Но можно эти невалидные сообщения слать сразу на другой топик,
+    который как раз принимает строки
+
+
+Kafka Transactions
+    Использование uncommited и read commited сообщений для осуществления транзакционности
+    Использование: для выполнения допустим отправки 2-х связанных сообщений в разные топики,
+    к примеру снять деньги, положить деньги. Сообщения посылаются как uncommited и остаются
+    такими до того как последний продюссер отработает, тогда все связные сообщения становятся
+    read commited 
+                        microservice
+                        ------------
+        some_topic -->  Consumer
+                        |Producer1 --uncommited_message1--> topic1 --read_commited--> consumer1
+           transaction ─┤
+                        |Producer2 --uncommited_message2--> topic2 --read_commited--> consumer2
+
+    Настройка транзакций:
+    1. Настраиваем producers которые будут связаны между собой транзакциями
+        # добавим новое свойсво в application.properties:
+        spring.kafka.producer.transaction-id-prefix=my-service-${random.value}-
+        теперь каждый продюссер будет иметь такой префикс + рандомное число для того
+        чтобы все продюссеры имели уникальные имена, так как возможны совпадения, если
+        запускать 2 одинаковых микросервиса(реплики)  
+
+        # добавляем в KafkaConfig.java это новое свойство:
+        @Value("${spring.kafka.producer.transaction-id-prefix}")
+        private String transactionPrefix;
+        ...
+        config.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, transactionPrefix);
+
+        # добавляем новый бин KafkaTransactionManager в KafkaConfig.java:
+        @Bean
+        KafkaTransactionManager<String, Object> kManager(ProducerFactory<String, Object> pFactory) {
+            return new KafkaTransactionManager<>(pFactory);
+        }
+        
+        # отредактируем KafkaTemplate в KafkaConfig.java:
+        @Bean
+        KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> pFactory) {
+            return new KafkaTemplate<>(pFactory);
+        }
+        
+        # добавляем @Transactional над producer:
+        @Service
+        @Log4j2
+        @Transactional(value = "KafkaTransactionManager",   // имя мэнеджера, можно несколько
+                       rollbackfor = Throwable.class,       // роллбэк на все исключения, можно на конкретные
+                       norollbackfor = NullPointerException.class)  // не делать роллбэк
+        public class FirstProducer {...}
+
+
+    
+    2. Настраиваем consumer
+        # настройка на считывание только read commited сообщений из топика application.properties:
+        spring.kafka.consumer.isolation.level=READ_COMMITED (по умолчанию READ_UNCOMMITED)
+        
+        # добавляем в KafkaConfig.java это новое свойство или сразу напрямую:
+        config.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "read_commited");
+
+Kafka Logs
+    Уровни логирования:
+        OFF:    Отключает логирование
+        ERROR:  Логирует только ошибки
+        WARN:   Логирует предупреждения и ошибки
+        INFO:   Логирует информационные сообщения, предупреждения и ошибки
+        DEBUG:  Логирует отладочные сообщения, информационные, предупреждения и ошибки
+        TRACE:  Логирует все возможные сообщения (включая отладочную информацию)
+    Настройка spring приложения:
+        # application.properties
+        logging.level.org.apache.kafka=WARN                         логи пакета org.apache.kafka
+        logging.level.kafka=WARN                                    различные подчасти kafka
+        logging.level.org.springframework.kafka=WARN                логи spring kafka
+        logging.level.org.springframework.transaction=TRACE         логи транзакций
+        logging.level.org.springframework.kafka.transaction=TRACE   логи транзакций
+
+
+------------ Project workframe -----------------------------------------------------------------
+Hierarchy
+    ├── config
+    │   └── KafkaConfig.java
+    ├── consumer
+    │   ├── FifrstConsumer.java
+    │   └── SecondConsumer.java
+    ├── producer
+    │   ├── FirstProducer.java
+    |   └── SecondProducer.java
+    └── topics
+        └── KafkaTopic.java
+
+Dependencies
+    <dependency>
+        <groupId>org.springframework.kafka</groupId>
+        <artifactId>spring-kafka</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.kafka</groupId>
+        <artifactId>spring-kafka-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <!-- эта зависимость возможно не нужна -->
+    <dependency>    
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+    </dependency> 
+
+application.properties
+    spring.kafka.producer.bootstrap-servers=192.168.1.66:9092,192.168.1.66:9094
+    spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+    spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer
+    spring.kafka.producer.acks=all
+    spring.kafka.producer.retries=10
+    spring.kafka.producer.properties.retry.backoff.ms=1000
+    spring.kafka.producer.properties.delivery.timeout.ms=20000
+    spring.kafka.producer.properties.linger.ms=0
+    spring.kafka.producer.properties.request.timeout.ms=10000
+    spring.kafka.producer.properties.max.in.flight.requests.per.connection=5
+    spring.kafka.producer.properties.enable.idempotence=true
+
+KafkaConfig.java
+    // Общий конфиг для продюссеров и консьюмеров 
+    @Configuration
+    public class KafkaConfig {
+        @Value("${spring.kafka.producer.bootstrap-servers}")
+        private String bootstrapServers;
+        @Value("${spring.kafka.producer.key-serializer}")
+        private String keySerializer;
+        @Value("${spring.kafka.producer.value-serializer}")
+        private String valueSerializer;
+        @Value("${spring.kafka.producer.acks}")
+        private String acks;
+        @Value("${spring.kafka.producer.retries}")
+        private String retries;
+        @Value("${spring.kafka.producer.properties.retry.backoff.ms}")
+        private String retryBackoff;
+        @Value("${spring.kafka.producer.properties.delivery.timeout.ms}")
+        private String deliveryTimeout;
+        @Value("${spring.kafka.producer.properties.linger.ms}")
+        private String linger;
+        @Value("${spring.kafka.producer.properties.request.timeout.ms}")
+        private String requestTimeout;
+        @Value("${spring.kafka.producer.properties.max.in.flight.requests.per.connection}")
+        private String inFlightRequests;
+        @Value("${spring.kafka.producer.properties.enable.idempotence}")
+        private String idempotence;
+
+        // producers config - фабрики и KafkaTemplate для продюссеров в проекте
+        @Bean
+        ProducerFactory<String, FirstDTO> firstProducerFactory() {      // 1-я фабрика для создания KafkaTemplate
+            return new DefaultKafkaProducerFactory<>(producerConfig()); // общий конфиг
+        }
+
+        @Bean
+        KafkaTemplate<String, FirstDTO> firstKafkaTemplate() {          // KafkaTemplate для отправки сообщений в топик
+            return new KafkaTemplate<>(firstProducerFactory());         // для producer-1
+        }
+
+        @Bean
+        ProducerFactory<String, SecondDTO> secondProducerFactory() {    // 2-я фабрика для создания KafkaTemplate
+            return new DefaultKafkaProducerFactory<>(producerConfig()); // общий конфиг
+        }
+
+        @Bean
+        KafkaTemplate<String, SecondDTO> secondKafkaTemplate() {        // KafkaTemplate для отправки сообщений в топик
+            return new KafkaTemplate<>(secondProducerFactory());        // для producer-2 ...
+        }
+
+        // общий конфиг продюссеров
+        private Map<String, Object> producerConfig() {
+            Map<String, Object> config = new HashMap<>();
+            config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+            config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+            config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+            config.put(ProducerConfig.ACKS_CONFIG, acks);
+            config.put(ProducerConfig.RETRY_BACKOFF_MS_CONFIG, retryBackoff);
+            config.put(ProducerConfig.DELIVERY_TIMEOUT_MS_CONFIG, deliveryTimeout);
+            config.put(ProducerConfig.LINGER_MS_CONFIG, linger);
+            config.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, requestTimeout);
+            config.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, inFlightRequests);
+            config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, idempotence);
+            return config;
+        }
+
+        // consumer config - фабрики и настройки для консьюмеров в проекте
+        @Bean
+        ConsumerFactory<String, ThirdDTO> firstConsumerFactory() {
+            return new DefaultKafkaConsumerFactory<>(consumerConfig("consumer-group-1", ThirdDTO.class.getName()));
+        }
+
+        @Bean
+        ConcurrentKafkaListenerContainerFactory<String, ThirdDTO> firstKafkaListenerContainerFactory() {
+            ConcurrentKafkaListenerContainerFactory<String, ThirdDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+            factory.setConsumerFactory(firstConsumerFactory());
+            return factory;
+        }
+
+        @Bean
+        ConsumerFactory<String, FourthDTO> secondConsumerFactory() {
+            return new DefaultKafkaConsumerFactory<>(consumerConfig("consumer-group-2", FourthDTO.class.getName()));
+        }
+
+        @Bean
+        ConcurrentKafkaListenerContainerFactory<String, FourthDTO> secondKafkaListenerContainerFactory() {
+            ConcurrentKafkaListenerContainerFactory<String, FourthDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+            factory.setConsumerFactory(secondConsumerFactory());
+            return factory;
+        }
+
+        // конфиг для всех консьюмеров, отличается параметрами
+        private Map<String, Object> consumerConfig(String groupId, String className) {
+            Map<String, Object> config = new HashMap<>();
+            config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);                          // сервера
+            config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);             // обработка ключа
+            config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);    // обработка значения
+            config.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);         // если ошибка - переход к следующему
+            config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);                                            // группа консьюмеров
+            config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");                                             // пакеты
+            config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, className);                                     // свой класс по умолчанию
+            config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, "false");                                    // лишний вывод в консоль
+            return config;
+        }
+    }
+
+KafkaTopic.java
+    // настраиваем любое кол-во топиков, если топиков ещё нет - то они будут созданы
+    // если топики существуют - ничего не происходит
+    @Configuration
+    public class KafkaTopic {
+        @Bean
+        NewTopic createFirstTopic() {
+            return TopicBuilder.name("topic-1")                     // имя топика
+                    .partitions(3)                                  // кол-во пратиций
+                    .replicas(3)                                    // кол-во реплик
+                    .configs(Map.of("min.insync.replicas", "2"))    // минимум синхронизированных реплик с лидером
+                    .build();
+        }
+
+        @Bean
+        NewTopic createSecondTopic() {
+            return TopicBuilder.name("topic-2")
+                    .partitions(3)
+                    .replicas(3)
+                    .configs(Map.of("min.insync.replicas", "2"))
+                    .build();
+        }
+    }
+
+FirstProducer.java
+    // аналогично создаются остальные продюссеры - под каждый добавляем свой KafkaTemplate в KafkaConfig
+    @Service
+    @Log4j2
+    public class FirstProducer {
+        @Autowired
+        private KafkaTemplate<String, FirstDTO> firstKafkaTemplate;
+
+        private final String topic = "my-topic-1";      // топик в который отправляем
+
+        public void sendMessage(FirstDTO dto) {
+            try {
+                assert dto != null : "FirstDTO is null";
+                log.info("Sending message: {}", dto);
+
+                // выбрать какой тип отправки нужен
+                // 1 - асинхронная отправка с помощью CompletableFuture(для отображения результата)
+                // либо можно просто отправить firstKafkaTemplate.send(topic, dto); не дожидаясь ответа
+                CompletableFuture<SendResult<String, FirstDTO>> future = firstKafkaTemplate.send(topic, dto).completable();
+                future.whenComplete((result, exception) -> {
+                    if (exception != null)
+                        log.error("ERROR: {}", exception.getMessage());
+                    else
+                        log.info("Ok: {}", result.getRecordMetadata()); // в метаданных можно вытащить много инфы
+                });
+
+                // 2 - cинхронная отправка(когда нужно дождаться ответа перед тем как послать след сообщение)
+                future.join();  // либо так из многопоточки в однупоточку либо по-правильному:
+                SendResult<String, FirstDTO> result = firstKafkaTemplate.send(topic, dto).get();
+                log.info("Ok: {}", result.getRecordMetadata());
+            
+            } catch (Exception e) {
+                log.error("Failed to send message: {}", e.getMessage());
+            }
+        }
+    }
+
+FirstConsumer.java
+    // аналогично создаем консьюмеров, 2 бина фабрика+контейнер-фарика и сам сервис
+    @Service
+    @Log4j2
+    public class FirstConsumer {
+        @KafkaListener(topics = "my-topic-2",                               // топик с которого читаем
+                groupId = "consumer-group-1",                               // группа из конфига
+                containerFactory = "firstKafkaListenerContainerFactory")    // контейнер-фабрика из конфига
+        public void listen(FirstDTO dto) {
+            try {
+                if (dto == null)
+                    throw new RuntimeException("dto must be not null");
+
+                log.info("Received message: {}", dto);
+
+                // logic                                                    // обработка сообщения
+            } catch (Exception e) {
+                log.error("Error processing message: {}, exception: {}", dto, e.getMessage());
+            }
+        }
+    }
+
+    // вариант если в один топик передаются разные дто-шки(ивенты)
+       и фабрика будет иметь такой вид ConsumerFactory<String, Object>,
+       а контенер фабрика такой  ConcurrentKafkaListenerContainerFactory<String, Object>
+    // можно разделить следующим образом
+    @Service
+    @KafkaListener(topics = "my-topic-2")       // дилегирует на методы ниже
+    public class FirstConsumer {    
+        @KafkaHandler
+        public void hadle(FirstDTO dto) {}      // обработка первого ивента
+        
+        @KafkaHandler
+        public void hadle(SecondDTO dto) {}     // обработка второго ивента
+
+
+--- Kafka кластер в докере (docker-compose.yml) ---
+services:
+  kafka-1:
+    image: bitnami/kafka:latest
+    ports:
+     - "9092:9092"
+    environment:
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_KRAFT_CLUSTER_ID=f0b2c5a4-1d3b-4c6e-9876-74a712a37ea8
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9091,2@kafka-2:9091,3@kafka-3:9091
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9090,CONTROLLER://:9091,EXTERNAL://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-1:9090,EXTERNAL://192.168.0.229:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+    volumes:
+      - kafka-vol-1:/bitnami/kafka
+
+  kafka-2:
+    image: bitnami/kafka:latest
+    ports:
+     - "9094:9094"
+    environment:
+      - KAFKA_CFG_NODE_ID=2
+      - KAFKA_KRAFT_CLUSTER_ID=f0b2c5a4-1d3b-4c6e-9876-74a712a37ea8
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9091,2@kafka-2:9091,3@kafka-3:9091
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9090,CONTROLLER://:9091,EXTERNAL://:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-2:9090,EXTERNAL://192.168.0.229:9094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+    volumes:
+      - kafka-vol-2:/bitnami/kafka
+
+  kafka-3:
+    image: bitnami/kafka:latest
+    ports:
+     - "9096:9096"
+    environment:
+      - KAFKA_CFG_NODE_ID=3
+      - KAFKA_KRAFT_CLUSTER_ID=f0b2c5a4-1d3b-4c6e-9876-74a712a37ea8
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9091,2@kafka-2:9091,3@kafka-3:9091
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9090,CONTROLLER://:9091,EXTERNAL://:9096
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-3:9090,EXTERNAL://192.168.0.229:9096
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+    volumes:
+      - kafka-vol-3:/bitnami/kafka
+
+volumes:
+  kafka-vol-1:
+  kafka-vol-2:
+  kafka-vol-3:
