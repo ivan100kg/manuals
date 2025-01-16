@@ -2866,6 +2866,9 @@ Setting examples
         log.error(e.getMessage());
     }
 
+    Post запрос без тела:
+    restTemplate.postForObject(builder.toUriString(), null, MyResponse.class);
+
 
 --- WSDL SOAP клиент ---
     Сервис с которым необходимо работать по SOAP имеет адрес:
