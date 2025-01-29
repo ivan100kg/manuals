@@ -571,6 +571,15 @@ KafkaConfig.java
         @Value("${spring.kafka.producer.properties.enable.idempotence}")
         private String idempotence;
 
+        // если срабытывает таймаут и топики не конфигурируются - добавляем эту настройку
+        @Bean
+        public KafkaAdmin kafkaAdmin() {
+            Map<String, Object> configs = new HashMap<>();
+            configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+            configs.put(AdminClientConfig.REQUEST_TIMEOUT_MS_CONFIG, "60000"); // timeout
+            return new KafkaAdmin(configs);
+        }
+
         // producers config - фабрики и KafkaTemplate для продюссеров в проекте
         @Bean
         ProducerFactory<String, FirstDTO> firstProducerFactory() {      // 1-я фабрика для создания KafkaTemplate
