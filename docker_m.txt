@@ -164,8 +164,10 @@ docker pause c_name/id          # пауза
 docker unpause c_name/id        # снять с паузы
 docker kill c_name/id           # убить контейнер, если не останавливается
 
-# зайти в работающий контейнер
-docker exec -it <id> /bin/bash  # зайти в систему контейнера
+# операции с работающим контейнером
+docker exec -it <id> sh         # зайти в систему контейнера (sh или /bin/bash)
+docker exec -it <id> ls /log    # выполнение различных комманд
+docker cp <id>:/log/app.log .   # скопировать данные из контейнера
 
 # удаление контейнеров
 docker rm id/c_name             # удалить контейнер по ID/name
