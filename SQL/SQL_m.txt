@@ -112,10 +112,11 @@ $$Жанна д'Арк$$         - еще один способ, если мно
 concat('12', ' ', '45') - конкатенация
 
 -- замена подстроки
-REPLACE('aaa', 'a', 'b')                        - bbb - замена всех a на b в aaa
-REGEX_REPLACE('aaa', 'a', 'b')                  - baa - замена первого совпадения
-REGEX_REPLACE('aaa', 'a', 'b', 'g')             - bbb - замена всех a на b в aaa
-REGEX_REPLACE(str, E'\\r\\n|\\n|\\r', ' ', 'g') - замена всех переносов строки на пробел
+REPLACE('aaa', 'a', 'b')                            - bbb - замена всех a на b в aaa
+REGEXP_REPLACE('aaa', 'a', 'b')                     - baa - замена первого совпадения
+REGEXP_REPLACE('aaa', 'a', 'b', 'g')                - bbb - замена всех a на b в aaa
+REGEXP_REPLACE(str, E'\\r\\n|\\n|\\r', ' ', 'g')    - замена всех переносов строки на пробел
+REGEXP_REPLACE(col, '[^0-9]', '', 'g')              - номер телефона
 
 -- функции для работы со строками
 'hello ' || 'world'                     -- конкатенация строк
