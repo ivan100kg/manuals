@@ -3451,8 +3451,8 @@
     count()                 // -> long, count of elements                   (t)
     findAny().ifPresent()   // -> Optional, первый попавшийся элемент       (t)
     findFirst()             // -> Optional, first element of stream         (t)
-    min(Comparator<T>)      // -> Type, min element                         (t)
-    max(Comparator<T>)      // -> Type, max element                         (t)
+    min(Comparator<T>)      // -> Optional, min element                     (t)
+    max(Comparator<T>)      // -> Optional, max element                     (t)
         
     Преобразование к спец потокам как map:
     mapToInt(Function<>)    // -> IntStream, stream of Integers             (i)
