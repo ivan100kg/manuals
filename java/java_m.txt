@@ -3403,6 +3403,7 @@
     ifPresent(Consumer<T>)      // -> void, если не пустой вып accept()
     get()                       // -> Type, возвращает объект типа.
     orElse(val)                 // -> val, если коробка пуста вернуть val.
+    orElseThrow()               // если пустой выброс исключения NoSuchElementException("No value present");
     Example:
     Optional<Integer> optional = list.stream().reduce((acc, el) -> acc * el);
     if (optional.isPresent()) System.out.println(optional.get());   // get
