@@ -4122,3 +4122,89 @@
     UUID uuid = UUID.randomUUID();                                          // рандомный(4 версия)
     int variant = uuid.variant();                                           // вариант
     int version = uuid.version();                                           // версия
+
+
+--- BigDecimal ---
+BigDecimal — это класс в Java (из пакета java.math), который используется для работы с числами с высокой точностью, 
+особенно в финансовых расчетах, предотвращает ошибки округления, но требует явного использования методов 
+арифметики и управления округлением.
+
+1. Создание BigDecimal
+    BigDecimal bd1 = new BigDecimal("10.25");   // Рекомендуется передавать строку для точности
+    BigDecimal bd2 = BigDecimal.valueOf(5.5);   // Можно использовать valueOf (точнее для double)
+    BigDecimal bd3 = new BigDecimal(2.35);      // Не рекомендуется из-за возможных ошибок точности
+
+2. Арифметические операции
+    (методы не изменяют сам объект, а возвращают новый)
+
+    BigDecimal a = new BigDecimal("10.5");
+    BigDecimal b = new BigDecimal("3.2");
+
+    // Сложение
+    BigDecimal sum = a.add(b); // 10.5 + 3.2 = 13.7
+
+    // Вычитание
+    BigDecimal difference = a.subtract(b); // 10.5 - 3.2 = 7.3
+
+    // Умножение
+    BigDecimal product = a.multiply(b); // 10.5 * 3.2 = 33.6
+
+    // Деление (нужно задавать масштаб и стратегию округления)
+    BigDecimal quotient = a.divide(b, 2, RoundingMode.HALF_UP); // 10.5 / 3.2 ≈ 3.28
+
+    // Возведение в степень
+    BigDecimal power = a.pow(2); // 10.5^2 = 110.25
+
+    // Остаток от деления
+    BigDecimal remainder = a.remainder(b); // 10.5 % 3.2 ≈ 0.9
+    
+3. Сравнение чисел
+    Методы compareTo() и equals()
+
+    BigDecimal x = new BigDecimal("2.0");
+    BigDecimal y = new BigDecimal("2.00");
+
+    // compareTo(): возвращает -1 (меньше), 0 (равны), 1 (больше)
+    System.out.println(x.compareTo(y)); // 0 (сравнивает математически)
+
+    // equals(): проверяет точное совпадение
+    System.out.println(x.equals(y));    // false (разная точность)
+
+4. Округление (scale)
+    BigDecimal num = new BigDecimal("10.257");
+
+    // Устанавливаем новый scale с округлением
+    BigDecimal rounded = num.setScale(2, RoundingMode.HALF_UP); // 10.26
+    Возможные режимы округления (RoundingMode):
+
+    HALF_UP     — Округление вверх, если остаток 0.5+
+    HALF_DOWN   — Округление вниз, если остаток 0.5
+    FLOOR       — Округление вниз (в сторону -∞)
+    CEILING     — Округление вверх (в сторону +∞)
+    DOWN        — Усечение дробной части (округление к 0)
+    UP          — Округление всегда в большую сторону
+
+5. Преобразование в другие типы
+    BigDecimal num = new BigDecimal("123.45");
+
+    int intValue = num.intValue();     // 123
+    long longValue = num.longValue();  // 123
+    double doubleValue = num.doubleValue(); // 123.45
+    String strValue = num.toString();  // "123.45"
+
+6. Работа со Scale
+    BigDecimal number = new BigDecimal("123.45678");
+
+    // Получить текущий scale
+    int scale = number.scale(); // 5
+
+    // Изменить scale с округлением
+    BigDecimal newNumber = number.setScale(2, RoundingMode.HALF_UP); // 123.46
+
+7. Преимущества BigDecimal
+    ✅ Высокая точность (важно для финансов)
+    ✅ Контроль округления
+    ✅ Поддержка арифметики больших чисел
+
+    ❌ Медленнее, чем double
+    ❌ Неудобный синтаксис (методы вместо +, -, *, /)
