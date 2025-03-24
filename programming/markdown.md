@@ -73,3 +73,8 @@
     - [x] Сделано
     - [ ] В процессе
     - [ ] Нужно сделать
+
+10. Открыть в VSCode - открыть новую вкладку и
+- нажать Ctrl+Shift+V
+- либо ПКМ на вкладке Open Preview
+- либо Cttrl+Shift+P Markdown: Open Preview
