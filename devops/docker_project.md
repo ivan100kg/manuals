@@ -146,7 +146,7 @@ docker build -t myrepo/tfoms_app:latest .
 ### 3.3. **Запуск локально через Docker Compose**
 
 ```sh
-docker-compose up -d
+docker compose up -d # docker-compose up для старых версий
 ```
 
 Приложение будет доступно на **`http://localhost:8021`**.
@@ -154,13 +154,14 @@ docker-compose up -d
 ### 3.4. **Просмотр логов**
 
 ```sh
-docker logs -f tfoms_app
+docker logs -f tfoms-tfoms_app-1
+docker compose logs -f tfoms_app
 ```
 
 ### 3.5. **Остановка контейнеров**
 
 ```sh
-docker-compose down
+docker compose down # docker-compose down
 ```
 
 ---
