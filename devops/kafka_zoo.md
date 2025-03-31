@@ -2,12 +2,12 @@
 
 ## 🏗 Шаг 1: Установка Zookeeper
 
-### 1️⃣ Установить Zookeeper на все 3 сервера
+### 1️⃣ Установить Zookeeper на все 3 сервера (исправить на свежую версию)
 ```bash
 cd /opt
-wget https://downloads.apache.org/zookeeper/stable/apache-zookeeper-3.8.4-bin.tar.gz
-tar -xzf apache-zookeeper-3.8.4-bin.tar.gz
-mv apache-zookeeper-3.8.4-bin zookeeper
+wget https://downloads.apache.org/zookeeper/stable/apache-zookeeper-3.9.3-bin.tar.gz
+tar -xzf apache-zookeeper-3.9.3-bin.tar.gz
+mv apache-zookeeper-3.9.3-bin zookeeper
 ```
 
 ### 2️⃣ Настроить конфигурацию Zookeeper (`/opt/zookeeper/conf/zoo.cfg`)
@@ -44,12 +44,12 @@ echo "3" > /opt/zookeeper/data/myid  # На третьем сервере
 
 ## 🚀 Шаг 2: Установка Kafka
 
-### 1️⃣ Установить Kafka на все 3 сервера
+### 1️⃣ Установить Kafka на все 3 сервера (исправить на свежую версию)
 ```bash
 cd /opt
-wget https://downloads.apache.org/kafka/3.7.0/kafka_2.13-3.7.0.tgz
-tar -xzf kafka_2.13-3.7.0.tgz
-mv kafka_2.13-3.7.0 kafka
+wget https://downloads.apache.org/kafka/4.0.0/kafka_2.13-4.0.0.tgz
+tar -xzf kafka_2.13-4.0.0.tgz
+mv kafka_2.13-4.0.0 kafka
 ```
 
 ### 2️⃣ Настроить Kafka (`/opt/kafka/config/server.properties`)
