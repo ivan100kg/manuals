@@ -5,15 +5,16 @@
 ### 1️⃣ Установить Zookeeper на все 3 сервера (исправить на свежую версию)
 ```bash
 cd /opt
-wget https://downloads.apache.org/zookeeper/stable/apache-zookeeper-3.9.3-bin.tar.gz
-tar -xzf apache-zookeeper-3.9.3-bin.tar.gz
-mv apache-zookeeper-3.9.3-bin zookeeper
+wget https://downloads.apache.org/zookeeper/stable/apache-zookeeper-3.8.4-bin.tar.gz
+tar -xzf apache-zookeeper-3.8.4-bin.tar.gz
+mv apache-zookeeper-3.8.4-bin zookeeper
 ```
 
 ### 2️⃣ Настроить конфигурацию Zookeeper (`/opt/zookeeper/conf/zoo.cfg`)
 ```ini
 tickTime=2000
 dataDir=/opt/zookeeper/data
+admin.serverPort=8180
 clientPort=2181
 initLimit=5
 syncLimit=2
