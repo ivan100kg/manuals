@@ -1992,18 +1992,24 @@ CentOS, RHEL, Fedora:
     firewall-cmd --list-all                         # инфо все открытые порты
     firewall-cmd --query-port=2181/tcp              # проверить конкретный порт
     firewall-cmd --add-port=2181/tcp --permanent    # открыть порт
+    firewall-cmd --remove-port=3888/tcp --permanent # закрыть порт
     firewall-cmd --reload                           # применить
-
-    если используется iptables:
-    iptables -L -n -v                               # инфо все открытые порты
-    iptables -L -n -v | grep 2181                   # проверить конкретный порт
-    iptables -A INPUT -p tcp --dport 2181 -j ACCEPT # открыть порт
-    iptables-save > /etc/sysconfig/iptables         # применить
 
 Ubuntu, Debian:
     ufw status              # инфо все открытые порты
     ufw allow 2181/tcp      # открыть порт
+    ufw deny 3888/tcp       # закрыть порт
     systemctl restart ufw   # применить
+
+Old:
+    если используется iptables:
+    iptables -L -n -v                               # инфо все открытые порты
+    iptables -L -n -v | grep 2181                   # проверить конкретный порт
+    iptables -A INPUT -p tcp --dport 2181 -j ACCEPT # открыть порт
+    iptables -A INPUT -p tcp --dport 3888 -j REJECT # закрыть порт
+    iptables-save > /etc/iptables/rules.v4          # применить Ubuntu
+    service iptables save                           # применить CentOS / RHEL / Fedora
+
 
 Проверка, слушает ли процесс порт
     netstat -tulnp | grep 2181  # локально
