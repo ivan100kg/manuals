@@ -1984,3 +1984,29 @@ sudo vim /etc/netplan/01-network-manager-all.yaml
         dhcp4: false                            - откл dhcp
         nameservers:    
           addresses: [192.168.0.247, 8.8.8.8]   - DNS сервера
+
+
+--- Firewall / порты ----------------------------------------------------
+CentOS, RHEL, Fedora:
+    если используется firewalld:
+    firewall-cmd --list-all                         # инфо все открытые порты
+    firewall-cmd --query-port=2181/tcp              # проверить конкретный порт
+    firewall-cmd --add-port=2181/tcp --permanent    # открыть порт
+    firewall-cmd --reload                           # применить
+
+    если используется iptables:
+    iptables -L -n -v                               # инфо все открытые порты
+    iptables -L -n -v | grep 2181                   # проверить конкретный порт
+    iptables -A INPUT -p tcp --dport 2181 -j ACCEPT # открыть порт
+    iptables-save > /etc/sysconfig/iptables         # применить
+
+Ubuntu, Debian:
+    ufw status              # инфо все открытые порты
+    ufw allow 2181/tcp      # открыть порт
+    systemctl restart ufw   # применить
+
+Проверка, слушает ли процесс порт
+    netstat -tulnp | grep 2181  # локально
+    ss -tulnp | grep 2181       # локально
+    telnet <ip> 2181            # с внешнего
+    nmap -sS -p2181 <ip>        # с внешнего
