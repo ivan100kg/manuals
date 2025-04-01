@@ -41,6 +41,9 @@ echo "3" > /opt/zookeeper/data/myid  # На третьем сервере
 /opt/zookeeper/bin/zkCli.sh -server 192.168.0.101:2181 ls /
 ```
 
+### 6. Открыть порты в брандмауэре
+2181 2888 3888
+
 ---
 
 ## 🚀 Шаг 2: Установка Kafka
@@ -83,6 +86,8 @@ mkdir -p /opt/kafka/data
 ```bash
 /opt/kafka/bin/kafka-server-start.sh -daemon /opt/kafka/config/server.properties
 ```
+### 6. Открыть порты в брандмауэре
+9092 9093
 
 ---
 
