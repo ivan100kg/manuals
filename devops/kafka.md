@@ -24,11 +24,13 @@ offsets.topic.replication.factor=2
 ```
 #### 📌 Для `192.168.0.102`
 - `broker.id=2`
+- `node.id=2`
 - `listeners=PLAINTEXT://192.168.0.102:9092`
 - `advertised.listeners=PLAINTEXT://192.168.0.102:9092`
 
 #### 📌 Для `192.168.0.103`
 - `broker.id=3`
+- `node.id=3`
 - `listeners=PLAINTEXT://192.168.0.103:9092`
 - `advertised.listeners=PLAINTEXT://192.168.0.103:9092`
 
