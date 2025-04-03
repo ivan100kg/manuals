@@ -2896,6 +2896,7 @@ Setting examples
         xjc -d ./src/main/java  # путь куда будут генерироваться файлы
             -p com.example.cda  # пакет куда будут помещены классы - в итоге src/main/java/com/example/cda
             ./path_to/CDA.xsd   # путь до одного главного файла из .xsd набора файлов
+                                  если есть связные схемы - добавляем всё в корень, откуда вводим команду!
 
         wsimport -keep                                                      # сохраняет оригинальные файлы .class
                  -s ./src/main/java                                         # каталог для сгенерированных Java-файлов
@@ -2911,6 +2912,8 @@ Setting examples
               sed -i 's/name="ID"/name="IDSecond"/g' 230elmk/xsd/XSD\ CDA/POCD_MT000040.xsd
             2 после генерации классов в самих классах найти @XmlAttribute(name = "IDSecond") -> заменить на "ID"
               find . -name *.java -exec sed -i 's/@XmlAttribute(name = "IDSecond")/@XmlAttribute(name = "ID")/g' {} \;
+        could not find the document; the document could not be read; the root element of the document is not <xsd:schema>
+            если есть связные схемы - добавляем всё в корень, откуда вводим команду!
 
 
     3. возможные проблемы с ssl сертификатами
