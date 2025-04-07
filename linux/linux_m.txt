@@ -1905,26 +1905,29 @@ umount /mnt - umount
 
 
 --- ярлык на рабочий стол/приложения Ubuntu ---
-chmod +x ~/myscript.sh                              # делаем скрипт исполняемым
-vim ~/.local/share/applications/myscript.desktop    # создаем ярлык для приложений
-# Копируем на рабочий стол
-cp ~/.local/share/applications/myscript.desktop ~/Desktop
-    [Desktop Entry]
-    Version=1.0
-    Type=Application
-    Name=My Script
-    Comment=Run my custom script
-    Exec=/bin/bash ~/myscript.sh
-    Icon=utilities-terminal
-    Terminal=false
-    Categories=Utility;
+vim ~/.local/share/applications/idea.desktop    # создаем ярлык для приложения
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=IntelliJ IDEA Community Edition
+Icon=/opt/idea/bin/idea.png
+Exec="/opt/idea/bin/idea" %f
+Comment=Integrated Development Environment
+Categories=Development;IDE;
+Terminal=false
+StartupNotify=true
     
     Name        - название приложения, как оно будет отображаться в меню.
     Comment     - описание приложения.
     Exec        - путь к вашему скрипту.
     Icon        - иконка приложения (замените на подходящую, если нужно).
     Terminal    - открывать терминал
-update-desktop-database ~/.local/share/applications # обновить кэш
+
+# Копируем на рабочий стол(если нужно)
+cp ~/.local/share/applications/myscript.desktop ~/Desktop
+
+sudo update-desktop-database # обновить кэш
 
 
 --- keyboard Language ----------------------
