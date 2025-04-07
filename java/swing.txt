@@ -33,20 +33,20 @@ https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
 // error
 JOptionPane.showMessageDialog(new JFrame(),
     "Eggs are not supposed to be green.",   // message
-    "Inane error",                          // title
+    "Error",                          // title
     JOptionPane.ERROR_MESSAGE);
 
 // warning
 JOptionPane.showMessageDialog(new JFrame(),
     "Eggs are not supposed to be green.",   // message
-    "Inane warning",                        // title
+    "Warning",                        // title
     JOptionPane.WARNING_MESSAGE);
 
 // yes no
 int n = JOptionPane.showConfirmDialog(
     new JFrame(),
     "Would you like green eggs and ham?",
-    "An Inane Question",
+    "Question",
     JOptionPane.YES_NO_OPTION);
 
 // yes no - custom names

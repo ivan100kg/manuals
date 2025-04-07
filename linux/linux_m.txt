@@ -536,6 +536,10 @@ sed  # потоковый редактор, фильтрует и преобра
      # sed '2,3s/было/стало/' file  -замена в дипазоне с 3-4 строки включ
      # sed '2,$s/было/стало/' file  -замена со второй до конца
      # sed '/шаблон/s/было/стало/' file  -поиск строк по регв и применение
+     # sed -n '/reg/p'  -вывести только строки где встречается рег выражение
+     # sed -n '/reg1/,/reg2/p'      -вывести строки где встречается рег выражение +
+                                     все строки которые между ними
+     # sed -n '/reg1/,/reg2/{p;g}'  -вывести только первое вхождение
      
      #---удаление---
      # sed '1d' file -удалить 1 строку
@@ -1983,3 +1987,36 @@ sudo vim /etc/netplan/01-network-manager-all.yaml
         dhcp4: false                            - откл dhcp
         nameservers:    
           addresses: [192.168.0.247, 8.8.8.8]   - DNS сервера
+
+
+--- Firewall / порты ----------------------------------------------------
+CentOS, RHEL, Fedora:
+    если используется firewalld:
+    firewall-cmd --list-all                         # инфо все открытые порты
+    firewall-cmd --query-port=2181/tcp              # проверить конкретный порт
+    firewall-cmd --add-port=2181/tcp --permanent    # открыть порт
+    firewall-cmd --remove-port=3888/tcp --permanent # закрыть порт
+    firewall-cmd --reload                           # применить
+
+Ubuntu, Debian:
+    ufw status              # инфо все открытые порты
+    ufw allow 2181/tcp      # открыть порт
+    ufw deny 3888/tcp       # закрыть порт
+    systemctl restart ufw   # применить
+
+Old:
+    если используется iptables:
+    iptables -L -n -v                               # инфо все открытые порты
+    iptables -L -n -v | grep 2181                   # проверить конкретный порт
+    iptables -A INPUT -p tcp --dport 2181 -j ACCEPT # открыть порт
+    iptables -A INPUT -p tcp --dport 3888 -j REJECT # закрыть порт
+    iptables-save > /etc/iptables/rules.v4          # применить Ubuntu
+    service iptables save                           # применить CentOS / RHEL / Fedora
+
+
+Проверка, слушает ли процесс порт
+    netstat -tulnp | grep 2181  # локально
+    ss -tulnp | grep 2181       # локально
+    telnet <ip> 2181            # с внешнего
+    nmap -sS -p2181 <ip>        # с внешнего
+    nc -zv <ip> 2181            # с внешнего

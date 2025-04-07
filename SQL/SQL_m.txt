@@ -112,10 +112,11 @@ $$Жанна д'Арк$$         - еще один способ, если мно
 concat('12', ' ', '45') - конкатенация
 
 -- замена подстроки
-REPLACE('aaa', 'a', 'b')                        - bbb - замена всех a на b в aaa
-REGEX_REPLACE('aaa', 'a', 'b')                  - baa - замена первого совпадения
-REGEX_REPLACE('aaa', 'a', 'b', 'g')             - bbb - замена всех a на b в aaa
-REGEX_REPLACE(str, E'\\r\\n|\\n|\\r', ' ', 'g') - замена всех переносов строки на пробел
+REPLACE('aaa', 'a', 'b')                            - bbb - замена всех a на b в aaa
+REGEXP_REPLACE('aaa', 'a', 'b')                     - baa - замена первого совпадения
+REGEXP_REPLACE('aaa', 'a', 'b', 'g')                - bbb - замена всех a на b в aaa
+REGEXP_REPLACE(str, E'\\r\\n|\\n|\\r', ' ', 'g')    - замена всех переносов строки на пробел
+REGEXP_REPLACE(col, '[^0-9]', '', 'g')              - номер телефона
 
 -- функции для работы со строками
 'hello ' || 'world'                     -- конкатенация строк
@@ -1122,3 +1123,13 @@ $do$;
 SELECT SUBSTRING(column_name FROM 1 FOR 20) AS truncated_text
 FROM 1 - отсчёт первого символа начинается с 1, с какого символа
 FOR 20 - макс количество выводимых символов начиная с FROM
+
+
+-- Cross base select / запрос из 2-х БД ---
+SELECT 
+	cl."timestamp", w.fio, cl.entity, cl.row_id, cl.operation, cl.info
+FROM 
+	crud_logger cl,
+	dblink('dbname=test', 'SELECT id, fio FROM worker') AS w(id INT, fio TEXT)
+WHERE 
+	cl.worker = w.id
