@@ -282,9 +282,32 @@ Topic
             Leader: 1                       - лидер раздела
             Replicas: 1,2,3                 - копии на серверах
             Isr: 1,2,3                      - синхронизация серверов(какие синхронизирована с лидером)
+    
     изменить топик:
-        изменить количество разделов
-        kafka-topics.sh --bootstrap-server localhost:9092 --alter --topic my-topic --partitions 16
+        изменить количество разделов:
+            kafka-topics.sh --bootstrap-server localhost:9092 --alter --topic my-topic --partitions 16
+        изменить кол-во реплик:
+            создать файл json my.json (если 3 партиции и реплик планируется 3)
+                {
+                    "version": 1,
+                    "partitions": [
+                        {"topic": "my-topic", "partition": 0, "replicas": [1, 2, 3]},
+                        {"topic": "my-topic", "partition": 1, "replicas": [1, 2, 3]},
+                        {"topic": "my-topic", "partition": 2, "replicas": [1, 2, 3]}
+                    ]
+                }
+            /opt/kafka/bin/kafka-reassign-partitions.sh \
+                --bootstrap-server localhost:9092 \
+                --reassignment-json-file my.json \
+                --execute
+        изменить параметр min.insync.replicas:
+            /opt/kafka/bin/kafka-configs.sh \
+                --bootstrap-server localhost:9092 \
+                --entity-type topics \
+                --entity-name my-topic \
+                --alter \
+                --add-config min.insync.replicas=2
+
     удалить топик:
         включить настройку, если выключена delete.topic.enable=true
         ./kafka-topics.sh --delete --topic my-topic --bootstrap-server host:9092 - удалить топик my-topic
