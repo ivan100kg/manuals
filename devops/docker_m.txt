@@ -214,8 +214,13 @@ docker run -v volumeName:absHostPath    # запуск volume:хост путь
 # копировать данные с тома себе на локальный комп
 docker cp container_id:/data/path/to/file_dir /path/on/host
 
+--- сети (networks) ---
+docker network ls              # список сетей
+docker network inspect имя     # информация о сети
+docker network rm имя          # удалить сеть
 
---- Управление несколькими контейнерами ---
+
+--- Управление несколькими контейнерами -----------------------------------
 Docker Compose - управление и запуск нескольких контейнеров с помощью YAML
 Kubernetes или OpenShift - оркестраторы, управляют множеством контейнеров
 
