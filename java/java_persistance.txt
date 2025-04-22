@@ -446,51 +446,72 @@ Hibernate
 
 
 --- HQL (Hibernate Query Language) ---
-    это SQL переделанный под написание запросов в Hibernate для удобства
-    Вместо имени таблицы используется имя entity класса, 
-    вместо полей БД используются именя полей класса
-    
-    Native                                            | HQL
+    это SQL переделанный под написие запросов в Hibernate
+    Вместо имени таблицы — имя entity-класса
+    Вместо полей БД — поля класса
+
+    Native SQL                                        | HQL
     --------------------------------------------------+---------------------------------------
     SELECT * FROM employee                            | FROM Employee
     SELECT * FROM employee WHERE first_name = 'Inna'; | FROM Employee WHERE firstName = 'Inna'
     SELECT name FROM employee;                        | SELECT name FROM Employee
     UPDATE employee SET salary = 0;                   | UPDATE Employee SET salary = 0;
-    DELETE employee WHERE first_name='Inna'           | DELETE Employee WHERE firstName='Inna'
-    WHERE field IS NOT TRUE;                          | WHERE field IS NULL OR field IS FALSE;
-    WHERE actual                                      | actual IS NOT NULL AND actual IS TRUE
-    ...JOIN employee ON task.employee = employee.id;  | FROM Task WHERE employee.name = 'Igor'
-    ...JOIN employee ON task.employee = employee.id;  | SELECT employee FROM Task where id = 2
-    в джоинах обращаемся к полям связной таблицы через точку
+    DELETE FROM employee WHERE first_name='Inna'      | DELETE FROM Employee WHERE firstName = 'Inna'
+    WHERE field IS NOT TRUE;                          | WHERE field IS NULL OR field = false
+    WHERE actual                                      | WHERE actual IS NOT NULL AND actual = true
+    JOIN ON task.employee = employee.id               | FROM Task WHERE employee.name = 'Igor'
+    JOIN ON task.employee = employee.id               | SELECT employee FROM Task WHERE id = 2
+    В JOIN'ах обращаемся к полям связи через точку
 
 
 --- JPQL (Jakarta Persistence Query Language) ---
-    платформенно-независимый объектно-ориентированный язык запросов, являющийся частью 
-    спецификации Java Persistence API (JPA)
-    
-    Native                                            | JPQL
+    платформенно-независимый объектно-ориентированный язык запросов
+    часть спецификации Java Persistence API (JPA)
+
+    Native SQL                                        | JPQL
     --------------------------------------------------+---------------------------------------
     SELECT * FROM employee                            | SELECT e FROM Employee e
     SELECT * FROM employee WHERE first_name = 'Inna'; | SELECT e FROM Employee e WHERE e.firstName = 'Inna'
-    SELECT name FROM employee;                        | SELECT e.name FROM Employee e
-    UPDATE employee SET salary = 0;                   | не поддерживается
-    DELETE employee WHERE name='Inna'                 | DELETE FROM Employee e WHERE e.id = :id
-    WHERE field IS NOT TRUE;                          | WHERE field IS NULL OR field IS FALSE;
-    WHERE actual                                      | actual IS NOT NULL AND actual IS TRUE
-    ...JOIN employee ON task.employee = employee.id;  | SELECT t FROM Task t JOIN t.employee e (авто связь)
-                                                      |     WHERE e.id IN = :idList;
+    SELECT name FROM employee                         | SELECT e.name FROM Employee e
+    UPDATE employee SET salary = 0                    | ❌ не поддерживается
+    DELETE FROM employee WHERE name='Inna'            | DELETE FROM Employee e WHERE e.name = :name
+    WHERE field IS NOT TRUE;                          | WHERE field IS NULL OR field = false
+    WHERE actual                                      | WHERE actual IS NOT NULL AND actual = true
+    JOIN employee ON task.employee = employee.id      | SELECT t FROM Task t JOIN t.employee e WHERE e.id IN :idList
+    В JOIN'ах — через объектные связи, не FK
 
---- JPA методы именование - сопоставление с SQL-запросами ---
 
+--- JOIN/AGGREGATION (JPQL/HQL) ---
+
+    LEFT JOIN                                         | SELECT t FROM Task t LEFT JOIN t.employee e
+    FETCH JOIN                                        | SELECT e FROM Employee e JOIN FETCH e.tasks
+    GROUP BY + COUNT                                  | SELECT d.name, COUNT(e) FROM Department d
+                                                      | JOIN d.employees e GROUP BY d.name
+    HAVING                                            | HAVING COUNT(e) > 5
+
+
+--- DTO Constructor Expressions ---
+    SELECT NEW com.package.DTOClass(args)             | SELECT NEW com.dto.EmpDto(e.id, e.name)
+    nullable поля без обработки — могут выбросить ошибку
+
+
+--- Collections ---
+    IS EMPTY                                          | SELECT d FROM Department d WHERE d.employees IS EMPTY
+    MEMBER OF                                         | SELECT d FROM Department d WHERE :emp MEMBER OF d.employees
+    EXISTS                                            | SELECT d FROM Department d WHERE EXISTS (
+                                                      |   SELECT e FROM Employee e WHERE e.department = d
+                                                      | )
+
+
+--- Spring Data JPA: Метод vs SQL ---
     JPA                                               | SQL
     --------------------------------------------------+---------------------------------------
-    Entity entity save(Entity entity)                 | INSERT
-    Optional<T> findById(Long id)                     | SELECT * FROM entity WHERE id = ?
-    Entity entity save(Entity entity)                 | UPDATE entity SET id = ?, ...
-    void delete(Entity entity)                        | DELETE
-    void deleteById(Long id)                          | DELETE FROM entity WHERE id = ?
-    --------------------------------------------------+---------------------------------------
-    next methods returns List<Entity>
+    save(Entity entity)                               | INSERT / UPDATE
+    findById(Long id)                                 | SELECT * FROM entity WHERE id = ?
+    delete(Entity entity)                             | DELETE
+    deleteById(Long id)                               | DELETE FROM entity WHERE id = ?
+
+    next methods return List<Entity>
     --------------------------------------------------+---------------------------------------
     findByName(String name)                           | SELECT * FROM entity WHERE name = ?
     findByNameAndActualTrue(String name)              | SELECT * FROM entity WHERE name = ? AND actual
@@ -500,9 +521,15 @@ Hibernate
     findByCreatedDateBefore(LocalDate date)           | SELECT * FROM entity WHERE created_date < ?
     findByNameLike(String name)                       | SELECT * FROM entity WHERE name LIKE ?
     findByNameOrderByAgeAsc(String name)              | SELECT * FROM entity WHERE name = ? ORDER BY age ASC
-    @Query("SELECT e FROM Entity e WHERE e.name = ?1")| 
-    List<Entity> findByCustomName(String name);       | 
 
+    @Query("SELECT e FROM Entity e WHERE e.name = ?1")| 
+    List<Entity> findByCustomName(String name);       | SELECT * FROM entity WHERE name = ?
+
+--- Примечания ---
+    - В JPQL/HQL не используются имена таблиц и колонок — только классы и поля
+    - JOIN работает по объектным связям, а не по внешним ключам
+    - FETCH JOIN загружает связанные сущности за один запрос
+    - В @Query можно использовать HQL/JPQL и нативный SQL (nativeQuery = true)
 
 
 --- CRUD with Hibernate ---
