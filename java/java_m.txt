@@ -1770,34 +1770,74 @@
     Если объекты равны - рекомендуется чтобы equals() так же были равны. 
 
 
-    public interface Comparator<T> {    // interface
-         int compare(T o1, T o2);
-    }    
-
-    Example
-    public class IdComparator implements Comparator<MyClass> {
-        @Override
-        public int compare(MyClass o1, MyClass o2) {
-            if (o1.getId() == o2.getId()) {
-                return 0;
-            } else if (o1.getId() < o2.getId()) {
-                return -1;
-            } else
-                return 1;
-        }
-
-        public static void main(String[] args) {
-            MyClass m1 = new MyClass(8);
-            MyClass m2 = new MyClass(79);
-            MyClass[] arr = {new MyClass(1), new MyClass(6), new MyClass(3)};
-            List<MyClass> list = new ArrayList<>(Arrays.asList(arr));
-            IdComparator ic = new IdComparator();
-            System.out.println(ic.compare(m1, m2));
-            list.sort(ic);
-            Collections.sort(list, ic);
-
-        }
+    🟦 Интерфейс:
+    public interface Comparator<T> {
+        int compare(T o1, T o2);
     }
+
+    🟩 Пример 1: Классический способ
+    --------------------------------------------------
+        public class IdComparator implements Comparator<MyClass> {
+            @Override
+            public int compare(MyClass o1, MyClass o2) {
+                if (o1.getId() == o2.getId()) return 0;
+                return o1.getId() < o2.getId() ? -1 : 1;
+            }
+        }
+
+    🟩 Пример 2: Через лямбду
+    --------------------------------------------------
+        Comparator<MyClass> cmp = (o1, o2) -> Integer.compare(o1.getId(), o2.getId());
+
+    🟩 Пример 3: Comparator.comparing
+    --------------------------------------------------
+        list.sort(Comparator.comparing(MyClass::getId));
+
+        // если id может быть null
+        list.sort(Comparator.comparing(MyClass::getId, Comparator.nullsLast(Integer::compareTo)));
+
+    🟩 Пример 4: Обратная сортировка
+    --------------------------------------------------
+        list.sort(Comparator.comparing(MyClass::getId).reversed());
+
+    🟩 Пример 5: Множественная сортировка (цепочка)
+    --------------------------------------------------
+        list.sort(Comparator.comparing(MyClass::getName)
+                            .thenComparing(MyClass::getAge));
+
+    🟩 Пример 6: Удобная сортировка stream'а
+    --------------------------------------------------
+        List<MyClass> sorted = list.stream()
+            .sorted(Comparator.comparing(MyClass::getId))
+            .collect(Collectors.toList());
+
+    🟩 Пример 7: Сортировка по null-полям
+    --------------------------------------------------
+        Comparator<MyClass> cmp = Comparator.comparing(
+            MyClass::getDate,
+            Comparator.nullsLast(Comparator.naturalOrder())
+        );
+
+    🟩 Пример 8: Сортировка по нескольким nullable-полям
+    --------------------------------------------------
+        list.sort(Comparator.comparing(MyClass::getFirst, Comparator.nullsLast(String::compareTo))
+                            .thenComparing(MyClass::getSecond, Comparator.nullsLast(Integer::compareTo)));
+
+    🟨 Полезные методы:
+    --------------------------------------------------
+        Comparator.naturalOrder()         // для Comparable объектов (например, String, Integer)
+        Comparator.reverseOrder()         // обратный порядок
+        Comparator.nullsFirst(cmp)        // null значения в начале
+        Comparator.nullsLast(cmp)         // null значения в конце
+        cmp.reversed()                    // обратный порядок
+
+    🟦 Помни:
+    --------------------------------------------------
+        - compare(x, y) < 0 → x меньше y
+        - compare(x, y) == 0 → равны
+        - compare(x, y) > 0 → x больше y
+        - Comparator НЕ должен быть null-небезопасным по умолчанию — оборачивай явно!
+
 
 --- of ---
     // создание объектов класса с пом статич метода of()
