@@ -481,13 +481,77 @@ Hibernate
     В JOIN'ах — через объектные связи, не FK
 
 
---- JOIN/AGGREGATION (JPQL/HQL) ---
+--- JOIN-сравнение: SQL / HQL / JPQL ---
 
-    LEFT JOIN                                         | SELECT t FROM Task t LEFT JOIN t.employee e
-    FETCH JOIN                                        | SELECT e FROM Employee e JOIN FETCH e.tasks
-    GROUP BY + COUNT                                  | SELECT d.name, COUNT(e) FROM Department d
-                                                      | JOIN d.employees e GROUP BY d.name
-    HAVING                                            | HAVING COUNT(e) > 5
+    Тип JOIN               | SQL
+    -----------------------+---------------------------------------------------------
+    INNER JOIN             | SELECT * FROM task t
+                           | JOIN employee e ON t.employee_id = e.id
+
+    LEFT JOIN              | SELECT * FROM task t
+                           | LEFT JOIN employee e ON t.employee_id = e.id
+
+    RIGHT JOIN             | SELECT * FROM task t
+                           | RIGHT JOIN employee e ON t.employee_id = e.id
+
+    FULL JOIN              | SELECT * FROM task t
+                           | FULL OUTER JOIN employee e ON t.employee_id = e.id
+
+    CROSS JOIN             | SELECT * FROM task t
+                           | CROSS JOIN employee
+
+    IMPLICIT JOIN          | SELECT * FROM task t, employee e
+                           | WHERE t.employee_id = e.id
+
+
+    Тип JOIN               | HQL (Hibernate Query Language)
+    -----------------------+---------------------------------------------------------
+    INNER JOIN             | FROM Task t JOIN t.employee e
+                           | (используются связи entity через поля)
+
+    LEFT JOIN              | FROM Task t LEFT JOIN t.employee e
+
+    RIGHT JOIN             | ❌ не поддерживается напрямую
+
+    FETCH JOIN             | FROM Task t JOIN FETCH t.employee
+                           | (загружает связанную сущность в одном запросе)
+
+    CROSS JOIN             | ❌ не поддерживается напрямую (но можно эмулировать)
+
+
+    Тип JOIN               | JPQL (JPA Query Language)
+    -----------------------+---------------------------------------------------------
+    INNER JOIN             | SELECT t FROM Task t JOIN t.employee e
+
+    LEFT JOIN              | SELECT t FROM Task t LEFT JOIN t.employee e
+
+    FETCH JOIN             | SELECT t FROM Task t JOIN FETCH t.employee e
+
+    JOIN + WHERE           | SELECT t FROM Task t JOIN t.employee e
+                           | WHERE e.name = 'Igor'
+
+    JOIN с коллекцией      | SELECT d FROM Department d JOIN d.employees e
+                           | (связь один-ко-многим или многие-ко-многим)
+
+    JOIN + IN              | SELECT t FROM Task t JOIN t.employee e
+                           | WHERE e.id IN :idList
+
+    ❗ Пояснение:
+        - JOIN работает по объектным связям (например, t.employee, а не t.employee_id)
+        - FETCH JOIN загружает связанные сущности без доп. SQL-запросов (EAGER-подобно)
+        - JPQL не поддерживает RIGHT/FULL JOIN
+        - alias (`e`, `t`) обязателен в JPQL, в HQL — желателен
+
+--- Пример с LEFT JOIN и NULL полями ---
+    HQL:
+        SELECT NEW com.dto.Blank(
+            g.id, g.filial.name, g.number, g.takingDate,
+            CASE WHEN g.statusResult IS NOT NULL THEN g.statusResult.name ELSE '' END
+        )
+        FROM GuestCard g
+        LEFT JOIN g.statusResult
+        WHERE g.patientPhysical = :pp
+        ORDER BY g.takingDate DESC                                           | HAVING COUNT(e) > 5
 
 
 --- DTO Constructor Expressions ---
