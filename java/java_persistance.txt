@@ -1158,5 +1158,46 @@ Hibernate
     private List<Employee> employees;
 
 
+--- EntityManager: Шпаргалка для большого проекта ---
+
+# Открыть новый EntityManager для запроса
+    EntityManager em = emf.createEntityManager()
+
+--- Чтение (SELECT) ---
+    try {
+        # Читаем без транзакции
+        result = em.find(EntityClass.class, id)
+        # или
+        resultList = em.createQuery("SELECT e FROM EntityClass e", EntityClass.class).getResultList()
+    } finally {
+        em.close()  # ОБЯЗАТЕЛЬНО закрыть
+    }
+
+--- Изменения (INSERT, UPDATE, DELETE) ---
+    try {
+        em.getTransaction().begin()  # Начинаем транзакцию
+
+        em.persist(newEntity)        # Добавляем новую запись
+        em.merge(existingEntity)     # Обновляем запись
+        em.remove(entityToDelete)    # Удаляем запись
+
+        em.getTransaction().commit() # Фиксируем изменения
+    } catch (Exception e) {
+        if (em.getTransaction().isActive()) {
+            em.getTransaction().rollback()  # Откат в случае ошибки
+        }
+        throw e
+    } finally {
+        em.close()  # ОБЯЗАТЕЛЬНО закрыть
+    }
+
+--- Правила ---
+    # 1. Никогда не шарить EntityManager между потоками.
+    # 2. На каждый запрос (или задачу) — новый EntityManager.
+    # 3. Закрывать EntityManager ВЕЗДЕ (даже при ошибках).
+    # 4. Чтение можно без транзакций, изменения только в транзакциях.
+    # 5. Не забывать об откате при ошибке.
+
+
               
      
