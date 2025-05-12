@@ -634,6 +634,9 @@ git stash list      # хранилище незавершённых измене
                       stash@{1}: WIP on master: c264051 Revert "Add file_size"
                       stash@{2}: WIP on master: 21d80a5 Add number to log
                       самое последнее изменение stash@{0}
+git stash show      # показать содержимое последнего или указать stash@{num}
+                      вывод по типу как log --stat
+                      -p показать развернуто изменения stash (log -p) 
 git stash apply     # вернуть последнее сохраненное состояние раб каталога
                       можно добавить номер нужного состояния, тогда будет
                       применено оно: git stash apply stash@{2}
