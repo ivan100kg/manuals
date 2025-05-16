@@ -1455,8 +1455,10 @@
     getMonth()                      // --> Month
     getYear()                       // --> int
     withDayOfMonths(int i)          // --> LocalDate, выставить день/месяц/год
+    atStartOfDay()                  // --> LocalDateTime, начало дня 00:00:00
+    atTime(LocalTime.MAX)           // --> LocalDateTime, конец дня 23:59:59
     
-    LocalTme methods:
+    LocalTime methods:
     plusHours(long hours)           // --> LocalTime, добавить часы
     ...                             // Minutes, Seconds, Nanos
     minusNanos(long nsec)           // --> LocalTime, отбавить наносекунды
