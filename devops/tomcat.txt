@@ -1,0 +1,163 @@
+# Tomcat
+
+## директория
+/opt/tomcat-10.1.41     # если несколько версий (можно использовать версионирование)
+/usr/local/tomcat10     # либо тут, если версия одна
+
+
+## пользователь
+groupadd tomcat
+useradd -s /bin/false -g tomcat -d /usr/local/tomcat10 tomcat
+chown -R tomcat:tomcat /usr/local/tomcat10
+
+
+## загрузка
+wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.41/bin/apache-tomcat-10.1.41.tar.gz
+tar xzf apache-tomcat-10.1.41.tar.gz
+mv apache-tomcat-10.1.41 /usr/local/tomcat10
+
+
+## systemd unit vim /etc/systemd/system/tomcat10.service 
+создать юнит
+    [Unit]
+    Description=Tomcat 10 DEV
+    After=network.target
+
+    [Service]
+    Type=forking
+    User=tomcat
+    Group=tomcat
+
+    Environment="JAVA_HOME=/usr/lib/jvm/jdk-21.0.6-oracle-x64"
+    Environment="CATALINA_HOME=/usr/local/tomcat10"
+    Environment="CATALINA_BASE=/usr/local/tomcat10"
+    Environment="CATALINA_PID=/usr/local/tomcat10/temp/tomcat.pid"
+
+    ExecStart=/usr/local/tomcat10/bin/startup.sh
+    ExecStop=/usr/local/tomcat10/bin/shutdown.sh
+
+    TimeoutStopSec=60
+
+    RestartSec=10
+    Restart=always
+
+    StandardOutput=journal
+    StandardError=journal
+
+    [Install]
+    WantedBy=multi-user.target
+
+перезапускаем:
+    sudo systemctl daemon-reexec
+    sudo systemctl daemon-reload
+    sudo systemctl enable tomcat10
+    sudo systemctl start tomcat10
+
+
+## структура
+.
+├── bin                         # Скрипты запуска и настройки Tomcat
+│   ├── catalina.sh             # Основной скрипт управления Tomcat (run/start/stop)
+│   ├── setenv.sh               # Пользовательские переменные окружения (JAVA_OPTS и т.д.)
+│   ├── shutdown.sh             # Завершение работы сервера Tomcat
+│   └── startup.sh              # Запуск сервера Tomcat
+
+├── conf                        # Конфигурация Tomcat
+│   ├── context.xml             # Глобальные настройки контекста для всех веб-приложений
+│   ├── server.xml              # Главный конфиг: порты, коннекторы, хосты и др.
+│   ├── tomcat-users.xml        # Пользователи и роли для доступа в /manager и /host-manager
+│   └── web.xml                 # Глобальный web.xml (настройки по умолчанию для всех приложений)
+
+├── lib                         # Дополнительные JAR-библиотеки (доступны всем приложениям)(atol)
+
+├── logs                        # Логи Tomcat
+│   ├── catalina.YYYY-MM-DD.log      # Общие логи Tomcat за указанный день
+│   ├── catalina.out                 # stdout и stderr (основной вывод JVM)
+│   ├── localhost.YYYY-MM-DD.log     # Логи приложений, привязанных к localhost
+│   ├── localhost_access_log.YYYY-MM-DD.txt  # HTTP-доступ (логи запросов)
+│   ├── manager.YYYY-MM-DD.log       # Логи работы веб-приложения /manager
+│   └── ...                          # Остальные — по аналогии
+
+├── temp                        # Временные файлы, используемые во время работы Tomcat
+
+└── webapps                     # Развёрнутые веб-приложения (и WAR-файлы)
+    ├── docs                                # Документация Tomcat (если включена)
+    ├── examples                            # Примеры веб-приложений (для демонстрации)
+    ├── host-manager                        # Веб-приложение для управления виртуальными хостами
+    ├── manager                             # Веб-приложение для управления приложениями
+    |   └── META-INF/context.xml            # Настройка для IP адресов для подключения к Менеджеру
+    ├── medserver##0.90.132-backdoor        # Развёрнутое приложение (по версии)
+    ├── medserver##0.90.132-backdoor.war    # WAR-файл приложения (будет авторазвёрнут)
+    ├── medserver-dev##0.90.150             # Другое развёрнутое приложение (dev-сборка)
+    ├── medserver-dev##0.90.150.war         # WAR-файл dev-сборки
+    └── ROOT                                # Корневое приложение (открывается по /)
+
+
+## bin/setenv.sh
+кастомный скрипт /usr/local/tomcat10/bin/setenv.sh
+предназначен для установки переменных окружения
+должен быть исполняемым и принадлежать tomcat:tomcat
+
+    #!/bin/bash
+
+    # Путь к JDK (можно не указывать, если задан через systemd или глобально)
+    export JAVA_HOME=/usr/lib/jvm/jdk-21.0.6-oracle-x64
+
+    # Опции JVM (heap, GC и прочее)
+    export JAVA_OPTS="-Xms512m -Xmx1024m \
+    -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError \
+    -Djava.security.egd=file:/dev/./urandom"
+
+    # Log4j2: указываем путь к конфигурации, если нужен (если spring не видит xml)
+    export LOGGING_CONFIG="file:/usr/local/tomcat10/webapps/yourapp/WEB-INF/classes/log4j2-spring.xml"
+
+
+## conf/context.xml
+Если приложение выдаёт ошибку переполнения кэша статическими файлами:
+Увеличить кэш ресурсов в секции <Context>
+    <Resources cachingAllowed="true" cacheMaxSize="300000" />
+
+
+## conf/server.xml
+Настройка портов томката, перенастроить если порты заняты или несколько томкатов 
+    <Connector port="8080"      - основной порт, на котором работает томкат и приложение
+    <Server port="8005"         - порт через который останавливается приложение
+
+
+## conf/tomcat-users.xml
+чтобы пользоваться Менеджером томкат нужно прописать юзеров
+добавить пользователей в секцию <tomcat-users>:
+    <role rolename="manager-gui"/>
+    <role rolename="manager-script"/>
+    <role rolename="manager-jmx"/>
+    <role rolename="manager-status"/>
+    <role rolename="admin-gui"/>
+    <user username="user1" password="pass1" roles="admin-gui,manager-gui,manager-status,manager-jmx,manager-script"/>
+    <user username="user2" password="pass2" roles="admin-gui,manager-gui,manager-status,manager-jmx,manager-script"/>
+
+
+## webapps/manager/META-INF/context.xml
+чтобы пользоваться Менеджером томкат нужно прописать IP
+добавить нужные IP в атрибут allow секции <Valve>:
+    allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|192\.168\.3\.66|192\.168\.0\.59|192\.168\.0\.229|192\.168\.0\.35" />
+
+
+## логи catalina.out ротация
+добавляем файлик /etc/logrotate.d/tomcat10
+    /usr/local/tomcat10/logs/catalina.out {
+        copytruncate                  # Не перезапускает процесс, просто обнуляет файл
+        daily                         # Ротация каждый день
+        rotate 30                     # Хранить максимум 30 файлов (удалять старше)
+        compress                      # Сжимать старые логи .gz
+        delaycompress                 # Не сжимать последний лог сразу, а через цикл
+        missingok                     # Не выдавать ошибку, если файл отсутствует
+        notifempty                    # Не ротацировать пустые файлы
+        size=100M                     # Или если размер больше 100MB — ротация
+        create 0640 tomcat tomcat     # Новый файл после ротации с нужными правами
+    }
+
+
+## загрузка war/jar
+владелец архивов tomcat:tomcat
+Закидываем в webapps/ архивы
+Томкат автоматом развернёт
