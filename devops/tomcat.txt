@@ -8,13 +8,13 @@
 ## пользователь
 groupadd tomcat
 useradd -s /bin/false -g tomcat -d /usr/local/tomcat10 tomcat
-chown -R tomcat:tomcat /usr/local/tomcat10
 
 
 ## загрузка
 wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.41/bin/apache-tomcat-10.1.41.tar.gz
 tar xzf apache-tomcat-10.1.41.tar.gz
 mv apache-tomcat-10.1.41 /usr/local/tomcat10
+chown -R tomcat:tomcat /usr/local/tomcat10
 
 
 ## systemd unit vim /etc/systemd/system/tomcat10.service 
