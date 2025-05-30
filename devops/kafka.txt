@@ -377,7 +377,7 @@ Producer
 Idempotent Producer
     При послылке сообщения и сохранении его в топик, допустим валится acknowledgment
     Делается retry но сообщение НЕ сохраняется ещё раз, а возвращается acknowledgment
-    по умолчанию true, но рекумендуется указать явно 
+    по умолчанию true, но рекумендуется указать явно
     включить конфиг через properties или мэпку
         spring.kafka.producer.properties.enable.idempotence=true
         config.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true)
