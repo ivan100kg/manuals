@@ -1594,11 +1594,13 @@ elif condition2; then       # доп проверки
 else                        # иначе
     code
 fi                          # end if
+
 Examples:
 if grep 'ivar' /etc/passwd  # true если grep вернет какие либо строки
 if [ -d /etc ] && [ -n $1 ] # combine tests using AND (&&) or OR (||)
 if [ $x -lt 1024 ]          # numbers comparsion
 if ((x < 1024))             # the same numbers comparsion
+if [[ -e $file ]]           # file exists?
 
 --- case ---
 case str in 
