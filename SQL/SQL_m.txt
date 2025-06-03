@@ -1090,6 +1090,12 @@ CREATE ROLE имя_нового_пользователя WITH LOGIN PASSWORD 'п
 -- Создать пользователя как суперпользователя
 CREATE ROLE имя_нового_пользователя WITH LOGIN PASSWORD 'пароль' SUPERUSER;
 
+-- Удалить роль
+\c mydb -- подключиться к нужной базе
+REASSIGN OWNED BY grishachevde TO postgres; -- передать владение объектами(на всякий случай)
+DROP OWNED BY grishachevde; -- удалить все привилегии, которые PostgreSQL где-либо хранил
+DROP ROLE имя_роли; -- удалить юзера
+
 -- Tips/Triks ----------------------
 -- группировка по дням недели
 select 
