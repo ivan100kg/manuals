@@ -1,0 +1,135 @@
+Apache HTTP Server(httpd)
+
+# Установка:
+apt install apache2             # deb
+dnf install httpd               # rhel
+
+https:
+apt install libapache2-mod-ssl  # deb
+dnf install mod_ssl             # rhel
+
+
+# Запуск:
+systemctl start apache2     # Ubuntu/Debian
+systemctl enable apache2
+systemctl start httpd       # RHEL
+systemctl enable httpd
+
+
+# Проверка работы:
+http://<IP_сервера>/
+curl http://localhost/
+
+
+# Структура директорий:
+Назначение	            Debian/Ubuntu	                RHEL/CentOS/Alma/Rocky
+----------------------------------------------------------------------------------
+Конфигурация Apache	    /etc/apache2/	                /etc/httpd/
+Основной конфиг-файл	/etc/apache2/apache2.conf	    /etc/httpd/conf/httpd.conf
+Виртуальные хосты	    /etc/apache2/sites-available/	/etc/httpd/conf.d/
+Активные хосты	        /etc/apache2/sites-enabled/	    (используют сразу conf.d)
+Веб-документы (корень)	/var/www/html/	                /var/www/html/
+Модули	                /etc/apache2/mods-*	            /etc/httpd/conf.modules.d/
+Журналы             	/var/log/apache2/	            /var/log/httpd/
+
+
+# Активация модулей:
+Debian/Ubuntu	          | RHEL/CentOS/Alma/Rocky
+--------------------------+---------------------------------- 
+# Включить модуль прокси:   
+                          | /etc/httpd/conf/httpd.conf раскомментить Include conf.modules.d/*.conf
+a2enmod proxy             | /etc/httpd/conf.modules.d/00-proxy.conf раскомментить какие нужны ниже
+a2enmod proxy_http        | 
+a2enmod proxy_ajp         |
+a2enmod rewrite           |
+a2enmod headers           |
+# Перезапуск:        
+systemctl restart apache2 | systemctl restart httpd
+
+
+# Создание своего виртуального хоста
+1. Создаём директорию и файл:
+mkdir -p /var/www/test.local
+echo "<h1>Hello from test.local</h1>" | sudo tee /var/www/test.local/index.html
+
+2. Добавляем виртуальный хост
+/etc/apache2/sites-available/test.local.conf    # Debian/Ubuntu
+/etc/httpd/conf.d/test.local.conf               # RHEL
+смотри пример ниже
+
+a2ensite test.local && systemctl reload apache2 # активация Debian/Ubuntu
+systemctl reload httpd                          # активация RHEL
+
+3. Добавляем в /etc/hosts (на локальной машине):
+127.0.0.1 test.local
+
+
+# Команды
+apachectl -t	                    # Проверка конфигурации
+systemctl restart apache2(httpd)    # Перезапуск
+systemctl status apache2(httpd)     # Статус
+apachectl -M	                    # Список загруженных модулей
+
+
+# Proxy
+1. Активировать модули(выше)
+
+2. Создаём конфигурацию виртуального хоста
+# вариант А с макросом:
+tr -dc A-Za-z0-9 </dev/urandom | head -c 32     # генерируем ключ (xAadhqS6Usdi8jekr5j8Ny9LaaE1U0H)
+vim xAadhqS6Usdi8jekr5j8Ny9LaaE1U0H.conf        # создать файл с именем ключа
+Use myapi xAadhqS6Usdi8jekr5j8Ny9LaaE1U0H       # записать в файл
+
+/etc/apache2/sites-available/proxy-example.conf # Debian/Ubuntu
+/etc/httpd/conf.d/proxy-example.conf            # RHEL
+
+<Macro myapi $securepath>
+    <Location /$securepath/myapi>
+        Require ip 192.168.1.0/24   # Разрешить локальной сети
+        Require ip 172.16.0.10      # И одному IP
+        Require all denied          # Запрет всем остальным
+
+        RewriteEngine on
+        RewriteRule ^/$securepath/(.*)$ /$1 [P]
+
+        ProxyPass ajp://172.16.0.246:8009/myapi         # использовать ajp порт 8009 (для томкат 9) 
+        ProxyPassReverse ajp://172.16.0.246:8009/myapi
+
+        ProxyPass http://172.16.0.246:8080/myapi        # использовать http порт 8080 (для томкат 10) 
+        ProxyPassReverse http://172.16.0.246:8080/myapi
+
+        RequestHeader add x-forwarded-prefix "/$securepath"
+        Header edit Location "^(http[s]?://)?([a-zA-Z0-9\.\-]+)?(:\d+)?/" "/$securepath/"
+    </Location>
+</Macro>
+
+
+# вариант Б в одном файле:
+tr -dc A-Za-z0-9 </dev/urandom | head -c 32     # генерируем ключ (xAadhqS6Usdi8jekr5j8Ny9LaaE1U0H)
+
+/etc/apache2/sites-available/proxy-example.conf # Debian/Ubuntu
+/etc/httpd/conf.d/proxy-example.conf            # RHEL
+
+<Location /xAadhqS6Usdi8jekr5j8Ny9LaaE1U0H/myapi>
+    Require ip 192.168.1.0/24       # Разрешить локальной сети
+    Require ip 172.16.0.10          # И одному IP
+    Require all denied              # Запрет всем остальным
+
+    RewriteEngine on
+    RewriteRule ^/xAadhqS6Usdi8jekr5j8Ny9LaaE1U0H/(.*)$ /$1 [P]
+
+    ProxyPass ajp://172.16.0.246:8009/myapi         # использовать ajp порт 8009 (для томкат 9) 
+    ProxyPassReverse ajp://172.16.0.246:8009/myapi
+
+    ProxyPass http://172.16.0.246:8080/myapi        # использовать http порт 8080 (для томкат 10) 
+    ProxyPassReverse http://172.16.0.246:8080/myapi
+
+    RequestHeader add x-forwarded-prefix "/xAadhqS6Usdi8jekr5j8Ny9LaaE1U0H"
+    Header edit Location "^(http[s]?://)?([a-zA-Z0-9\.\-]+)?(:\d+)?/" "/xAadhqS6Usdi8jekr5j8Ny9LaaE1U0H/"
+</Location>
+
+
+все запросы на http://<сервер>/xAadhqS6Usdi8jekr5j8Ny9LaaE1U0H/myapi
+>>>>>>>>>>>>>>>
+проксируются на 172.16.0.246/myapi (порт либо для http либо ajp в зависимости от конфига)
+
