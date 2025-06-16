@@ -26,6 +26,7 @@ curl http://localhost/
 ----------------------------------------------------------------------------------
 Конфигурация Apache	    /etc/apache2/	                /etc/httpd/
 Основной конфиг-файл	/etc/apache2/apache2.conf	    /etc/httpd/conf/httpd.conf
+Конфиг SSL (https)      /etc/apache2/..                 /etc/httpd/conf.d/ssl.conf
 Виртуальные хосты	    /etc/apache2/sites-available/	/etc/httpd/conf.d/
 Активные хосты	        /etc/apache2/sites-enabled/	    (используют сразу conf.d)
 Веб-документы (корень)	/var/www/html/	                /var/www/html/
@@ -133,3 +134,29 @@ tr -dc A-Za-z0-9 </dev/urandom | head -c 32     # генерируем ключ 
 >>>>>>>>>>>>>>>
 проксируются на 172.16.0.246/myapi (порт либо для http либо ajp в зависимости от конфига)
 
+
+# Logs/логи
+Настройка логирования в конфигурационных файлах:
+http  - httpd.conf
+https - ssl.conf
+
+Формат логов:
+можно создавать/переопределять шаблоны:
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+LogFormat "%h %l %u %t \"%r\" %>s %b" common
+доступные значения для вывода:
+    IP клиента
+    логин
+    дата
+    метод и URL
+    HTTP-статус
+    размер ответа
+    Referer
+    User-Agent
+
+ErrorLog "logs/error_log"               # файл ошибок
+CustomLog "logs/access_log" combined    # файл + формат - журнал доступа (запросы)
+LogLevel warn                           # уровень детализации логов ошибок
+TransferLog                             # устаревшая, вместо неё сейчас используют CustomLog
+
+Логи по умолчанию пишутся в /var/log/httpd/
