@@ -1157,6 +1157,30 @@ Hibernate
             fetch = FetchType.EAGER)    // так менять тип выборки
     private List<Employee> employees;
 
+--- JOIN FETCH ---
+    Это стратегия загрузки связанных сущностей в одном запросе
+    Применяется:
+    1. Избегание LazyInitializationException
+        Ошибка возникает, когда:
+        Сущность с FetchType.LAZY загружается, но сессия закрывается
+        Попытка обратиться к полю вне транзакции
+    2. Оптимизация запросов - N+1 проблема: 1664 entities exception
+        (пример связных сужностей ниже)
+        Без JOIN FETCH:
+            1 запрос для списка Order.
+            N запросов для каждого order.getItems().
+        С JOIN FETCH:
+            1 запрос с LEFT JOIN на OrderItem.
+    3. Использование только в JPQL и HQL + DISTINCT(убрать возможные дубликаты)
+        Работает с @Query и с обычным EntityManager.createQuery()
+    4. Работает со всеми типами связей
+    5. Можно использовать LEFT JOIN FETCH (поведение анвлог LEFT JOIN)
+        
+    Пример с несколькими JOIN:
+    SELECT DISTINCT o FROM Order o 
+    LEFT JOIN FETCH o.items i 
+    JOIN FETCH i.product p
+
 
 --- EntityManager: Шпаргалка для большого проекта ---
 
