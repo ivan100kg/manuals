@@ -1,0 +1,22 @@
+QPS — Queries Per Second
+RPS — Requests Per Second
+TPS — Transactions Per Second
+
+Количество операций, которое система (сервер, API, база данных, микросервис) может обработать за 1 секунду
+
+Примеры:
+Веб-сервер  -   500 RPS = 500 HTTP-запросов в секунду (GET/POST/PUT/DELETE)
+База данных -   10 000 QPS = 10 000 SQL-запросов (SELECT/INSERT/UPDATE) в секунду
+                30 00  TPS = 3000 транзакций (COMMIT/ROLLBACK) в секунду
+Kafka       -   50 000 messages/sec = 50 000 сообщений, отправленных/прочитанных за секунду
+
+Измерение QPS/RPS:
+Тестирование (Benchmarking):
+    Apache JMeter (нагрузочное тестирование API)
+    wrk / k6 (HTTP-бенчмарки)
+    Yandex.Tank / Locust (распределённые тесты)
+Мониторинг в продакшене:
+    Prometheus + Grafana (графики RPS в реальном времени)
+    Datadog / New Relic (анализ производительности)
+
+ 
