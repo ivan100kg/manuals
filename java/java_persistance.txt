@@ -1223,5 +1223,21 @@ Hibernate
     # 5. Не забывать об откате при ошибке.
 
 
+--- Index/Индексы ---
+Добавить индекс можно с помощью Hibernate
+    1. включить автообновление конфига БД в пропертях: spring.jpa.hibernate.ddl-auto=update
+    2. добавить аннотации к классу
+        @Entity
+        @Table(name = "users", 
+            indexes = {
+                @Index(name = "idx_user_email", columnList = "email"),
+                @Index(name = "idx_user_username", columnList = "sms_id")
+            })
+            @Id
+            @GeneratedValue(strategy = GenerationType.IDENTITY)
+            private Long id;
+            private String email;
+            @Column(name = "sms_id")
+            private String smsId;
               
      
