@@ -1787,6 +1787,13 @@
             }
         }
 
+    // сортировка по датам/Date - выбор самой поздней max(), выбор самой ранней min()
+        .max((e1, e2) -> {
+                    LocalDateTime ldt1 = LocalDateTime.parse(e1.getEventData().getEventTime(), dateTimeFormatter);
+                    LocalDateTime ldt2 = LocalDateTime.parse(e2.getEventData().getEventTime(), dateTimeFormatter);
+                    return ldt1.compareTo(ldt2);
+                }).orElse(null);
+
     🟩 Пример 2: Через лямбду
     --------------------------------------------------
         Comparator<MyClass> cmp = (o1, o2) -> Integer.compare(o1.getId(), o2.getId());
