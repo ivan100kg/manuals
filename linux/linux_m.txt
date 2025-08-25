@@ -810,17 +810,84 @@ sed  # потоковый редактор, фильтрует и преобра
      # sed '=' myfile Выводит номера строк
      # sed -n '/reg/=' myfile  -выведет строки по шаблону с номерами 
 
-# awk - целый язык программирования для обработки текста ---
+# awk - язык программирования для обработки текста ------------------
+- Базовые операции:
+awk '{print $1}' file.log               # Вывести первое поле
+awk '{print $1, $3, $5}' file.log       # Вывести несколько полей
+awk -F: '{print $1, $3}' /etc/passwd    # Разделитель ":"
+awk -F',' '{print $2}' data.csv         # Разделитель ","
+- Разделитель и поля:
 # поля по умолчанию разделены пробелом
     -F ';' - указать другой разделитель(можно без ковычек)
     $0  - все поля
     $1  - первое поле
-    $NF - последнее поле/количество полей в строке
-    awk '{print $1, $3, $5}' file.log   # вывести какие-то поля из файла
-    awk '$3 > 100' file.log             # Строки, где 3-е поле > 100
-    echo "one two three"| awk '{print $1}' -выборка 1-го поля $NF -последнее 
-    echo "one two three"| awk '{print $1, "hui", $2} - вставить своё поле
-# awk использует переменные, операторы, циклы, условия, целый ЯП...------------
+    NF  - последнее поле/количество полей в строке
+    NR  - номер текущей строки
+    FS  - разделитель полей (как -F)
+    OFS - разделитель полей на выводе
+    FILENAME - имя файла
+- Фильтрация строк (как grep, но умнее):
+awk '$3 > 100' file.log             # Строки, где 3-е поле > 100
+awk '/error/' file.log              # Строки, содержащие "error"
+awk '/error/ && $5 > 50' file.log   # Комбинированные условия
+awk '$1 == "192.168.1.1" || $2 == "POST"' access.log
+- Арифметические операции:
+awk '{sum += $3} END {print sum}' data.txt                  # Сумма значений в 3-м столбце
+awk '{sum += $2; count++} END {print sum/count}' data.txt   # Среднее значение
+awk 'max < $3 {max = $3} END {print max}' data.txt          # Максимальное значение в столбце
+- Работа с датами и временем:
+awk '{print strftime("%Y-%m-%d %H:%M:%S", $1)}' logfile # Преобразование timestamp
+awk '$1 >= 1672531200 && $1 <= 1672617600' logfile      # Фильтр по времени
+- Статистика и отчёты
+
+# example
+echo "one two three"| awk '{print $1, "hui", $2}    # вставить своё поле
+awk 'NR > 1 {print $0}' data.csv  # Пропускаем первую строку
+awk '{print FILENAME, $0}' *.log  # Добавляем имя файла
+# Анализ nginx/apache логов
+awk '$9 == 500 {print $1, $7}' access.log
+awk '$9 >= 400 {count++} END {print "4xx/5xx errors:", count}' access.log
+# Время обработки запросов
+awk '{if ($NF > 1) print $1, $7, $NF}' access.log  # Запросы > 1 секунды
+# Проверка формата email
+awk '!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/ {print "Invalid email:", $0}' emails.txt
+# Поиск дубликатов
+awk '{if (++dup[$0] == 2) print "Duplicate:", $0}' data.txt
+# Из CSV в JSON (простой вариант)
+awk -F',' 'BEGIN {print "["} {printf "  {\"name\": \"%s\", \"age\": %s},\n", $1, $2} END {print "]"}' data.csv
+# Замена формата даты
+awk '{gsub(/\//, "-", $1); print}' dates.txt
+# Красивый отчёт из лога
+awk '
+BEGIN {print "HTTP Status Report"}
+      {status[$9]++}
+END {
+  print "================"
+  for (s in status) 
+    printf "Status %s: %d requests\n", s, status[s]
+}' access.log
+# Мониторинг процессов
+ps aux | awk '$3 > 5.0 {print $1, $3, $11}'  # Процессы > 5% CPU
+# Анализ дискового пространства
+df -h | awk '/\/dev\/sd/ {print $1, $5}'  # Только физические диск
+# Полный анализ файла
+awk '
+BEGIN {
+  print "Starting analysis..."
+  total = 0
+}
+{
+  total += $3
+  if ($3 > max) max = $3
+  if (NR == 1 || $3 < min) min = $3
+}
+END {
+  print "Total:", total
+  print "Average:", total/NR
+  print "Max:", max
+  print "Min:", min
+  print "Lines processed:", NR
+}' data.tx
 
 # Форматирование вывода--------------------------------------------------------
 nl      # нумерация строк, в простейшем исп как cat -n
