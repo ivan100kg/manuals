@@ -156,6 +156,29 @@ chown -R tomcat:tomcat /usr/local/tomcat10
         create 0640 tomcat tomcat     # Новый файл после ротации с нужными правами
     }
 
+# настройка вывода в catalina.out - /usr/local/tomcat10/conf/log4j2.xml
+все шаблоны тут https://logging.apache.org/log4j/2.x/manual/pattern-layout.html
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %p [%t] %c{1} - %m%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <Logger name="org.apache.kafka" level="off" additivity="false"/>
+        <Logger name="org.springframework.kafka" level="warn" additivity="false"/>
+        <Logger name="org.springframework.kafka.listener.KafkaMessageListenerContainer" level="off" additivity="false"/>
+        <Logger name="org.apache.jasper.servlet.TldScanner" level="error" additivity="false"/>
+        <Logger name="org.hibernate.SQL" level="warn" additivity="false"/>
+        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="warn" additivity="false"/>
+    </Loggers>
+</Configuration>
+
 
 ## загрузка war/jar
 владелец архивов tomcat:tomcat
