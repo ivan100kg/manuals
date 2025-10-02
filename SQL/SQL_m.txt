@@ -842,6 +842,18 @@ SELECT *            -- все поля из всех связанных табл
 SELECT table1.*     -- все поля из определенной таблицы
 SELECT table2.*     -- все поля из определенной таблицы
 
+-- фильтр сразу в JOIN
+-- Эквивалентны:
+JOIN B ON B.id = A.b_id AND B.active
+WHERE B.active
+
+-- Оставит все A, даже если нет подходящего B с active = true
+LEFT JOIN B ON B.id = A.b_id AND B.active
+
+-- Уберёт строки, где B.active IS NULL → работает как INNER JOIN
+LEFT JOIN B ON B.id = A.b_id
+WHERE B.active
+
 
 -- USING
 -- неявная связь двух таблиц имеющих одинаковое поле
