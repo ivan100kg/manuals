@@ -26,25 +26,25 @@ Jpanel - панель содержимого, на ней располагают
 
 --- Всплывающие окна ---
 // message
-JOptionPane.showMessageDialog(new JFrame(), "Кэшбэк можно вносить только 1 раз");
+JOptionPane.showMessageDialog(null, "Кэшбэк можно вносить только 1 раз");
 
 https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html
 
 // error
-JOptionPane.showMessageDialog(new JFrame(),
+JOptionPane.showMessageDialog(null,
     "Eggs are not supposed to be green.",   // message
     "Error",                          // title
     JOptionPane.ERROR_MESSAGE);
 
 // warning
-JOptionPane.showMessageDialog(new JFrame(),
+JOptionPane.showMessageDialog(null,
     "Eggs are not supposed to be green.",   // message
     "Warning",                        // title
     JOptionPane.WARNING_MESSAGE);
 
 // yes no
 int n = JOptionPane.showConfirmDialog(
-    new JFrame(),
+    new null,
     "Would you like green eggs and ham?",
     "Question",
     JOptionPane.YES_NO_OPTION);
