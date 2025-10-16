@@ -44,7 +44,7 @@ JOptionPane.showMessageDialog(null,
 
 // yes no
 int n = JOptionPane.showConfirmDialog(
-    new null,
+    null,
     "Would you like green eggs and ham?",
     "Question",
     JOptionPane.YES_NO_OPTION);
