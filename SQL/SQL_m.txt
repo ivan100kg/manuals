@@ -956,6 +956,9 @@ WHERE salary > ALL (1000, 2000, 3000);
 -- возвращает TRUE или FALSE с подзапроса
 -- похож на использование INNER JOIN
 -- если строк > 0 - возвращает TRUE, иначе FALSE
+-- Золотое правило: EXISTS для проверки существования, IN для статичных списков и маленьких подзапросов.
+-- Всегда используйте SELECT 1 в EXISTS - движку не важно что выбирать
+-- без связи с внешним запросом EXISTS бесполезен
 -- все строки из таблицы1, для которых существует соответствующая строка в таблице2 
    по совпадающему значению в столбце "id". Оператор EXISTS возвращает TRUE, 
    если подзапрос возвращает одну или более строк
@@ -965,6 +968,21 @@ WHERE EXISTS (
 SELECT 1
 FROM таблица2 AS t2
 WHERE t1.id = t2.id);
+
+-- ✅ Хорошо - EXISTS
+SELECT * 
+FROM orders o
+WHERE EXISTS (
+    SELECT 1 FROM customers c 
+    WHERE c.id = o.customer_id AND c.status = 'active'
+);
+
+-- ❌ Плохо - IN
+SELECT * 
+FROM orders o
+WHERE o.customer_id IN (
+    SELECT id FROM customers WHERE status = 'active'
+);
 
 
 -- CTE(common table expressions)----------------------------------------
