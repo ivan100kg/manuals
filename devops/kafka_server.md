@@ -33,8 +33,12 @@ request.timeout.ms=30000
 
 #### 📌 Для `192.168.0.103` заменить строки
 - `node.id=3`
-- `listeners=PLAINTEXT://192.168.0.102:9092,CONTROLLER://192.168.0.102:9093`
-- `advertised.listeners=PLAINTEXT://192.168.0.102:9092,CONTROLLER://192.168.0.102:9093`
+- `listeners=PLAINTEXT://192.168.0.103:9092,CONTROLLER://192.168.0.103:9093`
+- `advertised.listeners=PLAINTEXT://192.168.0.103:9092,CONTROLLER://192.168.0.103:9093`
+
+### 2️⃣a Настроить папку логов на каждом сервере, на первом генерируем uuid и используем на всех
+- /opt/kafka/bin/kafka-storage.sh random-uuid
+- /opt/kafka/bin/kafka-storage.sh format -t <uuid> -c /opt/kafka/config/server.properties
 
 ### 3️⃣ Запустить Kafka
 ```bash
