@@ -43,6 +43,8 @@ request.timeout.ms=30000
 ### 3️⃣ Запустить Kafka
 ```bash
 /opt/kafka/bin/kafka-server-start.sh -daemon /opt/kafka/config/server.properties
+# или так с выбором нужной Java
+JAVA_HOME=/usr/lib/jvm/jdk-21.0.6-oracle-x64 /opt/kafka/bin/kafka-server-start.sh -daemon /opt/kafka/config/server.properties
 ```
 ### 4️⃣ Открыть порты в брандмауэре
 #### Откройте следующие порты для взаимодействия между брокерами Kafka и клиентами:
