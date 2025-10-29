@@ -67,6 +67,9 @@ systemctl reload httpd                          # активация RHEL
 
 # Команды
 apachectl -t	                    # Проверка конфигурации
+httpd -t                            # Проверка конфигурации
+apachectl -S                        # Активные виртуальные хосты
+httpd -S                            # Активные виртуальные хосты
 systemctl restart apache2(httpd)    # Перезапуск
 systemctl status apache2(httpd)     # Статус
 apachectl -M	                    # Список загруженных модулей
