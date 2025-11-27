@@ -104,6 +104,14 @@ Socket Statistic
 
 Отображаемая информация вывода:
 Netid               - отображает типы сокетов
+    tcp    - Сокет TCP (надёжный, ориентированный на соединение)
+    udp    - Сокет UDP (без установки соединения, дейтаграммы)
+    raw    - RAW-сокет (прямой доступ к IP-уровню, часто для ICMP и низкоуровневых протоколов)
+    icmp   - ICMP-сокеты (в некоторых системах отображаются отдельно, особенно при использовании ping или мониторинге)
+    nload  - Netlink - сокеты межпроцессного взаимодействия между ядром и пользовательскими процессами (например,systemd,iproute2,auditd). Не имеют портов и IP.
+    u_str  - UNIX-сокет типа stream — аналог TCP, но для локального IPC через файловую систему (например,/run/docker.sock)
+    u_dgr  - UNIX-сокет типа datagram — аналог UDP для локального IPC
+    u_seq  - UNIX-сокет типа sequenced-packet    — надёжная передача с сохранением границ сообщений (редко используется)
 State               - отображает состояние сокета:
     ESTAB  - установлен
     UNCONN - не подключен
@@ -135,7 +143,67 @@ filter:
     ss -at | grep LISTEN  # TCP-соединение в состоянии прослушивания(с пом grep)
     ss -tr state established '( dport = :22 or sport = :22 )' # подключения к ssh
 example:
-    ss -npl | grep 15611  # поиск прослушиваемого порта № 15611
+    ss -npl | grep 15611    # поиск прослушиваемого порта № 15611
+    ss -tlnp | grep :5432   # найти, кто слушает порт 5432 (PostgreSQL)
+    ss -tn state established '( dport = :22 or sport = :22 )' # активные SSH-подключения
+
+
+--- Стандартные (well-known) порты (0–1023) -------
+20    # FTP – данные (активный режим)
+21    # FTP – управление
+22    # SSH – безопасный удалённый доступ
+23    # Telnet – незашифрованный терминал (устарел)
+25    # SMTP – отправка почты
+53    # DNS – разрешение имён (TCP/UDP)
+67/68 # DHCP – получение IP-адреса (UDP)
+69    # TFTP – простой файловый сервер (UDP)
+80    # HTTP – веб-трафик (незашифрованный)
+110   # POP3 – получение почты
+123   # NTP – синхронизация времени (UDP)
+143   # IMAP – доступ к почтовому ящику
+161/162 # SNMP – мониторинг сети (UDP)
+443   # HTTPS – зашифрованный веб-трафик
+465   # SMTPS – SMTP поверх SSL (устаревший, но используется)
+587   # Submission – SMTP с шифрованием (рекомендуемый для почтовых клиентов)
+993   # IMAPS – IMAP поверх SSL
+995   # POP3S – POP3 поверх SSL
+3306  # MySQL – база данных
+5432  # PostgreSQL – база данных
+6379  # Redis – in-memory datastore
+9092  # Kafka – брокер сообщений
+9200  # Elasticsearch – HTTP API
+9300  # Elasticsearch – транспорт между нодами
+11211 # Memcached – кэширование (UDP/TCP)
+
+--- Зарегистрированные и популярные неофициальные порты (1024–65535) -------------
+8000  # Альтернативный HTTP, часто dev-серверы (Python, Django и др.)
+8005  # Tomcat – shutdown port
+8009  # Tomcat – AJP connector (для Apache HTTPD)
+8080  # Tomcat, Nexus, Jenkins, Artifactory, Spring Boot dev – альтернативный HTTP
+8081  # SonarQube, Nexus (репозиторий), иногда Artifactory UI
+8082  # Иногда альтернативный UI (например, ClickHouse, VictoriaMetrics)
+8083  # InfluxDB, иногда UI для баз
+8090  # Confluence, Jira (в standalone-установках)
+8443  # HTTPS-альтернатива (Tomcat, Jenkins, Keycloak)
+8888  # Jupyter Notebook, иногда HTTP-прокси или альтернативный веб
+9000  # Portainer (Docker UI), SonarQube (старые версии), MinIO (S3-совместимое хранилище)
+9001  # Supervisord web UI, иногда альтернативный сервис
+9090  # Prometheus web UI, HashiCorp Nomad, Grafana (иногда)
+9990  # WildFly / JBoss management console
+15672 # RabbitMQ Management UI
+27017 # MongoDB – основной порт
+27018 # MongoDB – shard server
+27019 # MongoDB – config server
+3000  # Grafana (по умолчанию в некоторых дистрибутивах), Node.js dev-серверы
+3389  # RDP – удалённый рабочий стол Windows
+5000  # Flask dev server, иногда Docker registry
+5433  # Postgres альтернативный (например, в Docker-образах)
+5601  # Kibana – веб-интерфейс для Elasticsearch
+8889  # MySQL альтернативный (например, в Docker)
+9042  # Cassandra – native transport
+9100  # Node Exporter (Prometheus) – метрики хоста
+9110  # HBase REST API
+10000 # Webmin – веб-интерфейс управления Linux
 
 
 --- dig -----------------------------------------------------------------------
