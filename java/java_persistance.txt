@@ -1181,7 +1181,7 @@ Hibernate
     Пример с несколькими JOIN:
     SELECT DISTINCT o FROM Order o 
     LEFT JOIN FETCH o.items i 
-    JOIN FETCH i.product p
+    LEFT JOIN FETCH i.product p
 
 
 --- EntityManager: Шпаргалка для большого проекта ---
