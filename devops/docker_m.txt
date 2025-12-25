@@ -212,6 +212,34 @@ docker network ls              # список сетей
 docker network inspect имя     # информация о сети
 docker network rm имя          # удалить сеть
 
+--- загрузка в Nexus ---
+# настраиваем Nexus - добавляем докер репозиторий, указываем порт http(например 8055)
+
+# Локальная машина разработчика
+# Прописываем разрешения для http (если нет https)
+# vim /etc/docker/daemon.json 
+{
+  "insecure-registries": ["172.16.0.216:8055"]
+}
+# логинемся
+docker login 172.16.0.216:8055
+# собираем
+docker build -t 172.16.0.216:8055/cyr2lat:1.0.0 .
+# заливаем
+docker push 172.16.0.216:8055/cyr2lat:1.0.0
+
+# Докер сервер
+# vim /etc/docker/daemon.json 
+{
+  "insecure-registries": ["172.16.0.216:8055"]
+}
+# логинемся
+docker login 172.16.0.216:8055
+# качаем 
+docker pull 172.16.0.216:8055/cyr2lat:1.0.0
+# запускаем
+docker run --rm -dp 8075:8080 --name cyr2lat-service 172.16.0.216:8055/cyr2lat:1.0.0
+
 
 --- Управление несколькими контейнерами -----------------------------------
 Docker Compose - управление и запуск нескольких контейнеров с помощью YAML
