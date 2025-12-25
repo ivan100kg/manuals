@@ -45,21 +45,13 @@ Docker Container
 
 Dockerfile - инструкции для создания Image
     Обычно пример как заполнять этот файл есть в документации конкретного продукта
-    example:
-    FROM openjdk:11                     # базовый образ
-    ENV CATALINA_HOME /usr/local/tomcat # переменные окружения
-    ENV PATH $CATALINA_HOME/bin:$PATH
-    WORKDIR /usr/local/                 # установить рабочий каталог
-    RUN wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.75/bin/apache-tomcat-9.0.75.tar.gz && \
-        tar -xf apache-tomcat-9.0.75.tar.gz && \
-        mv apache-tomcat-9.0.75 ${CATALINA_HOME}
-    COPY target/medserver.war  ${CATALINA_HOME}/webapps/    # копирование
-    EXPOSE 8080                         # открыть порт
-    CMD ["catalina.sh", "run"]          # выполнить команду при запуске контейнера
-    
-    # переменные окружения
-        ENW TZ Europe/Samara        # либо указываем в dockerfile
-        -e TZ Europe/Samara         # либо при запуске контейнера в параметрах
+    example SpringBoot сервер:
+
+    FROM eclipse-temurin:25-jre             # базовый образ
+    WORKDIR /app                            # установить рабочий каталог
+    COPY target/my-jar-001.jar app.jar      # копирование сборки в контейнер
+    EXPOSE 8086                             # открыть порт
+    ENTRYPOINT ["java", "-jar", "app.jar"]  # выполнить команду при запуске контейнера
     
     Подробно:
     --------------------------------------------------------------------------------------------
@@ -100,9 +92,10 @@ Dockerfile - инструкции для создания Image
 
 
 Порядок развертывания приложения в контейнере:
-    1. Создаем Dockerfile в корне проекта, заполняем его(мануал отдельно)
-    2. Билдим образ на основе Dockerfile -> docker build -t imName path
-    3. Запускаем контейнер на базе образа -> docker run --rm -dp 3000:3000 imName
+    0. Создаем Dockerfile в корне проекта, заполняем его(мануал отдельно)
+    1. Собираем сборку, если в докере не указано    -> mvn clean package
+    2. Билдим образ на основе Dockerfile            -> docker build -t imName path
+    3. Запускаем контейнер на базе образа           -> docker run --rm -dp 8075:8075 --name my-service imName
     4. Если нужно перезалить - смотрим запущенные контейнеры, копируем contId
     5. Останавливаем контейнер docker stop contId
     6. Удаляем конт, если при запуске не было опции --rm -> docker rm contId
