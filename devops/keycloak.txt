@@ -1,0 +1,388 @@
+#!/bin/bash
+# Keycloak — open-source Identity and Access Management (IAM)
+# 
+# Keycloak — это мощная система централизованного управления идентификацией и доступом (IAM), позволяющая:
+# - Аутентифицировать пользователей и сервисы,
+# - Авторизовывать доступ к ресурсам,
+# - Реализовывать Single Sign-On (SSO),
+# - Поддерживать стандарты: OAuth 2.0, OpenID Connect (OIDC), SAML.
+# 
+# Используется для защиты веб-приложений, мобильных клиентов, микросервисов и REST API.
+
+# ============================================================================
+# 🔑 Основные концепции Keycloak
+# ============================================================================
+
+# 1. Realm (Реалм / Домен)
+# - Логический контейнер: содержит пользователей, клиентов, роли, политики безопасности.
+# - По умолчанию существует master realm — только для администрирования самого Keycloak.
+# - ✅ Для ваших приложений всегда создавайте отдельный realm (например, nauka).
+
+# 2. Client (Клиент)
+# Приложение или сервис, которое взаимодействует с Keycloak для аутентификации.
+#
+# Типы клиентов:
+#   confidential  → Backend, микросервисы (требует client_secret)
+#   public        → SPA, десктоп, мобильные (без client_secret, использует PKCE)
+#   bearer-only   → REST API (только проверяет токены)
+
+# 💡 Ваш Spring Boot сервер — Resource Server, а не клиент.
+# Ему не обязательно регистрировать клиент в Keycloak.
+
+# 3. User (Пользователь)
+# - Реальный человек (врач, админ и т.д.),
+# - Аутентифицируется через браузер (логин/пароль, 2FA),
+# - Получает JWT access token → передаётся в API.
+
+# 4. Role и Group
+# - Realm Roles: глобальные роли (ADMIN, USER, API)
+# - Client Roles: привязаны к клиенту (реже используются)
+# - Groups: упрощают управление ролями
+
+# ✅ Рекомендуется использовать realm roles для Spring Security.
+
+# 5. Authentication Flows
+# Гибкие сценарии входа, регистрации, MFA и т.д.
+
+# 6. Identity Providers
+# Интеграция с Google, GitHub, LDAP, Active Directory и др.
+
+# 7. User Federation
+# Подключение внешних источников (например, LDAP) без копирования пользователей.
+
+# ============================================================================
+# 🪪 Что такое JWT Token?
+# ============================================================================
+
+# JWT (JSON Web Token) — стандарт (RFC 7519) для безопасной передачи данных в виде JSON.
+# В Keycloak JWT = access token, подтверждающий:
+#   - Кто пользователь (sub)
+#   - Какие права (roles)
+#   - От какого IdP (iss)
+#   - Срок действия (exp)
+
+# Структура JWT: header.payload.signature
+# Пример payload:
+# {
+#   "sub": "ivanov",
+#   "iss": "http://keycloak:8080/realms/nauka",
+#   "aud": "account",
+#   "exp": 1712345678,
+#   "iat": 1712345078,
+#   "realm_access": { "roles": ["USER", "DOCTOR", "API"] },
+#   "workerId": "123"
+# }
+
+# 🔍 Декодировать токен можно на https://jwt.io
+
+# Важные claims:
+#   sub        → идентификатор (обычно username)
+#   iss        → issuer (URL realm)
+#   aud        → audience (для какого клиента)
+#   exp        → время окончания (Unix seconds)
+#   iat        → время выдачи
+#   realm_access.roles → список ролей
+#   workerId   → кастомный атрибут (через Mapper)
+
+
+# access_token:
+    Назначение - Доступ к защищённым API 
+    Использование - Передаётся в заголовке Authorization: Bearer ... при вызове Spring API
+    Срок жизни - Короткий (обычно 5–10 минут)
+    Безопасность - Может утекать (проходит через прокси, логи) → поэтому короткий
+# refresh_token:
+    Назначение - Получение нового access_token
+    Использование - Используется только для запроса к Keycloak (/token)
+    Срок жизни - Длинный (30 мин – 24 часа и больше)
+    Безопасность - Никогда не уходит в API → хранится в защищённом месте → поэтому долгий
+
+# ✅ Правила использования
+# Для десктопного/мобильного приложения:
+    Храните оба токена в памяти (или в системном хранилище, если между сессиями).
+    Используйте access_token только для вызова API.
+    Когда access_token истекает (или получаете 401):
+    Используйте refresh_token, чтобы получить новый access_token,
+    Обновляйте и refresh_token, если Keycloak выдал новый.
+    Если и refresh_token протух — требуйте повторный вход через браузер.
+# Для микросервиса (Client Credentials):
+    refresh_token не выдаётся!
+    Просто запрашивайте новый access_token по client_id + client_secret при истечении срока.
+
+# 🔐 Best practice:
+# access_token — короткий (5–10 мин),
+# refresh_token — длинный (1–24 ч),
+# обновление — через refresh_token в фоне.
+
+# ============================================================================
+# 🐳 Развёртывание Keycloak (Docker Compose)
+# ============================================================================
+
+# 1. docker-compose.yml
+# ----------------------------------------------------------------------------
+
+# services:
+#   keycloak-db:
+#     image: postgres:16
+#     container_name: keycloak-db
+#     restart: unless-stopped
+#     env_file: .env
+#     environment:
+#       POSTGRES_DB: ${KC_DB_NAME}
+#       POSTGRES_USER: ${KC_DB_USER}
+#       POSTGRES_PASSWORD: ${KC_DB_PASSWORD}
+#     volumes:
+#       - keycloak_db_vol:/var/lib/postgresql/data
+#
+#   keycloak:
+#     image: quay.io/keycloak/keycloak:26.1
+#     container_name: keycloak
+#     restart: unless-stopped
+#     command: start --hostname-strict=false --http-enabled=true
+#     env_file: .env
+#     environment:
+#       KC_DB: postgres
+#       KC_DB_URL: jdbc:postgresql://keycloak-db:5432/${KC_DB_NAME}
+#       KC_DB_USERNAME: ${KC_DB_USER}
+#       KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+#       KEYCLOCK_ADMIN: ${KEYCLOAK_ADMIN}
+#       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+#     ports:
+#       - "${KEYCLOAK_PORT}:8080"
+#     depends_on:
+#       - keycloak-db
+#
+# volumes:
+#   keycloak_db_vol:
+
+# 2. .env (chmod 600 .env)
+# ----------------------------------------------------------------------------
+
+# # PostgreSQL
+# KC_DB_NAME=keycloak
+# KC_DB_USER=keycloak
+# KC_DB_PASSWORD=your_strong_password_here
+#
+# # Keycloak Admin
+# KEYCLOAK_ADMIN=admin
+# KEYCLOAK_ADMIN_PASSWORD=your_strong_admin_password_here
+#
+# # Порт
+# KEYCLOAK_PORT=8030
+
+# 🔒 Важно:
+# - .env должен быть недоступен извне
+# - В продакшене используйте HTTPS
+
+# ============================================================================
+# 🛠 Настройка в Web UI
+# ============================================================================
+
+# 1. Перейдите в: http://ваш-сервер:8030
+# 2. Создайте новый realm (например, nauka)
+# 3. Создайте клиентов:
+
+# Таблица настройки клиентов:
+#
+# Тип клиента            Client Auth  Direct Access  Service Acc Auth flow  Redirect URIs           Web Origins
+# REST-клиенты (микросервисы)  ✅           ❌            ✅        ❌      (пусто)                 (пусто)
+# MVC (веб с формой)           ✅           ❌            ❌        ✅      https://ваш-сайт.ru/...  https://ваш-сайт.ru
+# Angular (SPA)                ❌           ❌            ❌        ✅      http://localhost:4200/*  +
+# Desktop (нативное)           ❌           ❌            ❌        ✅      http://127.0.0.1:*       (пусто)
+
+
+# Что такое Valid Redirect URIs?
+# - Список URL, на которые Keycloak может перенаправить после входа.
+# - Используется только в Authorization Code Flow.
+# - Пример:
+#   https://keycloak/realms/nauka/protocol/openid-connect/auth?
+#     client_id=angular-app&
+#     redirect_uri=http://localhost:4200/callback&
+#     response_type=code
+# - Keycloak проверит, что redirect_uri разрешён.
+
+# ❌ Никогда не используйте /* или * — это угроза безопасности!
+
+# ============================================================================
+# 🔑 Получение токена для микросервиса (Client Credentials Flow)
+# ============================================================================
+
+# Машина → Keycloak → API (Client Credentials)
+
+# Этот flow используется, когда микросервис (машина) хочет аутентифицироваться
+# в Keycloak БЕЗ участия пользователя. Это machine-to-machine аутентификация.
+
+# Условия:
+# - Клиент в Keycloak должен быть типа "confidential"
+# - Должен быть включён "Service Accounts Enabled"
+# - Должны быть назначены роли через "Service Account Roles"
+
+# 🔐 Шаг 1: Авторизация клиента в Keycloak
+# Микросервис отправляет свой идентификатор и секрет:
+#
+#   POST /realms/{realm}/protocol/openid-connect/token
+#   Content-Type: application/x-www-form-urlencoded
+#
+#   client_id=my-microservice
+#   &client_secret=xxxxxx
+#   &grant_type=client_credentials
+
+# 🔑 Шаг 2: Keycloak проверяет:
+#   - Существует ли клиент с таким client_id?
+#   - Совпадает ли client_secret?
+#   - Включён ли Service Account для клиента?
+#
+# Если всё верно — Keycloak генерирует JWT access token,
+# в котором "sub" = "service-account-my-microservice",
+# а в "realm_access.roles" — роли, назначенные сервисному аккаунту.
+
+# 💡 Пример ответа:
+# {
+#   "access_token": "ey...",
+#   "expires_in": 300,
+#   "refresh_expires_in": 0,
+#   "token_type": "Bearer",
+#   "not-before-policy": 0,
+#   "scope": "profile email"
+# }
+
+# 📦 Шаг 3: Использование токена
+# Микросервис сохраняет access_token (обычно в памяти, с кэшированием)
+# и добавляет его в заголовок всех запросов к защищённым API:
+#
+#   GET /api/v1/appsrv/data
+#   Authorization: Bearer ey...
+
+# 🛡 Шаг 4: Spring Boot (Resource Server) проверяет токен:
+#   - Подпись (через JWK из Keycloak /realms/{realm}/protocol/openid-connect/certs)
+#   - Issuer (должен совпадать с настройкой issuer-uri или jwkSetUri)
+#   - Срок действия
+#   - Наличие требуемых ролей (например, hasRole("API"))
+
+# ✅ Если проверка пройдена — запрос обрабатывается.
+# ❌ Если токен просрочен или подпись неверна — 401 Unauthorized.
+# ❌ Если недостаточно ролей — 403 Forbidden.
+
+# ⏳ Рекомендации:
+# - Кэшируйте токен до истечения срока (minus 30 сек на погрешность)
+# - Не запрашивайте токен на каждый запрос — это нагрузка на Keycloak
+# - Обрабатывайте 401 → обновляйте токен и повторяйте запрос
+
+# ❗ Важно:
+# Client Credentials Flow выдаёт токен НА САМ КЛИЕНТ, а не на пользователя.
+# Такой токен не содержит информации о человеке — только о сервисе.
+
+# ============================================================================
+# 👤 Авторизация пользователя через браузер (Authorization Code Flow + PKCE)
+# ============================================================================
+
+# Человек → Браузер → Keycloak → Приложение → API (Authorization Code + PKCE).
+
+# Этот flow используется, когда ЧЕЛОВЕК (пользователь) заходит в приложение:
+# - Angular, React (SPA)
+# - Десктопное приложение (через системный браузер)
+# - Веб-приложение с формой (MVC)
+
+# Условия:
+# - Клиент в Keycloak должен быть типа "public" (SPA, десктоп) или "confidential" (MVC)
+# - Должен быть включён "Standard Flow" (Authorization Code Flow)
+# - Для SPA и десктопа — обязательно используется PKCE (RFC 7636)
+
+# 🔐 Шаг 1: Приложение инициирует логин
+# Приложение генерирует:
+#   - code_verifier (случайная строка)
+#   - code_challenge = BASE64URL(SHA256(code_verifier))
+#
+# Затем открывает браузер по URL:
+#
+#   GET http://172.16.0.12:8030/realms/{realm}/protocol/openid-connect/auth?
+#     client_id=desktop-app
+#     &redirect_uri=http://127.0.0.1:8081/callback
+#     &response_type=code
+#     &scope=openid profile email
+#     &code_challenge={code_challenge}
+#     &code_challenge_method=S256
+
+# 🔑 Шаг 2: Пользователь вводит логин/пароль на странице Keycloak
+# Keycloak проверяет учётные данные → создаёт сессию → редиректит на redirect_uri с кодом:
+#
+#   http://127.0.0.1:8081/callback?code=abc123
+
+# 🔄 Шаг 3: Приложение получает code и обменивает его на токены
+# Отправляется POST-запрос:
+#
+#   POST http://172.16.0.12:8030/realms/{realm}/protocol/openid-connect/token
+#   Content-Type: application/x-www-form-urlencoded
+#
+#   client_id=desktop-app
+#   &grant_type=authorization_code
+#   &code=abc123
+#   &redirect_uri=http://127.0.0.1:8081/callback
+#   &code_verifier={оригинальный_code_verifier}
+
+# 💡 Keycloak проверяет:
+#   - Действителен ли code?
+#   - Совпадает ли code_verifier с code_challenge?
+#   - Разрешён ли redirect_uri?
+#
+# Если всё верно — выдаётся JWT access_token (и, опционально, refresh_token).
+
+# 📦 Шаг 4: Использование токена
+# Приложение сохраняет access_token и refresh_token (в памяти, не на диске!)
+# и добавляет его в заголовок всех API-запросов:
+#
+#   GET /api/v1/appsrv/data
+#   Authorization: Bearer ey...
+
+# Когда возникает 401 - обновляем токен с помощью refresh_token
+# POST http://172.16.0.12:8030/realms/nauka/openid-connect/token
+# Content-Type: application/x-www-form-urlencoded
+#   client_id=desktop-app
+#   &grant_type=refresh_token
+#   &refresh_token=ваш-refresh-token
+
+# 🛡 Шаг 5: Spring Boot (Resource Server) проверяет токен:
+#   - Подпись (через JWK)
+#   - Issuer, audience, срок действия
+#   - Роли пользователя (например, realm_access.roles = ["USER", "DOCTOR"])
+#
+# ✅ Если проверка пройдена — запрос обрабатывается под именем пользователя.
+#   В контроллере можно получить:
+#     - username: auth.getName() или jwt.getSubject()
+#     - workerId: jwt.getClaim("workerId")
+#     - роли: auth.getAuthorities()
+
+# ⏳ Особенности:
+# - Access token короткоживущий (обычно 5 минут)
+# - Refresh token (если есть) позволяет получить новый access_token без повторного входа
+# - При 401 (просроченный токен) → обновить через refresh_token или запросить повторный логин
+
+# 🌐 Важно для десктопа:
+# - Используйте redirect_uri вида http://127.0.0.1:порт — это безопасно и рекомендовано OAuth2
+# - Никогда не храните пароль пользователя — только токены
+# - После выхода — очищайте токены из памяти
+
+# 🔒 Преимущества этого подхода:
+# - Пароль НИКОГДА не видит ваше приложение
+# - Поддержка 2FA, SSO, смены пароля в Keycloak
+# - Централизованное управление сессиями (можно отозвать все сессии)
+
+# ============================================================================
+# 🔄 Миграция пользователей
+# ============================================================================
+
+# 1. Экспортируйте из БД: id, login, password, fio
+# 2. Импортируйте в Keycloak через Admin API или скрипт
+# 3. Добавьте атрибут workerId = id каждому пользователю
+# 4. Создайте Mapper (User Attribute), чтобы workerId попал в токен
+
+# ============================================================================
+# ✅ Итог
+# ============================================================================
+
+# Keycloak даёт вам:
+# - Единую точку входа (SSO),
+# - Безопасную аутентификацию без хранения паролей,
+# - Гибкую авторизацию через роли и атрибуты,
+# - Поддержку современных стандартов (OIDC, OAuth2).
+#
+# Теперь ваши люди и сервисы аутентифицируются единообразно и безопасно.

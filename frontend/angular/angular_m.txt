@@ -45,7 +45,8 @@ vim main.ts                 # создать файл для запуска пр
 vim index.html              # создать собственно саму страничка
 vim tsconfig.json           # создать конфиг файл для TypeScript
 vim angular.json            # создать конфиг файл для Angular CLI
-ng serve --open             # запуск приложения на тестовом сервере
+ng serve --open             # запуск приложения на тестовом сервере localhost
+         --host 0.0.0.0     # для доступа не только с localhost
 ng build                    # компиляция проекта в dist/helloapp - файлы для любого веб-сервера
 
 --- Иерархия ---
