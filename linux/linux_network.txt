@@ -299,7 +299,7 @@ nmap -p port host                   # доступность сервера/ди
 method - по умолчанию GET
 Content-Type - по умолчанию application/x-www-form-urlencoded
 
-curl -X method\                             # HTTP метод
+curl -X method\                             # HTTP метод GET POST PUT DELETE
     'https://api.example.com'\              # url
     'url?param1=val1&param2=val2'\          # url + параметры(если есть)
 headers/заголовки:    

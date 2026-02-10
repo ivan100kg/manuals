@@ -3018,3 +3018,29 @@ W - Ближайший рабочий день - 15W = ближайший раб
 // запуск задач в параллельном потоке, если время вышло, но текущий поток не отработал
 @EnableAsync    - ставим над конфиг классом с @EnableScheduling
 @Async          - ставим над методом с @Schedule
+
+--- Блокировка @Schedule на разных инстансах
+-- создать таблицу
+CREATE TABLE shedlock (
+  name VARCHAR(64) NOT NULL,
+  lock_until TIMESTAMP NOT NULL,
+  locked_at TIMESTAMP NOT NULL,
+  locked_by VARCHAR(255) NOT NULL,
+  PRIMARY KEY (name)
+);
+
+конфиг:
+@Configuration
+@EnableSchedulerLock(defaultLockAtMostFor = "10m")
+public class ShedLockConfig {
+    @Bean
+    public LockProvider lockProvider(DataSource dataSource) {
+        return new JdbcTemplateLockProvider(dataSource);
+    }
+}
+
+настройка:
+@Scheduled(cron = "0 * * * * *")    // например, раз в минуту
+    @SchedulerLock(name = "Test_scheduler",     // Уникальное имя
+            lockAtLeastFor = "30s",             // удерживает замок в БД, даже если метод уже выполнился и завершился - должен быть < интервала
+            lockAtMostFor = "5m")               // Предохранитель - сбрасывается если завис процесс. Должен быть больше, чем самое долгое предполагаемое время работы метода
