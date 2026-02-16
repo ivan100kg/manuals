@@ -98,6 +98,19 @@ ip r add 169.255.0.0 dev enp0s3     # указать сетевой инт-с ч
 ip route del 169.255.0.0 via 169.254.19.153
                                     # удалить маршрут
 
+--- сетевые параметры ---
+ip -br|-brief a         # локальный IP и интерфейсы
+ip route | grep default # шлюз
+resolvectl status eno1  # ДНС
+cat /etc/resolv.conf      ...
+curl ifconfig.me        # проверка выхода в интернет и внешнего IP
+ss -tulpn               # все открытые порты с процессами
+pstree -p               # все дерево процессов
+top / htop              # топ по ресурсам(CPU/RAM)
+ps aux|grep nginx       # поиск конкретного процесса
+systemctl list-units --type=service --state=running # активные службы/юниты
+ip neighbor             # соседи (ARP таблица)
+
 --- ss -----------------------------------------------------------------------
 Socket Statistic
 Предоставляет подробную информацию об открытых портах и прослушиваемых сокетах
@@ -328,6 +341,7 @@ cookies/куки
     -sS https://api.example.com             # тихий режим, но показывает ошибки
     -w "%{http_code}\n"                     # вывести метаданные (статус, время и др.)
     -w "%{http_code}\n" -o /dev/null -s https://api.example.com # Вывести HTTP-статус код
+    -f --fail                               # не выводить тело при ошибке
 таймаут и повтор
     --max-time 10                           # максимум 10 сек на весь запрос
     --retry 3                               # повторить до 3 раз при ошибке
@@ -339,6 +353,14 @@ SSL/TLS и прокси
     --key client.key                        # приватный ключ для mTLS
     -x http://proxy:3128                    # HTTP-прокси
     --proxy-user user:pass                  # авторизация в прокси
+другие
+    -4                                      # использовать IPv4
+    -L --location                           # следовать ридеректам 301 302
+    -R --remote-time                        # устанавливает время локального файла таким же как на сервере
+
+примеры:
+    curl -OL https://example.com/file.tar.gz                    # сохранить файл под именем из URL
+    curl -LRfo my_name.zip https://example.com/big_file.zip     # сохранить файл 
 
 сохранить токен и использовать его:
 TOKEN=$(curl -s -X POST https://auth.example.com/token \
@@ -346,7 +368,7 @@ TOKEN=$(curl -s -X POST https://auth.example.com/token \
     | jq -r .access_token)
 curl -H "Authorization: Bearer $TOKEN" 'https://api.example.com/me'
 
-# jq - command-line JSON processor
+# jq - command-line JSON processor - разбор JSON тела
 echo '{"name":"Alice","age":30}' | jq '.'               # Вывести всё красиво (pretty-print)
 echo '{"token":"abc123"}' | jq -r '.token'              # Получить значение поля -r - без ковычек (row)
 echo '{"user":{"id":123}}' | jq -r '.user.id'           # Получить вложенные поля
