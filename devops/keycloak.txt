@@ -183,11 +183,11 @@
 
 # Таблица настройки клиентов:
 #
-# Тип клиента            Client Auth  Direct Access  Service Acc Auth flow  Redirect URIs           Web Origins
-# REST-клиенты (микросервисы)  ✅           ❌            ✅        ❌      (пусто)                 (пусто)
-# MVC (веб с формой)           ✅           ❌            ❌        ✅      https://ваш-сайт.ru/...  https://ваш-сайт.ru
-# Angular (SPA)                ❌           ❌            ❌        ✅      http://localhost:4200/*  +
-# Desktop (нативное)           ❌           ❌            ❌        ✅      http://127.0.0.1:*       (пусто)
+# Тип клиента            Client Auth Standart Flow  Direct Access  Service Acc Auth flow  Redirect URIs           Web Origins
+# REST-клиенты (микросервисы)  ✅           ❌            ❌            ✅        ❌      (пусто)                 (пусто)
+# MVC (веб с формой)           ✅                         ❌            ❌        ✅      https://ваш-сайт.ru/...  https://ваш-сайт.ru
+# Angular (SPA)                ❌           ✅            ❌            ❌        ✅      http://localhost:4200/*  +
+# Desktop (нативное)           ❌           ❌            ❌            ❌        ✅      http://127.0.0.1:*       (пусто)
 
 
 # Что такое Valid Redirect URIs?
