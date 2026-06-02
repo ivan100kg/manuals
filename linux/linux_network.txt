@@ -111,6 +111,50 @@ ps aux|grep nginx       # поиск конкретного процесса
 systemctl list-units --type=service --state=running # активные службы/юниты
 ip neighbor             # соседи (ARP таблица)
 
+
+# --- nmcli ДОБАВЛЕНИЕ ПОСТОЯННЫХ IP-АДРЕСОВ ------------------------------------------------+
+# --- Диагностика и поиск имен (Общее для всех дистрибутивов) -------------------------------+
+ip addr show                    # Посмотреть активные IP-адреса, имена интерфейсов и флаги
+nmcli connection show           # RHEL: Узнать точное имя сетевого соединения (Connection Name)
+ls /etc/netplan/                # Ubuntu: Найти имя текущего конфигурационного файла YAML
+
+# --- RHEL / CentOS / Rocky / Alma (Управление через NetworkManager) -----------------------+
+# ⚠️ Внимание: ВСЕГДА используйте знак "+" перед ipv4.addresses, иначе затрете текущие IP!
+sudo nmcli con mod enp4s0 +ipv4.addresses "172.16.0.195/22"       # Добавить ОДИН доп. IP к интерфейсу enp4s0
+sudo nmcli con mod enp4s0 +ipv4.addresses "10.0.0.5/24,10.0.0.6/24" # Добавить НЕСКОЛЬКО IP пачкой через запятую
+sudo nmcli con mod enp4s0 -ipv4.addresses "172.16.0.195/22"       # УДАЛИТЬ ошибочный или ненужный IP из настроек
+sudo nmcli con up enp4s0                                          # ПРИМЕНИТЬ изменения и обновить файлы на диске
+
+# Контроль настроек в RHEL:
+nmcli connection show enp4s0 | grep ipv4.addresses                # Проверить список адресов в базе NetworkManager
+cat /etc/sysconfig/network-scripts/ifcfg-enp4s0 | grep IPADDR      # Проверить старый формат конфига на диске
+cat /etc/NetworkManager/system-connections/*.nmconnection          # Проверить новый формат конфига на диске
+
+# --- Debian / Ubuntu (Современный Netplan, формат YAML) ------------------------------------+
+# ⚠️ Внимание: В файлах YAML запрещены знаки Tab! Используйте только пробелы для отступов.
+sudo nano /etc/netplan/01-netcfg.yaml                             # Открыть конфиг для ручного редактирования
+# Структура внутри файла должна выглядеть так (все IP перечисляются в секции addresses):
+# ethernet:
+#   enp4s0:
+#     addresses:
+#       - 172.16.0.246/22
+#       - 172.16.0.195/22                                         # Просто дописываем новые IP строчками ниже
+
+sudo netplan try                                                  # БЕЗОПАСНО применить настройки (откат через 2 мин)
+sudo netplan apply                                                # Жестко применить конфигурацию без подтверждения
+
+
+# --- Классический Debian / Старые Ubuntu (Через interfaces) --------------------------------+
+sudo nano /etc/network/interfaces                                 # Открыть старый конфиг интерфейсов Debian
+# Структура для доп. адресов делается через псевдонимы (aliases):
+# iface enp4s0:1 inet static
+#       address 172.16.0.195
+#       netmask 255.255.252.0
+
+sudo ifdownload enp4s0 && sudo ifup enp4s0                        # Перезапустить интерфейс для применения (Debian)
+sudo systemctl restart networking                                 # Полный перезапуск сетевой службы (Debian)
+
+
 --- ss -----------------------------------------------------------------------
 Socket Statistic
 Предоставляет подробную информацию об открытых портах и прослушиваемых сокетах
