@@ -175,6 +175,7 @@ docker rm $(docker ps -aq)      # удалить все контейнеры
 docker image rm id              # удалить образ -f - принудительно
 docker rmi name:tag             # удалить ссылающийся образ на др образ
 docker image prune              # удалить неиспользуемые образы с тэгами <None>
+docker system prune -a --volumes # удаляет всё что не запущено и не связано с запущенным
 
 # установить тэг
 docker tag im/id name:tag       # создать новую ссылку на существующий образ с
