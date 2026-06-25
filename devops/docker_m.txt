@@ -378,23 +378,91 @@ volumes:
   microservice1-data:               # можно не указывать если указан в Dockerile
 
 
---- Logs/Логи -----------------------------------------
-Docker logs - записи вывода контейнеров stdout и stderr
+--- Logs/Логи -----------------------------------------------------------
+Docker logs — записи вывода контейнеров stdout и stderr, а также их ограничение
 
 # commands:
 docker logs c_id/c_name             # логи работающего контейнера
-docker logs -f c_id/c_name          # логи в реальном времени
+docker logs -f c_id/c_name          # логи в реальном времени (stream)
 docker logs --tail 10 c_id/c_name   # хвост 10 строк
-docker logs --since 2024-12-01T00:00:00 c_id/c_name     # логи с опред времени
-docker logs --since 1h c_id/c_name  # логи за последний час - можно комбинировть
-                                      2h 12m 10s 1000ms или 1h15m12s1000ms
-docker logs --until 2024-12-01T00:00:00 c_id/c_name     # логи до опред времени
-docker logs --until 15m c_id/c_name # логи записанные до последних 15 минут
-docker logs c_id/c_name | grep -i error                 # поиск в логах  
-# compose всё тоже самое, только можно выводить сразу для всех
-  контейнеров которые запускаются с пом compose или для одного сервиса:
-docker-compose logs                 # для всех контейнеров в docker-compose.yml
-docker-compose logs -f              # realtime для всех контейнеров yml
-docker-compose logs <service_name>  # для опред сервиса в yml (по имени)
-docker-compose logs | grep -i error # поиск в логах
-...
+docker logs --since 2026-01-01      # логи с определенного времени
+docker logs --since 1h c_id/c_name  # логи за последний час (можно: 2h, 15m, 30s)
+docker logs --until 15m c_id/c_name # логи, записанные до последних 15 минут
+docker logs c_id/c_name | grep -i error # поиск ключевых слов в логах
+
+# compose commands:
+docker compose logs                 # логи для всех контейнеров текущего yml
+docker compose logs -f              # realtime для всех контейнеров yml
+docker compose logs <service_name>  # логи конкретного сервиса по имени из yml
+docker compose logs | grep -i "error" # поиск по логам всего compose-проекта
+
+# защита диска от переполнения (прописывается в docker-compose.yml для сервиса):
+logging:
+  driver: "json-file"
+  options:
+    max-size: "10m"                 # ротация файла при достижении 10 Мегабайт
+    max-file: "3"                   # хранить не более 3 файлов (макс 30MB на контейнер)
+
+# Настройка ротации для одиночного контейнера при создании:
+docker run -d --log-driver json-file --log-opt max-size=10m --log-opt max-file=3 nginx
+
+# Глобальная настройка для ВСЕХ новых контейнеров на сервере:
+# Отредактировать файл /etc/docker/daemon.json и добавить:
+{
+  "log-driver": "json-file",
+  "log-opts": {"max-size": "10m", "max-file": "3"}
+}
+# После чего перезапустить службу: sudo systemctl restart docker
+
+# Физическое расположение файлов ротации одиночного контейнера:
+# /var/lib/docker/containers/<c_id>/<c_id>-json.log (текущий)
+# /var/lib/docker/containers/<c_id>/<c_id>-json.log.1 (архив 1)
+
+# системные команды:
+du -sh /var/lib/docker/containers/*/*-json.log # проверить размер логов на диске
+docker system prune -f --volumes    # полная очистка неиспользуемых данных Docker
+
+--- Restart/Перезапуск и автозапуск ------------------------------------
+Управление поведением контейнеров при сбоях и перезагрузке системы
+
+# docker run commands (для одиночных контейнеров):
+docker run -d --restart unless-stopped nginx                                # запуск с политикой
+docker update --restart unless-stopped c_id/c_name                          # изменить политику на лету
+docker update --restart unless-stopped $(docker ps -aq)                     # включить автозапуск для ВСЕХ
+docker inspect --format='{{.HostConfig.RestartPolicy.Name}}' c_id/c_name    # узнать политику
+
+# политики перезапуска:
+no               # по умолчанию: никогда не перезапускать автоматически
+on-failure       # только при ошибках (код выхода не 0). Можно: on-failure:5
+always           # запускать всегда (даже если вы сами остановили через docker stop)
+unless-stopped   # запускать всегда, КРОМЕ случаев, когда вы остановили его вручную
+
+# compose (.env / docker-compose.yml):
+# прописывается внутри каждого сервиса на одном уровне с image/ports:
+restart: unless-stopped
+
+# compose commands:
+docker compose up -d                                # применить новые политики без потери данных
+docker compose ps                                   # посмотреть текущий статус перезапуска
+docker compose config --format json | grep restart  # посмотреть политики перезапуска если они есть
+
+--- Healthcheck/Проверка здоровья ---------------------------------------
+Контроль реальной готовности приложения внутри контейнера (Ready, а не просто Start)
+
+# compose (.env / docker-compose.yml):
+# добавляется в сервис, который нужно проверять (например, БД):
+healthcheck:
+  test: ["CMD-SHELL", "pg_isready -U user"] # команда проверки внутри контейнера
+  interval: 5s                              # как часто проверять
+  timeout: 5s                               # сколько ждать ответа
+  retries: 3                                # число ошибок до статуса unhealthy
+  start_period: 10s                         # буфер времени на первый запуск
+
+# добавляется в сервис, который должен ждать (например, App):
+depends_on:
+  db_service_name:
+    condition: service_healthy              # старт только после успешного хелсчека БД
+
+# commands:
+docker compose ps                           # покажет статус: (healthy) или (unhealthy)
+docker inspect --format='{{json .State.Health}}' c_id/c_name # подробный лог проверок
